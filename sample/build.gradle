@@ -1,0 +1,113 @@
+buildscript {
+    repositories {
+        maven {
+            url uri('../repo')
+        }
+    }
+    dependencies {
+        classpath 'com.genymotion:gradlePlugin:1.0'
+    }
+}
+
+apply plugin: "genymotion"
+
+//tasks
+/*
+genymotionLicenseInfo
+genymotionVersion
+genymotionLogzip
+*/
+
+genymotion.config{
+    genymotionPath = "/home/eyal/genymotion-app/"       //set the Genymotion path to PATH
+    stats = true                                        //active les stats (maybe accept true|false) ["on"|"off"]
+    notifs = true                                       //active les notifs (maybe accept true|false) ["on"|"off"]
+    login = ""                    //set le login a VALUE
+    password = ""                 //set le pass a VALUE
+//    loginFromFile = PATH             //set login & password from a config file
+//    key = VALUE                      //set la clé d enregistrement a value
+//    proxy_status = true              //active le proxy ou non (maybe accept true|false) ["on"|"off"]
+//    proxy_address = ADDRESS          //set l'adresse du proxy a ADRESS
+//    proxy_port = PORT                //set le port du proxy a PORT
+//    proxy_protocol = PROTOCOL        //definit le protocole du proxy, voir avec ced pour plus d infos
+//    configuration_path = PATH        //set le dossier ou sont stockées les configs
+//    sdk_path = PATH                  //set le dossier du sdk alternatif
+//    use_custom_sdk = false           //utilise le sdk alternatif ou non (maybe accept true|false) ["on"|"off"]
+//    storage_path = PATH              //set le dossier de stockage des screenshots
+//    max_cache_size = SIZE            //set la taille du cache a SIZE
+//    log_path = PATH                  //set le dossier de destination des logs a PATH
+//    global_logs true         //active les logs globaux (maybe accept true|false) ["on"|"off"]
+}
+
+genymotion.admin {
+
+/*
+    //list templates
+    templates()
+
+    //create a VD following a template
+    create (<TEMPLATE_NAME> <API_LEVEL> <VD_NAME> [--dpi=ZZZ] [--width=XXX] [--height=YYY] [--physicalbutton=on|off] [--navbar=on|off] [--nbcpu=WWW] [--ram=VVV])
+
+    //update a VD config
+    update (<VD_NAME> [--dpi=ZZZ] [--width=XXX] [--height=YYY] [--nbcpu=WWW] [--physicalbutton=on|off] [--navbar=on|off] [--nbcpu=WWW] [--ram=VVV])
+
+    //delete a VD by his name or Virtualbox hash
+    delete (<VD_NAME>)
+
+    //clone VD
+    clone (<VD_NAME> <NEW_VD_NAME>)
+
+    //list created VDs
+    list ([--all | --running | --off])
+
+    //get VD details
+    details (<VD_NAME>)
+
+    //start a VD
+    start (<VD_NAME>)
+
+    //restart a VD
+    restart (<VD_NAME>)
+
+    //stop a VD
+    stop (<VD_NAME>)
+
+    //stop all running VDs
+    stopall()
+
+    //reset a VD
+    factoryreset (<VD_NAME>)
+
+
+    //start a VM
+    start NAME
+
+    //automatically dl template (?), create VM & start VM
+    startauto "Nexus4-API14", "GalaxyS5-API19", "Tablet10-RES2650x1600-API18"
+*/
+}
+
+genymotion{
+    device(
+//            start false
+            name: "Google Nexus 5 - 4.4.2 - API 19 - 1080x1920"
+//            template "Google Galaxy Nexus"
+//            apiLevel 19
+//            push [<PATH_ORIG> [PATH_DEST], <PATH_ORIG> [PATH_DEST]] default PATH_DEST: /sdcard/Downloads
+//            pull [<PATH_ORIG> <PATH_DEST>, <PATH_ORIG> <PATH_DEST>]
+//            install ["ok.apk", "sign.apk", "http://test.com/test.apk"]
+//            flash ["path.zip", "other.zip"]
+//            logcat "output_path"
+    //adbdisconnect()
+    //adbconnect()
+    )
+
+//    device(){
+//            template "Google Nexus 5"
+//            apiLevel 14
+//    }
+    //if all is declared, it is not possible to add another vd on the fly with device() method
+//    devices.all(){
+//    }
+}
+
