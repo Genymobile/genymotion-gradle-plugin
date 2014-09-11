@@ -1,7 +1,4 @@
 package main.groovy.com.genymotion
-
-import main.groovy.com.genymotion.GenymotionTemplates
-
 /**
  * Created by eyal on 05/09/14.
  */
@@ -11,7 +8,7 @@ class GenymotionAdmin {
     /**
      * List available templates
      */
-    List<GenymotionTemplates> getTemplates(){
+    List<GenymotionTemplate> getTemplates(){
         //TODO
     }
 
