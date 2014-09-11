@@ -89,6 +89,9 @@ genymotion.admin {
 
 genymotion{
     device(
+            name: "Google Nexus 10 - 4.4.2 - API 19 - 2560x1600"
+    )
+    device(
 //            start false
             name: "Google Nexus 5 - 4.4.2 - API 19 - 1080x1920"
 //            template "Google Galaxy Nexus"
