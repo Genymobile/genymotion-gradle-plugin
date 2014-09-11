@@ -16,6 +16,12 @@ class GenymotionVirtualDevice {
     def nbCpu = 0
     def ram = 0
 
+    GenymotionVirtualDevice(String name) {
+        this.name = name;
+        //TODO check if we have the VD on the list declared and finish to load the config
+
+    }
+
     GenymotionVirtualDevice(Map params) {
         if(params.name)
             this.name = params.name
@@ -88,5 +94,17 @@ class GenymotionVirtualDevice {
         result += "ram: ${ram}\n"
 
         result
+    }
+
+
+
+    boolean equals(GenymotionVirtualDevice other){
+        println "compare"+this.name+" "+other.name
+        (this.name == other.name)
+    }
+
+    def fillFromDetails(){
+        def content = GenymotionTool.getDevice()
+        //TODO fill the current object with good content
     }
 }
