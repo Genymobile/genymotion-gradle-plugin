@@ -11,18 +11,18 @@ Testing the plugin
 
  - Compile the plugin
 
-```
-    cd plugin
-    gradle uploadArchives
+```sh
+cd plugin
+gradle uploadArchives
 ```
 
 The result will be push into a new folder repo, at the root of this folder.
 
  - Then, execute the sample
 
-```
-    cd ../sample
-    gradle genymotion
+```sh
+cd ../sample
+gradle genymotion
 ```
 
 This should launch a VD, display installed VDs or any other action described on GenymotionTask.
