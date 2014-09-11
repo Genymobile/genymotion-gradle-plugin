@@ -26,18 +26,4 @@ public class GenymotionDevices {
 
     }
 
-
-//    def device(
-//            start = true
-//            String name
-//            String template
-//            String api "19"
-//    def push (String from, String to="/sdcard/Downloads")
-//    def pull (String from, String to)
-//    def install (def apks)
-//    String flash "path.zip"
-//    String logcat "output_path"
-//    boolean adb = true
-//    )
-
 }

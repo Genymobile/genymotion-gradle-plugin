@@ -19,10 +19,6 @@ class GenymotionPluginExtension {
         this.project = project
     }
 
-//    def config(Closure<GenymotionConfig> config){
-//        this.config = config as GenymotionConfig;
-//    }
-
     void device(
             Map params
 //            String name = "",
@@ -43,6 +39,4 @@ class GenymotionPluginExtension {
     def getDevices(){
         genymotionDevices.devices
     }
-
 }
-

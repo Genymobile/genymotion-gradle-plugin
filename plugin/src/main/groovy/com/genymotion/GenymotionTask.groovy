@@ -29,12 +29,5 @@ class GenymotionTask extends DefaultTask {
         println("-- Stopped devices --")
         GenymotionTool.stoppedDevices
 
-
-
-
-//        println "${project.genymotionArgs.message} from ${project.genymotionArgs.sender}"
-//        println "Receiver ${project.genymotionArgs.nested.name} from ${project.genymotionArgs.nested.email}"
-//        println "Receiver2 ${project.genymotionArgs.nested2.name} from ${project.genymotionArgs.nested2.email}"
-//        println "proxy: ${project.genymotionArgs.nestedProxy.ip}"
     }
 }
