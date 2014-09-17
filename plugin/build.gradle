@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile gradleApi()
-    compile localGroovy()
+    compile "org.codehaus.groovy:groovy-all:1.8.6"
 }
 
 apply plugin: 'maven'
