@@ -31,7 +31,7 @@ class GenymotionVirtualDevice {
             this.template = params.template
         if(params.dpi)
             this.dpi = params.dpi
-        if(params.name)
+        if(params.width)
             this.width = params.width
         if(params.height)
             this.height = params.height
