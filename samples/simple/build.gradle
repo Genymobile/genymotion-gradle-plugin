@@ -19,7 +19,7 @@ genymotionLogzip
 */
 
 genymotion.config{
-    genymotionPath = "/home/eyal/genymotion-app/"       //set the Genymotion path to PATH
+    genymotionPath = "/home/eyal/genymotion-app-tools/"       //set the Genymotion path to PATH
     stats = true                                        //active les stats (maybe accept true|false) ["on"|"off"]
     notifs = true                                       //active les notifs (maybe accept true|false) ["on"|"off"]
     login = ""                    //set le login a VALUE

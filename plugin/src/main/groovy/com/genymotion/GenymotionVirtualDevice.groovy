@@ -5,6 +5,9 @@ package main.groovy.com.genymotion
  */
 class GenymotionVirtualDevice {
 
+    static String STATE_ON = "On"
+    static String STATE_OFF = "Off"
+
     def name
     def apiLevel
     def template
@@ -15,6 +18,14 @@ class GenymotionVirtualDevice {
     def navbar = true
     def nbCpu = 0
     def ram = 0
+    def ip
+    def state
+    def platform //p|t|pt
+    def path
+    def genymotionVersion
+    def uuid
+    def androidVersion
+
 
     GenymotionVirtualDevice(String name) {
         this.name = name;
@@ -82,6 +93,14 @@ class GenymotionVirtualDevice {
         //TODO
     }
 
+/*
+    String toString() {
+        String result = "Virtual Device - name:" //-- Virtual Device - name: ${name} template: ${template} api: ${apiLevel} w.h: ${width}x${height} button: ${physicalButton} navbar: ${navbar} nb cpu: ${nbCpu} ram: ${ram}"
+
+        result
+    }
+*/
+
     String toString() {
         String result = "-- Virtual Device --\n"
         result += "name: ${name}\n"
@@ -104,7 +123,7 @@ class GenymotionVirtualDevice {
     }
 
     def fillFromDetails(){
-        def content = GenymotionTool.getDevice()
+        GenymotionTool.getDevice(this)
         //TODO fill the current object with good content
     }
 }

@@ -6,28 +6,53 @@ class GenymotionTool {
 
     public static GenymotionConfig CONFIG = null
 
-    private static String GENYTOOL_ADMIN_LIST = "VBoxManage list " //TODO
-    private static String GENYTOOL_ADMIN_TEMPLATES = "" //TODO
-    private static String GENYTOOL_ADMIN_CREATE = "" //TODO
-    private static String GENYTOOL_ADMIN_UPDTAE = "" //TODO
-    private static String GENYTOOL_ADMIN_DELETE = "" //TODO
-    private static String GENYTOOL_ADMIN_CLONE = "" //TODO
-    private static String GENYTOOL_ADMIN_DETAILS = "" //TODO
-    private static String GENYTOOL_ADMIN_START = "" //TODO [project.genymotion.config.genymotionPath+"player", '--vm-name', it.name]
-    private static String GENYTOOL_ADMIN_RESTART = "" //TODO
-    private static String GENYTOOL_ADMIN_STOP = "" //TODO
-    private static String GENYTOOL_ADMIN_STOPALL = "" //TODO
-    private static String GENYTOOL_ADMIN_RESET = "" //TODO
-    private static String GENYTOOL_ADMIN_STARTAUTO = "" //TODO
+    private static final String GENYTOOL = "genymotion-tool"
 
-    private static String GENYTOOL_DEVICE = "" //TODO
-    private static String PUSH = "" //TODO
-    private static String PULL = "" //TODO
-    private static String INSTALL = "" //TODO
-    private static String FLASH = "" //TODO
-    private static String LOGCAT = "" //TODO
-    private static String ADBDISCONNECT = "" //TODO
-    private static String ADBCONNECT = "" //TODO
+    private static final String GENYTOOL_ADMIN = "admin"
+    private static final def GENYTOOL_ADMIN_LIST = [GENYTOOL, GENYTOOL_ADMIN, "list"] //"VBoxManage list "
+    private static final def GENYTOOL_ADMIN_TEMPLATES = [GENYTOOL, GENYTOOL_ADMIN, "templates"]
+    private static final def GENYTOOL_ADMIN_CREATE = [GENYTOOL, GENYTOOL_ADMIN, "create"]
+    private static final def GENYTOOL_ADMIN_UPDTAE = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
+    private static final def GENYTOOL_ADMIN_DELETE = [GENYTOOL, GENYTOOL_ADMIN, "delete"]
+    private static final def GENYTOOL_ADMIN_CLONE = [GENYTOOL, GENYTOOL_ADMIN, "clone"]
+    private static final def GENYTOOL_ADMIN_DETAILS = [GENYTOOL, GENYTOOL_ADMIN, "details"]
+    private static final def GENYTOOL_ADMIN_START = [GENYTOOL, GENYTOOL_ADMIN, "start"]
+    private static final def GENYTOOL_ADMIN_RESTART = [GENYTOOL, GENYTOOL_ADMIN, ""] //TODO
+    private static final def GENYTOOL_ADMIN_STOP = [GENYTOOL, GENYTOOL_ADMIN, "stop"]
+    private static final def GENYTOOL_ADMIN_STOPALL = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
+    private static final def GENYTOOL_ADMIN_RESET = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
+    private static final def GENYTOOL_ADMIN_STARTAUTO = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
+
+    private static final String GENYTOOL_DEVICE = "" //TODO
+    private static final def PUSH = "" //TODO
+    private static final def PULL = "" //TODO
+    private static final def INSTALL = "" //TODO
+    private static final def FLASH = "" //TODO
+    private static final def LOGCAT = "" //TODO
+    private static final def ADBDISCONNECT = "" //TODO
+    private static final def ADBCONNECT = "" //TODO
+
+    //TODO avoid to have the whole commands inside GENYTOOL_... Prefer to add a table into cmd() function. It will avoid these dirty def command =...
+/*
+    Usage: genymotion-tool
+    ( --register|-r --username|-u username --password|-p password --license|-l licensekey ) |
+    ( --count|-c ) |
+    ( --verify|-v )
+    ( --help|-h )
+    ( signin userlogin passwd )
+    ( signout )
+    ( setlicense licensekey )
+    ( licenseinfo )
+    ( version )
+    admin ( list )
+    admin ( start VMname )
+    admin ( stop VMname )
+    admin ( delete VMname )
+    admin ( details VMname )
+    admin ( clone VMnameToCLone  NewVmName  )
+    admin ( templates [ -l=|--login= -p=|--password= ] )
+    admin ( create [ -l=|--login= -p=|--password= ] TemplateName VMName )
+*/
 
 
     /*
@@ -38,23 +63,27 @@ class GenymotionTool {
 
         def devices = []
 
-        "VBoxManage list vms".execute().text.eachLine{
-            if(verbose)
-                println it
-            String name = it.split('"')[1] //temporary, using VBoxManage
+        cmd(GENYTOOL_ADMIN_LIST, verbose){line, count ->
+
+            //we skip the first lines
+            if(count<4)
+                return
+
+            String[] infos = line.split('\\|')
+//            infos.eachWithIndex(){word, i ->
+//                print i+" "
+//                println word
+//            }
+            String name = infos[3].trim()
             def device = new GenymotionVirtualDevice(name)
+            device.ip = infos[2].trim()
+            device.state = infos[1].trim()
             devices.add(device)
         }
-
-/*      TODO uncomment when genymotiontool is ready
-        cmd(GENYTOOL_ADMIN_LIST, verbose){
-            String name = it.split('"')[1]
-            def device = new GenymotionVirtualDevice(name)
-            device.fillFromDetails()
-            devices.add(device)
+        devices.each(){
+            it.fillFromDetails()
         }
 
-*/
         devices
     }
 
@@ -62,16 +91,16 @@ class GenymotionTool {
 
         def devices = []
 
-        "VBoxManage list runningvms".execute().text.eachLine{
-            if(verbose)
-                println it
-            String name = it.split('"')[1] //temporary, using VBoxManage
-            def device = new GenymotionVirtualDevice(name)
-            devices.add(device)
+        def allDevices = getAllDevices(false)
+        allDevices.each(){
+            if(it.state.equals(GenymotionVirtualDevice.STATE_ON))
+                if(verbose)
+                    println it.name
+                devices.add(it)
         }
 
 /*      TODO uncomment when genymotiontool is ready
-        cmd([GENYTOOL_ADMIN_LIST, "running"], verbose){
+        cmd([GENYTOOL_ADMIN_LIST, "running"], verbose){line, count ->
             String name = it.split('"')[1]
             def device = new GenymotionVirtualDevice(name)
             device.fillFromDetails()
@@ -81,30 +110,21 @@ class GenymotionTool {
         devices
     }
 
-    static def getStoppedDevices(){
+    static def getStoppedDevices(boolean verbose=false){
 
         def devices = []
-        def runningDevices = GenymotionTool.runningDevices
-        def allDevices = GenymotionTool.allDevices
-        //for each devices
-        allDevices.each {
-            boolean isRunning = false
-            //we browse the running devices
-            runningDevices.each{ running ->
-                //if the current device is not running
-                if(running.name == it.name){
-                    isRunning = true
-                }
-            }
-            if(!isRunning){
-                println it.name
-                //we add it to the stopped devices
-                devices.add(it)
-            }
+
+        def allDevices = getAllDevices(false)
+        allDevices.each(){
+            if(it.state.equals(GenymotionVirtualDevice.STATE_OFF))
+                if(verbose)
+                    println it.name
+            devices.add(it)
         }
 
+
         /*      TODO uncomment when genymotiontool is ready
-        cmd([GENYTOOL_ADMIN_LIST, "off"], verbose){
+        cmd([GENYTOOL_ADMIN_LIST, "off"], verbose){line, count ->
             String name = it.split('"')[1]
             def device = new GenymotionVirtualDevice(name)
             device.fillFromDetails()
@@ -115,8 +135,7 @@ class GenymotionTool {
     }
 
     def getTemplates(){
-        def cmd = GENYTOOL_ADMIN_TEMPLATES
-        cmd.execute().text.eachLine {
+        cmd(GENYTOOL_ADMIN_TEMPLATES, verbose){line, count ->
             //TODO check when Genytool is ready
             println it
             def template = new GenymotionTemplate(name)
@@ -131,7 +150,7 @@ class GenymotionTool {
     static def createDevice(def template, def apiLevel, def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
 
         cmd([GENYTOOL_ADMIN_CREATE, template, apiLevel, deviceName,
-             '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){
+             '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
             //if ok: return the device created
             new GenymotionVirtualDevice(template, apiLevel, deviceName, dpi, width, height, physicalButton, navbar, nbcpu, ram)
@@ -144,7 +163,7 @@ class GenymotionTool {
 
     static def updateDevice(def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
         cmd([GENYTOOL_ADMIN_UPDTAE, deviceName,
-             '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){
+             '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
         }
     }
@@ -154,7 +173,7 @@ class GenymotionTool {
     }
 
     static def deleteDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_DELETE, deviceName]){
+        cmd([GENYTOOL_ADMIN_DELETE, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -164,16 +183,81 @@ class GenymotionTool {
     }
 
     static def cloneDevice(def deviceName, def newName){
-        cmd([GENYTOOL_ADMIN_CLONE, deviceName, newName]){
+        cmd([GENYTOOL_ADMIN_CLONE, deviceName, newName]){line, count ->
             //TODO check the request's result
         }
     }
 
-    static def getDevice(def deviceName){
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice()
+    static def getDevice(def device){
         //we get the device details
-        cmd([GENYTOOL_ADMIN_DETAILS, deviceName]){
-            //TODO check the request's result
+        def command = GENYTOOL_ADMIN_DETAILS.clone()
+        command.push(device.name)
+        cmd(command, false){line, count ->
+
+            //we skip the first line
+            if(count < 1)
+                return
+
+            String[] info = line.split("\\:")
+            switch (info[0].trim()){
+                case "Name":
+                    device.name = info[1].trim()
+                    break
+                case "Android Version":
+                    device.androidVersion = info[1].trim()
+                    break
+                case "Nb CPU":
+                    device.nbCpu = info[1].trim()
+                    break
+                case "dpi":
+                    device.dpi = info[1].trim()
+                    break
+                case "uuid":
+                    device.uuid = info[1].trim()
+                    break
+                case "Genymotion Version":
+                    device.genymotionVersion = info[1].trim()
+                    break
+                case "IP":
+                    device.ip = info[1].trim()
+                    break
+                case "Nav Bar Visible":
+                    device.navbar = info[1].trim()
+                    break
+                case "Path":
+                    device.path = info[1].trim()
+                    break
+                case "Platform":
+                    device.platform = info[1].trim()
+                    break
+                case "RAM":
+                    device.ram = info[1].trim()
+                    break
+                case "Resolution":
+                    String[] res = info[1].trim().split("x")
+                    device.width = res[0]
+                    device.height = res[1]
+                    break
+                case "State":
+                    device.state = info[1].trim()
+                    break
+            }
+/*
+            Name                 : Google Nexus 5 - 4.4.2 - API 19 - 1080x1920
+            Android Version      : 4.4.2
+            Nb CPU               : 1
+            dpi                  : 480
+            uuid                 : 000000000000000
+            Genymotion Version   : 2.2.2
+            IP                   : 192.168.56.101
+            Nav Bar Visible      : 1
+            Path                 : /home/eyal/.Genymobile/Genymotion/deployed/Google Nexus 5 - 4.4.2 - API 19 - 1080x1920
+            Platform             : p
+            RAM                  : 2048
+            Resolution           : 1920x1080
+            State                : On
+*/
+
         }
         device
     }
@@ -184,15 +268,11 @@ class GenymotionTool {
 
     static def startDevice(def deviceName){
         Thread.start {
-            cmd(["player", '--vm-name', deviceName]) {
+            def command = GENYTOOL_ADMIN_START.clone()
+            command.push(deviceName)
+            cmd(command) {line, count ->
             }
         }
-
-/*      //TODO enable this when it will be ready
-        cmd([GENYTOOL_ADMIN_START, deviceName]){
-            //TODO check the request's result
-        }
-*/
     }
 
     static def restartDevice(GenymotionVirtualDevice device){
@@ -200,7 +280,7 @@ class GenymotionTool {
     }
 
     static def restartDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_RESTART, deviceName]){
+        cmd([GENYTOOL_ADMIN_RESTART, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -210,13 +290,13 @@ class GenymotionTool {
     }
 
     static def stopDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_STOP, deviceName]){
+        cmd([GENYTOOL_ADMIN_STOP, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def stopAllDevices(){
-        cmd(GENYTOOL_ADMIN_STOPALL){
+        cmd(GENYTOOL_ADMIN_STOPALL){line, count ->
             //TODO check the request's result
         }
     }
@@ -226,7 +306,7 @@ class GenymotionTool {
     }
 
     static def resetDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_RESET, deviceName]){
+        cmd([GENYTOOL_ADMIN_RESET, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -249,7 +329,7 @@ class GenymotionTool {
     static def pushToDevice(def deviceName, def files){
         files.each(){
             //TODO Check what behavior when just a file is provided
-            cmd([GENYTOOL_DEVICE, deviceName, PUSH, it.key, it.value]){
+            cmd([GENYTOOL_DEVICE, deviceName, PUSH, it.key, it.value]){line, count ->
             }
 
         }
@@ -262,7 +342,7 @@ class GenymotionTool {
     static def pullFromDevice(def deviceName, def files){
         files.each(){
             //TODO Check what behavior when just a file is provided
-            cmd([GENYTOOL_DEVICE, deviceName, PULL, it.key, it.value]){
+            cmd([GENYTOOL_DEVICE, deviceName, PULL, it.key, it.value]){line, count ->
             }
 
         }
@@ -274,7 +354,7 @@ class GenymotionTool {
 
     static def installToDevice(def deviceName, def apks){
         apks.each(){
-            cmd([GENYTOOL_DEVICE, deviceName, INSTALL, it]){
+            cmd([GENYTOOL_DEVICE, deviceName, INSTALL, it]){line, count ->
             }
         }
         //TODO Check the request's feedback
@@ -286,7 +366,7 @@ class GenymotionTool {
 
     static def flashDevice(def deviceName, def zips){
         zips.each(){
-            cmd([GENYTOOL_DEVICE, deviceName, FLASH, it]){
+            cmd([GENYTOOL_DEVICE, deviceName, FLASH, it]){line, count ->
             }
         }
         //TODO Check the request's feedback
@@ -297,7 +377,7 @@ class GenymotionTool {
     }
 
     static def adbDisconnectDevice(def deviceName){
-        cmd([GENYTOOL_DEVICE, deviceName, ADBDISCONNECT]){
+        cmd([GENYTOOL_DEVICE, deviceName, ADBDISCONNECT]){line, count ->
         }
         //TODO Check the request's feedback
     }
@@ -307,7 +387,7 @@ class GenymotionTool {
     }
 
     static def adbConnectDevice(def deviceName){
-        cmd([GENYTOOL_DEVICE, deviceName, ADBCONNECT]){
+        cmd([GENYTOOL_DEVICE, deviceName, ADBCONNECT]){line, count ->
         }
         //TODO Check the request's feedback
     }
@@ -317,7 +397,7 @@ class GenymotionTool {
     }
 
     static def routeLogcatDevice(def deviceName, def path){
-        cmd([GENYTOOL_DEVICE, deviceName, LOGCAT, path]){
+        cmd([GENYTOOL_DEVICE, deviceName, LOGCAT, path]){line, count ->
         }
         //TODO Check the request's feedback
     }
@@ -327,23 +407,37 @@ class GenymotionTool {
     /*
     TOOLS
      */
+
+    /**
+     * Fire a command line and process the result.
+     * This function runs a closure for each line returned by the prompt.
+     * The closure contains the parameters:
+     * - <b>line</b> (containing the line's text)
+     * - <b>count</b> (index of the line)
+     *
+     * @param command the command line to execute. It can be a String or a table
+     * @param verbose true if you want to print each line returned by the prompt
+     * @param c the closure to implement after the call
+     */
     static def cmd(def command, boolean verbose=true, Closure c){
 
+        def toExec = command.clone()
         //we eventually insert the genymotion binary path
         if(CONFIG != null && CONFIG.genymotionPath != null){
-            if(command instanceof String){
-                command = CONFIG.genymotionPath + command
+            if(toExec instanceof String){
+                toExec = CONFIG.genymotionPath + toExec
             } else {
-                command[0] = CONFIG.genymotionPath + command[0]
+                toExec[0] = CONFIG.genymotionPath + toExec[0]
             }
         }
-        command.execute().text.eachLine {
-            if(verbose)
-                println it
-            c.doCall(it)
+        toExec.execute().text.eachLine {line, count ->
+
+            if(verbose){
+//                print count
+                println line
+            }
+            c(line, count)
         }
     }
-
-
 
 }
