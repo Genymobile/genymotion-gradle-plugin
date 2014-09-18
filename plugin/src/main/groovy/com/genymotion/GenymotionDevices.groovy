@@ -21,8 +21,6 @@ public class GenymotionDevices {
     }
 
     def all(){
-        //check the device name exists
-        //TODO check if the device exists
 
     }
 
