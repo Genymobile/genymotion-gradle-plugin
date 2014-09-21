@@ -8,22 +8,22 @@ class GenymotionTool {
 
     private static final String GENYTOOL = "genymotion-tool"
 
-    private static final String GENYTOOL_ADMIN = "admin"
-    private static final def GENYTOOL_ADMIN_LIST = [GENYTOOL, GENYTOOL_ADMIN, "list"] //"VBoxManage list "
-    private static final def GENYTOOL_ADMIN_TEMPLATES = [GENYTOOL, GENYTOOL_ADMIN, "templates"]
-    private static final def GENYTOOL_ADMIN_CREATE = [GENYTOOL, GENYTOOL_ADMIN, "create"]
-    private static final def GENYTOOL_ADMIN_UPDTAE = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
-    private static final def GENYTOOL_ADMIN_DELETE = [GENYTOOL, GENYTOOL_ADMIN, "delete"]
-    private static final def GENYTOOL_ADMIN_CLONE = [GENYTOOL, GENYTOOL_ADMIN, "clone"]
-    private static final def GENYTOOL_ADMIN_DETAILS = [GENYTOOL, GENYTOOL_ADMIN, "details"]
-    private static final def GENYTOOL_ADMIN_START = [GENYTOOL, GENYTOOL_ADMIN, "start"]
-    private static final def GENYTOOL_ADMIN_RESTART = [GENYTOOL, GENYTOOL_ADMIN, ""] //TODO
-    private static final def GENYTOOL_ADMIN_STOP = [GENYTOOL, GENYTOOL_ADMIN, "stop"]
-    private static final def GENYTOOL_ADMIN_STOPALL = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
-    private static final def GENYTOOL_ADMIN_RESET = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
-    private static final def GENYTOOL_ADMIN_STARTAUTO = [GENYTOOL, GENYTOOL_ADMIN, ""]//TODO
+    private static final String ADMIN = "admin"
+    private static final def LIST = "list" //"VBoxManage list "
+    private static final def TEMPLATES = "templates"
+    private static final def CREATE = "create"
+    private static final def UPDTAE = ""//TODO
+    private static final def DELETE = "delete"
+    private static final def CLONE = "clone"
+    private static final def DETAILS = "details"
+    private static final def START = "start"
+    private static final def RESTART = "" //TODO
+    private static final def STOP = "stop"
+    private static final def STOPALL = ""//TODO
+    private static final def RESET = ""//TODO
+    private static final def STARTAUTO = ""//TODO
 
-    private static final String GENYTOOL_DEVICE = "" //TODO
+    private static final String DEVICE = "" //TODO
     private static final def PUSH = "" //TODO
     private static final def PULL = "" //TODO
     private static final def INSTALL = "" //TODO
@@ -32,7 +32,7 @@ class GenymotionTool {
     private static final def ADBDISCONNECT = "" //TODO
     private static final def ADBCONNECT = "" //TODO
 
-    //TODO avoid to have the whole commands inside GENYTOOL_... Prefer to add a table into cmd() function. It will avoid these dirty def command =...
+
 /*
     Usage: genymotion-tool
     ( --register|-r --username|-u username --password|-p password --license|-l licensekey ) |
@@ -63,7 +63,7 @@ class GenymotionTool {
 
         def devices = []
 
-        cmd(GENYTOOL_ADMIN_LIST, verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, LIST], verbose){line, count ->
 
             //we skip the first lines
             if(count<4)
@@ -100,7 +100,7 @@ class GenymotionTool {
         }
 
 /*      TODO uncomment when genymotiontool is ready
-        cmd([GENYTOOL_ADMIN_LIST, "running"], verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, LIST, "running"], verbose){line, count ->
             String name = it.split('"')[1]
             def device = new GenymotionVirtualDevice(name)
             device.fillFromDetails()
@@ -124,7 +124,7 @@ class GenymotionTool {
 
 
         /*      TODO uncomment when genymotiontool is ready
-        cmd([GENYTOOL_ADMIN_LIST, "off"], verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, LIST, "off"], verbose){line, count ->
             String name = it.split('"')[1]
             def device = new GenymotionVirtualDevice(name)
             device.fillFromDetails()
@@ -135,7 +135,7 @@ class GenymotionTool {
     }
 
     def getTemplates(){
-        cmd(GENYTOOL_ADMIN_TEMPLATES, verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, TEMPLATES], verbose){line, count ->
             //TODO check when Genytool is ready
             println it
             def template = new GenymotionTemplate(name)
@@ -149,7 +149,7 @@ class GenymotionTool {
 
     static def createDevice(def template, def apiLevel, def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
 
-        cmd([GENYTOOL_ADMIN_CREATE, template, apiLevel, deviceName,
+        cmd([GENYTOOL, ADMIN, CREATE, template, apiLevel, deviceName,
              '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
             //if ok: return the device created
@@ -162,7 +162,7 @@ class GenymotionTool {
     }
 
     static def updateDevice(def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
-        cmd([GENYTOOL_ADMIN_UPDTAE, deviceName,
+        cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
              '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
         }
@@ -173,7 +173,7 @@ class GenymotionTool {
     }
 
     static def deleteDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_DELETE, deviceName]){line, count ->
+        cmd([GENYTOOL, ADMIN, DELETE, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -183,16 +183,14 @@ class GenymotionTool {
     }
 
     static def cloneDevice(def deviceName, def newName){
-        cmd([GENYTOOL_ADMIN_CLONE, deviceName, newName]){line, count ->
+        cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def getDevice(def device){
         //we get the device details
-        def command = GENYTOOL_ADMIN_DETAILS.clone()
-        command.push(device.name)
-        cmd(command, false){line, count ->
+        cmd([GENYTOOL, ADMIN, DETAILS, device.name], false){line, count ->
 
             //we skip the first line
             if(count < 1)
@@ -268,9 +266,7 @@ class GenymotionTool {
 
     static def startDevice(def deviceName){
         Thread.start {
-            def command = GENYTOOL_ADMIN_START.clone()
-            command.push(deviceName)
-            cmd(command) {line, count ->
+            cmd([GENYTOOL, ADMIN, START, deviceName]) {line, count ->
             }
         }
     }
@@ -280,7 +276,7 @@ class GenymotionTool {
     }
 
     static def restartDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_RESTART, deviceName]){line, count ->
+        cmd([GENYTOOL, ADMIN, RESTART, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -290,13 +286,13 @@ class GenymotionTool {
     }
 
     static def stopDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_STOP, deviceName]){line, count ->
+        cmd([GENYTOOL, ADMIN, STOP, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def stopAllDevices(){
-        cmd(GENYTOOL_ADMIN_STOPALL){line, count ->
+        cmd([GENYTOOL, ADMIN, STOPALL]){line, count ->
             //TODO check the request's result
         }
     }
@@ -306,7 +302,7 @@ class GenymotionTool {
     }
 
     static def resetDevice(def deviceName){
-        cmd([GENYTOOL_ADMIN_RESET, deviceName]){line, count ->
+        cmd([GENYTOOL, ADMIN, START, RESET, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -329,7 +325,7 @@ class GenymotionTool {
     static def pushToDevice(def deviceName, def files){
         files.each(){
             //TODO Check what behavior when just a file is provided
-            cmd([GENYTOOL_DEVICE, deviceName, PUSH, it.key, it.value]){line, count ->
+            cmd([GENYTOOL, DEVICE, deviceName, PUSH, it.key, it.value]){line, count ->
             }
 
         }
@@ -342,7 +338,7 @@ class GenymotionTool {
     static def pullFromDevice(def deviceName, def files){
         files.each(){
             //TODO Check what behavior when just a file is provided
-            cmd([GENYTOOL_DEVICE, deviceName, PULL, it.key, it.value]){line, count ->
+            cmd([GENYTOOL, DEVICE, deviceName, PULL, it.key, it.value]){line, count ->
             }
 
         }
@@ -354,7 +350,7 @@ class GenymotionTool {
 
     static def installToDevice(def deviceName, def apks){
         apks.each(){
-            cmd([GENYTOOL_DEVICE, deviceName, INSTALL, it]){line, count ->
+            cmd([GENYTOOL, DEVICE, deviceName, INSTALL, it]){line, count ->
             }
         }
         //TODO Check the request's feedback
@@ -366,7 +362,7 @@ class GenymotionTool {
 
     static def flashDevice(def deviceName, def zips){
         zips.each(){
-            cmd([GENYTOOL_DEVICE, deviceName, FLASH, it]){line, count ->
+            cmd([GENYTOOL, DEVICE, deviceName, FLASH, it]){line, count ->
             }
         }
         //TODO Check the request's feedback
@@ -377,7 +373,7 @@ class GenymotionTool {
     }
 
     static def adbDisconnectDevice(def deviceName){
-        cmd([GENYTOOL_DEVICE, deviceName, ADBDISCONNECT]){line, count ->
+        cmd([GENYTOOL, DEVICE, deviceName, ADBDISCONNECT]){line, count ->
         }
         //TODO Check the request's feedback
     }
@@ -387,7 +383,7 @@ class GenymotionTool {
     }
 
     static def adbConnectDevice(def deviceName){
-        cmd([GENYTOOL_DEVICE, deviceName, ADBCONNECT]){line, count ->
+        cmd([GENYTOOL, DEVICE, deviceName, ADBCONNECT]){line, count ->
         }
         //TODO Check the request's feedback
     }
@@ -397,7 +393,7 @@ class GenymotionTool {
     }
 
     static def routeLogcatDevice(def deviceName, def path){
-        cmd([GENYTOOL_DEVICE, deviceName, LOGCAT, path]){line, count ->
+        cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path]){line, count ->
         }
         //TODO Check the request's feedback
     }
