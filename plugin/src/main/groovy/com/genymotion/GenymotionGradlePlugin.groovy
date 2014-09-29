@@ -9,6 +9,10 @@ import org.gradle.api.Plugin
 
 class GenymotionGradlePlugin implements Plugin<Project> {
 
+    static final String PLUGIN_GROUP = "Genymotion"
+    static final String TASK_LAUNCH = "genymotionLaunch"
+    static final String TASK_FINISH = "genymotionFinish"
+
     void apply(Project project) {
 
         println "adding Genymotion plugin"
@@ -17,20 +21,31 @@ class GenymotionGradlePlugin implements Plugin<Project> {
         project.genymotion.extensions.create('admin', GenymotionAdmin); //the extension name have to be different from the original nested element's name (receiver)
         project.genymotion.extensions.create('devices', GenymotionDevices); //the extension name have to be different from the original nested element's name (receiver)
 
-        project.task('genymotion', type: GenymotionTask)
-        project.task('cmd', type: CmdTask)
-
-        if(project.plugins.hasPlugin('android')){
-
-            println "Android plugin detected"
-
-            project.tasks.whenTaskAdded { theTask ->
-                if("connectedAndroidTest".toString().equals(theTask.name.toString())){
-                    println "Adding genymotion dependency"
-                    theTask.dependsOn("genymotion")
-                }
-            }
+        project.task(TASK_LAUNCH, type: GenymotionTask){
+            description 'Starting task for Genymotion plugin'
+            group PLUGIN_GROUP
+        }
+        project.task(TASK_FINISH, type: GenymotionEndTask){
+            description 'Finishing task for Genymotion plugin'
+            group PLUGIN_GROUP
         }
 
+        project.afterEvaluate {
+
+             GenymotionPluginExtension.checkParams()
+
+            def taskLaunch = project.genymotion.config.taskLaunch
+            def theTask = project.tasks.getByName(taskLaunch)
+
+            //if the automatic launch is enable and the configuration is correct
+            if (project.genymotion.config.automaticLaunch &&
+                    (project.plugins.hasPlugin('android') || taskLaunch != GenymotionConfig.DEFAULT_TASK)
+            ) {
+
+                println "Adding genymotion dependency to " + taskLaunch
+                theTask.dependsOn(TASK_LAUNCH)
+                theTask.finalizedBy(TASK_FINISH)
+            }
+        }
     }
 }

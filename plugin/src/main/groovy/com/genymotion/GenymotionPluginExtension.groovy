@@ -39,4 +39,8 @@ class GenymotionPluginExtension {
     def getDevices(){
         genymotionDevices.devices
     }
+
+    def checkParams(){
+        //TODO Check all the Genymotion configuration and fire Exceptions if needed
+    }
 }

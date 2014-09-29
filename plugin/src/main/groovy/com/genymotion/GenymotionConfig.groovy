@@ -5,6 +5,8 @@ package main.groovy.com.genymotion
  */
 class GenymotionConfig {
 
+    static final DEFAULT_TASK = "connectedAndroidTest"
+
     def genymotionPath = ""            //set the Genymotion path to PATH
     def stats = true             //active les stats (maybe accept true|false)
     def notifs = true            //active les notifs (maybe accept true|false)
@@ -23,5 +25,8 @@ class GenymotionConfig {
     def max_cache_size = 0            //set la taille du cache a SIZE
     def log_path = ""                  //set le dossier de destination des logs a PATH
     def global_logs = true         //active les logs globaux (maybe accept true|false)
+    def taskLaunch = DEFAULT_TASK               //define the task that depends on the genymotion launch task
+    def taskFinish = DEFAULT_TASK               //define the task that the genymotion finish task depends on
+    def automaticLaunch = true        //enable or not the genymotion tasks injection
 
 }
