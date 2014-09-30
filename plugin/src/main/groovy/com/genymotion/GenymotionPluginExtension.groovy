@@ -40,7 +40,7 @@ class GenymotionPluginExtension {
         genymotionDevices.devices
     }
 
-    def checkParams(){
+    static def checkParams(){
         //TODO Check all the Genymotion configuration and fire Exceptions if needed
     }
 }
