@@ -265,10 +265,10 @@ class GenymotionTool {
     }
 
     static def startDevice(def deviceName){
-        Thread.start {
+//        Thread.start {
             cmd([GENYTOOL, ADMIN, START, deviceName]) {line, count ->
             }
-        }
+//        }
     }
 
     static def restartDevice(GenymotionVirtualDevice device){
@@ -426,7 +426,9 @@ class GenymotionTool {
                 toExec[0] = CONFIG.genymotionPath + toExec[0]
             }
         }
-        toExec.execute().text.eachLine {line, count ->
+        Process p = toExec.execute()
+        p.waitFor()
+        p.text.eachLine {line, count ->
 
             if(verbose){
 //                print count

@@ -20,17 +20,15 @@ class GenymotionTask extends DefaultTask {
             GenymotionTool.startDevice(it)
         }
 
-        sleep 5000
-
-        println("-- All devices --")
-        def result = GenymotionTool.getAllDevices(false)
-        result.each(){
-            println it.name
-        }
+//        println("-- All devices --")
+//        def result = GenymotionTool.getAllDevices(false)
+//        result.each(){
+//            println it.name
+//        }
         println("-- Running devices --")
         GenymotionTool.getRunningDevices(true)
-        println("-- Stopped devices --")
-        GenymotionTool.getStoppedDevices(true)
+//        println("-- Stopped devices --")
+//        GenymotionTool.getStoppedDevices(true)
 
     }
 }
