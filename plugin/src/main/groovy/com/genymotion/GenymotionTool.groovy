@@ -420,12 +420,13 @@ class GenymotionTool {
      */
     static def cmd(def command, boolean verbose=true, Closure c){
 
-        def toExec = command.clone()
+        def toExec = command
         //we eventually insert the genymotion binary path
         if(CONFIG != null && CONFIG.genymotionPath != null){
             if(toExec instanceof String){
                 toExec = CONFIG.genymotionPath + toExec
             } else {
+                toExec = command.clone()
                 toExec[0] = CONFIG.genymotionPath + toExec[0]
             }
         }
