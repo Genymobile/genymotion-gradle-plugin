@@ -32,29 +32,6 @@ class GenymotionTool {
     private static final def ADBDISCONNECT = "adbdisconnect"
     private static final def ADBCONNECT =   "adbconnect"
 
-
-/*
-    Usage: genymotion-tool
-    ( --register|-r --username|-u username --password|-p password --license|-l licensekey ) |
-    ( --count|-c ) |
-    ( --verify|-v )
-    ( --help|-h )
-    ( signin userlogin passwd )
-    ( signout )
-    ( setlicense licensekey )
-    ( licenseinfo )
-    ( version )
-    admin ( list )
-    admin ( start VMname )
-    admin ( stop VMname )
-    admin ( delete VMname )
-    admin ( details VMname )
-    admin ( clone VMnameToCLone  NewVmName  )
-    admin ( templates [ -l=|--login= -p=|--password= ] )
-    admin ( create [ -l=|--login= -p=|--password= ] TemplateName VMName )
-*/
-
-
     static def usage(){
         return cmd(GENYTOOL){line, count ->
         }
@@ -75,10 +52,7 @@ class GenymotionTool {
                 return
 
             String[] infos = line.split('\\|')
-//            infos.eachWithIndex(){word, i ->
-//                print i+" "
-//                println word
-//            }
+
             String name = infos[3].trim()
             def device = new GenymotionVirtualDevice(name)
             device.ip = infos[2].trim()
@@ -95,19 +69,6 @@ class GenymotionTool {
     static def getRunningDevices(boolean verbose=false){
 
         def devices = []
-
-        def allDevices = getAllDevices(false)
-        allDevices.each(){
-            if(it.state.equals(GenymotionVirtualDevice.STATE_ON))
-                if(verbose)
-                    println it.name
-                devices.add(it)
-        }
-*/
-
-//      TODO uncomment when genymotiontool is ready
-
-
 
         cmd([GENYTOOL, ADMIN, LIST, "--running"], verbose){line, count ->
             String name = it.split('"')[1]
