@@ -6,31 +6,31 @@ class GenymotionTool {
 
     public static GenymotionConfig CONFIG = null
 
-    private static final String GENYTOOL = "genymotion-tool"
+    private static final String GENYTOOL =  "genymotion-tool"
 
-    private static final String ADMIN = "admin"
-    private static final def LIST = "list" //"VBoxManage list "
-    private static final def TEMPLATES = "templates"
-    private static final def CREATE = "create"
-    private static final def UPDTAE = ""//TODO
-    private static final def DELETE = "delete"
-    private static final def CLONE = "clone"
-    private static final def DETAILS = "details"
-    private static final def START = "start"
-    private static final def RESTART = "" //TODO
-    private static final def STOP = "stop"
-    private static final def STOPALL = ""//TODO
-    private static final def RESET = ""//TODO
-    private static final def STARTAUTO = ""//TODO
+    private static final String ADMIN =     "admin"
+    private static final def LIST =         "list" //"VBoxManage list "
+    private static final def TEMPLATES =    "templates"
+    private static final def CREATE =       "create"
+    private static final def UPDTAE =       "update"
+    private static final def DELETE =       "delete"
+    private static final def CLONE =        "clone"
+    private static final def DETAILS =      "details"
+    private static final def START =        "start"
+    private static final def RESTART =      "restart"
+    private static final def STOP =         "stop"
+    private static final def STOPALL =      "stopall"
+    private static final def RESET =        "factoryreset"
+    private static final def STARTAUTO =    ""//TODO
 
-    private static final String DEVICE = "" //TODO
-    private static final def PUSH = "" //TODO
-    private static final def PULL = "" //TODO
-    private static final def INSTALL = "" //TODO
-    private static final def FLASH = "" //TODO
-    private static final def LOGCAT = "" //TODO
-    private static final def ADBDISCONNECT = "" //TODO
-    private static final def ADBCONNECT = "" //TODO
+    private static final String DEVICE =    "device"
+    private static final def PUSH =         "push"
+    private static final def PULL =         "pull"
+    private static final def INSTALL =      "install"
+    private static final def FLASH =        "flash"
+    private static final def LOGCAT =       "logcat"
+    private static final def ADBDISCONNECT = "adbdisconnect"
+    private static final def ADBCONNECT =   "adbconnect"
 
 
 /*
