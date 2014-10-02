@@ -103,15 +103,18 @@ class GenymotionTool {
                     println it.name
                 devices.add(it)
         }
+*/
 
-/*      TODO uncomment when genymotiontool is ready
-        cmd([GENYTOOL, ADMIN, LIST, "running"], verbose){line, count ->
+//      TODO uncomment when genymotiontool is ready
+
+
+
+        cmd([GENYTOOL, ADMIN, LIST, "--running"], verbose){line, count ->
             String name = it.split('"')[1]
             def device = new GenymotionVirtualDevice(name)
             device.fillFromDetails()
             devices.add(device)
         }
-*/
         devices
     }
 
