@@ -8,23 +8,22 @@ class GenymotionVirtualDevice {
     static String STATE_ON = "On"
     static String STATE_OFF = "Off"
 
-    def name
-    def apiLevel
-    def template
-    def dpi = 0
-    def width = 0
-    def height = 0
-    def physicalButton = true
-    def navbar = true
-    def nbCpu = 0
-    def ram = 0
-    def ip
-    def state
-    def platform //p|t|pt
-    def path
-    def genymotionVersion
-    def uuid
-    def androidVersion
+    String name
+    String apiLevel
+    int dpi = 0
+    int width = 0
+    int height = 0
+    boolean physicalButton = true
+    boolean navbar = true
+    int nbCpu = 0
+    int ram = 0
+    String ip
+    String state
+    String platform //p|t|pt
+    String path
+    String genymotionVersion
+    String uuid
+    String androidVersion
 
 
     GenymotionVirtualDevice(String name) {
@@ -38,8 +37,6 @@ class GenymotionVirtualDevice {
             this.name = params.name
         if(params.apiLevel )
             this.apiLevel = params.apiLevel
-        if(params.template)
-            this.template = params.template
         if(params.dpi)
             this.dpi = params.dpi
         if(params.width)
@@ -56,10 +53,31 @@ class GenymotionVirtualDevice {
             this.ram = params.ram
     }
 
-    GenymotionVirtualDevice(name, apiLevel, template, dpi, width, height, physicalButton, navbar, nbCpu, ram) {
+    GenymotionVirtualDevice(def name, def apiLevel, def dpi, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
+        if(name?.trim())
+            this.name = name
+        if(apiLevel?.trim())
+            this.apiLevel = apiLevel.toInteger()
+        if(dpi?.trim())
+            this.dpi = dpi.toInteger()
+        if(width?.trim())
+            this.width = width.toInteger()
+        if(height?.trim())
+            this.height = height.toInteger()
+        if(physicalButton?.trim())
+            this.physicalButton = physicalButton.toBoolean()
+        if(navbar?.trim())
+            this.navbar = navbar.toBoolean()
+        if(nbCpu?.trim())
+            this.nbCpu = nbCpu.toInteger()
+        if(ram?.trim())
+            this.ram = ram.toInteger()
+    }
+
+
+    GenymotionVirtualDevice(String name, int apiLevel, int dpi, int width, int height, boolean physicalButton, boolean navbar, int nbCpu, int ram) {
         this.name = name
         this.apiLevel = apiLevel
-        this.template = template
         this.dpi = dpi
         this.width = width
         this.height = height
@@ -95,7 +113,7 @@ class GenymotionVirtualDevice {
 
 /*
     String toString() {
-        String result = "Virtual Device - name:" //-- Virtual Device - name: ${name} template: ${template} api: ${apiLevel} w.h: ${width}x${height} button: ${physicalButton} navbar: ${navbar} nb cpu: ${nbCpu} ram: ${ram}"
+        String result = "Virtual Device - name:" //-- Virtual Device - name: ${name} api: ${apiLevel} w.h: ${width}x${height} button: ${physicalButton} navbar: ${navbar} nb cpu: ${nbCpu} ram: ${ram}"
 
         result
     }
@@ -104,7 +122,6 @@ class GenymotionVirtualDevice {
     String toString() {
         String result = "-- Virtual Device --\n"
         result += "name: ${name}\n"
-        result += "template: ${template}\n"
         result += "api: ${apiLevel}\n"
         result += "w.h: ${width}x${height}\n"
         result += "button: ${physicalButton}\n"
