@@ -83,23 +83,12 @@ class GenymotionTool {
 
         def devices = []
 
-        def allDevices = getAllDevices(false)
-        allDevices.each(){
-            if(it.state.equals(GenymotionVirtualDevice.STATE_OFF))
-                if(verbose)
-                    println it.name
-            devices.add(it)
-        }
-
-
-        /*      TODO uncomment when genymotiontool is ready
-        cmd([GENYTOOL, ADMIN, LIST, "off"], verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, LIST, "--off"], verbose){line, count ->
             String name = it.split('"')[1]
             def device = new GenymotionVirtualDevice(name)
             device.fillFromDetails()
             devices.add(device)
         }
-*/
         devices
     }
 
