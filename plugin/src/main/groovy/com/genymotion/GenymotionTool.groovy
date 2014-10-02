@@ -92,34 +92,83 @@ class GenymotionTool {
         devices
     }
 
-    def getTemplates(){
-        cmd([GENYTOOL, ADMIN, TEMPLATES], verbose){line, count ->
-            //TODO check when Genytool is ready
-            println it
-            def template = new GenymotionTemplate(name)
-            devices.add(device)
+    static def getTemplates(boolean verbose=false){
+
+        def templates = []
+
+        def template = new GenymotionTemplate()
+
+        cmd([GENYTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
+
+            //if empty line and template filled
+            if (!line && template.name){
+                templates.add(template)
+                template = new GenymotionTemplate()
+            }
+
+            String[] info = line.split("\\:")
+            switch (info[0].trim()){
+                case "name":
+                    if(!template.name)
+                        template.name = info[1].trim()
+                    break
+                case "uuid":
+                    template.uuid = info[1].trim()
+                    break
+                case "androidVersion":
+                    template.androidVersion = info[1].trim()
+                    break
+                case "resolutionHeight":
+                    template.height = info[1].trim().toInteger()
+                    break
+                case "resolutionWidth":
+                    template.width = info[1].trim().toInteger()
+                    break
+                case "procNumber":
+                    template.nbCpu = info[1].trim().toInteger()
+                    break
+                case "density":
+                    template.dpi = info[1].trim().toInteger()
+                    break
+                case "physicalButton":
+                    template.physicalButton = info[1].trim().toBoolean()
+                    break
+                case "navbar":
+                    template.navbar = info[1].trim().toBoolean()
+                    break
+                case "memorySize":
+                    template.ram = info[1].trim().toInteger()
+                    break
+            }
+
         }
+        if(template.name)
+            templates.add(template)
+
+        return templates
     }
 
     static def createDevice(GenymotionVirtualDevice device){
-        return createDevice(device.template, device.apiLevel, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbcpu, device.ram)
+        return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbcpu, device.ram)
     }
 
-    static def createDevice(def template, def apiLevel, def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
+    static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
 
-        return cmd([GENYTOOL, ADMIN, CREATE, template, apiLevel, deviceName,
+        def exitValue = cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
              '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
+            //TODO add the apiLevel into the created device
             //if ok: return the device created
-            new GenymotionVirtualDevice(template, apiLevel, deviceName, dpi, width, height, physicalButton, navbar, nbcpu, ram)
+            def device = new GenymotionVirtualDevice(deviceName, null, dpi, width, height, physicalButton, navbar, nbcpu, ram)
         }
+        return exitValue
     }
 
     static def updateDevice(GenymotionVirtualDevice device){
         return updateDevice(device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbCpu, device.ram)
     }
 
-    static def updateDevice(def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
+    static def updateDevice(def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
         return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
              '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
@@ -137,7 +186,7 @@ class GenymotionTool {
     }
 
     static def cloneDevice(GenymotionVirtualDevice device, def name){
-        return cloneDevice(device.name)
+        return cloneDevice(device.name, name)
     }
 
     static def cloneDevice(def deviceName, def newName){
@@ -163,10 +212,10 @@ class GenymotionTool {
                     device.androidVersion = info[1].trim()
                     break
                 case "Nb CPU":
-                    device.nbCpu = info[1].trim()
+                    device.nbCpu = info[1].trim().toInteger()
                     break
                 case "dpi":
-                    device.dpi = info[1].trim()
+                    device.dpi = info[1].trim().toInteger()
                     break
                 case "uuid":
                     device.uuid = info[1].trim()
@@ -178,7 +227,7 @@ class GenymotionTool {
                     device.ip = info[1].trim()
                     break
                 case "Nav Bar Visible":
-                    device.navbar = info[1].trim()
+                    device.navbar = info[1].trim().toBoolean()
                     break
                 case "Path":
                     device.path = info[1].trim()
@@ -187,12 +236,12 @@ class GenymotionTool {
                     device.platform = info[1].trim()
                     break
                 case "RAM":
-                    device.ram = info[1].trim()
+                    device.ram = info[1].trim().toInteger()
                     break
                 case "Resolution":
                     String[] res = info[1].trim().split("x")
-                    device.width = res[0]
-                    device.height = res[1]
+                    device.height = res[0].toInteger()
+                    device.width = res[1].toInteger()
                     break
                 case "State":
                     device.state = info[1].trim()
