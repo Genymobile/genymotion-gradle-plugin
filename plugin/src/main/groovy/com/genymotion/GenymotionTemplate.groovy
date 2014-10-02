@@ -5,9 +5,9 @@ package main.groovy.com.genymotion
  */
 class GenymotionTemplate {
 
+    String uuid
     String name
-    String apiLevel
-    String vdName
+    String androidVersion
     int dpi =0
     int width = 0
     int height = 0
@@ -16,8 +16,7 @@ class GenymotionTemplate {
     int nbCpu = 0
     int ram = 0
 
-    GenymotionTemplate(String name) {
-        this.name = name
+    GenymotionTemplate() {
     }
 
     GenymotionTemplate(String name, String apiLevel, String vdName, int dpi, int width, int height, boolean physicalButton, boolean navbar, int nbCpu, int ram) {
