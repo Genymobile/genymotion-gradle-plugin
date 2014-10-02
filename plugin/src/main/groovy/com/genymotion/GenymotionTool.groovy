@@ -383,14 +383,21 @@ class GenymotionTool {
                 toExec[0] = CONFIG.genymotionPath + toExec[0]
             }
         }
-        Process p = toExec.execute()
-        p.waitForOrKill(CONFIG.processTimeout)
-        p.text.eachLine {line, count ->
 
-            if(verbose){
-//                print count
-                println line
-            }
+        Process p = toExec.execute()
+        StringBuffer error = new StringBuffer()
+        StringBuffer out = new StringBuffer()
+        p.consumeProcessOutput(out, error)
+
+        p.waitForOrKill(CONFIG.processTimeout)
+
+        if(verbose){
+            println toExec
+            println "error:" + error.toString()
+            println "out:" + out.toString()
+        }
+
+        out.eachLine {line, count ->
             c(line, count)
         }
 
