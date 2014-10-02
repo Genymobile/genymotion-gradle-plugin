@@ -28,5 +28,5 @@ class GenymotionConfig {
     def taskLaunch = DEFAULT_TASK               //define the task that depends on the genymotion launch task
     def taskFinish = DEFAULT_TASK               //define the task that the genymotion finish task depends on
     def automaticLaunch = true        //enable or not the genymotion tasks injection
-
+    def processTimeout = 60000        //timeout for all the process launched in command line
 }

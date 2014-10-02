@@ -431,7 +431,7 @@ class GenymotionTool {
             }
         }
         Process p = toExec.execute()
-        p.waitFor()
+        p.waitForOrKill(CONFIG.processTimeout)
         p.text.eachLine {line, count ->
 
             if(verbose){
