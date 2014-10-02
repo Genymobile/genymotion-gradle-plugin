@@ -55,6 +55,11 @@ class GenymotionTool {
 */
 
 
+    static def usage(){
+        return cmd(GENYTOOL){line, count ->
+        }
+    }
+
     /*
     ADMIN
      */
