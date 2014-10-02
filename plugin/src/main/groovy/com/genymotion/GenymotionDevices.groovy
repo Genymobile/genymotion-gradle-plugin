@@ -8,7 +8,7 @@ import main.groovy.com.genymotion.GenymotionVirtualDevice
 
 public class GenymotionDevices {
 
-    def devices = []
+    GenymotionVirtualDevice[] devices = []
 
     //TODO add a reference to Project ?
 
