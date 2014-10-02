@@ -149,12 +149,12 @@ class GenymotionTool {
     }
 
     static def createDevice(GenymotionVirtualDevice device){
-        createDevice(device.template, device.apiLevel, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbcpu, device.ram)
+        return createDevice(device.template, device.apiLevel, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbcpu, device.ram)
     }
 
     static def createDevice(def template, def apiLevel, def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
 
-        cmd([GENYTOOL, ADMIN, CREATE, template, apiLevel, deviceName,
+        return cmd([GENYTOOL, ADMIN, CREATE, template, apiLevel, deviceName,
              '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
             //if ok: return the device created
@@ -163,32 +163,32 @@ class GenymotionTool {
     }
 
     static def updateDevice(GenymotionVirtualDevice device){
-        updateDevice(device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbCpu, device.ram)
+        return updateDevice(device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbCpu, device.ram)
     }
 
     static def updateDevice(def deviceName, def dpi, def width, def height, def physicalButton, def navbar, def nbcpu, def ram){
-        cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
+        return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
              '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def deleteDevice(GenymotionVirtualDevice device){
-        deleteDevice(device.name)
+        return deleteDevice(device.name)
     }
 
     static def deleteDevice(def deviceName){
-        cmd([GENYTOOL, ADMIN, DELETE, deviceName]){line, count ->
+        return cmd([GENYTOOL, ADMIN, DELETE, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def cloneDevice(GenymotionVirtualDevice device, def name){
-        cloneDevice(device.name)
+        return cloneDevice(device.name)
     }
 
     static def cloneDevice(def deviceName, def newName){
-        cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName]){line, count ->
+        return cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName]){line, count ->
             //TODO check the request's result
         }
     }
@@ -266,55 +266,53 @@ class GenymotionTool {
     }
 
     static def startDevice(GenymotionVirtualDevice device){
-        startDevice(device.name)
+        return startDevice(device.name)
     }
 
     static def startDevice(def deviceName){
-//        Thread.start {
-            cmd([GENYTOOL, ADMIN, START, deviceName]) {line, count ->
-            }
-//        }
+        return cmd([GENYTOOL, ADMIN, START, deviceName]) {line, count ->
+        }
     }
 
     static def restartDevice(GenymotionVirtualDevice device){
-        restartDevice(device.name)
+        return restartDevice(device.name)
     }
 
     static def restartDevice(def deviceName){
-        cmd([GENYTOOL, ADMIN, RESTART, deviceName]){line, count ->
+        return cmd([GENYTOOL, ADMIN, RESTART, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def stopDevice(GenymotionVirtualDevice device){
-        stopDevice(device.name)
+        return stopDevice(device.name)
     }
 
     static def stopDevice(def deviceName){
-        cmd([GENYTOOL, ADMIN, STOP, deviceName]){line, count ->
+        return cmd([GENYTOOL, ADMIN, STOP, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def stopAllDevices(){
-        cmd([GENYTOOL, ADMIN, STOPALL]){line, count ->
+        return cmd([GENYTOOL, ADMIN, STOPALL]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def resetDevice(GenymotionVirtualDevice device){
-        resetDevice(device.name)
+        return resetDevice(device.name)
     }
 
     static def resetDevice(def deviceName){
-        cmd([GENYTOOL, ADMIN, START, RESET, deviceName]){line, count ->
+        return cmd([GENYTOOL, ADMIN, START, RESET, deviceName]){line, count ->
             //TODO check the request's result
         }
     }
 
     static def startAutoDevice(def template, def apiLevel){
         def device = createDevice(template, apiLevel, "")
-        startDevice(device)
+        return startDevice(device)
         //TODO check if we need to provide a name
     }
 
@@ -441,6 +439,8 @@ class GenymotionTool {
             }
             c(line, count)
         }
+
+        return p.exitValue()
     }
 
 }
