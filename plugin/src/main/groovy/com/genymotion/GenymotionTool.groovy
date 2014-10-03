@@ -196,6 +196,10 @@ class GenymotionTool {
     }
 
     static def getDevice(def device){
+
+        if(device == null)
+            device = new GenymotionVirtualDevice()
+
         //we get the device details
         cmd([GENYTOOL, ADMIN, DETAILS, device.name], false){line, count ->
 
