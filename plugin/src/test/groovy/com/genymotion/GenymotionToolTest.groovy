@@ -52,9 +52,7 @@ class GenymotionToolTest {
 
     @Test
     public void canCreateDevice() {
-        DEVICES.each() { key, value ->
-            GenymotionTool.createDevice(value, key)
-        }
+        createAllDevices()
 
         def devices = GenymotionTool.getAllDevices(true)
 
@@ -75,8 +73,7 @@ class GenymotionToolTest {
     @Test
     public void canDetailDevice() {
 
-        def name = "Nexus10-junit"
-        GenymotionTool.createDevice("Google Nexus 10 - 4.4.2 - API 19 - 2560x1600", name)
+        String name = createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -90,9 +87,7 @@ class GenymotionToolTest {
     @Test
     public void canListDevices() {
 
-        DEVICES.each() { key, value ->
-            GenymotionTool.createDevice(value, key)
-        }
+        createAllDevices()
 
         def devices = GenymotionTool.getAllDevices()
         assert devices.size() > 0
@@ -105,8 +100,7 @@ class GenymotionToolTest {
     @Test
     public void canCloneDevice() {
 
-        def name = "Nexus10-junit"
-        GenymotionTool.createDevice("Google Nexus 10 - 4.4.2 - API 19 - 2560x1600", name)
+        String name = createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -132,8 +126,7 @@ class GenymotionToolTest {
     @Test
     public void canUpdateDevice() {
 
-        def name = "Nexus10-junit"
-        GenymotionTool.createDevice("Google Nexus 10 - 4.4.2 - API 19 - 2560x1600", name)
+        String name = createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -166,14 +159,12 @@ class GenymotionToolTest {
     @Test
     public void canStartDevice() {
 
-        def name = "Nexus10-junit"
-        GenymotionTool.createDevice("Google Nexus 10 - 4.4.2 - API 19 - 2560x1600", name)
+        String name = createADevice()
 
         def exitCode = GenymotionTool.startDevice(name)
 
         assertTrue("Start failed", exitCode == 0)
     }
-
 
 /*
     @Test
@@ -181,8 +172,7 @@ class GenymotionToolTest {
 
         //TODO implement it when stop is implemented
 
-        def name = "Nexus10-junit"
-        GenymotionTool.createDevice("Google Nexus 10 - 4.4.2 - API 19 - 2560x1600", name)
+        String name = createADevice()
 
         def exitCode = GenymotionTool.startDevice(name)
 
@@ -218,4 +208,24 @@ class GenymotionToolTest {
 
     }
 */
+
+    /**
+     * TOOLS
+     */
+
+    private void createAllDevices() {
+        DEVICES.each() { key, value ->
+            GenymotionTool.createDevice(value, key)
+        }
+    }
+
+
+    private String createADevice() {
+
+        Random rand = new Random()
+        int index = rand.nextInt(DEVICES.size())
+
+        GenymotionTool.createDevice(DEVICES[index].value, DEVICES[index].key)
+        DEVICES[index].key
+    }
 }
