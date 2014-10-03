@@ -66,8 +66,8 @@ class GenymotionToolTest {
             }
             assertTrue("${key} not found. Test failed", exists)
 
-            GenymotionTool.deleteDevice(key)
         }
+            deleteAllDevices()
     }
 
     @Test
@@ -77,6 +77,7 @@ class GenymotionToolTest {
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
+
 
         assertNotNull(device.androidVersion)
         assertNotNull(device.state)
@@ -92,9 +93,8 @@ class GenymotionToolTest {
         def devices = GenymotionTool.getAllDevices()
         assert devices.size() > 0
 
-        DEVICES.each() { key, value ->
-            GenymotionTool.deleteDevice(key)
-        }
+
+        deleteAllDevices()
     }
 
     @Test
@@ -184,19 +184,28 @@ class GenymotionToolTest {
     }
 */
 
+
 /*
     @Test
     public void canStopAllDevices() {
 
-        //TODO implement it when stopall is implemented
+        //TODO uncomment when stopall is implemented
+        createAllDevices()
 
+        DEVICES.each(){
+            GenymotionTool.startDevice(it.name)
+        }
+
+        GenymotionTool.stopAllDevices()
+
+        deleteAllDevices()
     }
 */
 
 /*
     @Test
     public void canResetDevice() {
-        //TODO implement it when reset is implemented
+        //TODO implement when stopall is implemented
 
     }
 */
@@ -213,19 +222,26 @@ class GenymotionToolTest {
      * TOOLS
      */
 
+    private void deleteAllDevices() {
+        DEVICES.each() { key, value ->
+            GenymotionTool.deleteDevice(key)
+        }
+    }
+
     private void createAllDevices() {
         DEVICES.each() { key, value ->
             GenymotionTool.createDevice(value, key)
         }
     }
 
-
     private String createADevice() {
 
         Random rand = new Random()
         int index = rand.nextInt(DEVICES.size())
 
-        GenymotionTool.createDevice(DEVICES[index].value, DEVICES[index].key)
-        DEVICES[index].key
+        String[] keys = DEVICES.keySet() as String[]
+        String name = keys[index]
+        GenymotionTool.createDevice(DEVICES[name], name)
+        name
     }
 }
