@@ -129,8 +129,7 @@ class GenymotionVirtualDevice {
         (this.name == other.name)
     }
 
-    def fillFromDetails(){
-        GenymotionTool.getDevice(this)
-        //TODO fill the current object with good content
+    def fillFromDetails(boolean verbose=false){
+        GenymotionTool.getDevice(this, verbose)
     }
 }
