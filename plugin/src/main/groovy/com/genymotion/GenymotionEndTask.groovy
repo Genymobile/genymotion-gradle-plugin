@@ -17,7 +17,11 @@ class GenymotionEndTask extends DefaultTask {
         project.genymotion.getDevices().each(){
 
             println("Stopping ${it.name}")
-            GenymotionTool.stopDevice(it)
+            //TODO check if the device is already started
+            if(it.start) {
+                it.pull()
+                GenymotionTool.stopDevice(it)
+            }
         }
     }
 }
