@@ -274,7 +274,7 @@ class GenymotionTool {
     }
 
     static def createDevice(GenymotionVirtualDevice device){
-        return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbcpu, device.ram)
+        return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbCpu, device.ram)
     }
 
     static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
