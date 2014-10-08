@@ -10,7 +10,7 @@ class GenymotionTask extends DefaultTask {
     def exec() {
 
         //we set the config inside the GenymotionTool
-        GenymotionTool.CONFIG = project.genymotion.config
+        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
 
         println("Starting devices")
         //get the declared devices

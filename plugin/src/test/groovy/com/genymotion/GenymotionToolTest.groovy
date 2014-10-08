@@ -32,9 +32,9 @@ class GenymotionToolTest {
 
         project.genymotion.config.genymotionPath = GENYMOTION_PATH
         //we set the config inside the GenymotionTool
-        GenymotionTool.CONFIG = project.genymotion.config
+        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
     }
-
+/*
     @Test
     public void isConfigOK() {
         def exitCode = GenymotionTool.usage()

@@ -4,7 +4,7 @@ package main.groovy.com.genymotion
  */
 class GenymotionTool {
 
-    public static GenymotionConfig CONFIG = null
+    public static GenymotionConfig GENYMOTION_CONFIG = null
 
     private static final String GENYTOOL =  "genymotion-tool"
 
@@ -427,13 +427,14 @@ class GenymotionTool {
     static def cmd(def command, boolean verbose=true, Closure c){
 
         def toExec = command
+
         //we eventually insert the genymotion binary path
-        if(CONFIG != null && CONFIG.genymotionPath != null){
+        if(GENYMOTION_CONFIG != null && GENYMOTION_CONFIG.genymotionPath != null){
             if(toExec instanceof String){
-                toExec = CONFIG.genymotionPath + toExec
+                toExec = GENYMOTION_CONFIG.genymotionPath + toExec
             } else {
                 toExec = command.clone()
-                toExec[0] = CONFIG.genymotionPath + toExec[0]
+                toExec[0] = GENYMOTION_CONFIG.genymotionPath + toExec[0]
             }
         }
 
@@ -442,7 +443,7 @@ class GenymotionTool {
         StringBuffer out = new StringBuffer()
         p.consumeProcessOutput(out, error)
 
-        p.waitForOrKill(CONFIG.processTimeout)
+        p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
 
         if(verbose){
             println toExec

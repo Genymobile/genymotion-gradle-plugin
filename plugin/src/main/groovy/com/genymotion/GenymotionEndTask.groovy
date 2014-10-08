@@ -10,7 +10,7 @@ class GenymotionEndTask extends DefaultTask {
     def exec() {
 
         //we set the config inside the GenymotionTool
-        GenymotionTool.CONFIG = project.genymotion.config
+        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
 
         println("Stopping devices")
         //get the declared devices
