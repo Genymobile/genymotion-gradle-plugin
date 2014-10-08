@@ -18,7 +18,7 @@ class GenymotionToolTest {
 
     static def DEVICES = [
             "Nexus7-junit":"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-            "Nexus10-junit":"Google Nexus 10 - 4.4.2 - API 19 - 2560x1600",
+            "Nexus10-junit":"Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
             "Nexus4-junit":"Google Nexus 4 - 4.3 - API 18 - 768x1280"
     ]
 
@@ -163,7 +163,7 @@ class GenymotionToolTest {
         def exitCode = GenymotionTool.startDevice(name)
 
         assertTrue("Start failed", exitCode == 0)
-    }
+    }*/
 
 /*
     @Test
