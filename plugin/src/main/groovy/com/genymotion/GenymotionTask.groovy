@@ -13,22 +13,22 @@ class GenymotionTask extends DefaultTask {
         GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
 
         println("Starting devices")
-        //get the declared devices
+
+        //process declared devices
         project.genymotion.getDevices().each(){
 
-            println("Starting ${it.name}")
-            GenymotionTool.startDevice(it)
+            if(it.start){
+                println("Starting ${it.name}")
+                it.create()
+                it.start()
+                it.checkAndUpdate()
+                it.flash()
+                it.install()
+                it.push()
+            }
         }
 
-//        println("-- All devices --")
-//        def result = GenymotionTool.getAllDevices(false)
-//        result.each(){
-//            println it.name
-//        }
         println("-- Running devices --")
         GenymotionTool.getRunningDevices(true)
-//        println("-- Stopped devices --")
-//        GenymotionTool.getStoppedDevices(true)
-
     }
 }
