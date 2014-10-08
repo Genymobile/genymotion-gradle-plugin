@@ -43,7 +43,7 @@ class GenymotionGradlePluginTest {
         assertTrue(project.genymotion instanceof GenymotionPluginExtension)
         assertTrue(project.genymotion.config instanceof GenymotionConfig)
         assertTrue(project.genymotion.admin instanceof GenymotionAdmin)
-        assertTrue(project.genymotion.devices instanceof GenymotionVirtualDevice[])
+        assertTrue(project.genymotion.devices instanceof List)
     }
 
 }
