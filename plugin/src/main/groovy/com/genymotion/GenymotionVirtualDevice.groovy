@@ -26,11 +26,13 @@ class GenymotionVirtualDevice {
     String androidVersion
 
 
-    GenymotionVirtualDevice(String name) {
+    GenymotionVirtualDevice(String name, boolean fill=false) {
         this.name = name;
-        //TODO check if we have the VD on the list declared and finish to load the config
 
+        if(fill)
+            fillFromDetails()
     }
+
 
     GenymotionVirtualDevice(Map params) {
         if(params.name)
