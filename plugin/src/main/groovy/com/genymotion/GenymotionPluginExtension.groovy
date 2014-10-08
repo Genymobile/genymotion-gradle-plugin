@@ -15,20 +15,8 @@ class GenymotionPluginExtension {
         this.project = project
     }
 
-    void device(
-            Map params
-//            String name = "",
-//            String apiLevel = "",
-//            String template = "",
-//            String dpi = 0,
-//            int width = 0,
-//            int height = 0,
-//            boolean physicalButton = true,
-//            boolean navbar = true,
-//            int nbCpu = 0,
-//            int ram = 0
-    ){
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(params)
+    void device(Map params){
+        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
         this.genymotionDevices.add(device)
     }
 
