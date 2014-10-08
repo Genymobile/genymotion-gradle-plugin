@@ -469,12 +469,19 @@ class GenymotionTool {
     }
 
     static def pushToDevice(def deviceName, def files){
-        files.each(){
-            //TODO Check what behavior when just a file is provided
-            cmd([GENYTOOL, DEVICE, deviceName, PUSH, it.key, it.value]){line, count ->
-            }
 
+        files.each(){
+
+            def command = [GENYTOOL, DEVICE, deviceName, PUSH]
+            if(files instanceof Map)
+                command.push([it.key, it.value])
+            else
+                command.push(it)
+
+            cmd(command){line, count ->
+            }
         }
+        //TODO Check the result when exit codes will be implemented on gmtool
     }
 
     static def pullFromDevice(GenymotionVirtualDevice device, def files){
@@ -483,11 +490,17 @@ class GenymotionTool {
 
     static def pullFromDevice(def deviceName, def files){
         files.each(){
-            //TODO Check what behavior when just a file is provided
-            cmd([GENYTOOL, DEVICE, deviceName, PULL, it.key, it.value]){line, count ->
-            }
 
+            def command = [GENYTOOL, DEVICE, deviceName, PULL]
+            if(files instanceof Map)
+                command.push([it.key, it.value])
+            else
+                command.push(it)
+
+            cmd(command){line, count ->
+            }
         }
+        //TODO Check the result when exit codes will be implemented on gmtool
     }
 
     static def installToDevice(GenymotionVirtualDevice device, def apks){
@@ -495,11 +508,18 @@ class GenymotionTool {
     }
 
     static def installToDevice(def deviceName, def apks){
-        apks.each(){
-            cmd([GENYTOOL, DEVICE, deviceName, INSTALL, it]){line, count ->
+
+        if(apks instanceof String){
+            cmd([GENYTOOL, DEVICE, deviceName, INSTALL, apks]){line, count ->
+            }
+
+        } else if(apks instanceof String[]){
+            apks.each(){
+                cmd([GENYTOOL, DEVICE, deviceName, INSTALL, it]){line, count ->
+                }
             }
         }
-        //TODO Check the request's feedback
+        //TODO Check the result when exit codes will be implemented on gmtool
     }
 
     static def flashDevice(GenymotionVirtualDevice device, def zips){
@@ -507,11 +527,18 @@ class GenymotionTool {
     }
 
     static def flashDevice(def deviceName, def zips){
-        zips.each(){
-            cmd([GENYTOOL, DEVICE, deviceName, FLASH, it]){line, count ->
+
+        if(zips instanceof String){
+            cmd([GENYTOOL, DEVICE, deviceName, FLASH, zips]){line, count ->
+            }
+
+        } else if(zips instanceof String[]){
+            zips.each(){
+                cmd([GENYTOOL, DEVICE, deviceName, FLASH, it]){line, count ->
+                }
             }
         }
-        //TODO Check the request's feedback
+        //TODO Check the result when exit codes will be implemented on gmtool
     }
 
     static def adbDisconnectDevice(GenymotionVirtualDevice device){
@@ -534,11 +561,11 @@ class GenymotionTool {
         //TODO Check the request's feedback
     }
 
-    static def routeLogcatDevice(GenymotionVirtualDevice device, path){
+    static def routeLogcat(GenymotionVirtualDevice device, path){
         routeLogcatDevice(device.name, path)
     }
 
-    static def routeLogcatDevice(def deviceName, def path){
+    static def routeLogcat(def deviceName, def path){
         cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path]){line, count ->
         }
         //TODO Check the request's feedback
