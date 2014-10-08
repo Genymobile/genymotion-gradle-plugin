@@ -165,6 +165,49 @@ class GenymotionTool {
         devices
     }
 
+    static def isDeviceCreated(String name){
+
+        if(!name?.trim())
+            return false
+
+        //we check if the VD name already exists
+        boolean alreadyExists = false
+        def devices = GenymotionTool.getAllDevices(false, false)
+        devices.each(){
+            if(it.name.equals(name))
+                alreadyExists = true
+        }
+        alreadyExists
+    }
+
+    static def getTemplatesNames(boolean verbose=false) {
+
+        def templates = []
+
+        def template = null
+
+        cmd([GENYTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
+
+            //if empty line and template filled
+            if (!line && template){
+                templates.add(template)
+                template = null
+            }
+
+            String[] info = line.split("\\:")
+            switch (info[0].trim()){
+                case "name":
+                    if(!template)
+                        template = info[1].trim()
+                    break
+            }
+        }
+        if(template)
+            templates.add(template)
+
+        return templates
+    }
+
     static def getTemplates(boolean verbose=false){
 
         def templates = []
@@ -221,6 +264,15 @@ class GenymotionTool {
         return templates
     }
 
+    static boolean isTemplateExists(String template) {
+
+        if(!template?.trim())
+            return false
+
+        def templates = getTemplatesNames(true)
+        templates.contains(template)
+    }
+
     static def createDevice(GenymotionVirtualDevice device){
         return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbcpu, device.ram)
     }
@@ -271,13 +323,22 @@ class GenymotionTool {
         }
     }
 
-    static def getDevice(def device){
+    static def getDevice(String name, boolean verbose=false){
+
+        if(name == null)
+            return null
+
+        def device = new GenymotionVirtualDevice(name)
+        device = getDevice(device, verbose)
+    }
+
+    static def getDevice(def device, boolean verbose=false){
 
         if(device == null)
-            device = new GenymotionVirtualDevice()
+            return null
 
         //we get the device details
-        cmd([GENYTOOL, ADMIN, DETAILS, device.name], false){line, count ->
+        cmd([GENYTOOL, ADMIN, DETAILS, device.name], verbose){line, count ->
 
             //we skip the first line
             if(count < 1)
