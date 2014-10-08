@@ -1,4 +1,7 @@
 package main.groovy.com.genymotion
+
+import org.codehaus.groovy.runtime.NullObject
+
 /**
  * Created by eyal on 10/09/14.
  */
@@ -154,14 +157,15 @@ class GenymotionTool {
 
     static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
 
-        def exitValue = cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
-             '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
-            //TODO check the request's result
-            //TODO add the apiLevel into the created device
-            //if ok: return the device created
-            def device = new GenymotionVirtualDevice(deviceName, null, dpi, width, height, physicalButton, navbar, nbcpu, ram)
+        return noNull(){
+            cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
+                 '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
+                //TODO check the request's result
+                //TODO add the apiLevel into the created device
+                //if ok: return the device created
+                def device = new GenymotionVirtualDevice(deviceName, null, dpi, width, height, physicalButton, navbar, nbcpu, ram)
+            }
         }
-        return exitValue
     }
 
     static def updateDevice(GenymotionVirtualDevice device){
@@ -169,9 +173,11 @@ class GenymotionTool {
     }
 
     static def updateDevice(def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
-        return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
-             '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "-ram="+ram]){line, count ->
-            //TODO check the request's result
+
+        return noNull(){
+            return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
+                 '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
+            }
         }
     }
 
@@ -457,5 +463,25 @@ class GenymotionTool {
 
         return p.exitValue()
     }
+
+    /**
+     * Avoid null.toString returning "null"
+     *
+     * @param c the code to execute
+     * @return the c's return
+     */
+    static def noNull(Closure c){
+        //set null.toString to return ""
+        String nullLabel = null.toString()
+        NullObject.metaClass.toString = {return ''}
+
+        def exit = c()
+
+        //set as defaut
+        NullObject.metaClass.toString = {return nullLabel}
+
+        return exit
+    }
+
 
 }
