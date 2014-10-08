@@ -1,9 +1,5 @@
-package com.genymotion
+package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GenymotionAdmin
-import main.groovy.com.genymotion.GenymotionConfig
-import main.groovy.com.genymotion.GenymotionDevices
-import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.gradle.api.Project
 
 
