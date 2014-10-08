@@ -11,6 +11,11 @@ class GenymotionTool {
 
     private static final String GENYTOOL =  "genymotion-tool"
 
+    private static final String SETLICENSE =  "setlicense"
+    private static final String CONFIG =  "config"
+    private static final String LOGZIP =  "logzip"
+
+
     private static final String ADMIN =     "admin"
     private static final def LIST =         "list" //"VBoxManage list "
     private static final def TEMPLATES =    "templates"
@@ -39,6 +44,68 @@ class GenymotionTool {
         return cmd(GENYTOOL){line, count ->
         }
     }
+
+    /*
+    CONFIG
+     */
+
+    static def setLicense(String license, String login="", String password=""){
+        return cmd([GENYTOOL, SETLICENSE, license, "-l="+login, "-p="+password]){line, count ->
+        }
+    }
+
+    static def resetConfig(){
+        return cmd([GENYTOOL, CONFIG, "--reset"]){line, count ->
+        }
+    }
+
+    static def clearCache(){
+        return cmd([GENYTOOL, CONFIG, "--clearcache"]){line, count ->
+        }
+    }
+
+    static def logzip(String path="", String vdName=""){
+
+        def command = [GENYTOOL, LOGZIP]
+
+        if(vdName?.trim())
+            command.push(["-n ", vdName])
+
+        if(path?.trim())
+            command.push(path)
+
+        return cmd([GENYTOOL, LOGZIP, "-n=", ]){line, count ->
+        }
+    }
+
+    static def config(){
+        //TODO implement when gmtool is ready
+
+/*
+   telemetry = [on|off] active les stats de telemetry
+   notifs = [on|off] active les notifs
+   login = VALUE  set le login a VALUE
+   password = VALUE  set le pass a VALUE
+   store_credentials = [on|off]
+   licence_key = VALUE  set la clé d enregistrement a value
+   proxy_status = [on|off]
+   proxy_address = ADDRESS  set l adresse du proxy a ADRESS
+   proxy_port = PORT  set le port du proxy a PORT
+   proxy_protocol = PROTOCOL  définit le protocole du proxy, voir avec ced pour plus d infos
+   configuration_path = PATH  set le dossier ou sont stockées les configs
+   sdk_path = PATH  set le dossier du sdk alternatif
+   use_custom_sdk = [on|off]  utilise le sdk alternatif
+   storage_path = PATH  set le dossier de stockage des screenshots
+   max_cache_size = SIZE  set la taille du cache a SIZE
+   log_path = PATH  set le dossier de destination des logs a PATH
+   global_logs [on|off] active les logs globaux
+
+        return cmd([GENYTOOL, SETLICENSE, license]){line, count ->
+        }
+*/
+    }
+
+
 
     /*
     ADMIN
