@@ -35,44 +35,32 @@ class GenymotionVirtualDevice {
 
 
     GenymotionVirtualDevice(Map params) {
-        if(params.name)
-            this.name = params.name
-        if(params.apiLevel )
-            this.apiLevel = params.apiLevel
-        if(params.dpi)
-            this.dpi = params.dpi
-        if(params.width)
-            this.width = params.width
-        if(params.height)
-            this.height = params.height
-        if(params.physicalButton)
-            this.physicalButton = params.physicalButton
-        if(params.navbar)
-            this.navbar = params.navbar
-        if(params.nbCpu)
-            this.nbCpu= params.nbCpu
-        if(params.ram)
-            this.ram = params.ram
+        if(params)
+            init(params.name, params.apiLevel, params.dpi, params.width, params.height, params.physicalButton, params.navbar, params.nbCpu, params.ram)
     }
 
     GenymotionVirtualDevice(def name, def apiLevel, def dpi, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
+        init(name, apiLevel, dpi, width, height, physicalButton, navbar, nbCpu, ram)
+    }
+
+    void init(def name, def apiLevel, def dpi, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
         if(name?.trim())
             this.name = name
-        if(apiLevel?.trim())
+        if(apiLevel)
             this.apiLevel = apiLevel.toInteger()
-        if(dpi?.trim())
+        if(dpi)
             this.dpi = dpi.toInteger()
-        if(width?.trim())
+        if(width)
             this.width = width.toInteger()
-        if(height?.trim())
+        if(height)
             this.height = height.toInteger()
-        if(physicalButton?.trim())
+        if(physicalButton != null)
             this.physicalButton = physicalButton.toBoolean()
-        if(navbar?.trim())
+        if(navbar != null)
             this.navbar = navbar.toBoolean()
-        if(nbCpu?.trim())
+        if(nbCpu)
             this.nbCpu = nbCpu.toInteger()
-        if(ram?.trim())
+        if(ram)
             this.ram = ram.toInteger()
     }
 
