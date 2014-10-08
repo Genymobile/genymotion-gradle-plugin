@@ -1,6 +1,6 @@
 package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GenymotionVirtualDevice
+import main.groovy.com.genymotion.GenymotionVDLaunch
 
 /**
  * Created by eyal on 05/09/14.
@@ -8,16 +8,16 @@ import main.groovy.com.genymotion.GenymotionVirtualDevice
 
 public class GenymotionDevices {
 
-    GenymotionVirtualDevice[] devices = []
+    def devices = []
 
     //TODO add a reference to Project ?
 
-    def add(GenymotionVirtualDevice device) {
+    def add(GenymotionVDLaunch device) {
         //check the device name exists
         //TODO check if the device exists
         println "add a device"
         println device.toString()
-        devices.add(device)
+        this.devices.add(device)
     }
 
     def all(){
