@@ -163,7 +163,7 @@ class GenymotionToolTest {
         def exitCode = GenymotionTool.startDevice(name)
 
         assertTrue("Start failed", exitCode == 0)
-    }*/
+    }
 
 /*
     @Test
