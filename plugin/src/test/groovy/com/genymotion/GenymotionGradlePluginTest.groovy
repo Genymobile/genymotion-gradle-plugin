@@ -19,12 +19,18 @@ import static org.junit.Assert.assertNotNull
 
 class GenymotionGradlePluginTest {
 
+    static def GENYMOTION_PATH = "/home/eyal/genymotion/genymotion-softs/build/"
+
     Project project
 
     @Before
     public void setUp() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
+
+        project.genymotion.config.genymotionPath = GENYMOTION_PATH
+        //we set the config inside the GenymotionTool
+        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
     }
 
     @Test
