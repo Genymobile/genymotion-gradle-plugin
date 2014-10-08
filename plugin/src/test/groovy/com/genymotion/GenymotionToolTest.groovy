@@ -1,6 +1,5 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GenymotionConfig
 import main.groovy.com.genymotion.GenymotionTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.junit.Test

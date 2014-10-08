@@ -1,4 +1,4 @@
-package com.genymotion
+package main.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GenymotionTool
 import org.gradle.api.DefaultTask
