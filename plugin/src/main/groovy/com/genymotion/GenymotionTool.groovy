@@ -111,7 +111,7 @@ class GenymotionTool {
     ADMIN
      */
 
-    static def getAllDevices(boolean verbose=false){
+    static def getAllDevices(boolean verbose=false, boolean fill=true){
 
         def devices = []
 
@@ -129,8 +129,11 @@ class GenymotionTool {
             device.state = infos[1].trim()
             devices.add(device)
         }
-        devices.each(){
-            it.fillFromDetails()
+
+        if(fill){
+            devices.each(){
+                it.fillFromDetails()
+            }
         }
 
         devices
