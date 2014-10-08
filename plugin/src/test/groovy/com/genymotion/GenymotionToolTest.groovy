@@ -221,19 +221,19 @@ class GenymotionToolTest {
      * TOOLS
      */
 
-    private void deleteAllDevices() {
+    static void deleteAllDevices() {
         DEVICES.each() { key, value ->
             GenymotionTool.deleteDevice(key)
         }
     }
 
-    private void createAllDevices() {
+    static void createAllDevices() {
         DEVICES.each() { key, value ->
             GenymotionTool.createDevice(value, key)
         }
     }
 
-    private String createADevice() {
+    static String createADevice() {
 
         Random rand = new Random()
         int index = rand.nextInt(DEVICES.size())
