@@ -77,28 +77,28 @@ class GenymotionVirtualDevice {
         this.ram = ram
     }
 
-    void start(){
-        //TODO
+    def start(){
+        GenymotionTool.startDevice(this)
     }
 
-    void restart(){
-        //TODO
+    def restart(){
+        GenymotionTool.restartDevice(this)
     }
 
-    void stop(){
-        //TODO
+    def stop(){
+        GenymotionTool.stopDevice(this)
     }
 
-    void reset(){
-        //TODO
+    def reset(){
+        GenymotionTool.resetDevice(this)
     }
 
-    void adbdisconnect(){
-        //TODO
+    def adbdisconnect(){
+        GenymotionTool.adbDisconnectDevice(this)
     }
 
-    void adbconnect(){
-        //TODO
+    def adbconnect(){
+        GenymotionTool.adbConnectDevice(this)
     }
 
 /*
