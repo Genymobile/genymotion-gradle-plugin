@@ -40,6 +40,7 @@ class GenymotionTool {
     private static final def ADBDISCONNECT = "adbdisconnect"
     private static final def ADBCONNECT =   "adbconnect"
 
+
     static def usage(){
         return cmd(GENYTOOL){line, count ->
         }
@@ -111,26 +112,17 @@ class GenymotionTool {
     ADMIN
      */
 
-    static def getAllDevices(boolean verbose=false, boolean fill=true){
+    static def getAllDevices(boolean verbose=false, boolean fill=true, boolean nameOnly=false){
 
         def devices = []
 
         cmd([GENYTOOL, ADMIN, LIST], verbose){line, count ->
-
-            //we skip the first lines
-            if(count<4)
-                return
-
-            String[] infos = line.split('\\|')
-
-            String name = infos[3].trim()
-            def device = new GenymotionVirtualDevice(name)
-            device.ip = infos[2].trim()
-            device.state = infos[1].trim()
-            devices.add(device)
+            def device = parseList(count, line, nameOnly)
+            if(device)
+                devices.add(device)
         }
 
-        if(fill){
+        if(fill && !nameOnly){
             devices.each(){
                 it.fillFromDetails()
             }
@@ -139,31 +131,65 @@ class GenymotionTool {
         devices
     }
 
-    static def getRunningDevices(boolean verbose=false){
+    static def getRunningDevices(boolean verbose=false, boolean fill=true, boolean nameOnly=false){
 
         def devices = []
 
         cmd([GENYTOOL, ADMIN, LIST, "--running"], verbose){line, count ->
-            String name = it.split('"')[1]
-            def device = new GenymotionVirtualDevice(name)
-            device.fillFromDetails()
-            devices.add(device)
+            def device = parseList(count, line, nameOnly)
+            if(device)
+                devices.add(device)
         }
+
+        if(fill && !nameOnly){
+            devices.each(){
+                it.fillFromDetails()
+            }
+        }
+
         devices
     }
 
-    static def getStoppedDevices(boolean verbose=false){
+    static def getStoppedDevices(boolean verbose=false, boolean fill=true, boolean nameOnly=false){
 
         def devices = []
 
         cmd([GENYTOOL, ADMIN, LIST, "--off"], verbose){line, count ->
-            String name = it.split('"')[1]
-            def device = new GenymotionVirtualDevice(name)
-            device.fillFromDetails()
-            devices.add(device)
+            def device = parseList(count, line, nameOnly)
+            if(device)
+                devices.add(device)
         }
+
+        if(fill && !nameOnly){
+            devices.each(){
+                it.fillFromDetails()
+            }
+        }
+
         devices
     }
+
+    private static def parseList(int count, String line, boolean nameOnly) {
+
+        def device
+
+        //we skip the first lines
+        if (count < 4)
+            return
+
+        String[] infos = line.split('\\|')
+
+        String name = infos[3].trim()
+        if (nameOnly) {
+            device = name
+        } else {
+            device = new GenymotionVirtualDevice(name)
+            device.ip = infos[2].trim()
+            device.state = infos[1].trim()
+        }
+        device
+    }
+
 
     static def isDeviceCreated(String name){
 
