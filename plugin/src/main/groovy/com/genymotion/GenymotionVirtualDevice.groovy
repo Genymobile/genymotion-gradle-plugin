@@ -10,13 +10,13 @@ class GenymotionVirtualDevice {
 
     String name
     String apiLevel
-    int dpi = 0
-    int width = 0
-    int height = 0
-    boolean physicalButton = true
-    boolean navbar = true
-    int nbCpu = 0
-    int ram = 0
+    def dpi
+    def width
+    def height
+    def physicalButton
+    def navbar
+    def nbCpu
+    def ram
     String ip
     String state
     String platform //p|t|pt
