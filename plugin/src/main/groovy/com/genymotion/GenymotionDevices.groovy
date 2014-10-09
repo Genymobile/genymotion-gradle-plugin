@@ -21,7 +21,7 @@ public class GenymotionDevices {
     }
 
     def all(){
-
+        //TODO implement all() handling
     }
 
 }
