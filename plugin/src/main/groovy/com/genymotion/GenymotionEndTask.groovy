@@ -9,9 +9,6 @@ class GenymotionEndTask extends DefaultTask {
     @TaskAction
     def exec() {
 
-        //we set the config inside the GenymotionTool
-        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
-
         println("Stopping devices")
         //get the declared devices
         project.genymotion.getDevices().each(){

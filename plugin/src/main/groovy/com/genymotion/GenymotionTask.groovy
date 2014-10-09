@@ -9,9 +9,6 @@ class GenymotionTask extends DefaultTask {
     @TaskAction
     def exec() {
 
-        //we set the config inside the GenymotionTool
-        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
-
         println("Starting devices")
 
         //process declared devices
