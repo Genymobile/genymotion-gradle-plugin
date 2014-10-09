@@ -4,7 +4,6 @@ import main.groovy.com.genymotion.GenymotionTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.junit.Test
 import org.junit.Before
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
 
 import static org.junit.Assert.assertEquals
@@ -14,26 +13,14 @@ import static org.junit.Assert.assertTrue
 
 class GenymotionToolTest {
 
-    static def GENYMOTION_PATH = "/home/eyal/genymotion/genymotion-softs/build/"
-
-    static def DEVICES = [
-            "Nexus7-junit":"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-            "Nexus10-junit":"Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
-            "Nexus4-junit":"Google Nexus 4 - 4.3 - API 18 - 768x1280"
-    ]
 
     Project project
 
     @Before
     public void setUp() {
-        project = ProjectBuilder.builder().build()
-        project.apply plugin: 'genymotion'
-
-        project.genymotion.config.genymotionPath = GENYMOTION_PATH
-        //we set the config inside the GenymotionTool
-        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
+        project = GenymotionTestTools.init()
     }
-/*
+
     @Test
     public void isConfigOK() {
         def exitCode = GenymotionTool.usage()
@@ -51,11 +38,11 @@ class GenymotionToolTest {
 
     @Test
     public void canCreateDevice() {
-        createAllDevices()
+        GenymotionTestTools.createAllDevices()
 
         def devices = GenymotionTool.getAllDevices(true)
 
-        DEVICES.each() { key, value ->
+        GenymotionTestTools.DEVICES.each() { key, value ->
             boolean exists = false
             devices.each() {
                 if(it.name == key){
@@ -66,13 +53,13 @@ class GenymotionToolTest {
             assertTrue("${key} not found. Test failed", exists)
 
         }
-            deleteAllDevices()
+        GenymotionTestTools.deleteAllDevices()
     }
 
     @Test
     public void canDetailDevice() {
 
-        String name = createADevice()
+        String name = GenymotionTestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -87,19 +74,19 @@ class GenymotionToolTest {
     @Test
     public void canListDevices() {
 
-        createAllDevices()
+        GenymotionTestTools.createAllDevices()
 
         def devices = GenymotionTool.getAllDevices()
         assert devices.size() > 0
 
 
-        deleteAllDevices()
+        GenymotionTestTools.deleteAllDevices()
     }
 
     @Test
     public void canCloneDevice() {
 
-        String name = createADevice()
+        String name = GenymotionTestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -125,7 +112,7 @@ class GenymotionToolTest {
     @Test
     public void canUpdateDevice() {
 
-        String name = createADevice()
+        String name = GenymotionTestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -158,7 +145,7 @@ class GenymotionToolTest {
     @Test
     public void canStartDevice() {
 
-        String name = createADevice()
+        String name = GenymotionTestTools.createADevice()
 
         def exitCode = GenymotionTool.startDevice(name)
 
@@ -171,7 +158,7 @@ class GenymotionToolTest {
 
         //TODO implement it when stop is implemented
 
-        String name = createADevice()
+        String name = GenymotionTestTools.createADevice()
 
         def exitCode = GenymotionTool.startDevice(name)
 
@@ -189,7 +176,7 @@ class GenymotionToolTest {
     public void canStopAllDevices() {
 
         //TODO uncomment when stopall is implemented
-        createAllDevices()
+        GenymotionTestTools.createAllDevices()
 
         DEVICES.each(){
             GenymotionTool.startDevice(it.name)
@@ -197,7 +184,7 @@ class GenymotionToolTest {
 
         GenymotionTool.stopAllDevices()
 
-        deleteAllDevices()
+        GenymotionTestTools.deleteAllDevices()
     }
 */
 
@@ -216,31 +203,4 @@ class GenymotionToolTest {
 
     }
 */
-
-    /**
-     * TOOLS
-     */
-
-    static void deleteAllDevices() {
-        DEVICES.each() { key, value ->
-            GenymotionTool.deleteDevice(key)
-        }
-    }
-
-    static void createAllDevices() {
-        DEVICES.each() { key, value ->
-            GenymotionTool.createDevice(value, key)
-        }
-    }
-
-    static String createADevice() {
-
-        Random rand = new Random()
-        int index = rand.nextInt(DEVICES.size())
-
-        String[] keys = DEVICES.keySet() as String[]
-        String name = keys[index]
-        GenymotionTool.createDevice(DEVICES[name], name)
-        name
-    }
 }

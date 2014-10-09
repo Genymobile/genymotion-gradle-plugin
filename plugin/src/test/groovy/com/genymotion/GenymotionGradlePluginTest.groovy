@@ -10,7 +10,6 @@ import main.groovy.com.genymotion.GenymotionVirtualDevice
 import main.groovy.com.genymotion.GenymotionPluginExtension
 import org.junit.Before
 import org.junit.Test
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
 
 
@@ -19,18 +18,11 @@ import static org.junit.Assert.assertNotNull
 
 class GenymotionGradlePluginTest {
 
-    static def GENYMOTION_PATH = "/home/eyal/genymotion/genymotion-softs/build/"
-
     Project project
 
     @Before
     public void setUp() {
-        project = ProjectBuilder.builder().build()
-        project.apply plugin: 'genymotion'
-
-        project.genymotion.config.genymotionPath = GENYMOTION_PATH
-        //we set the config inside the GenymotionTool
-        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
+        project = GenymotionTestTools.init()
     }
 
     @Test
@@ -94,7 +86,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddDeviceToLaunchByName(){
 
-        String vdName = GenymotionToolTest.createADevice()
+        String vdName = GenymotionTestTools.createADevice()
 
         project.genymotion.device(name:vdName)
         assertNull(project.genymotion.devices[0].template)
@@ -106,7 +98,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddDeviceToLaunchByNameWithTemplate(){
 
-        String vdName = GenymotionToolTest.createADevice()
+        String vdName = GenymotionTestTools.createADevice()
 
         project.genymotion.device(name:vdName, template: "Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
         assertNull(project.genymotion.devices[0].template)
@@ -118,7 +110,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated(){
 
-        String vdName = GenymotionToolTest.createADevice()
+        String vdName = GenymotionTestTools.createADevice()
 
         project.genymotion.device(name:vdName, template: "frtfgfdgtgsgrGFGFDGFD")
         assertNull(project.genymotion.devices[0].template)
