@@ -1,5 +1,6 @@
 package test.groovy.com.genymotion
 
+import main.groovy.com.genymotion.GenymotionEndTask
 import main.groovy.com.genymotion.GenymotionTask
 
 import java.util.List
@@ -28,6 +29,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddsTaskToProject() {
         assertTrue(project.tasks.genymotionLaunch instanceof GenymotionTask)
+        assertTrue(project.tasks.genymotionLaunch instanceof GenymotionEndTask)
     }
 
     @Test
@@ -227,6 +229,20 @@ class GenymotionGradlePluginTest {
 /*
     @Test
     public void canFlashDevice(){
+
+    }
+*/
+
+/*
+    @Test
+    public void canInjectLaunchTask(){
+
+    }
+*/
+
+/*
+    @Test
+    public void canInjectFinishTask(){
 
     }
 */
