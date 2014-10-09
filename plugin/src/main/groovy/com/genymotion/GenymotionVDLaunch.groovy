@@ -4,7 +4,7 @@ import main.groovy.com.genymotion.*
 
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
-    private static RANDOM_NAMES = ["Sam, Julien, Dan, Pascal, Guillaume, Damien, Thomas, Sylvain, Philippe, Cedric, Charly, Morgan, Bruno"]
+    private static RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
     boolean start = true
     String template
