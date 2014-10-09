@@ -64,6 +64,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         }
 
+        if(params.deleteWhenFinish != null)
+            this.deleteWhenFinish = params.deleteWhenFinish
         if(params.start != null)
             this.start = params.start
         if(params.template?.trim())
