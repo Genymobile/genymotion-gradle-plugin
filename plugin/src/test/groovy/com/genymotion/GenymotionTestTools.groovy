@@ -1,6 +1,7 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GenymotionTool
+import main.groovy.com.genymotion.GenymotionVDLaunch
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
 
@@ -50,4 +51,29 @@ class GenymotionTestTools {
         GenymotionTool.createDevice(DEVICES[name], name)
         name
     }
+
+    static List createADetailedDevice(Project project) {
+        String vdName = GenymotionVDLaunch.getRandomName()
+        int dpi = 180
+        int height = 480
+        int width = 320
+        int ram = 2048
+        int nbCpu = 1
+        boolean deleteWhenFinish = true
+
+        project.genymotion.device(
+                name: vdName,
+                template: "Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
+                dpi: dpi,
+                width: width,
+                height: height,
+                physicalButton: false,
+                navbar: false,
+                nbCpu: nbCpu,
+                ram: ram,
+                deleteWhenFinish: deleteWhenFinish
+        )
+        [vdName, dpi, width, height, nbCpu, ram, deleteWhenFinish]
+    }
+
 }
