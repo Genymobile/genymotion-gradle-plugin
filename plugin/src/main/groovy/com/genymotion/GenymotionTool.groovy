@@ -602,6 +602,9 @@ class GenymotionTool {
             }
         }
 
+        if(verbose) {
+            println toExec
+        }
         Process p = toExec.execute()
         StringBuffer error = new StringBuffer()
         StringBuffer out = new StringBuffer()
@@ -610,7 +613,6 @@ class GenymotionTool {
         p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
 
         if(verbose){
-            println toExec
             println "error:" + error.toString()
             println "out:" + out.toString()
         }
