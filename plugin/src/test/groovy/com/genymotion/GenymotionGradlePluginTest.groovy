@@ -29,7 +29,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddsTaskToProject() {
         assertTrue(project.tasks.genymotionLaunch instanceof GenymotionTask)
-        assertTrue(project.tasks.genymotionLaunch instanceof GenymotionEndTask)
+        assertTrue(project.tasks.genymotionFinish instanceof GenymotionEndTask)
     }
 
     @Test
