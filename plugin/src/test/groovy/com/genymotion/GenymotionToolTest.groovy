@@ -37,6 +37,33 @@ class GenymotionToolTest {
     }
 
     @Test
+    public void canGetRunningDevices() {
+        String name = GenymotionTestTools.createADevice()
+
+        GenymotionTool.startDevice(name)
+        def devices = GenymotionTool.getRunningDevices(true, true)
+
+        assertTrue("Error, device not running", devices.contains(name))
+
+        GenymotionTool.stopDevice(name)
+
+        GenymotionTestTools.deleteDevice(name)
+    }
+
+    @Test
+    public void canGetStoppedDevices() {
+        String name = GenymotionTestTools.createADevice()
+
+        GenymotionTool.stopDevice(name)
+        def devices = GenymotionTool.getStoppedDevices(true, true)
+
+        assertTrue("Error, device not stopped", devices.contains(name))
+
+        GenymotionTestTools.deleteDevice(name)
+    }
+
+
+    @Test
     public void canCreateDevice() {
         GenymotionTestTools.createAllDevices()
 
