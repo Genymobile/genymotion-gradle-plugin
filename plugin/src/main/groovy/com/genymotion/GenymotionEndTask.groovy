@@ -21,6 +21,8 @@ class GenymotionEndTask extends DefaultTask {
             if(it.start) {
                 it.pull()
                 GenymotionTool.stopDevice(it)
+                if(it.deleteWhenFinish)
+                    GenymotionTool.deleteDevice(it)
             }
         }
     }
