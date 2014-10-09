@@ -88,12 +88,12 @@ genymotion.admin {
 }
 
 genymotion{
+//    device(
+//            name: "Nexus10"
+//    )
     device(
-            name: "Nexus10"
-    )
-    device(
-            name: "Nexus5"
-            template "Google Nexus 5 - 4.4.2 - API 19 - 1080x1920"
+            name: "Nexus5",
+            template: "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
 //            start false
 //            deleteWhenFinish true
 //            push [<PATH_ORIG>: [PATH_DEST], <PATH_ORIG>: [PATH_DEST]] default PATH_DEST: /sdcard/Downloads
