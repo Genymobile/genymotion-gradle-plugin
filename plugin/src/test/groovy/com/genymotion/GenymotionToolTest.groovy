@@ -35,21 +35,20 @@ class GenymotionToolTest {
         assertTrue("No template found", templates.size() > 0)
         assertTrue("Empty template", (templates[0].name?.trim()) as boolean)
     }
-/*
-//TODO fix these 2 tests before uncommenting
 
     @Test
     public void canGetRunningDevices() {
         String name = GenymotionTestTools.createADevice()
 
         GenymotionTool.startDevice(name)
-        def devices = GenymotionTool.getRunningDevices(true, true)
+        def devices = GenymotionTool.getRunningDevices(true, false, true)
 
+        println  "devices " + devices
         assertTrue("Error, device not running", devices.contains(name))
 
         GenymotionTool.stopDevice(name)
 
-        GenymotionTestTools.deleteDevice(name)
+        GenymotionTool.deleteDevice(name)
     }
 
     @Test
@@ -57,13 +56,13 @@ class GenymotionToolTest {
         String name = GenymotionTestTools.createADevice()
 
         GenymotionTool.stopDevice(name)
-        def devices = GenymotionTool.getStoppedDevices(true, true)
+        def devices = GenymotionTool.getStoppedDevices(true, false, true)
 
         assertTrue("Error, device not stopped", devices.contains(name))
 
-        GenymotionTestTools.deleteDevice(name)
+        GenymotionTool.deleteDevice(name)
     }
-*/
+
 
     @Test
     public void canCreateDevice() {
