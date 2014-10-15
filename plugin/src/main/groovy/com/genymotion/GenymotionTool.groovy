@@ -292,12 +292,12 @@ class GenymotionTool {
         return templates
     }
 
-    static boolean isTemplateExists(String template) {
+    static boolean isTemplateExists(String template, boolean verbose=false) {
 
         if(!template?.trim())
             return false
 
-        def templates = getTemplatesNames(true)
+        def templates = getTemplatesNames(verbose)
         templates.contains(template)
     }
 
