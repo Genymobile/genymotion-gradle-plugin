@@ -17,28 +17,28 @@ class GenymotionTool {
 
 
     private static final String ADMIN =     "admin"
-    private static final def LIST =         "list" //"VBoxManage list "
-    private static final def TEMPLATES =    "templates"
-    private static final def CREATE =       "create"
-    private static final def UPDTAE =       "update"
-    private static final def DELETE =       "delete"
-    private static final def CLONE =        "clone"
-    private static final def DETAILS =      "details"
-    private static final def START =        "start"
-    private static final def RESTART =      "restart"
-    private static final def STOP =         "stop"
-    private static final def STOPALL =      "stopall"
-    private static final def RESET =        "factoryreset"
-    private static final def STARTAUTO =    ""//TODO
+    private static final String LIST =         "list" //"VBoxManage list "
+    private static final String TEMPLATES =    "templates"
+    private static final String CREATE =       "create"
+    private static final String UPDTAE =       "update"
+    private static final String DELETE =       "delete"
+    private static final String CLONE =        "clone"
+    private static final String DETAILS =      "details"
+    private static final String START =        "start"
+    private static final String RESTART =      "restart"
+    private static final String STOP =         "stop"
+    private static final String STOPALL =      "stopall"
+    private static final String RESET =        "factoryreset"
+    private static final String STARTAUTO =    ""//TODO
 
     private static final String DEVICE =    "device"
-    private static final def PUSH =         "push"
-    private static final def PULL =         "pull"
-    private static final def INSTALL =      "install"
-    private static final def FLASH =        "flash"
-    private static final def LOGCAT =       "logcat"
-    private static final def ADBDISCONNECT = "adbdisconnect"
-    private static final def ADBCONNECT =   "adbconnect"
+    private static final String PUSH =         "push"
+    private static final String PULL =         "pull"
+    private static final String INSTALL =      "install"
+    private static final String FLASH =        "flash"
+    private static final String LOGCAT =       "logcat"
+    private static final String ADBDISCONNECT = "adbdisconnect"
+    private static final String ADBCONNECT =   "adbconnect"
 
 
     static def usage(){
@@ -198,7 +198,9 @@ class GenymotionTool {
 
         //we check if the VD name already exists
         boolean alreadyExists = false
+
         def devices = GenymotionTool.getAllDevices(false, false)
+
         devices.each(){
             if(it.name.equals(name))
                 alreadyExists = true
