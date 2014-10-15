@@ -498,6 +498,9 @@ class GenymotionTool {
 
     static def pushToDevice(def deviceName, def files){
 
+        if(!files)
+            return false
+
         files.each(){
 
             def command = [GENYTOOL, DEVICE, deviceName, PUSH]
@@ -517,6 +520,10 @@ class GenymotionTool {
     }
 
     static def pullFromDevice(def deviceName, def files){
+
+        if(!files)
+            return false
+
         files.each(){
 
             def command = [GENYTOOL, DEVICE, deviceName, PULL]
@@ -537,6 +544,9 @@ class GenymotionTool {
 
     static def installToDevice(def deviceName, def apks){
 
+        if(!apks)
+            return false
+
         if(apks instanceof String){
             cmd([GENYTOOL, DEVICE, deviceName, INSTALL, apks]){line, count ->
             }
@@ -555,6 +565,9 @@ class GenymotionTool {
     }
 
     static def flashDevice(def deviceName, def zips){
+
+        if(!zips)
+            return false
 
         if(zips instanceof String){
             cmd([GENYTOOL, DEVICE, deviceName, FLASH, zips]){line, count ->
