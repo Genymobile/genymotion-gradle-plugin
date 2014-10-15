@@ -22,7 +22,8 @@ class GenymotionTask extends DefaultTask {
                 it.checkAndUpdate()
                 it.flash()
                 it.install()
-                it.push()
+                it.pushBefore()
+                it.pullBefore()
             }
         }
 

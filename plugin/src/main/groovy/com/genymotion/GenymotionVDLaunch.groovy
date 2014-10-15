@@ -8,8 +8,10 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     boolean start = true
     String template
-    def push
-    def pull
+    def pushBefore
+    def pullBefore
+    def pushAfter
+    def pullAfter
     def install
     def flash
     String logcat
@@ -70,10 +72,14 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             this.start = params.start
         if(params.template?.trim())
             this.template = params.template
-        if(params.push)
-            this.push = params.push
-        if(params.pull)
-            this.pull = params.pull
+        if(params.pushBefore)
+            this.pushBefore = params.pushBefore
+        if(params.pullBefore)
+            this.pullBefore = params.pullBefore
+        if(params.pushAfter)
+            this.pushAfter = params.pushAfter
+        if(params.pullAfter)
+            this.pullAfter = params.pullAfter
         if(params.install)
             this.install = params.install
         if(params.flash)
@@ -119,14 +125,21 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         GenymotionTool.installToDevice(this, install)
     }
 
-    def push(){
-        GenymotionTool.pushToDevice(this, push)
+    def pushBefore(){
+        GenymotionTool.pushToDevice(this, pushBefore)
     }
 
-    def pull(){
-        GenymotionTool.pullFromDevice(this, pull)
+    def pullBefore(){
+        GenymotionTool.pullFromDevice(this, pullBefore)
     }
 
+    def pushAfter(){
+        GenymotionTool.pushToDevice(this, pushAfter)
+    }
+
+    def pullAfter(){
+        GenymotionTool.pullFromDevice(this, pullAfter)
+    }
 
     static String getRandomName(){
         int nameLength = 3

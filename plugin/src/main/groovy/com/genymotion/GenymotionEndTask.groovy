@@ -16,7 +16,8 @@ class GenymotionEndTask extends DefaultTask {
             println("Stopping ${it.name}")
             //TODO check if the device is already started
             if(it.start) {
-                it.pull()
+                it.pushAfter()
+                it.pullAfter()
                 GenymotionTool.stopDevice(it)
                 if(it.deleteWhenFinish)
                     GenymotionTool.deleteDevice(it)
