@@ -13,6 +13,8 @@ class GenymotionPluginExtension {
 
     GenymotionPluginExtension(Project project) {
         this.project = project
+
+        this.genymotionDevices.project = project
     }
 
     void device(Map params){

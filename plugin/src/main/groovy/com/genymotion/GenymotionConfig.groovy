@@ -7,7 +7,10 @@ class GenymotionConfig {
 
     static final DEFAULT_ANDROID_TASK = "connectedAndroidTest"
 
+    //plugin config
     def genymotionPath = ""           //set the Genymotion path to PATH
+
+    //genymotion config
     def stats = true                  //active les stats (maybe accept true|false)
     def notifs = true                 //active les notifs (maybe accept true|false)
     def login = ""                    //set le login a VALUE
@@ -25,8 +28,12 @@ class GenymotionConfig {
     def max_cache_size = 0            //set la taille du cache a SIZE
     def log_path = ""                 //set le dossier de destination des logs a PATH
     def global_logs = true            //active les logs globaux (maybe accept true|false)
+
+    //task configs
     def taskLaunch = DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task
     def taskFinish = DEFAULT_ANDROID_TASK     //define the task that the genymotion finish task depends on
     def automaticLaunch = true        //enable or not the genymotion tasks injection
-    def processTimeout = 300000        //timeout for all the process launched in command line
+    def processTimeout = 300000       //timeout for all the process launched in command line
+    def verbose = true                //verbose mode
+    def persist = true                //persist the configurations on genymotion or reset them back after the task execution
 }

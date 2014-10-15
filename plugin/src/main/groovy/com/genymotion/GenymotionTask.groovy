@@ -1,6 +1,5 @@
 package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GenymotionTool
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -9,13 +8,15 @@ class GenymotionTask extends DefaultTask {
     @TaskAction
     def exec() {
 
-        println("Starting devices")
+        if (project.genymotion.config.verbose)
+            println("Starting devices")
 
         //process declared devices
         project.genymotion.getDevices().each(){
 
             if(it.start){
-                println("Starting ${it.name}")
+                if (project.genymotion.config.verbose)
+                    println("Starting ${it.name}")
                 it.create()
                 it.start()
                 it.checkAndUpdate()
@@ -25,7 +26,9 @@ class GenymotionTask extends DefaultTask {
             }
         }
 
-        println("-- Running devices --")
-        GenymotionTool.getRunningDevices(true)
+        if (project.genymotion.config.verbose) {
+            println("-- Running devices --")
+            GenymotionTool.getRunningDevices(true)
+        }
     }
 }

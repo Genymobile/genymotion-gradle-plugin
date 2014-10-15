@@ -1,6 +1,7 @@
 package main.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GenymotionVDLaunch
+import org.gradle.api.Project
 
 /**
  * Created by eyal on 05/09/14.
@@ -8,15 +9,14 @@ import main.groovy.com.genymotion.GenymotionVDLaunch
 
 public class GenymotionDevices {
 
+    Project project
     def devices = []
 
-    //TODO add a reference to Project ?
-
     def add(GenymotionVDLaunch device) {
-        //check the device name exists
-        //TODO check if the device exists
-        println "add a device"
-        println device.toString()
+        if (project.genymotion.config.verbose){
+            println "Add a device"
+            println device.toString()
+        }
         this.devices.add(device)
     }
 
