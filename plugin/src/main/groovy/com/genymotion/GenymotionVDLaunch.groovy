@@ -25,8 +25,6 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     GenymotionVDLaunch(Map params) {
         super(params)
 
-        println "params "+params
-
         //if no params
         if(!params){
             throw invalidParameterException
