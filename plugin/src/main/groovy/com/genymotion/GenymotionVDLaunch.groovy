@@ -141,13 +141,15 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         GenymotionTool.pullFromDevice(this, pullAfter)
     }
 
-    static String getRandomName(){
+    static String getRandomName(String extension=null){
         int nameLength = 3
         String name = ""
         Random r = new Random()
         nameLength.times(){
             name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
         }
+        if(extension)
+            name += extension
         name
     }
 }
