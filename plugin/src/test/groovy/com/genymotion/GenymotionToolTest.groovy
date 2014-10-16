@@ -2,6 +2,7 @@ package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GenymotionTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
+import org.junit.After
 import org.junit.Test
 import org.junit.Before
 import org.gradle.api.Project
@@ -190,7 +191,6 @@ class GenymotionToolTest {
 
         if(exitCode == 0)
             GenymotionTool.stopDevice(name)
-
 
         assertTrue("Start failed", exitCode == 0)
     }

@@ -2,6 +2,7 @@ package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GenymotionEndTask
 import main.groovy.com.genymotion.GenymotionTask
+import org.junit.After
 
 import java.util.List
 import main.groovy.com.genymotion.GenymotionAdmin
@@ -247,4 +248,8 @@ class GenymotionGradlePluginTest {
     }
 */
 
+    @After
+    public void finishTest(){
+        GenymotionTestTools.cleanAfterTests()
+    }
 }

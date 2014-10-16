@@ -19,6 +19,7 @@ class GenymotionTestTools {
     ]
 
     static def init(){
+
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
 
@@ -74,6 +75,18 @@ class GenymotionTestTools {
                 deleteWhenFinish: deleteWhenFinish
         )
         [vdName, dpi, width, height, nbCpu, ram, deleteWhenFinish]
+    }
+
+
+    static void cleanAfterTests(){
+        return
+        def devices = GenymotionTool.getAllDevices()
+        def pattern = ~/\-junit$/
+
+        devices.each(){
+            if(pattern.match(it.name))
+                GenymotionTool.deleteDevice(it)
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import antlr.collections.List
 import main.groovy.com.genymotion.GenymotionTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.gradle.api.Project
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -60,5 +61,10 @@ class GenymotionTasksTest {
         project.tasks.genymotionFinish.exec()
 
         assertFalse(GenymotionTool.isDeviceCreated(vdName))
+    }
+
+    @After
+    public void finishTest(){
+        GenymotionTestTools.cleanAfterTests()
     }
 }
