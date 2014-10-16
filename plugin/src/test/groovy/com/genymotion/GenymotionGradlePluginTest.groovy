@@ -182,8 +182,8 @@ class GenymotionGradlePluginTest {
         assertEquals(intValue, device.dpi)
         assertEquals(intValue, device.width)
         assertEquals(intValue, device.height)
-//        assertEquals(false, device.physicalButton) //TODO uncomment when bug on gmtool is fixed
-//        assertEquals(false, device.navbar) //TODO uncomment when bug on gmtool is fixed
+//        assertEquals(false, device.virtualKeyboard) //TODO uncomment when bug on gmtool is fixed
+//        assertEquals(false, device.navbarVisible) //TODO uncomment when bug on gmtool is fixed
         assertEquals(1, device.nbCpu)
         assertEquals(2048, device.ram)
 

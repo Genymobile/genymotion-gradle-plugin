@@ -9,22 +9,21 @@ class GenymotionVirtualDevice {
     static String STATE_OFF = "Off"
 
     String name
-    String apiLevel
-    def dpi
+    String androidVersion
+    String genymotionVersion
     def width
     def height
-    def physicalButton
-    def navbar
+    String density
+    def dpi
     def nbCpu
     def ram
-    String ip
-    String state
-    String platform //p|t|pt
-    String path
-    String genymotionVersion
+    def telephony
+    def navbarVisible
+    def virtualKeyboard
     String uuid
-    String androidVersion
-
+    String path
+    String state
+    String ip
 
     GenymotionVirtualDevice(String name, boolean fill=false) {
         this.name = name;
@@ -36,11 +35,11 @@ class GenymotionVirtualDevice {
 
     GenymotionVirtualDevice(Map params) {
         if(params)
-            init(params.name, params.apiLevel, params.dpi, params.width, params.height, params.physicalButton, params.navbar, params.nbCpu, params.ram)
+            init(params.name, params.apiLevel, params.dpi, params.width, params.height, params.virtualKeyboard, params.navbarVisible, params.nbCpu, params.ram)
     }
 
-    GenymotionVirtualDevice(def name, def apiLevel, def dpi, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
-        init(name, apiLevel, dpi, width, height, physicalButton, navbar, nbCpu, ram)
+    GenymotionVirtualDevice(def name, def apiLevel, def dpi, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+        init(name, apiLevel, dpi, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
     }
 
     void init(def name, def apiLevel, def dpi, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
@@ -55,9 +54,9 @@ class GenymotionVirtualDevice {
         if(height)
             this.height = height.toInteger()
         if(physicalButton != null)
-            this.physicalButton = physicalButton.toBoolean()
+            this.virtualKeyboard = physicalButton.toBoolean()
         if(navbar != null)
-            this.navbar = navbar.toBoolean()
+            this.navbarVisible = navbar.toBoolean()
         if(nbCpu)
             this.nbCpu = nbCpu.toInteger()
         if(ram)
@@ -65,14 +64,14 @@ class GenymotionVirtualDevice {
     }
 
 
-    GenymotionVirtualDevice(String name, int apiLevel, int dpi, int width, int height, boolean physicalButton, boolean navbar, int nbCpu, int ram) {
+    GenymotionVirtualDevice(String name, int apiLevel, int dpi, int width, int height, boolean virtualKeyboard, boolean navbarVisible, int nbCpu, int ram) {
         this.name = name
         this.apiLevel = apiLevel
         this.dpi = dpi
         this.width = width
         this.height = height
-        this.physicalButton = physicalButton
-        this.navbar = navbar
+        this.virtualKeyboard = virtualKeyboard
+        this.navbarVisible = navbarVisible
         this.nbCpu = nbCpu
         this.ram = ram
     }
@@ -101,21 +100,12 @@ class GenymotionVirtualDevice {
         GenymotionTool.adbConnectDevice(this)
     }
 
-/*
-    String toString() {
-        String result = "Virtual Device - name:" //-- Virtual Device - name: ${name} api: ${apiLevel} w.h: ${width}x${height} button: ${physicalButton} navbar: ${navbar} nb cpu: ${nbCpu} ram: ${ram}"
-
-        result
-    }
-*/
-
     String toString() {
         String result = "-- Virtual Device --\n"
         result += "name: ${name}\n"
-        result += "api: ${apiLevel}\n"
         result += "w.h: ${width}x${height}\n"
-        result += "button: ${physicalButton}\n"
-        result += "navbar: ${navbar}\n"
+        result += "virtual keyboard: ${virtualKeyboard}\n"
+        result += "navbar : ${navbarVisible}\n"
         result += "nb cpu: ${nbCpu}\n"
         result += "ram: ${ram}\n"
 

@@ -11,7 +11,6 @@ import static org.junit.Assert.*
 
 class GenymotionTasksTest {
 
-
     Project project
 
     @Before
@@ -36,8 +35,8 @@ class GenymotionTasksTest {
         assertEquals(dpi, device.dpi)
         assertEquals(width, device.width)
         assertEquals(height, device.height)
-//        assertEquals(false, device.physicalButton) //TODO uncomment when bug on gmtool is fixed
-//        assertEquals(false, device.navbar) //TODO uncomment when bug on gmtool is fixed
+//        assertEquals(false, device.virtualKeyboard) //TODO uncomment when bug on gmtool is fixed
+//        assertEquals(false, device.navbarVisible) //TODO uncomment when bug on gmtool is fixed
         assertEquals(nbCpu, device.nbCpu)
         assertEquals(ram, device.ram)
 

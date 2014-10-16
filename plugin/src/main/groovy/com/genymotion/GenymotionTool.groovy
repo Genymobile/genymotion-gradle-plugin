@@ -9,7 +9,7 @@ class GenymotionTool {
 
     public static GenymotionConfig GENYMOTION_CONFIG = null
 
-    private static final String GENYTOOL =  "genymotion-tool"
+    private static final String GENYTOOL =  "gmtool"
 
     private static final String SETLICENSE =  "setlicense"
     private static final String CONFIG =  "config"
@@ -174,7 +174,7 @@ class GenymotionTool {
         def device
 
         //we skip the first lines
-        if (count < 4)
+        if (count < 2)
             return
 
         String[] infos = line.split('\\|')
@@ -224,7 +224,7 @@ class GenymotionTool {
 
             String[] info = line.split("\\:")
             switch (info[0].trim()){
-                case "name":
+                case "Name":
                     if(!template)
                         template = info[1].trim()
                     break
@@ -242,7 +242,7 @@ class GenymotionTool {
 
         def template = new GenymotionTemplate()
 
-        cmd([GENYTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
+        cmd([GENYTOOL, ADMIN, TEMPLATES, "--full"], verbose) { line, count ->
 
             //if empty line and template filled
             if (!line && template.name){
@@ -252,36 +252,51 @@ class GenymotionTool {
 
             String[] info = line.split("\\:")
             switch (info[0].trim()){
-                case "name":
+                case "Name":
                     if(!template.name)
                         template.name = info[1].trim()
                     break
-                case "uuid":
+                case "UUID":
                     template.uuid = info[1].trim()
                     break
-                case "androidVersion":
+                case "Description":
+                    template.description = info[1].trim()
+                    break
+                case "Android Version":
                     template.androidVersion = info[1].trim()
                     break
-                case "resolutionHeight":
-                    template.height = info[1].trim().toInteger()
+                case "Genymotion Version":
+                    template.genymotionVersion = info[1].trim()
                     break
-                case "resolutionWidth":
+                case "Screen Width":
                     template.width = info[1].trim().toInteger()
                     break
-                case "procNumber":
-                    template.nbCpu = info[1].trim().toInteger()
+                case "Screen Height":
+                    template.height = info[1].trim().toInteger()
                     break
-                case "density":
+                case "Screen Density":
+                    template.density = info[1].trim()
+                    break
+                case "Screen DPI":
                     template.dpi = info[1].trim().toInteger()
                     break
-                case "physicalButton":
-                    template.physicalButton = info[1].trim().toBoolean()
+                case "Nb CPU":
+                    template.nbCpu = info[1].trim().toInteger()
                     break
-                case "navbar":
-                    template.navbar = info[1].trim().toBoolean()
-                    break
-                case "memorySize":
+                case "RAM":
                     template.ram = info[1].trim().toInteger()
+                    break
+                case "Internal Storage":
+                    template.internalStorage = info[1].trim().toInteger()
+                    break
+                case "Telephony":
+                    template.telephony = info[1].trim().toBoolean()
+                    break
+                case "Nav Bar Visible":
+                    template.navbarVisible = info[1].trim().toBoolean()
+                    break
+                case "Virtual Keyboard":
+                    template.virtualKeyboard = info[1].trim().toBoolean()
                     break
             }
 
@@ -302,31 +317,31 @@ class GenymotionTool {
     }
 
     static def createDevice(GenymotionVirtualDevice device){
-        return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbCpu, device.ram)
+        return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
     }
 
-    static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
+    static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
 
         return noNull(){
             cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
-                 '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
+                 '--dpi='+dpi, '--width='+width, '--height='+height, '--virtualkeyboard='+virtualKeyboard, '--navbar='+navbarVisible, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
                 //TODO check the request's result
                 //TODO add the apiLevel into the created device
                 //if ok: return the device created
-                def device = new GenymotionVirtualDevice(deviceName, null, dpi, width, height, physicalButton, navbar, nbcpu, ram)
+                def device = new GenymotionVirtualDevice(deviceName, null, dpi, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
             }
         }
     }
 
     static def updateDevice(GenymotionVirtualDevice device){
-        return updateDevice(device.name, device.dpi, device.width, device.height, device.physicalButton, device.navbar, device.nbCpu, device.ram)
+        return updateDevice(device.name, device.dpi, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
     }
 
-    static def updateDevice(def deviceName, def dpi="", def width="", def height="", def physicalButton="", def navbar="", def nbcpu="", def ram=""){
+    static def updateDevice(def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
 
         return noNull(){
             return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
-                 '--dpi='+dpi, '--width='+width, '--height='+height, '--physicalbutton='+physicalButton, '--navbar='+navbar, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
+                 '--dpi='+dpi, '--width='+width, '--height='+height, '--virtualkeyboard='+virtualKeyboard, '--navbar='+navbarVisible, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
             }
         }
     }
@@ -380,58 +395,49 @@ class GenymotionTool {
                 case "Android Version":
                     device.androidVersion = info[1].trim()
                     break
-                case "Nb CPU":
-                    device.nbCpu = info[1].trim().toInteger()
-                    break
-                case "dpi":
-                    device.dpi = info[1].trim().toInteger()
-                    break
-                case "uuid":
-                    device.uuid = info[1].trim()
-                    break
                 case "Genymotion Version":
                     device.genymotionVersion = info[1].trim()
                     break
-                case "IP":
-                    device.ip = info[1].trim()
+                case "Screen Width":
+                    device.width = info[1].trim().toInteger()
                     break
-                case "Nav Bar Visible":
-                    device.navbar = info[1].trim().toBoolean()
+                case "Screen Height":
+                    device.height = info[1].trim().toInteger()
                     break
-                case "Path":
-                    device.path = info[1].trim()
+                case "Screen Density":
+                    device.density = info[1].trim()
                     break
-                case "Platform":
-                    device.platform = info[1].trim()
+                case "Screen DPI":
+                    device.dpi = info[1].trim().toInteger()
+                    break
+                case "Nb CPU":
+                    device.nbCpu = info[1].trim().toInteger()
                     break
                 case "RAM":
                     device.ram = info[1].trim().toInteger()
                     break
-                case "Resolution":
-                    String[] res = info[1].trim().split("x")
-                    device.height = res[0].toInteger()
-                    device.width = res[1].toInteger()
+                case "Telephony":
+                    device.telephony = info[1].trim().toBoolean()
+                    break
+                case "Nav Bar Visible":
+                    device.navbarVisible = info[1].trim().toBoolean()
+                    break
+                case "Virtual Keyboard":
+                    device.virtualKeyboard = info[1].trim().toBoolean()
+                    break
+                case "UUID":
+                    device.uuid = info[1].trim()
+                    break
+                case "Path":
+                    device.path = info[1].trim()
                     break
                 case "State":
                     device.state = info[1].trim()
                     break
+                case "IP":
+                    device.ip = info[1].trim()
+                    break
             }
-/*
-            Name                 : Google Nexus 5 - 4.4.2 - API 19 - 1080x1920
-            Android Version      : 4.4.2
-            Nb CPU               : 1
-            dpi                  : 480
-            uuid                 : 000000000000000
-            Genymotion Version   : 2.2.2
-            IP                   : 192.168.56.101
-            Nav Bar Visible      : 1
-            Path                 : /home/eyal/.Genymobile/Genymotion/deployed/Google Nexus 5 - 4.4.2 - API 19 - 1080x1920
-            Platform             : p
-            RAM                  : 2048
-            Resolution           : 1920x1080
-            State                : On
-*/
-
         }
         device
     }

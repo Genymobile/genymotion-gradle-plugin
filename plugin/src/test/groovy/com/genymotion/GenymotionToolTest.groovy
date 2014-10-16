@@ -125,13 +125,12 @@ class GenymotionToolTest {
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
         newDevice.fillFromDetails()
 
-        assertEquals(device.apiLevel, newDevice.apiLevel)
         assertEquals(device.androidVersion, newDevice.androidVersion)
         assertEquals(device.dpi, newDevice.dpi)
         assertEquals(device.height, newDevice.height)
         assertEquals(device.width, newDevice.width)
-        assertEquals(device.navbar, newDevice.navbar)
-        assertEquals(device.physicalButton, newDevice.physicalButton)
+        assertEquals(device.navbarVisible, newDevice.navbarVisible)
+        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
 
         GenymotionTool.deleteDevice(name)
         GenymotionTool.deleteDevice(newName)
@@ -145,11 +144,11 @@ class GenymotionToolTest {
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
 
-        device.navbar = false
+        device.navbarVisible = false
         device.height = 600
         device.width = 800
         device.dpi = 260
-        device.physicalButton = false
+        device.virtualKeyboard = false
         device.nbCpu = 2
         device.ram = 2048
 
@@ -158,14 +157,13 @@ class GenymotionToolTest {
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
         newDevice.fillFromDetails()
 
-        assertEquals(device.apiLevel, newDevice.apiLevel)
         assertEquals(device.androidVersion, newDevice.androidVersion)
         assertEquals(device.dpi, newDevice.dpi)
         assertEquals(device.height, newDevice.height)
         assertEquals(device.width, newDevice.width)
         //TODO enable these tests when gmtool will be fixed
-//        assertEquals(device.navbar, newDevice.navbar)
-//        assertEquals(device.physicalButton, newDevice.physicalButton)
+//        assertEquals(device.navbarVisible, newDevice.navbarVisible)
+//        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
 
         GenymotionTool.deleteDevice(name)
     }

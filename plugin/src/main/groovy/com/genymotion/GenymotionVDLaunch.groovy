@@ -1,7 +1,5 @@
 package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.*
-
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     private static RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
@@ -97,8 +95,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         if(!dpi?.equals(device.dpi) ||
            !width?.equals(device.width) ||
            !height?.equals(device.height) ||
-           !physicalButton == device.physicalButton ||
-           !navbar == device.navbar ||
+           !virtualKeyboard == device.virtualKeyboard ||
+           !navbarVisible == device.navbarVisible ||
            !nbCpu?.equals(device.nbCpu) ||
            !ram?.equals(device.ram)){
 
