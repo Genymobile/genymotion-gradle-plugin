@@ -379,10 +379,6 @@ class GenymotionTool {
         //we get the device details
         cmd([GENYTOOL, ADMIN, DETAILS, device.name], verbose){line, count ->
 
-            //we skip the first line
-            if(count < 1)
-                return
-
             String[] info = line.split("\\:")
             switch (info[0].trim()){
                 case "Name":
