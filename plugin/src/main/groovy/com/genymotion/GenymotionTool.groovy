@@ -40,6 +40,21 @@ class GenymotionTool {
     private static final String ADBDISCONNECT = "adbdisconnect"
     private static final String ADBCONNECT =   "adbconnect"
 
+    //code returned by gmtool or command line
+    public static final int RETURN_DEVICE_NOT_FOUND       = -1
+    public static final int RETURN_NO_ERROR               = 0
+    public static final int RETURN_GENERIC_ERROR          = 1
+    public static final int RETURN_NO_SUCH_ACTION         = 2
+    public static final int RETURN_CANT_LOGIN             = 3
+    public static final int RETURN_CANT_REGISTER_LICENSE  = 4
+    public static final int RETURN_CANT_ACTIVATE_LICENSE  = 5
+    public static final int RETURN_NO_ACTIVATED_LICENSE   = 6
+    public static final int RETURN_INVALID_LICENSE        = 7
+    public static final int RETURN_PENDING_ACTION         = 8
+    public static final int RETURN_ARGS_ERROR             = 9
+    public static final int RETURN_VM_NOT_STOPPED         = 10
+    public static final int RETURN_COMMAND_NOT_FOUND_UNIX = 127
+
 
     static def usage(){
         return cmd(GENYTOOL){line, count ->
