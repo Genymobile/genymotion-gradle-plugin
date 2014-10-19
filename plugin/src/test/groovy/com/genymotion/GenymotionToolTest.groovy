@@ -1,5 +1,6 @@
 package test.groovy.com.genymotion
 
+import main.groovy.com.genymotion.GMToolException
 import main.groovy.com.genymotion.GenymotionTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.junit.After
@@ -178,6 +179,14 @@ class GenymotionToolTest {
 
         assertTrue("Start failed", exitCode == 0)
     }
+
+    @Test(expected = GMToolException.class)
+    public void throwsWhenCommandError() {
+        GenymotionTool.GENYMOTION_CONFIG.abortOnError = true
+        GenymotionTool.getDevice("sqfqqfd", true)
+    }
+
+
 
 /*
     @Test

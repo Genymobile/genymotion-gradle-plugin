@@ -28,6 +28,7 @@ class GenymotionConfig {
     def max_cache_size = 0            //set la taille du cache a SIZE
     def log_path = ""                 //set le dossier de destination des logs a PATH
     def global_logs = true            //active les logs globaux (maybe accept true|false)
+    def abortOnError = false           //abort the task execution if a GMTool error occurs
 
     //task configs
     def taskLaunch = DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task

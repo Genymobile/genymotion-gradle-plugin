@@ -319,15 +319,16 @@ class GenymotionTool {
 
     static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
 
-        return noNull(){
+        def exitValue = noNull(){
             cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
                  '--dpi='+dpi, '--width='+width, '--height='+height, '--virtualkeyboard='+virtualKeyboard, '--navbar='+navbarVisible, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
-                //TODO check the request's result
-                //TODO add the apiLevel into the created device
-                //if ok: return the device created
-                def device = new GenymotionVirtualDevice(deviceName, null, dpi, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
             }
         }
+
+        if(exitValue == RETURN_NO_ERROR)
+            return new GenymotionVirtualDevice(deviceName, dpi, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
+        else
+            return exitValue
     }
 
     static def updateDevice(GenymotionVirtualDevice device){
@@ -349,7 +350,6 @@ class GenymotionTool {
 
     static def deleteDevice(def deviceName){
         return cmd([GENYTOOL, ADMIN, DELETE, deviceName]){line, count ->
-            //TODO check the request's result
         }
     }
 
@@ -359,7 +359,6 @@ class GenymotionTool {
 
     static def cloneDevice(def deviceName, def newName){
         return cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName]){line, count ->
-            //TODO check the request's result
         }
     }
 
@@ -369,7 +368,7 @@ class GenymotionTool {
             return null
 
         def device = new GenymotionVirtualDevice(name)
-        device = getDevice(device, verbose)
+        return getDevice(device, verbose)
     }
 
     static def getDevice(def device, boolean verbose=false){
@@ -454,7 +453,6 @@ class GenymotionTool {
 
     static def restartDevice(def deviceName){
         return cmd([GENYTOOL, ADMIN, RESTART, deviceName]){line, count ->
-            //TODO check the request's result
         }
     }
 
@@ -464,13 +462,11 @@ class GenymotionTool {
 
     static def stopDevice(def deviceName){
         return cmd([GENYTOOL, ADMIN, STOP, deviceName]){line, count ->
-            //TODO check the request's result
         }
     }
 
     static def stopAllDevices(){
         return cmd([GENYTOOL, ADMIN, STOPALL]){line, count ->
-            //TODO check the request's result
         }
     }
 
@@ -480,14 +476,21 @@ class GenymotionTool {
 
     static def resetDevice(def deviceName){
         return cmd([GENYTOOL, ADMIN, START, RESET, deviceName]){line, count ->
-            //TODO check the request's result
         }
     }
 
-    static def startAutoDevice(def template, def apiLevel){
-        def device = createDevice(template, apiLevel, "")
-        return startDevice(device)
-        //TODO check if we need to provide a name
+    static def startAutoDevice(def template, def deviceName){
+        def device = createDevice(template, deviceName)
+
+        if(!device instanceof GenymotionVirtualDevice)
+            return device
+
+        def startExit = startDevice(device)
+
+        if(startExit == RETURN_NO_ERROR)
+            return device
+        else
+            return startExit
     }
 
 
@@ -504,6 +507,8 @@ class GenymotionTool {
         if(!files)
             return false
 
+        def exitValues = []
+
         files.each(){
 
             def command = [GENYTOOL, DEVICE, deviceName, PUSH]
@@ -512,10 +517,12 @@ class GenymotionTool {
             else
                 command.push(it)
 
-            cmd(command){line, count ->
+            int exitValue = cmd(command){line, count ->
             }
+            exitValues.add(exitValue)
         }
-        //TODO Check the result when exit codes will be implemented on gmtool
+
+        return exitValues
     }
 
     static def pullFromDevice(GenymotionVirtualDevice device, def files){
@@ -527,6 +534,8 @@ class GenymotionTool {
         if(!files)
             return false
 
+        def exitValues = []
+
         files.each(){
 
             def command = [GENYTOOL, DEVICE, deviceName, PULL]
@@ -535,10 +544,12 @@ class GenymotionTool {
             else
                 command.push(it)
 
-            cmd(command){line, count ->
+            int exitValue = cmd(command){line, count ->
             }
+            exitValues.add(exitValue)
         }
-        //TODO Check the result when exit codes will be implemented on gmtool
+
+        return exitValues
     }
 
     static def installToDevice(GenymotionVirtualDevice device, def apks){
@@ -555,16 +566,18 @@ class GenymotionTool {
             }
 
         } else if(apks instanceof String[]){
+            def exitValues = []
             apks.each(){
-                cmd([GENYTOOL, DEVICE, deviceName, INSTALL, it]){line, count ->
+                int exitValue = cmd([GENYTOOL, DEVICE, deviceName, INSTALL, it]){line, count ->
                 }
+                exitValues.add(exitValue)
             }
+            return exitValues
         }
-        //TODO Check the result when exit codes will be implemented on gmtool
     }
 
     static def flashDevice(GenymotionVirtualDevice device, def zips){
-        flashDevice(device.name, zips)
+        return flashDevice(device.name, zips)
     }
 
     static def flashDevice(def deviceName, def zips){
@@ -573,46 +586,45 @@ class GenymotionTool {
             return false
 
         if(zips instanceof String){
-            cmd([GENYTOOL, DEVICE, deviceName, FLASH, zips]){line, count ->
+            return cmd([GENYTOOL, DEVICE, deviceName, FLASH, zips]){line, count ->
             }
 
         } else if(zips instanceof String[]){
+            def exitValues = []
             zips.each(){
-                cmd([GENYTOOL, DEVICE, deviceName, FLASH, it]){line, count ->
+                int exitValue = cmd([GENYTOOL, DEVICE, deviceName, FLASH, it]){line, count ->
                 }
+                exitValues.add(exitValue)
             }
+            return exitValues
         }
-        //TODO Check the result when exit codes will be implemented on gmtool
     }
 
     static def adbDisconnectDevice(GenymotionVirtualDevice device){
-        adbDisconnectDevice(device.name)
+        return adbDisconnectDevice(device.name)
     }
 
     static def adbDisconnectDevice(def deviceName){
-        cmd([GENYTOOL, DEVICE, deviceName, ADBDISCONNECT]){line, count ->
+        return cmd([GENYTOOL, DEVICE, deviceName, ADBDISCONNECT]){line, count ->
         }
-        //TODO Check the request's feedback
     }
 
     static def adbConnectDevice(GenymotionVirtualDevice device){
-        adbConnectDevice(device.name)
+        return adbConnectDevice(device.name)
     }
 
     static def adbConnectDevice(def deviceName){
-        cmd([GENYTOOL, DEVICE, deviceName, ADBCONNECT]){line, count ->
+        return cmd([GENYTOOL, DEVICE, deviceName, ADBCONNECT]){line, count ->
         }
-        //TODO Check the request's feedback
     }
 
     static def routeLogcat(GenymotionVirtualDevice device, path){
-        routeLogcatDevice(device.name, path)
+        return routeLogcat(device.name, path)
     }
 
     static def routeLogcat(def deviceName, def path){
-        cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path]){line, count ->
+        return cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path]){line, count ->
         }
-        //TODO Check the request's feedback
     }
 
 
@@ -657,7 +669,6 @@ class GenymotionTool {
         p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
 
         if(verbose){
-            println "error:" + error.toString()
             println "out:" + out.toString()
         }
 
@@ -665,10 +676,22 @@ class GenymotionTool {
             c(line, count)
         }
 
-        return p.exitValue()
+        return handleExitValue(p.exitValue(), error)
     }
 
-    /**
+    static def handleExitValue(int exitValue, StringBuffer error) {
+        if(exitValue == RETURN_NO_ERROR){
+            //do nothing
+        } else {
+            println "error: "+error.toString()
+
+            if(GENYMOTION_CONFIG.abortOnError){
+                throw new GMToolException("GMTool command failed. Error code: $exitValue. Check the output to solve the problem")
+            }
+        }
+        exitValue
+    }
+/**
      * Avoid null.toString returning "null"
      *
      * @param c the code to execute
