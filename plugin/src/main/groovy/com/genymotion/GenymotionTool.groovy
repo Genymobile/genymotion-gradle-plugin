@@ -11,11 +11,11 @@ class GenymotionTool {
 
     private static final String GENYTOOL =  "gmtool"
 
+    //root actions
     private static final String SETLICENSE =  "setlicense"
     private static final String CONFIG =  "config"
     private static final String LOGZIP =  "logzip"
-
-
+    //admin actions
     private static final String ADMIN =     "admin"
     private static final String LIST =         "list" //"VBoxManage list "
     private static final String TEMPLATES =    "templates"
@@ -30,7 +30,7 @@ class GenymotionTool {
     private static final String STOPALL =      "stopall"
     private static final String RESET =        "factoryreset"
     private static final String STARTAUTO =    ""//TODO
-
+    //device actions
     private static final String DEVICE =    "device"
     private static final String PUSH =         "push"
     private static final String PULL =         "pull"
