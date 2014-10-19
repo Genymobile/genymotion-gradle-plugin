@@ -16,10 +16,10 @@ class GenymotionGradlePlugin implements Plugin<Project> {
         println "adding Genymotion plugin"
         project.extensions.create('genymotion', GenymotionPluginExtension, project);
         project.genymotion.extensions.create('config', GenymotionConfig); //the extension name have to be different from the original nested element's name (receiver)
-        project.genymotion.extensions.create('admin', GenymotionAdmin); //the extension name have to be different from the original nested element's name (receiver)
+        project.genymotion.extensions.create('admin', GMToolAdmin); //the extension name have to be different from the original nested element's name (receiver)
         project.genymotion.extensions.create('devices', GenymotionDevices); //the extension name have to be different from the original nested element's name (receiver)
 
-        project.task(TASK_LAUNCH, type: GenymotionTask){
+        project.task(TASK_LAUNCH, type: GenymotionLaunchTask){
             description 'Starting task for Genymotion plugin'
             group PLUGIN_GROUP
         }
@@ -29,7 +29,7 @@ class GenymotionGradlePlugin implements Plugin<Project> {
         }
 
         //we set the config inside the GenymotionTool
-        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
+        GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
         project.afterEvaluate {
 

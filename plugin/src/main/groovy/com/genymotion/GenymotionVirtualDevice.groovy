@@ -74,27 +74,27 @@ class GenymotionVirtualDevice {
     }
 
     def start(){
-        GenymotionTool.startDevice(this)
+        GMTool.startDevice(this)
     }
 
     def restart(){
-        GenymotionTool.restartDevice(this)
+        GMTool.restartDevice(this)
     }
 
     def stop(){
-        GenymotionTool.stopDevice(this)
+        GMTool.stopDevice(this)
     }
 
     def reset(){
-        GenymotionTool.resetDevice(this)
+        GMTool.resetDevice(this)
     }
 
     def adbdisconnect(){
-        GenymotionTool.adbDisconnectDevice(this)
+        GMTool.adbDisconnectDevice(this)
     }
 
     def adbconnect(){
-        GenymotionTool.adbConnectDevice(this)
+        GMTool.adbConnectDevice(this)
     }
 
     String toString() {
@@ -117,6 +117,6 @@ class GenymotionVirtualDevice {
     }
 
     def fillFromDetails(boolean verbose=false){
-        GenymotionTool.getDevice(this, verbose)
+        GMTool.getDevice(this, verbose)
     }
 }

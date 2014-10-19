@@ -5,7 +5,7 @@ import org.codehaus.groovy.runtime.NullObject
 /**
  * Created by eyal on 10/09/14.
  */
-class GenymotionTool {
+class GMTool {
 
     public static GenymotionConfig GENYMOTION_CONFIG = null
 
@@ -192,7 +192,7 @@ class GenymotionTool {
         //we check if the VD name already exists
         boolean alreadyExists = false
 
-        def devices = GenymotionTool.getAllDevices(false, false)
+        def devices = GMTool.getAllDevices(false, false)
 
         devices.each(){
             if(it.name.equals(name))

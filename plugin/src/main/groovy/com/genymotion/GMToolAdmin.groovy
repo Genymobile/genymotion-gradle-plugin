@@ -3,7 +3,7 @@ package main.groovy.com.genymotion
  * Created by eyal on 05/09/14.
  */
 
-class GenymotionAdmin {
+class GMToolAdmin {
 
     /**
      * List available templates

@@ -7,7 +7,7 @@ class GenymotionPluginExtension {
 
     final Project project
     def genymotionConfig = new GenymotionConfig()
-    def genymotionAdmin = new GenymotionAdmin()
+    def genymotionAdmin = new GMToolAdmin()
     def genymotionDevices = new GenymotionDevices()
 
 

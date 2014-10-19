@@ -1,6 +1,6 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GenymotionTool
+import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVDLaunch
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
@@ -8,7 +8,7 @@ import org.gradle.api.Project
 /**
  * Created by eyal on 08/10/14.
  */
-class GenymotionTestTools {
+class TestTools {
 
     static def GENYMOTION_PATH = "/home/eyal/genymotion/genymotion-softs/build/"
 
@@ -25,20 +25,20 @@ class GenymotionTestTools {
 
         project.genymotion.config.genymotionPath = GENYMOTION_PATH
         //we set the config inside the GenymotionTool
-        GenymotionTool.GENYMOTION_CONFIG = project.genymotion.config
+        GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
         project
     }
 
     static void deleteAllDevices() {
         DEVICES.each() { key, value ->
-            GenymotionTool.deleteDevice(key)
+            GMTool.deleteDevice(key)
         }
     }
 
     static void createAllDevices() {
         DEVICES.each() { key, value ->
-            GenymotionTool.createDevice(value, key)
+            GMTool.createDevice(value, key)
         }
     }
 
@@ -49,7 +49,7 @@ class GenymotionTestTools {
 
         String[] keys = DEVICES.keySet() as String[]
         String name = keys[index]
-        GenymotionTool.createDevice(DEVICES[name], name)
+        GMTool.createDevice(DEVICES[name], name)
         name
     }
 
@@ -80,13 +80,15 @@ class GenymotionTestTools {
 
     static void cleanAfterTests(){
 
-        def devices = GenymotionTool.getAllDevices()
-        def pattern = ~/\-junit$/
+        try{
+            def devices = GMTool.getAllDevices()
+            def pattern = ~/\-junit$/
 
-        devices.each(){
-            if(pattern.matcher(it.name).matches())
-                GenymotionTool.deleteDevice(it)
-        }
+            devices.each(){
+                if(pattern.matcher(it.name).matches())
+                    GMTool.deleteDevice(it)
+            }
+        } catch (Exception e){}
     }
 
 }

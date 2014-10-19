@@ -1,6 +1,6 @@
 package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GenymotionTool
+import main.groovy.com.genymotion.GMTool
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

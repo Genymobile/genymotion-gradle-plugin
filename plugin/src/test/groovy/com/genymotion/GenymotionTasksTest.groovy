@@ -1,7 +1,6 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GMToolException
-import main.groovy.com.genymotion.GenymotionTool
+import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVDLaunch
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.gradle.api.Project
@@ -19,17 +18,17 @@ class GenymotionTasksTest {
 
     @Before
     public void setUp() {
-        project = GenymotionTestTools.init()
+        project = TestTools.init()
     }
 
     @Test
     public void canLaunch() {
 
-        def (String vdName, int dpi, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = GenymotionTestTools.createADetailedDevice(project)
+        def (String vdName, int dpi, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
-        GenymotionVirtualDevice device = GenymotionTool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
 
         //we test the VDLaunch
         assertEquals(true, project.genymotion.devices[0].start)
@@ -50,20 +49,20 @@ class GenymotionTasksTest {
 
         //TODO test push, install, flash
 
-        GenymotionTool.stopDevice(vdName)
-        GenymotionTool.deleteDevice(vdName)
+        GMTool.stopDevice(vdName)
+        GMTool.deleteDevice(vdName)
     }
 
     @Test
     public void canFinish() {
 
-        def (String vdName, int dpi, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = GenymotionTestTools.createADetailedDevice(project)
+        def (String vdName, int dpi, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
         project.tasks.genymotionFinish.exec()
 
-        assertFalse(GenymotionTool.isDeviceCreated(vdName))
+        assertFalse(GMTool.isDeviceCreated(vdName))
     }
 
     @Test
@@ -83,13 +82,13 @@ class GenymotionTasksTest {
             fail("Expected GMToolException to be thrown")
 
         } catch (IOException e){ //TODO check how we can produce GMToolException instead of IOException
-            assertFalse(GenymotionTool.isDeviceCreated(deviceToDelete))
+            assertFalse(GMTool.isDeviceCreated(deviceToDelete))
             assertTrue(devicesAreStopped(project.genymotion.devices))
         }
     }
 
     boolean devicesAreStopped(def devices) {
-        def stoppedDevices = GenymotionTool.getRunningDevices(false, false, true)
+        def stoppedDevices = GMTool.getRunningDevices(false, false, true)
         devices.each(){
             if(!it.deleteWhenFinish && !stoppedDevices.contains(it.name))
                 return false
@@ -98,6 +97,6 @@ class GenymotionTasksTest {
 
     @After
     public void finishTest(){
-        GenymotionTestTools.cleanAfterTests()
+        TestTools.cleanAfterTests()
     }
 }

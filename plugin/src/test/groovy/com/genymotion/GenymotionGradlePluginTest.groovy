@@ -1,13 +1,13 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GenymotionEndTask
-import main.groovy.com.genymotion.GenymotionTask
+import main.groovy.com.genymotion.GenymotionLaunchTask
 import org.junit.After
 
 import java.util.List
-import main.groovy.com.genymotion.GenymotionAdmin
+import main.groovy.com.genymotion.GMToolAdmin
 import main.groovy.com.genymotion.GenymotionConfig
-import main.groovy.com.genymotion.GenymotionTool
+import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import main.groovy.com.genymotion.GenymotionPluginExtension
 import org.junit.Before
@@ -24,12 +24,12 @@ class GenymotionGradlePluginTest {
 
     @Before
     public void setUp() {
-        project = GenymotionTestTools.init()
+        project = TestTools.init()
     }
 
     @Test
     public void canAddsTaskToProject() {
-        assertTrue(project.tasks.genymotionLaunch instanceof GenymotionTask)
+        assertTrue(project.tasks.genymotionLaunch instanceof GenymotionLaunchTask)
         assertTrue(project.tasks.genymotionFinish instanceof GenymotionEndTask)
     }
 
@@ -37,7 +37,7 @@ class GenymotionGradlePluginTest {
     public void canAddExtensionToProject() {
         assertTrue(project.genymotion instanceof GenymotionPluginExtension)
         assertTrue(project.genymotion.config instanceof GenymotionConfig)
-        assertTrue(project.genymotion.admin instanceof GenymotionAdmin)
+        assertTrue(project.genymotion.admin instanceof GMToolAdmin)
         assertTrue(project.genymotion.devices instanceof List)
     }
 
@@ -89,37 +89,37 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddDeviceToLaunchByName(){
 
-        String vdName = GenymotionTestTools.createADevice()
+        String vdName = TestTools.createADevice()
 
         project.genymotion.device(name:vdName)
         assertNull(project.genymotion.devices[0].template)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
-        GenymotionTool.deleteDevice(vdName)
+        GMTool.deleteDevice(vdName)
     }
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplate(){
 
-        String vdName = GenymotionTestTools.createADevice()
+        String vdName = TestTools.createADevice()
 
         project.genymotion.device(name:vdName, template: "Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
         assertNull(project.genymotion.devices[0].template)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
-        GenymotionTool.deleteDevice(vdName)
+        GMTool.deleteDevice(vdName)
     }
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated(){
 
-        String vdName = GenymotionTestTools.createADevice()
+        String vdName = TestTools.createADevice()
 
         project.genymotion.device(name:vdName, template: "frtfgfdgtgsgrGFGFDGFD")
         assertNull(project.genymotion.devices[0].template)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
-        GenymotionTool.deleteDevice(vdName)
+        GMTool.deleteDevice(vdName)
     }
 
     @Test
@@ -157,7 +157,7 @@ class GenymotionGradlePluginTest {
     public void canUpdateDeviceBeforeLaunch(){
 
         String vdName = "OKOK"
-        GenymotionTool.deleteDevice(vdName)
+        GMTool.deleteDevice(vdName)
 
         int intValue = 999
 
@@ -179,7 +179,7 @@ class GenymotionGradlePluginTest {
         project.genymotion.devices[0].create()
         project.genymotion.devices[0].checkAndUpdate()
 
-        GenymotionVirtualDevice device = GenymotionTool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
         assertEquals(intValue, device.dpi)
         assertEquals(intValue, device.width)
         assertEquals(intValue, device.height)
@@ -188,8 +188,9 @@ class GenymotionGradlePluginTest {
         assertEquals(1, device.nbCpu)
         assertEquals(2048, device.ram)
 
-        GenymotionTool.deleteDevice(vdName)
+        GMTool.deleteDevice(vdName)
     }
+
 
 /*
     @Test
@@ -250,6 +251,6 @@ class GenymotionGradlePluginTest {
 
     @After
     public void finishTest(){
-        GenymotionTestTools.cleanAfterTests()
+        TestTools.cleanAfterTests()
     }
 }

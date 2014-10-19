@@ -1,7 +1,7 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GMToolException
-import main.groovy.com.genymotion.GenymotionTool
+import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.junit.After
 import org.junit.Test
@@ -13,66 +13,66 @@ import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
 
-class GenymotionToolTest {
+class GMToolTest {
 
 
     Project project
 
     @Before
     public void setUp() {
-        project = GenymotionTestTools.init()
+        project = TestTools.init()
     }
 
     @Test
     public void isConfigOK() {
-        def exitCode = GenymotionTool.usage()
-        assertTrue("Genymotion not accessible, check the GENYMOTION_PATH variable", exitCode == GenymotionTool.RETURN_NO_ERROR)
+        def exitCode = GMTool.usage()
+        assertTrue("Genymotion not accessible, check the GENYMOTION_PATH variable", exitCode == GMTool.RETURN_NO_ERROR)
     }
 
 
     @Test
     public void isTemplatesAvailable() {
 
-        def templates = GenymotionTool.getTemplates(true)
+        def templates = GMTool.getTemplates(true)
         assertTrue("No template found", templates.size() > 0)
         assertTrue("Empty template", (templates[0].name?.trim()) as boolean)
     }
 
     @Test
     public void canGetRunningDevices() {
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        GenymotionTool.startDevice(name)
-        def devices = GenymotionTool.getRunningDevices(true, false, true)
+        GMTool.startDevice(name)
+        def devices = GMTool.getRunningDevices(true, false, true)
 
         println  "devices " + devices
         assertTrue("Error, device not running", devices.contains(name))
 
-        GenymotionTool.stopDevice(name)
+        GMTool.stopDevice(name)
 
-        GenymotionTool.deleteDevice(name)
+        GMTool.deleteDevice(name)
     }
 
     @Test
     public void canGetStoppedDevices() {
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        GenymotionTool.stopDevice(name)
-        def devices = GenymotionTool.getStoppedDevices(true, false, true)
+        GMTool.stopDevice(name)
+        def devices = GMTool.getStoppedDevices(true, false, true)
 
         assertTrue("Error, device not stopped", devices.contains(name))
 
-        GenymotionTool.deleteDevice(name)
+        GMTool.deleteDevice(name)
     }
 
 
     @Test
     public void canCreateDevice() {
-        GenymotionTestTools.createAllDevices()
+        TestTools.createAllDevices()
 
-        def devices = GenymotionTool.getAllDevices(true)
+        def devices = GMTool.getAllDevices(true)
 
-        GenymotionTestTools.DEVICES.each() { key, value ->
+        TestTools.DEVICES.each() { key, value ->
             boolean exists = false
             devices.each() {
                 if(it.name == key){
@@ -83,13 +83,13 @@ class GenymotionToolTest {
             assertTrue("${key} not found. Test failed", exists)
 
         }
-        GenymotionTestTools.deleteAllDevices()
+        TestTools.deleteAllDevices()
     }
 
     @Test
     public void canDetailDevice() {
 
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -98,31 +98,31 @@ class GenymotionToolTest {
         assertNotNull(device.androidVersion)
         assertNotNull(device.state)
 
-        GenymotionTool.deleteDevice(name)
+        GMTool.deleteDevice(name)
     }
 
     @Test
     public void canListDevices() {
 
-        GenymotionTestTools.createAllDevices()
+        TestTools.createAllDevices()
 
-        def devices = GenymotionTool.getAllDevices()
+        def devices = GMTool.getAllDevices()
         assert devices.size() > 0
 
 
-        GenymotionTestTools.deleteAllDevices()
+        TestTools.deleteAllDevices()
     }
 
     @Test
     public void canCloneDevice() {
 
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
 
         def newName = name+"-clone"
-        GenymotionTool.cloneDevice(device, newName)
+        GMTool.cloneDevice(device, newName)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
         newDevice.fillFromDetails()
@@ -134,14 +134,14 @@ class GenymotionToolTest {
         assertEquals(device.navbarVisible, newDevice.navbarVisible)
         assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
 
-        GenymotionTool.deleteDevice(name)
-        GenymotionTool.deleteDevice(newName)
+        GMTool.deleteDevice(name)
+        GMTool.deleteDevice(newName)
     }
 
     @Test
     public void canUpdateDevice() {
 
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -154,7 +154,7 @@ class GenymotionToolTest {
         device.nbCpu = 2
         device.ram = 2048
 
-        GenymotionTool.updateDevice(device)
+        GMTool.updateDevice(device)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
         newDevice.fillFromDetails()
@@ -167,23 +167,23 @@ class GenymotionToolTest {
 //        assertEquals(device.navbarVisible, newDevice.navbarVisible)
 //        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
 
-        GenymotionTool.deleteDevice(name)
+        GMTool.deleteDevice(name)
     }
 
     @Test
     public void canStartDevice() {
 
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        def exitCode = GenymotionTool.startDevice(name)
+        def exitCode = GMTool.startDevice(name)
 
         assertTrue("Start failed", exitCode == 0)
     }
 
     @Test(expected = GMToolException.class)
     public void throwsWhenCommandError() {
-        GenymotionTool.GENYMOTION_CONFIG.abortOnError = true
-        GenymotionTool.getDevice("sqfqqfd", true)
+        GMTool.GENYMOTION_CONFIG.abortOnError = true
+        GMTool.getDevice("sqfqqfd", true)
     }
 
 
@@ -238,4 +238,66 @@ class GenymotionToolTest {
 
     }
 */
+
+/*
+    @Test
+    public void canInstallToDevice() {
+
+        //TODO
+        String name = GenymotionTestTools.createADevice()
+
+        def exitCode = GenymotionTool.startDevice(name)
+        GenymotionTool.installToDevice(name, apks)
+
+        assertTrue("Start failed", exitCode == 0)
+    }
+*/
+
+/*
+    @Test
+    public void canPushToDevice() {
+
+        //TODO
+        String name = GenymotionTestTools.createADevice()
+
+        def exitCode = GenymotionTool.startDevice(name)
+        GenymotionTool.installToDevice(name, )
+
+        assertTrue("Start failed", exitCode == 0)
+    }
+*/
+
+/*
+    @Test
+    public void canPullFromDevice() {
+
+        //TODO
+        String name = GenymotionTestTools.createADevice()
+
+        def exitCode = GenymotionTool.startDevice(name)
+        GenymotionTool.installToDevice(name, )
+
+        assertTrue("Start failed", exitCode == 0)
+    }
+*/
+
+/*
+    @Test
+    public void canFlashDevice() {
+
+        //TODO
+        String name = GenymotionTestTools.createADevice()
+
+        def exitCode = GenymotionTool.startDevice(name)
+        GenymotionTool.installToDevice(name, )
+
+        assertTrue("Start failed", exitCode == 0)
+    }
+*/
+
+    @After
+    public void finishTest(){
+        TestTools.cleanAfterTests()
+    }
+
 }

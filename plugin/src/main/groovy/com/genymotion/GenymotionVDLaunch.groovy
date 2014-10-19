@@ -28,8 +28,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             throw invalidParameterException
         }
 
-        boolean deviceExists = GenymotionTool.isDeviceCreated(params.name)
-        boolean templateExists = GenymotionTool.isTemplateExists(params.template)
+        boolean deviceExists = GMTool.isDeviceCreated(params.name)
+        boolean templateExists = GMTool.isTemplateExists(params.template)
 
         //if name & template are null or not existing
         if(!deviceExists && !templateExists){
@@ -86,7 +86,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
 
     boolean checkAndUpdate(){
-        if(!GenymotionTool.isDeviceCreated(this.name))
+        if(!GMTool.isDeviceCreated(this.name))
             return false
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
@@ -100,7 +100,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
            !nbCpu?.equals(device.nbCpu) ||
            !ram?.equals(device.ram)){
 
-            return GenymotionTool.updateDevice(this)
+            return GMTool.updateDevice(this)
         }
 
         false
@@ -108,33 +108,33 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     def create(){
         if(create)
-            GenymotionTool.createDevice(this)
+            GMTool.createDevice(this)
         this.create = false
     }
 
 
     def flash(){
-        GenymotionTool.flashDevice(this, flash)
+        GMTool.flashDevice(this, flash)
     }
 
     def install(){
-        GenymotionTool.installToDevice(this, install)
+        GMTool.installToDevice(this, install)
     }
 
     def pushBefore(){
-        GenymotionTool.pushToDevice(this, pushBefore)
+        GMTool.pushToDevice(this, pushBefore)
     }
 
     def pullBefore(){
-        GenymotionTool.pullFromDevice(this, pullBefore)
+        GMTool.pullFromDevice(this, pullBefore)
     }
 
     def pushAfter(){
-        GenymotionTool.pushToDevice(this, pushAfter)
+        GMTool.pushToDevice(this, pushAfter)
     }
 
     def pullAfter(){
-        GenymotionTool.pullFromDevice(this, pullAfter)
+        GMTool.pullFromDevice(this, pullAfter)
     }
 
     static String getRandomName(String extension=null){
