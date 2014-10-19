@@ -127,9 +127,9 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.device(template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
 
-        assertNotNull(project.genymotion.devices[0])
-        assertNotNull(project.genymotion.devices[0].name)
-        assertTrue(project.genymotion.devices[0].create)
+        assertNotNull("No device found", project.genymotion.devices[0])
+        assertNotNull("Device not filled", project.genymotion.devices[0].name)
+        assertTrue("Device not created", project.genymotion.devices[0].create)
         assertTrue(project.genymotion.devices[0].deleteWhenFinish)
     }
 
@@ -138,10 +138,10 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.device(template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280", name: "dfsdgffgdgqsdg")
 
-        assertNotNull(project.genymotion.devices[0])
-        assertNotNull(project.genymotion.devices[0].name)
-        assertTrue(project.genymotion.devices[0].create)
-        assertFalse(project.genymotion.devices[0].deleteWhenFinish)
+        assertNotNull("No device found", project.genymotion.devices[0])
+        assertNotNull("Device not filled", project.genymotion.devices[0].name)
+        assertTrue("Device not created", project.genymotion.devices[0].create)
+        assertTrue(project.genymotion.devices[0].deleteWhenFinish)
     }
 
 
