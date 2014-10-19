@@ -309,8 +309,12 @@ class GenymotionTool {
         templates.contains(template)
     }
 
-    static def createDevice(GenymotionVirtualDevice device){
-        return createDevice(device.template, device.name, device.dpi, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
+    static def createDevice(GenymotionVDLaunch device){
+        return createDevice(device.template, device.name)
+    }
+
+    static def createDevice(GenymotionTemplate template){
+        return createDevice(template.name, template.name)
     }
 
     static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
