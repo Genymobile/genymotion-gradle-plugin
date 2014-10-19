@@ -23,17 +23,4 @@ class GenymotionTemplate {
 
     GenymotionTemplate() {
     }
-
-    GenymotionTemplate(String name, String apiLevel, String vdName, int dpi, int width, int height, boolean virtualKeyboard, boolean navbarVisible, int nbCpu, int ram) {
-        this.name = name
-        this.apiLevel = apiLevel
-        this.vdName = vdName
-        this.dpi = dpi
-        this.width = width
-        this.height = height
-        this.virtualKeyboard = virtualKeyboard
-        this.navbarVisible = navbarVisible
-        this.nbCpu = nbCpu
-        this.ram = ram
-    }
 }
