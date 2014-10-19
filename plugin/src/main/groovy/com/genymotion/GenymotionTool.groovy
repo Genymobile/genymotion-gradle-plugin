@@ -97,28 +97,6 @@ class GenymotionTool {
     static def config(){
         //TODO implement when gmtool is ready
 
-/*
-   telemetry = [on|off] active les stats de telemetry
-   notifs = [on|off] active les notifs
-   login = VALUE  set le login a VALUE
-   password = VALUE  set le pass a VALUE
-   store_credentials = [on|off]
-   licence_key = VALUE  set la clé d enregistrement a value
-   proxy_status = [on|off]
-   proxy_address = ADDRESS  set l adresse du proxy a ADRESS
-   proxy_port = PORT  set le port du proxy a PORT
-   proxy_protocol = PROTOCOL  définit le protocole du proxy, voir avec ced pour plus d infos
-   configuration_path = PATH  set le dossier ou sont stockées les configs
-   sdk_path = PATH  set le dossier du sdk alternatif
-   use_custom_sdk = [on|off]  utilise le sdk alternatif
-   storage_path = PATH  set le dossier de stockage des screenshots
-   max_cache_size = SIZE  set la taille du cache a SIZE
-   log_path = PATH  set le dossier de destination des logs a PATH
-   global_logs [on|off] active les logs globaux
-
-        return cmd([GENYTOOL, SETLICENSE, license]){line, count ->
-        }
-*/
     }
 
 
