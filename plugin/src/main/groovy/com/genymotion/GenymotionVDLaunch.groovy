@@ -13,7 +13,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     def install
     def flash
     String logcat
-    boolean deleteWhenFinish = false
+    boolean deleteWhenFinish = true
     private boolean create = false
 
 
