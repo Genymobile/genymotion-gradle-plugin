@@ -57,7 +57,7 @@ class GenymotionTool {
 
 
     static def usage(){
-        return cmd(GENYTOOL){line, count ->
+        return cmd([GENYTOOL, "-h"]){line, count ->
         }
     }
 

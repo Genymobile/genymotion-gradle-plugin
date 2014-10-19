@@ -25,7 +25,7 @@ class GenymotionToolTest {
     @Test
     public void isConfigOK() {
         def exitCode = GenymotionTool.usage()
-        assertTrue("Genymotion not accessible, check the GENYMOTION_PATH variable", exitCode == 2)
+        assertTrue("Genymotion not accessible, check the GENYMOTION_PATH variable", exitCode == GenymotionTool.RETURN_NO_ERROR)
     }
 
 
