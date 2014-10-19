@@ -79,12 +79,12 @@ class GenymotionTestTools {
 
 
     static void cleanAfterTests(){
-        return
+
         def devices = GenymotionTool.getAllDevices()
         def pattern = ~/\-junit$/
 
         devices.each(){
-            if(pattern.match(it.name))
+            if(pattern.matcher(it.name).matches())
                 GenymotionTool.deleteDevice(it)
         }
     }
