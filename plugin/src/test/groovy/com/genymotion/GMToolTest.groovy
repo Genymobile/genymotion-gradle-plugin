@@ -154,7 +154,7 @@ class GMToolTest {
         device.nbCpu = 2
         device.ram = 2048
 
-        GMTool.updateDevice(device)
+        GMTool.editDevice(device)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
         newDevice.fillFromDetails()

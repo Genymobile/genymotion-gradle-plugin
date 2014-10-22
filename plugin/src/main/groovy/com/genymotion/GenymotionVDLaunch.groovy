@@ -100,7 +100,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
            !nbCpu?.equals(device.nbCpu) ||
            !ram?.equals(device.ram)){
 
-            return GMTool.updateDevice(this)
+            return GMTool.editDevice(this)
         }
 
         false

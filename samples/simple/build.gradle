@@ -48,8 +48,8 @@ genymotion.admin {
     //create a VD following a template
     create (<TEMPLATE_NAME> <API_LEVEL> <VD_NAME> [--dpi=ZZZ] [--width=XXX] [--height=YYY] [--physicalbutton=on|off] [--navbar=on|off] [--nbcpu=WWW] [--ram=VVV])
 
-    //update a VD config
-    update (<VD_NAME> [--dpi=ZZZ] [--width=XXX] [--height=YYY] [--nbcpu=WWW] [--physicalbutton=on|off] [--navbar=on|off] [--nbcpu=WWW] [--ram=VVV])
+    //edit a VD config
+    edit (<VD_NAME> [--dpi=ZZZ] [--width=XXX] [--height=YYY] [--nbcpu=WWW] [--physicalbutton=on|off] [--navbar=on|off] [--nbcpu=WWW] [--ram=VVV])
 
     //delete a VD by his name or Virtualbox hash
     delete (<VD_NAME>)

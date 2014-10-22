@@ -20,7 +20,7 @@ class GMTool {
     private static final String LIST =         "list" //"VBoxManage list "
     private static final String TEMPLATES =    "templates"
     private static final String CREATE =       "create"
-    private static final String UPDTAE =       "update"
+    private static final String EDIT =         "edit"
     private static final String DELETE =       "delete"
     private static final String CLONE =        "clone"
     private static final String DETAILS =      "details"
@@ -331,11 +331,11 @@ class GMTool {
             return exitValue
     }
 
-    static def updateDevice(GenymotionVirtualDevice device){
-        return updateDevice(device.name, device.dpi, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
+    static def editDevice(GenymotionVirtualDevice device){
+        return editDevice(device.name, device.dpi, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
     }
 
-    static def updateDevice(def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
+    static def editDevice(def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
 
         return noNull(){
             return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,

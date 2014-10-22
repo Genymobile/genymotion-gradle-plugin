@@ -42,7 +42,7 @@ class GMToolAdmin {
      * @param nbCpu
      * @param ram
      */
-    void update(String vdName, int dpi=0, int width=0, int height=0, physicalButton=true, navbar=true, int nbCpu=0, int ram=0){
+    void edit(String vdName, int dpi=0, int width=0, int height=0, physicalButton=true, navbar=true, int nbCpu=0, int ram=0){
         //TODO
     }
 
