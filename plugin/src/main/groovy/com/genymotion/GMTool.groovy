@@ -512,6 +512,9 @@ class GMTool {
 
         def exitValues = []
 
+        if(files instanceof String)
+            files = [files]
+
         files.each(){
 
             def command = [GENYTOOL, DEVICE, '-n='+deviceName, PUSH]
@@ -545,6 +548,9 @@ class GMTool {
 
         def exitValues = []
 
+        if(files instanceof String)
+            files = [files]
+
         files.each(){
 
             def command = [GENYTOOL, DEVICE, '-n='+deviceName, PULL]
@@ -576,7 +582,7 @@ class GMTool {
             cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, apks], verbose){line, count ->
             }
 
-        } else if(apks instanceof String[]){
+        } else if(apks instanceof List){
             def exitValues = []
             apks.each(){
                 int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, it], verbose){line, count ->
@@ -600,7 +606,7 @@ class GMTool {
             return cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, zips], verbose){line, count ->
             }
 
-        } else if(zips instanceof String[]){
+        } else if(zips instanceof List){
             def exitValues = []
             zips.each(){
                 int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, it], verbose){line, count ->
