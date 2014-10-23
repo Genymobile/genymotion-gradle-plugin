@@ -237,59 +237,203 @@ class GMToolTest {
     }
 */
 
-/*
     @Test
     public void canInstallToDevice() {
 
-        //TODO
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        def exitCode = GenymotionTool.startDevice(name)
-        GenymotionTool.installToDevice(name, apks)
-
+        def exitCode = GMTool.startDevice(name)
         assertTrue("Start failed", exitCode == 0)
-    }
-*/
 
-/*
+        GMTool.installToDevice(name, "res/test/test.apk", true)
+        boolean installed = false
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true){line, count ->
+            if(line.contains("com.genymotion.test"))
+                installed = true
+        }
+        assertTrue("Install failed", installed)
+    }
+
+    @Test
+    public void canInstallListOfAppToDevice() {
+
+        String name = TestTools.createADevice()
+
+        def exitCode = GMTool.startDevice(name, true)
+        assertTrue("Start failed", exitCode == 0)
+
+        def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
+        GMTool.installToDevice(name, listOfApps, true)
+
+        int installed = 0
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true){line, count ->
+            if(line.contains("com.genymotion.test") || line.contains("com.genymotion.test2"))
+                installed++
+        }
+        assertEquals("All apps are not found", listOfApps.size(), installed)
+    }
+
+
+
     @Test
     public void canPushToDevice() {
 
-        //TODO
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        def exitCode = GenymotionTool.startDevice(name)
-        GenymotionTool.installToDevice(name, )
-
+        def exitCode = GMTool.startDevice(name, true)
         assertTrue("Start failed", exitCode == 0)
-    }
-*/
 
-/*
+        GMTool.pushToDevice(name, "res/test/test.txt", true)
+        boolean pushed = false
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+            if(line.contains("test.txt"))
+                pushed = true
+        }
+        assertTrue("Push failed", pushed)
+
+    }
+
+    @Test
+    public void canPushListToDevice() {
+
+        String name = TestTools.createADevice()
+
+        def exitCode = GMTool.startDevice(name, true)
+        assertTrue("Start failed", exitCode == 0)
+
+        def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
+        GMTool.pushToDevice(name, listOfFiles, true)
+
+        int pushed = 0
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+            if(line.contains("test.txt") || line.contains("test2.txt"))
+                pushed++
+        }
+        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+
+    }
+
+    @Test
+    public void canPushToDeviceWithDest() {
+
+        String name = TestTools.createADevice()
+
+        def exitCode = GMTool.startDevice(name, true)
+        assertTrue("Start failed", exitCode == 0)
+
+        GMTool.pushToDevice(name, "res/test/test.txt":"/sdcard/", true)
+        boolean pushed = false
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+            if(line.contains("test.txt"))
+                pushed = true
+        }
+        assertTrue("Push failed", pushed)
+    }
+
+    @Test
+    public void canPushListToDeviceWithDest() {
+
+        String name = TestTools.createADevice()
+
+        def exitCode = GMTool.startDevice(name, true)
+        assertTrue("Start failed", exitCode == 0)
+
+        def destination = "/sdcard/"
+        def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
+        GMTool.pushToDevice(name, listOfFiles, true)
+
+        int pushed = 0
+        GMTool.cmd(["tools/adb", "shell", "ls "+destination], true){line, count ->
+            if(line.contains("test.txt") || line.contains("test2.txt"))
+                pushed++
+        }
+        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+    }
+
+
     @Test
     public void canPullFromDevice() {
 
-        //TODO
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        def exitCode = GenymotionTool.startDevice(name)
-        GenymotionTool.installToDevice(name, )
-
+        def exitCode = GMTool.startDevice(name, true)
         assertTrue("Start failed", exitCode == 0)
-    }
-*/
 
-/*
+        //removing the pulled files
+        File tempDir = new File("temp/pulled")
+        if(tempDir.exists())
+            tempDir.deleteDir()
+        tempDir.createNewFile()
+
+        GMTool.pullFromDevice(name, "/system/build.prop", "temp/pulled/", true)
+        File file = new File("temp/pulled/build.prop")
+        assertTrue("Pulled file not found", file.exists())
+    }
+
+    @Test
+    public void canPullListFromDevice() {
+
+        String name = TestTools.createADevice()
+
+        def exitCode = GMTool.startDevice(name, true)
+        assertTrue("Start failed", exitCode == 0)
+
+        //removing the pulled files
+        File tempDir = new File("temp/pulled")
+        println "exists"+tempDir.exists()
+        if(tempDir.exists())
+            tempDir.deleteDir()
+        println "exists"+tempDir.exists()
+        tempDir.createNewFile()
+        println "exists"+tempDir.exists()
+
+        def listOfFiles = ["/system/build.prop":"temp/pulled/", "/data/app/GestureBuilder.apk":"temp/pulled/"]
+        GMTool.pullFromDevice(name, listOfFiles, true)
+
+        File file = new File("temp/pulled/build.prop")
+        assertTrue("build.propfile not found", file.exists())
+
+        file = new File("temp/pulled/GestureBuilder.apk")
+        assertTrue("GestureBuilder.apk not found", file.exists())
+    }
+
+
+/* //TODO uncomment when gmtool is working
     @Test
     public void canFlashDevice() {
 
-        //TODO
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        def exitCode = GenymotionTool.startDevice(name)
-        GenymotionTool.installToDevice(name, )
-
+        def exitCode = GMTool.startDevice(name, true)
         assertTrue("Start failed", exitCode == 0)
+
+        GMTool.flashDevice(name, "res/test/test.zip", true)
+        boolean flashed = false
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
+            if(line.contains("touchdown"))
+                falshed = true
+        }
+        assertTrue("Flash failed", flashed)
+
+    }
+
+    @Test
+    public void canFlashListToDevice() {
+
+        String name = TestTools.createADevice()
+
+        def exitCode = GMTool.startDevice(name, true)
+        assertTrue("Start failed", exitCode == 0)
+
+        def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
+        GMTool.flashDevice(name, listOfFiles, true)
+
+        int flashed = 0
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
+            if(line.contains("touchdown") || line.contains("touchdown2"))
+                flashed++
+        }
+        assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
 */
 
