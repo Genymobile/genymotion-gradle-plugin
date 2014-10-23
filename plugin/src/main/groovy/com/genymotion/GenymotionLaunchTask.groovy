@@ -22,7 +22,7 @@ class GenymotionLaunchTask extends DefaultTask {
                 try{
                     it.create()
                     it.start()
-                    it.checkAndUpdate()
+                    it.checkAndEdit()
                     it.flash()
                     it.install()
                     it.pushBefore()

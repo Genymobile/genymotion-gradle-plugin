@@ -85,7 +85,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
 
-    boolean checkAndUpdate(){
+    boolean checkAndEdit(){
         if(!GMTool.isDeviceCreated(this.name))
             return false
 

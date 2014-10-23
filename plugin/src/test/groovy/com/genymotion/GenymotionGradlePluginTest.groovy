@@ -154,7 +154,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canUpdateDeviceBeforeLaunch(){
+    public void canEditDeviceBeforeLaunch(){
 
         String vdName = "OKOK"
         GMTool.deleteDevice(vdName)
@@ -177,7 +177,7 @@ class GenymotionGradlePluginTest {
         assertEquals(project.genymotion.devices[0].name, vdName)
 
         project.genymotion.devices[0].create()
-        project.genymotion.devices[0].checkAndUpdate()
+        project.genymotion.devices[0].checkAndEdit()
 
         GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
         assertEquals(intValue, device.dpi)

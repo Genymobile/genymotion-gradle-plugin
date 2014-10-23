@@ -140,7 +140,7 @@ class GMToolTest {
     }
 
     @Test
-    public void canUpdateDevice() {
+    public void canEditDevice() {
 
         String name = TestTools.createADevice()
 
@@ -164,9 +164,8 @@ class GMToolTest {
         assertEquals(device.dpi, newDevice.dpi)
         assertEquals(device.height, newDevice.height)
         assertEquals(device.width, newDevice.width)
-        //TODO enable these tests when gmtool will be fixed
-//        assertEquals(device.navbarVisible, newDevice.navbarVisible)
-//        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
+        assertEquals(device.navbarVisible, newDevice.navbarVisible)
+        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
 
         GMTool.deleteDevice(name)
     }

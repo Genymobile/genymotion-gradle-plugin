@@ -11,14 +11,32 @@ class GMTool {
 
     private static final String GENYTOOL =  "gmtool"
     private static final String VERBOSE =   "--verbose"
+    private static final String TIMEOUT =   "--timeout"
+    private static final String USERNAME =  "--username"
+    private static final String PASSWORD =  "--password"
+    private static final String NAME =      "--name"
 
     //root actions
-    private static final String SETLICENSE =  "setlicense"
-    private static final String CONFIG =  "config"
-    private static final String LOGZIP =  "logzip"
+    private static final String HELP =    "help"
+    private static final String VERSION = "version"
+
+    // license actions
+    private static final String LICENSE =   "license"
+    private static final String INFO =      "info"
+    private static final String REGISTER =  "register"
+    private static final String COUNT =     "count"
+    private static final String VERIFY =    "verify"
+    private static final String VALIDITY =  "validity"
+
+    // config actions
+    private static final String CONFIG =      "config"
+    private static final String PRINT =       "print"
+    private static final String RESET =       "reset"
+    private static final String CLEARCACHE =  "clearcache"
+
     //admin actions
-    private static final String ADMIN =     "admin"
-    private static final String LIST =         "list" //"VBoxManage list "
+    private static final String ADMIN =        "admin"
+    private static final String LIST =         "list"
     private static final String TEMPLATES =    "templates"
     private static final String CREATE =       "create"
     private static final String EDIT =         "edit"
@@ -29,33 +47,38 @@ class GMTool {
     private static final String RESTART =      "restart"
     private static final String STOP =         "stop"
     private static final String STOPALL =      "stopall"
-    private static final String RESET =        "factoryreset"
-    private static final String STARTAUTO =    ""//TODO
+    private static final String FACTORYRESET = "factoryreset"
+    private static final String LOGZIP =       "logzip"
+    private static final String FULL =         "--full"
+
     //device actions
-    private static final String DEVICE =    "device"
-    private static final String PUSH =         "push"
-    private static final String PULL =         "pull"
-    private static final String INSTALL =      "install"
-    private static final String FLASH =        "flash"
-    private static final String LOGCAT =       "logcat"
+    private static final String DEVICE =        "device"
+    private static final String PUSH =          "push"
+    private static final String PULL =          "pull"
+    private static final String INSTALL =       "install"
+    private static final String FLASH =         "flash"
+    private static final String LOGCAT =        "logcat"
     private static final String ADBDISCONNECT = "adbdisconnect"
-    private static final String ADBCONNECT =   "adbconnect"
+    private static final String ADBCONNECT =    "adbconnect"
+    private static final String STARTAUTO =     "--start"
+    private static final String ALL =           "--all"
 
     //code returned by gmtool or command line
-    public static final int RETURN_DEVICE_NOT_FOUND       = -1
     public static final int RETURN_NO_ERROR               = 0
-    public static final int RETURN_GENERIC_ERROR          = 1
-    public static final int RETURN_NO_SUCH_ACTION         = 2
-    public static final int RETURN_CANT_LOGIN             = 3
-    public static final int RETURN_CANT_REGISTER_LICENSE  = 4
-    public static final int RETURN_CANT_ACTIVATE_LICENSE  = 5
-    public static final int RETURN_NO_ACTIVATED_LICENSE   = 6
-    public static final int RETURN_INVALID_LICENSE        = 7
-    public static final int RETURN_PENDING_ACTION         = 8
-    public static final int RETURN_ARGS_ERROR             = 9
-    public static final int RETURN_VM_NOT_STOPPED         = 10
+    public static final int RETURN_NO_SUCH_ACTION         = 1
+    public static final int RETURN_BAD_PARAM_VALUE        = 2
+    public static final int RETURN_COMMAND_FAILED         = 3
+    public static final int RETURN_VMENGINE_ERROR         = 4
+    public static final int RETURN_DEVICE_NOT_FOUND       = 5
+    public static final int RETURN_CANT_LOGIN             = 6
+    public static final int RETURN_CANT_REGISTER_LICENSE  = 7
+    public static final int RETURN_CANT_ACTIVATE_LICENSE  = 8
+    public static final int RETURN_NO_ACTIVATED_LICENSE   = 9
+    public static final int RETURN_INVALID_LICENSE        = 10
+    public static final int RETURN_MISSING_ARGUMENTS      = 11
+    public static final int RETURN_VM_NOT_STOPPED         = 12
+    public static final int RETURN_LICENSE_REQUIRED       = 13
     public static final int RETURN_COMMAND_NOT_FOUND_UNIX = 127
-
 
     static def usage(){
         return cmd([GENYTOOL, "-h"]){line, count ->
@@ -66,21 +89,22 @@ class GMTool {
     CONFIG
      */
 
-    static def setLicense(String license, String login="", String password=""){
-        return cmd([GENYTOOL, SETLICENSE, license, "-l="+login, "-p="+password]){line, count ->
+    static def setLicense(String license, String username="", String password=""){
+        return cmd([GENYTOOL, LICENSE, REGISTER, license, "-u="+username, "-p="+password]){line, count ->
         }
     }
 
     static def resetConfig(){
-        return cmd([GENYTOOL, CONFIG, "--reset"]){line, count ->
+        return cmd([GENYTOOL, CONFIG, RESET]){line, count ->
         }
     }
 
     static def clearCache(){
-        return cmd([GENYTOOL, CONFIG, "--clearcache"]){line, count ->
+        return cmd([GENYTOOL, CONFIG, CLEARCACHE]){line, count ->
         }
     }
 
+/*
     static def logzip(String path="", String vdName=""){
 
         def command = [GENYTOOL, LOGZIP]
@@ -95,6 +119,7 @@ class GMTool {
         return cmd([GENYTOOL, LOGZIP, "-n=", ]){line, count ->
         }
     }
+*/
 
     static def config(){
         //TODO implement when gmtool is ready
@@ -242,7 +267,7 @@ class GMTool {
 
         def template = new GenymotionTemplate()
 
-        cmd([GENYTOOL, ADMIN, TEMPLATES, "--full"], verbose) { line, count ->
+        cmd([GENYTOOL, ADMIN, TEMPLATES, FULL], verbose) { line, count ->
 
             //if empty line and template filled
             if (!line && template.name){
@@ -345,7 +370,7 @@ class GMTool {
     static def editDevice(def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
 
         return noNull(){
-            return cmd([GENYTOOL, ADMIN, UPDTAE, deviceName,
+            return cmd([GENYTOOL, ADMIN, EDIT, deviceName,
                  '--dpi='+dpi, '--width='+width, '--height='+height, '--virtualkeyboard='+virtualKeyboard, '--navbar='+navbarVisible, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
             }
         }
@@ -478,7 +503,7 @@ class GMTool {
     }
 
     static def resetDevice(def deviceName, boolean verbose=false){
-        return cmd([GENYTOOL, ADMIN, START, RESET, deviceName], verbose){line, count ->
+        return cmd([GENYTOOL, ADMIN, FACTORYRESET, deviceName], verbose){line, count ->
         }
     }
 
