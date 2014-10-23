@@ -85,8 +85,9 @@ class GMTool {
 
         def command = [GENYTOOL, LOGZIP]
 
-        if(vdName?.trim())
-            command.push(["-n ", vdName])
+        if(vdName?.trim()){
+            command.push("-n="+vdName)
+        }
 
         if(path?.trim())
             command.push(path)
@@ -161,6 +162,15 @@ class GMTool {
         }
 
         devices
+    }
+
+    static boolean isDeviceRunning(def device, boolean verbose=false) {
+        isDeviceRunning(device.name, verbose)
+    }
+
+    static boolean isDeviceRunning(String name, boolean verbose=false) {
+        def devices = getRunningDevices(verbose, false, true)
+        devices.contains(name)
     }
 
     private static def parseList(int count, String line, boolean nameOnly) {
@@ -345,21 +355,21 @@ class GMTool {
         }
     }
 
-    static def deleteDevice(GenymotionVirtualDevice device){
-        return deleteDevice(device.name)
+    static def deleteDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return deleteDevice(device.name, verbose)
     }
 
-    static def deleteDevice(def deviceName){
-        return cmd([GENYTOOL, ADMIN, DELETE, deviceName]){line, count ->
+    static def deleteDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, DELETE, deviceName], verbose){line, count ->
         }
     }
 
-    static def cloneDevice(GenymotionVirtualDevice device, def name){
-        return cloneDevice(device.name, name)
+    static def cloneDevice(GenymotionVirtualDevice device, def name, boolean verbose=false){
+        return cloneDevice(device.name, name, verbose)
     }
 
-    static def cloneDevice(def deviceName, def newName){
-        return cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName]){line, count ->
+    static def cloneDevice(def deviceName, def newName, boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName], verbose){line, count ->
         }
     }
 
@@ -435,49 +445,49 @@ class GMTool {
         device
     }
 
-    static def startDevice(GenymotionVirtualDevice device){
-        return startDevice(device.name)
+    static def startDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return startDevice(device.name, verbose)
     }
 
-    static def startDevice(def deviceName){
-        return cmd([GENYTOOL, ADMIN, START, deviceName]) {line, count ->
+    static def startDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, START, deviceName], verbose) {line, count ->
         }
     }
 
-    static def restartDevice(GenymotionVirtualDevice device){
-        return restartDevice(device.name)
+    static def restartDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return restartDevice(device.name, verbose)
     }
 
-    static def restartDevice(def deviceName){
-        return cmd([GENYTOOL, ADMIN, RESTART, deviceName]){line, count ->
+    static def restartDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, RESTART, deviceName], verbose){line, count ->
         }
     }
 
-    static def stopDevice(GenymotionVirtualDevice device){
-        return stopDevice(device.name)
+    static def stopDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return stopDevice(device.name, verbose)
     }
 
-    static def stopDevice(def deviceName){
-        return cmd([GENYTOOL, ADMIN, STOP, deviceName]){line, count ->
+    static def stopDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, STOP, deviceName], verbose){line, count ->
         }
     }
 
-    static def stopAllDevices(){
-        return cmd([GENYTOOL, ADMIN, STOPALL]){line, count ->
+    static def stopAllDevices(boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, STOPALL], verbose){line, count ->
         }
     }
 
-    static def resetDevice(GenymotionVirtualDevice device){
-        return resetDevice(device.name)
+    static def resetDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return resetDevice(device.name, verbose)
     }
 
-    static def resetDevice(def deviceName){
-        return cmd([GENYTOOL, ADMIN, START, RESET, deviceName]){line, count ->
+    static def resetDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, ADMIN, START, RESET, deviceName], verbose){line, count ->
         }
     }
 
-    static def startAutoDevice(def template, def deviceName){
-        def device = createDevice(template, deviceName)
+    static def startAutoDevice(def template, def deviceName, boolean verbose=false){
+        def device = createDevice(template, deviceName, verbose)
 
         if(!device instanceof GenymotionVirtualDevice)
             return device
@@ -495,11 +505,11 @@ class GMTool {
     Device
      */
 
-    static def pushToDevice(GenymotionVirtualDevice device, def files){
-        pushToDevice(device.name, files)
+    static def pushToDevice(GenymotionVirtualDevice device, def files, boolean verbose=false){
+        pushToDevice(device.name, files, verbose)
     }
 
-    static def pushToDevice(def deviceName, def files){
+    static def pushToDevice(def deviceName, def files, boolean verbose=false){
 
         if(!files)
             return false
@@ -508,13 +518,15 @@ class GMTool {
 
         files.each(){
 
-            def command = [GENYTOOL, DEVICE, deviceName, PUSH]
-            if(files instanceof Map)
-                command.push([it.key, it.value])
+            def command = [GENYTOOL, DEVICE, '-n='+deviceName, PUSH]
+            if(files instanceof Map){
+                command.push(it.key)
+                command.push(it.value)
+            }
             else
                 command.push(it)
 
-            int exitValue = cmd(command){line, count ->
+            int exitValue = cmd(command, verbose){line, count ->
             }
             exitValues.add(exitValue)
         }
@@ -522,11 +534,15 @@ class GMTool {
         return exitValues
     }
 
-    static def pullFromDevice(GenymotionVirtualDevice device, def files){
-        pullFromDevice(device.name, files)
+    static def pullFromDevice(GenymotionVirtualDevice device, def files, boolean verbose=false){
+        pullFromDevice(device.name, files, verbose)
     }
 
-    static def pullFromDevice(def deviceName, def files){
+    static def pullFromDevice(String deviceName, String source, String destination, boolean verbose=false){
+        pullFromDevice(deviceName, [(source):destination], verbose)
+    }
+
+    static def pullFromDevice(def deviceName, def files, boolean verbose=false){
 
         if(!files)
             return false
@@ -535,13 +551,15 @@ class GMTool {
 
         files.each(){
 
-            def command = [GENYTOOL, DEVICE, deviceName, PULL]
-            if(files instanceof Map)
-                command.push([it.key, it.value])
+            def command = [GENYTOOL, DEVICE, '-n='+deviceName, PULL]
+            if(files instanceof Map){
+                command.push(it.key)
+                command.push(it.value)
+            }
             else
                 command.push(it)
 
-            int exitValue = cmd(command){line, count ->
+            int exitValue = cmd(command, verbose){line, count ->
             }
             exitValues.add(exitValue)
         }
@@ -549,23 +567,23 @@ class GMTool {
         return exitValues
     }
 
-    static def installToDevice(GenymotionVirtualDevice device, def apks){
-        installToDevice(device.name, apks)
+    static def installToDevice(GenymotionVirtualDevice device, def apks, boolean verbose=false){
+        installToDevice(device.name, apks, verbose)
     }
 
-    static def installToDevice(def deviceName, def apks){
+    static def installToDevice(def deviceName, def apks, boolean verbose=false){
 
         if(!apks)
             return false
 
         if(apks instanceof String){
-            cmd([GENYTOOL, DEVICE, deviceName, INSTALL, apks]){line, count ->
+            cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, apks], verbose){line, count ->
             }
 
         } else if(apks instanceof String[]){
             def exitValues = []
             apks.each(){
-                int exitValue = cmd([GENYTOOL, DEVICE, deviceName, INSTALL, it]){line, count ->
+                int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, it], verbose){line, count ->
                 }
                 exitValues.add(exitValue)
             }
@@ -573,23 +591,23 @@ class GMTool {
         }
     }
 
-    static def flashDevice(GenymotionVirtualDevice device, def zips){
-        return flashDevice(device.name, zips)
+    static def flashDevice(GenymotionVirtualDevice device, def zips, boolean verbose=false){
+        return flashDevice(device.name, zips, verbose)
     }
 
-    static def flashDevice(def deviceName, def zips){
+    static def flashDevice(def deviceName, def zips, boolean verbose=false){
 
         if(!zips)
             return false
 
         if(zips instanceof String){
-            return cmd([GENYTOOL, DEVICE, deviceName, FLASH, zips]){line, count ->
+            return cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, zips], verbose){line, count ->
             }
 
         } else if(zips instanceof String[]){
             def exitValues = []
             zips.each(){
-                int exitValue = cmd([GENYTOOL, DEVICE, deviceName, FLASH, it]){line, count ->
+                int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, it], verbose){line, count ->
                 }
                 exitValues.add(exitValue)
             }
@@ -597,30 +615,30 @@ class GMTool {
         }
     }
 
-    static def adbDisconnectDevice(GenymotionVirtualDevice device){
-        return adbDisconnectDevice(device.name)
+    static def adbDisconnectDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return adbDisconnectDevice(device.name, verbose)
     }
 
-    static def adbDisconnectDevice(def deviceName){
-        return cmd([GENYTOOL, DEVICE, deviceName, ADBDISCONNECT]){line, count ->
+    static def adbDisconnectDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, DEVICE, deviceName, ADBDISCONNECT], verbose){line, count ->
         }
     }
 
-    static def adbConnectDevice(GenymotionVirtualDevice device){
-        return adbConnectDevice(device.name)
+    static def adbConnectDevice(GenymotionVirtualDevice device, boolean verbose=false){
+        return adbConnectDevice(device.name, verbose)
     }
 
-    static def adbConnectDevice(def deviceName){
-        return cmd([GENYTOOL, DEVICE, deviceName, ADBCONNECT]){line, count ->
+    static def adbConnectDevice(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, DEVICE, deviceName, ADBCONNECT], verbose){line, count ->
         }
     }
 
-    static def routeLogcat(GenymotionVirtualDevice device, path){
-        return routeLogcat(device.name, path)
+    static def routeLogcat(GenymotionVirtualDevice device, path, boolean verbose=false){
+        return routeLogcat(device.name, path, verbose)
     }
 
-    static def routeLogcat(def deviceName, def path){
-        return cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path]){line, count ->
+    static def routeLogcat(def deviceName, def path, boolean verbose=false){
+        return cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path], verbose){line, count ->
         }
     }
 
