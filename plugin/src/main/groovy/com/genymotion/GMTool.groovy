@@ -10,6 +10,7 @@ class GMTool {
     public static GenymotionConfig GENYMOTION_CONFIG = null
 
     private static final String GENYTOOL =  "gmtool"
+    private static final String VERBOSE =   "--verbose"
 
     //root actions
     private static final String SETLICENSE =  "setlicense"
@@ -655,6 +656,9 @@ class GMTool {
         }
 
         if(verbose) {
+            if(toExec[0].contains(GENYTOOL))
+                toExec.addAll(1, [VERBOSE])
+
             println toExec
         }
         Process p = toExec.execute()
