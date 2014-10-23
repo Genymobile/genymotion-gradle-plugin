@@ -80,15 +80,22 @@ class TestTools {
 
     static void cleanAfterTests(){
 
+        println "Cleaning after tests"
         try{
-            def devices = GMTool.getAllDevices()
-            def pattern = ~/\-junit$/
+            def devices = GMTool.getAllDevices(false, false, true)
+            def pattern = ~/^.+?\-junit$/
+            println devices
 
             devices.each(){
-                if(pattern.matcher(it.name).matches())
-                    GMTool.deleteDevice(it)
+                if(pattern.matcher(it).matches()){
+                    println "Removing $it"
+                    GMTool.stopDevice(it, true)
+                    GMTool.deleteDevice(it, true)
+                }
             }
-        } catch (Exception e){}
+        } catch (Exception e){
+            println e
+        }
     }
 
 }
