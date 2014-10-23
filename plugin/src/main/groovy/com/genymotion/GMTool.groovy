@@ -177,19 +177,15 @@ class GMTool {
 
         def device
 
-        //we skip the first lines
-        if (count < 2)
-            return
-
         String[] infos = line.split('\\|')
 
-        String name = infos[3].trim()
+        String name = infos[2].trim()
         if (nameOnly) {
             device = name
         } else {
             device = new GenymotionVirtualDevice(name)
-            device.ip = infos[2].trim()
-            device.state = infos[1].trim()
+            device.ip = infos[1].trim()
+            device.state = infos[0].trim()
         }
         device
     }
