@@ -9,6 +9,7 @@ import org.junit.Before
 import org.gradle.api.Project
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
@@ -186,24 +187,21 @@ class GMToolTest {
         GMTool.getDevice("sqfqqfd", true)
     }
 
-
-
-/*
     @Test
     public void canStopDevice() {
 
         //TODO implement it when stop is implemented
 
-        String name = GenymotionTestTools.createADevice()
+        String name = TestTools.createADevice()
 
-        def exitCode = GenymotionTool.startDevice(name)
+        def exitCode = GMTool.startDevice(name)
 
         if(exitCode == 0)
-            GenymotionTool.stopDevice(name)
+            GMTool.stopDevice(name)
 
         assertTrue("Start failed", exitCode == 0)
+        assertFalse("Stop failed", GMTool.isDeviceRunning(name))
     }
-*/
 
 
 /*
