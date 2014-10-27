@@ -319,9 +319,10 @@ class GMToolTest {
         def exitCode = GMTool.startDevice(name, true)
         assertTrue("Start failed", exitCode == 0)
 
-        GMTool.pushToDevice(name, "res/test/test.txt":"/sdcard/", true)
+        def destination = "/sdcard/"
+        GMTool.pushToDevice(name, ["res/test/test.txt":destination], true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -408,7 +409,7 @@ class GMToolTest {
         boolean flashed = false
         GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
             if(line.contains("touchdown"))
-                falshed = true
+                flashed = true
         }
         assertTrue("Flash failed", flashed)
 
