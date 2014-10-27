@@ -855,7 +855,8 @@ class GMTool {
             if(toExec[0].contains(GENYTOOL))
                 toExec.addAll(1, [VERBOSE])
 
-            println toExec
+
+            println cleanCommand(toExec)
         }
         Process p = toExec.execute()
         StringBuffer error = new StringBuffer()
@@ -875,6 +876,31 @@ class GMTool {
         return handleExitValue(p.exitValue(), error)
     }
 
+    /**
+     * Remove password from the command line. Usefull before displaying it.
+     *
+     * @param list the command line
+     *
+     * @return the same list, without the content of --password or -p options
+     */
+    static def cleanCommand(def list) {
+        def output = list.clone()
+        output.each(){
+            if(it.contains(OPT_PASSWORD))
+               it = OPT_PASSWORD+"*****"
+        }
+        return output
+    }
+
+    /**
+     * Handle the exist code after a command line execution.
+     * This function analyse the return and throws an exception if needed.
+     *
+     * @param exitValue the command line exit value
+     * @param error the error output from command line
+     *
+     * @return returns the exitCode if nothing is thrown
+     */
     static def handleExitValue(int exitValue, StringBuffer error) {
         if(exitValue == RETURN_NO_ERROR){
             //do nothing
@@ -887,7 +913,8 @@ class GMTool {
         }
         exitValue
     }
-/**
+
+    /**
      * Avoid null.toString returning "null"
      *
      * @param c the code to execute
@@ -906,5 +933,23 @@ class GMTool {
         return exit
     }
 
+    /**
+     * Check the general configuration and set the username and password if needed
+     *
+     * @param username the username sent to the caller
+     * @param password the password sent to the caller
+     *
+     * @return username & password resulted for the check
+     */
+    static def checkLogin(String username, String password) {
+
+        if(username && password)
+            return [null, null]
+
+        if(GENYMOTION_CONFIG.username && GENYMOTION_CONFIG.password)
+            return [GENYMOTION_CONFIG.username, GENYMOTION_CONFIG.password]
+
+        return [null, null]
+    }
 
 }
