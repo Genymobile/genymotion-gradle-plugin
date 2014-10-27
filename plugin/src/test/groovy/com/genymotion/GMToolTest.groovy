@@ -189,8 +189,6 @@ class GMToolTest {
     @Test
     public void canStopDevice() {
 
-        //TODO implement it when stop is implemented
-
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name)
@@ -262,6 +260,7 @@ class GMToolTest {
         assertTrue("Start failed", exitCode == 0)
 
         def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
+
         GMTool.installToDevice(name, listOfApps, true)
 
         int installed = 0
@@ -397,7 +396,6 @@ class GMToolTest {
     }
 
 
-/* //TODO uncomment when gmtool is working
     @Test
     public void canFlashDevice() {
 
@@ -434,7 +432,7 @@ class GMToolTest {
         }
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
-*/
+
 
     @After
     public void finishTest(){
