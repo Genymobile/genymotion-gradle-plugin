@@ -101,11 +101,6 @@ class GMTool {
     CONFIG
      */
 
-    static def setLicense(String license, String login="", String password=""){
-        return cmd([GENYTOOL, SETLICENSE, license, "-l="+login, "-p="+password]){line, count ->
-        }
-    }
-
     static def resetConfig(){
         return cmd([GENYTOOL, CONFIG, RESET]){line, count ->
         }
