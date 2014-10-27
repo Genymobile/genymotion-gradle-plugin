@@ -24,6 +24,7 @@ class TestTools {
         project.apply plugin: 'genymotion'
 
         project.genymotion.config.genymotionPath = GENYMOTION_PATH
+        project.genymotion.config.verbose = true
         //we set the config inside the GenymotionTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
