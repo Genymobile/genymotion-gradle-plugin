@@ -342,7 +342,7 @@ class GMToolTest {
         GMTool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls "+destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
