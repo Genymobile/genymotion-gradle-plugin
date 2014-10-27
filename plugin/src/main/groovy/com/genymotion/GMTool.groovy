@@ -754,7 +754,8 @@ class GMTool {
             cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, apks], verbose){line, count ->
             }
 
-        } else if(apks instanceof List){
+        } else if(apks instanceof ArrayList){
+
             def exitValues = []
             apks.each(){
                 int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, it], verbose){line, count ->
@@ -763,6 +764,8 @@ class GMTool {
             }
             return exitValues
         }
+
+        return false
     }
 
     static def flashDevice(GenymotionVirtualDevice device, def zips, boolean verbose=false){
@@ -778,7 +781,7 @@ class GMTool {
             return cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, zips], verbose){line, count ->
             }
 
-        } else if(zips instanceof List){
+        } else if(zips instanceof ArrayList){
             def exitValues = []
             zips.each(){
                 int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, it], verbose){line, count ->
@@ -787,6 +790,7 @@ class GMTool {
             }
             return exitValues
         }
+        return false
     }
 
     static def adbDisconnectDevice(GenymotionVirtualDevice device, boolean verbose=false){
