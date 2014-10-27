@@ -54,7 +54,7 @@ class TestTools {
         name
     }
 
-    static List createADetailedDevice(Project project) {
+    static def createADetailedDevice(Project project) {
         String vdName = GenymotionVDLaunch.getRandomName("-junit")
         int dpi = 180
         int height = 480
