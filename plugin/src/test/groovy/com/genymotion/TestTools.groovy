@@ -98,4 +98,14 @@ class TestTools {
         }
     }
 
+    static void recreatePulledDirectory() {
+        File tempDir = new File("temp/pulled")
+        if (tempDir.exists()) {
+            if (tempDir.isDirectory())
+                tempDir.deleteDir()
+            else
+                tempDir.delete()
+        }
+        tempDir.mkdirs()
+    }
 }

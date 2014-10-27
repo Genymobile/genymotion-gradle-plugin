@@ -359,10 +359,7 @@ class GMToolTest {
         assertTrue("Start failed", exitCode == 0)
 
         //removing the pulled files
-        File tempDir = new File("temp/pulled")
-        if(tempDir.exists())
-            tempDir.deleteDir()
-        tempDir.createNewFile()
+        TestTools.recreatePulledDirectory()
 
         GMTool.pullFromDevice(name, "/system/build.prop", "temp/pulled/", true)
         File file = new File("temp/pulled/build.prop")
@@ -378,13 +375,7 @@ class GMToolTest {
         assertTrue("Start failed", exitCode == 0)
 
         //removing the pulled files
-        File tempDir = new File("temp/pulled")
-        println "exists"+tempDir.exists()
-        if(tempDir.exists())
-            tempDir.deleteDir()
-        println "exists"+tempDir.exists()
-        tempDir.createNewFile()
-        println "exists"+tempDir.exists()
+        TestTools.recreatePulledDirectory()
 
         def listOfFiles = ["/system/build.prop":"temp/pulled/", "/data/app/GestureBuilder.apk":"temp/pulled/"]
         GMTool.pullFromDevice(name, listOfFiles, true)
