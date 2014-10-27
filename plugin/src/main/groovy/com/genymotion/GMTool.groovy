@@ -323,11 +323,15 @@ class GMTool {
 
     private static def parseList(int count, String line, boolean nameOnly) {
 
+        //we skip the first 2 lines
+        if(count < 2)
+            return
+
         def device
 
         String[] infos = line.split('\\|')
 
-        String name = infos[2].trim()
+        String name = infos[3].trim()
         if (nameOnly) {
             device = name
         } else {
