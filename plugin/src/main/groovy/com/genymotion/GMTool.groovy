@@ -343,7 +343,7 @@ class GMTool {
     }
 
 
-    static def isDeviceCreated(String name){
+    static def isDeviceCreated(String name, boolean verbose=false){
 
         if(!name?.trim())
             return false
@@ -351,7 +351,7 @@ class GMTool {
         //we check if the VD name already exists
         boolean alreadyExists = false
 
-        def devices = GMTool.getAllDevices(false, false)
+        def devices = GMTool.getAllDevices(verbose, false)
 
         devices.each(){
             if(it.name.equals(name))
