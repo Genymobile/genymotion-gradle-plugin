@@ -9,76 +9,88 @@ class GMTool {
 
     public static GenymotionConfig GENYMOTION_CONFIG = null
 
-    private static final String GENYTOOL =  "gmtool"
-    private static final String VERBOSE =   "--verbose"
-    private static final String TIMEOUT =   "--timeout"
-    private static final String USERNAME =  "--username"
-    private static final String PASSWORD =  "--password"
-    private static final String NAME =      "--name"
+    private static final String GENYTOOL = "gmtool"
+    private static final String VERBOSE  = "--verbose"
 
     //root actions
-    private static final String HELP =    "help"
-    private static final String VERSION = "version"
-
-    // license actions
-    private static final String LICENSE =   "license"
-    private static final String INFO =      "info"
-    private static final String REGISTER =  "register"
-    private static final String COUNT =     "count"
-    private static final String VERIFY =    "verify"
-    private static final String VALIDITY =  "validity"
-
-    // config actions
-    private static final String CONFIG =      "config"
-    private static final String PRINT =       "print"
-    private static final String RESET =       "reset"
-    private static final String CLEARCACHE =  "clearcache"
-
+    private static final String LOGZIP        = "logzip"
     //admin actions
-    private static final String ADMIN =        "admin"
-    private static final String LIST =         "list"
-    private static final String TEMPLATES =    "templates"
-    private static final String CREATE =       "create"
-    private static final String EDIT =         "edit"
-    private static final String DELETE =       "delete"
-    private static final String CLONE =        "clone"
-    private static final String DETAILS =      "details"
-    private static final String START =        "start"
-    private static final String RESTART =      "restart"
-    private static final String STOP =         "stop"
-    private static final String STOPALL =      "stopall"
-    private static final String FACTORYRESET = "factoryreset"
-    private static final String LOGZIP =       "logzip"
-    private static final String FULL =         "--full"
-
+    private static final String ADMIN         = "admin"
+    private static final String LIST          = "list" //"VBoxManage list "
+    private static final String TEMPLATES     = "templates"
+    private static final String CREATE        = "create"
+    private static final String EDIT          = "edit"
+    private static final String DELETE        = "delete"
+    private static final String CLONE         = "clone"
+    private static final String DETAILS       = "details"
+    private static final String START         = "start"
+    private static final String RESTART       = "restart"
+    private static final String STOP          = "stop"
+    private static final String STOPALL       = "stopall"
+    private static final String FACTORY_RESET = "factoryreset"
+    private static final String STARTAUTO = ""//TODO
     //device actions
-    private static final String DEVICE =        "device"
-    private static final String PUSH =          "push"
-    private static final String PULL =          "pull"
-    private static final String INSTALL =       "install"
-    private static final String FLASH =         "flash"
-    private static final String LOGCAT =        "logcat"
+    private static final String DEVICE        = "device"
+    private static final String PUSH          = "push"
+    private static final String PULL          = "pull"
+    private static final String INSTALL       = "install"
+    private static final String FLASH         = "flash"
+    private static final String LOGCAT        = "logcat"
     private static final String ADBDISCONNECT = "adbdisconnect"
-    private static final String ADBCONNECT =    "adbconnect"
-    private static final String STARTAUTO =     "--start"
-    private static final String ALL =           "--all"
+    private static final String ADBCONNECT    = "adbconnect"
+    //config actions
+    private static final String CONFIG               = "config"
+    private static final String PRINT                = "print"
+    private static final String RESET                = "reset"
+    private static final String CLEARCACHE           = "clearcache"
+    //license
+    private static final String LICENSE  = "license"
+    private static final String INFO     = "info"
+    private static final String REGISTER = "register"
+    private static final String COUNT    = "count"
+    private static final String VERIFY   = "verify"
+    private static final String VALIDITY = "validity"
+    //options
+    private static final String OPT_USERNAME             = "--username="
+    private static final String OPT_STATISTICS           = "--statistics="
+    private static final String OPT_PASSWORD             = "--password="
+    private static final String OPT_STORE_CREDENTIALS    = "--store_credentials="
+    private static final String OPT_PROXY                = "--proxy="
+    private static final String OPT_PROXY_ADDRESS        = "--proxy_address="
+    private static final String OPT_PROXY_PORT           = "--proxy_port="
+    private static final String OPT_PROXY_AUTH           = "--proxy_auth="
+    private static final String OPT_PROXY_USERNAME       = "--proxy_username="
+    private static final String OPT_PROXY_PASSWORD       = "--proxy_password="
+    private static final String OPT_DEVICES_PATH         = "--devices_path="
+    private static final String OPT_SDK_PATH             = "--sdk_path="
+    private static final String OPT_USE_CUSTOM_SDK       = "--use_custom_sdk="
+    private static final String OPT_SCREEN_CAPTURES_PATH = "--screen_captures_path="
+    private static final String OPT_RUNNING              = "--running"
+    private static final String OPT_OFF                  = "--off"
+    private static final String OPT_FULL                 = "--full"
+    private static final String OPT_DENSITY              = '--density='
+    private static final String OPT_WIDTH                = '--width='
+    private static final String OPT_HEIGHT               = '--height='
+    private static final String OPT_VIRTUAL_KEYBOARD     = '--virtualkeyboard='
+    private static final String OPT_NAVBAR               = '--navbar='
+    private static final String OPT_NBCPU                = '--cpu='
+    private static final String OPT_RAM                  = "--ram="
 
     //code returned by gmtool or command line
+    public static final int RETURN_DEVICE_NOT_FOUND       = -1
     public static final int RETURN_NO_ERROR               = 0
-    public static final int RETURN_NO_SUCH_ACTION         = 1
-    public static final int RETURN_BAD_PARAM_VALUE        = 2
-    public static final int RETURN_COMMAND_FAILED         = 3
-    public static final int RETURN_VMENGINE_ERROR         = 4
-    public static final int RETURN_DEVICE_NOT_FOUND       = 5
-    public static final int RETURN_CANT_LOGIN             = 6
-    public static final int RETURN_CANT_REGISTER_LICENSE  = 7
-    public static final int RETURN_CANT_ACTIVATE_LICENSE  = 8
-    public static final int RETURN_NO_ACTIVATED_LICENSE   = 9
-    public static final int RETURN_INVALID_LICENSE        = 10
-    public static final int RETURN_MISSING_ARGUMENTS      = 11
-    public static final int RETURN_VM_NOT_STOPPED         = 12
-    public static final int RETURN_LICENSE_REQUIRED       = 13
+    public static final int RETURN_GENERIC_ERROR          = 1
+    public static final int RETURN_NO_SUCH_ACTION         = 2
+    public static final int RETURN_CANT_LOGIN             = 3
+    public static final int RETURN_CANT_REGISTER_LICENSE  = 4
+    public static final int RETURN_CANT_ACTIVATE_LICENSE  = 5
+    public static final int RETURN_NO_ACTIVATED_LICENSE   = 6
+    public static final int RETURN_INVALID_LICENSE        = 7
+    public static final int RETURN_PENDING_ACTION         = 8
+    public static final int RETURN_ARGS_ERROR             = 9
+    public static final int RETURN_VM_NOT_STOPPED         = 10
     public static final int RETURN_COMMAND_NOT_FOUND_UNIX = 127
+
 
     static def usage(){
         return cmd([GENYTOOL, "-h"]){line, count ->
@@ -89,8 +101,8 @@ class GMTool {
     CONFIG
      */
 
-    static def setLicense(String license, String username="", String password=""){
-        return cmd([GENYTOOL, LICENSE, REGISTER, license, "-u="+username, "-p="+password]){line, count ->
+    static def setLicense(String license, String login="", String password=""){
+        return cmd([GENYTOOL, SETLICENSE, license, "-l="+login, "-p="+password]){line, count ->
         }
     }
 
@@ -104,7 +116,6 @@ class GMTool {
         }
     }
 
-/*
     static def logzip(String path="", String vdName=""){
 
         def command = [GENYTOOL, LOGZIP]
@@ -116,17 +127,129 @@ class GMTool {
         if(path?.trim())
             command.push(path)
 
-        return cmd([GENYTOOL, LOGZIP, "-n=", ]){line, count ->
+        return cmd([GENYTOOL, LOGZIP]){line, count ->
         }
     }
-*/
 
-    static def config(){
-        //TODO implement when gmtool is ready
+    static def getConfig(boolean verbose=false){
 
+        GenymotionConfig config = new GenymotionConfig()
+
+        def exitCode = cmd([GENYTOOL, CONFIG, PRINT], verbose) { line, count ->
+
+            String[] info = line.split("\\=")
+            if (info[1].trim()){
+
+                switch (info[0].trim()) {
+                    case "statistics":
+                        config.statistics = info[1].trim()
+                        break
+                    case "username":
+                        config.username = info[1].trim()
+                        break
+                    case "store_credentials":
+                        config.store_credentials = info[1].trim()
+                        break
+                    case "proxy":
+                        config.proxy = info[1].trim()
+                        break
+                    case "proxy_address":
+                        config.proxy_address = info[1].trim()
+                        break
+                    case "proxy_port":
+                        config.proxy_port = info[1].trim()
+                        break
+                    case "proxy_auth":
+                        config.proxy_auth = info[1].trim()
+                        break
+                    case "proxy_username":
+                        config.proxy_username = info[1].trim()
+                        break
+                    case "proxy_password":
+                        config.proxy_password = info[1].trim()
+                        break
+                    case "devices_path":
+                        config.devices_path = info[1].trim()
+                        break
+                    case "sdk_path":
+                        config.sdk_path = info[1].trim()
+                        break
+                    case "use_custom_sdk":
+                        config.use_custom_sdk = info[1].trim()
+                        break
+                    case "screen_captures_path":
+                        config.screen_captures_path = info[1].trim()
+                        break
+                }
+            }
+        }
+        if(exitCode == RETURN_NO_ERROR)
+            return config
+
+        return exitCode
+    }
+
+    static def setConfig(GenymotionConfig config, boolean verbose=false){
+        return setConfig(config.statistics, config.username, config.password, config.store_credentials, config.proxy, config.proxy_address, config.proxy_port, config.proxy_auth, config.proxy_username, config.proxy_password, config.devices_path, config.sdk_path, config.use_custom_sdk, config.screen_captures_path=null, verbose)
     }
 
 
+    static def setConfig(def statistics=null, def username=null, def password=null, def store_credentials=null, def proxy=null, def proxy_address=null, def proxy_port=null, def proxy_auth=null, def proxy_username=null, def proxy_password=null, def devices_path=null, def sdk_path=null, def use_custom_sdk=null, def screen_captures_path=null, boolean verbose=false){
+
+        (username, password) = checkLogin(username, password)
+
+        def command = [GENYTOOL, CONFIG]
+
+        if(statistics)
+            command.push(OPT_STATISTICS+statistics)
+        if(username)
+            command.push(OPT_USERNAME+username)
+        if(password)
+            command.push(OPT_PASSWORD+password)
+        if(store_credentials)
+            command.push(OPT_STORE_CREDENTIALS+store_credentials)
+        if(proxy)
+            command.push(OPT_PROXY+proxy)
+        if(proxy_address)
+            command.push(OPT_PROXY_ADDRESS+proxy_address)
+        if(proxy_port)
+            command.push(OPT_PROXY_PORT+proxy_port)
+        if(proxy_auth)
+            command.push(OPT_PROXY_AUTH+proxy_auth)
+        if(proxy_username)
+            command.push(OPT_PROXY_USERNAME+proxy_username)
+        if(proxy_password)
+            command.push(OPT_PROXY_PASSWORD+proxy_password)
+        if(devices_path)
+            command.push(OPT_DEVICES_PATH+devices_path)
+        if(sdk_path)
+            command.push(OPT_SDK_PATH+sdk_path)
+        if(use_custom_sdk)
+            command.push(OPT_USE_CUSTOM_SDK+use_custom_sdk)
+        if(screen_captures_path)
+            command.push(OPT_SCREEN_CAPTURES_PATH+screen_captures_path)
+
+        return cmd(command, verbose) { line, count ->
+        }
+    }
+
+    /*
+    LICENSE
+     */
+
+    static def setLicense(String license, String username=null, String password=null, boolean verbose=false){
+        def command = [GENYTOOL, LICENSE, REGISTER, license]
+
+        (username, password) = checkLogin(username, password)
+
+        if(username)
+            command.push(OPT_USERNAME+username)
+        if(password)
+            command.push(OPT_PASSWORD+password)
+
+        return cmd(command, verbose){line, count ->
+        }
+    }
 
     /*
     ADMIN
@@ -155,7 +278,7 @@ class GMTool {
 
         def devices = []
 
-        cmd([GENYTOOL, ADMIN, LIST, "--running"], verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, LIST, OPT_RUNNING], verbose){line, count ->
             def device = parseList(count, line, nameOnly)
             if(device)
                 devices.add(device)
@@ -174,7 +297,7 @@ class GMTool {
 
         def devices = []
 
-        cmd([GENYTOOL, ADMIN, LIST, "--off"], verbose){line, count ->
+        cmd([GENYTOOL, ADMIN, LIST, OPT_OFF], verbose){line, count ->
             def device = parseList(count, line, nameOnly)
             if(device)
                 devices.add(device)
@@ -233,145 +356,165 @@ class GMTool {
         alreadyExists
     }
 
-    static def getTemplatesNames(boolean verbose=false) {
+    static def getTemplatesNames(boolean verbose=false, String username=null, String password=null) {
 
         def templates = []
 
         def template = null
 
-        cmd([GENYTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
+        (username, password) = checkLogin(username, password)
 
-            //if empty line and template filled
-            if (!line && template){
-                templates.add(template)
-                template = null
-            }
+        int exitCode = noNull {
+            return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_USERNAME+username, OPT_PASSWORD+password], verbose) { line, count ->
 
-            String[] info = line.split("\\:")
-            switch (info[0].trim()){
-                case "Name":
-                    if(!template)
-                        template = info[1].trim()
-                    break
+                //if empty line and template filled
+                if (!line && template){
+                    templates.add(template)
+                    template = null
+                }
+
+                String[] info = line.split("\\:")
+                switch (info[0].trim()){
+                    case "Name":
+                        if(!template)
+                            template = info[1].trim()
+                        break
+                }
             }
         }
+
         if(template)
             templates.add(template)
 
-        return templates
+        if(exitCode == RETURN_NO_ERROR)
+            return templates
+        else
+            return exitCode
     }
 
-    static def getTemplates(boolean verbose=false){
+    static def getTemplates(boolean verbose=false, String username=null, String password=null){
 
         def templates = []
 
         def template = new GenymotionTemplate()
 
-        cmd([GENYTOOL, ADMIN, TEMPLATES, FULL], verbose) { line, count ->
+        (username, password) = checkLogin(username, password)
 
-            //if empty line and template filled
-            if (!line && template.name){
-                templates.add(template)
-                template = new GenymotionTemplate()
-            }
+        int exitCode = noNull {
+            return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_FULL, OPT_USERNAME + username, OPT_PASSWORD + password], verbose) { line, count ->
 
-            String[] info = line.split("\\:")
-            switch (info[0].trim()){
-                case "Name":
-                    if(!template.name)
-                        template.name = info[1].trim()
-                    break
-                case "UUID":
-                    template.uuid = info[1].trim()
-                    break
-                case "Description":
-                    template.description = info[1].trim()
-                    break
-                case "Android Version":
-                    template.androidVersion = info[1].trim()
-                    break
-                case "Genymotion Version":
-                    template.genymotionVersion = info[1].trim()
-                    break
-                case "Screen Width":
-                    template.width = info[1].trim().toInteger()
-                    break
-                case "Screen Height":
-                    template.height = info[1].trim().toInteger()
-                    break
-                case "Screen Density":
-                    template.density = info[1].trim()
-                    break
-                case "Screen DPI":
-                    template.dpi = info[1].trim().toInteger()
-                    break
-                case "Nb CPU":
-                    template.nbCpu = info[1].trim().toInteger()
-                    break
-                case "RAM":
-                    template.ram = info[1].trim().toInteger()
-                    break
-                case "Internal Storage":
-                    template.internalStorage = info[1].trim().toInteger()
-                    break
-                case "Telephony":
-                    template.telephony = info[1].trim().toBoolean()
-                    break
-                case "Nav Bar Visible":
-                    template.navbarVisible = info[1].trim().toBoolean()
-                    break
-                case "Virtual Keyboard":
-                    template.virtualKeyboard = info[1].trim().toBoolean()
-                    break
+                //if empty line and template filled
+                if (!line && template.name) {
+                    templates.add(template)
+                    template = new GenymotionTemplate()
+                }
+
+                String[] info = line.split("\\:")
+                switch (info[0].trim()) {
+                    case "Name":
+                        if (!template.name)
+                            template.name = info[1].trim()
+                        break
+                    case "UUID":
+                        template.uuid = info[1].trim()
+                        break
+                    case "Description":
+                        template.description = info[1].trim()
+                        break
+                    case "Android Version":
+                        template.androidVersion = info[1].trim()
+                        break
+                    case "Genymotion Version":
+                        template.genymotionVersion = info[1].trim()
+                        break
+                    case "Screen Width":
+                        template.width = info[1].trim().toInteger()
+                        break
+                    case "Screen Height":
+                        template.height = info[1].trim().toInteger()
+                        break
+                    case "Screen Density":
+                        template.density = info[1].trim()
+                        break
+                    case "Screen DPI":
+                        template.dpi = info[1].trim().toInteger()
+                        break
+                    case "Nb CPU":
+                        template.nbCpu = info[1].trim().toInteger()
+                        break
+                    case "RAM":
+                        template.ram = info[1].trim().toInteger()
+                        break
+                    case "Internal Storage":
+                        template.internalStorage = info[1].trim().toInteger()
+                        break
+                    case "Telephony":
+                        template.telephony = info[1].trim().toBoolean()
+                        break
+                    case "Nav Bar Visible":
+                        template.navbarVisible = info[1].trim().toBoolean()
+                        break
+                    case "Virtual Keyboard":
+                        template.virtualKeyboard = info[1].trim().toBoolean()
+                        break
+                }
             }
 
         }
         if(template.name)
             templates.add(template)
 
-        return templates
+        if(exitCode == RETURN_NO_ERROR)
+            return templates
+        else
+            return exitCode
     }
 
-    static boolean isTemplateExists(String template, boolean verbose=false) {
+    static boolean isTemplateExists(String template, boolean verbose=false, String username=null, String password=null) {
 
         if(!template?.trim())
             return false
 
-        def templates = getTemplatesNames(verbose)
-        templates.contains(template)
+        def templates = getTemplatesNames(verbose, username, password)
+        if(!template instanceof Integer)
+            templates.contains(template)
+        else
+            return false
     }
 
-    static def createDevice(GenymotionVDLaunch device){
-        return createDevice(device.template, device.name)
+    static def createDevice(GenymotionVDLaunch device, String username=null, String password=null){
+        return createDevice(device.template, device.name, username, password)
     }
 
-    static def createDevice(GenymotionTemplate template){
-        return createDevice(template.name, template.name)
+    static def createDevice(GenymotionTemplate template, String username=null, String password=null){
+        return createDevice(template.name, template.name, username, password)
     }
 
-    static def createDevice(def template, def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
+    static def createDevice(def template, def deviceName, def density="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram="", String username=null, String password=null){
+
+        (username, password) = checkLogin(username, password)
 
         def exitValue = noNull(){
             cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
-                 '--dpi='+dpi, '--width='+width, '--height='+height, '--virtualkeyboard='+virtualKeyboard, '--navbar='+navbarVisible, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
+                 OPT_DENSITY+density, OPT_WIDTH+width, OPT_HEIGHT+height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram, OPT_USERNAME+username, OPT_PASSWORD+password]){line, count ->
             }
         }
 
         if(exitValue == RETURN_NO_ERROR)
-            return new GenymotionVirtualDevice(deviceName, dpi, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
+            return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
         else
             return exitValue
     }
 
     static def editDevice(GenymotionVirtualDevice device){
-        return editDevice(device.name, device.dpi, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
+        return editDevice(device.name, device.density, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
     }
 
-    static def editDevice(def deviceName, def dpi="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
+    static def editDevice(def deviceName, def density="", def width="", def height="", def virtualKeyboard="", def navbarVisible="", def nbcpu="", def ram=""){
 
         return noNull(){
             return cmd([GENYTOOL, ADMIN, EDIT, deviceName,
-                 '--dpi='+dpi, '--width='+width, '--height='+height, '--virtualkeyboard='+virtualKeyboard, '--navbar='+navbarVisible, '--nbcpu='+nbcpu, "--ram="+ram]){line, count ->
+                 OPT_DENSITY +density, OPT_WIDTH +width, OPT_HEIGHT +height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram]){line, count ->
             }
         }
     }
@@ -503,7 +646,7 @@ class GMTool {
     }
 
     static def resetDevice(def deviceName, boolean verbose=false){
-        return cmd([GENYTOOL, ADMIN, FACTORYRESET, deviceName], verbose){line, count ->
+        return cmd([GENYTOOL, ADMIN, START, FACTORY_RESET, deviceName], verbose){line, count ->
         }
     }
 
