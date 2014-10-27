@@ -150,6 +150,7 @@ class GMToolTest {
         device.navbarVisible = false
         device.height = 600
         device.width = 800
+        device.density = "hdpi"
         device.dpi = 260
         device.virtualKeyboard = false
         device.nbCpu = 2
@@ -161,6 +162,7 @@ class GMToolTest {
         newDevice.fillFromDetails()
 
         assertEquals(device.androidVersion, newDevice.androidVersion)
+        assertEquals(device.density, newDevice.density)
         assertEquals(device.dpi, newDevice.dpi)
         assertEquals(device.height, newDevice.height)
         assertEquals(device.width, newDevice.width)
