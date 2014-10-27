@@ -39,6 +39,12 @@ class GenymotionEndTask extends DefaultTask {
                     //then, we thow a new exception to end task, if needed
                     if(project.genymotion.config.abortOnError)
                         throw new GMToolException("GMTool command failed. Check the output to solve the problem")
+
+                }
+                //anyway...
+                finally {
+                    //we end the configuration
+                    project.genymotion.endConfiguration()
                 }
 
             }
