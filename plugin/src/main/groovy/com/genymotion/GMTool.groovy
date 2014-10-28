@@ -475,7 +475,7 @@ class GMTool {
             return false
 
         def templates = getTemplatesNames(verbose, username, password)
-        if(!template instanceof Integer)
+        if(templates instanceof ArrayList)
             templates.contains(template)
         else
             return false
