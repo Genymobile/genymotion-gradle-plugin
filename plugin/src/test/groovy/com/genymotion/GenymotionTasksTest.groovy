@@ -75,13 +75,18 @@ class GenymotionTasksTest {
         project.genymotion.device(name: deviceToStop, template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280", deleteWhenFinish: false)
         project.genymotion.device(name: deviceToDelete, template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
 
+        String goodPath = project.genymotion.config.genymotionPath
+
         try{
             project.genymotion.config.abordOnError = true
             project.genymotion.config.genymotionPath = "ssqfkjfksùfsdlkf"
             project.tasks.genymotionLaunch.exec()
             fail("Expected GMToolException to be thrown")
 
-        } catch (IOException e){ //TODO check how we can produce GMToolException instead of IOException
+        } catch (IOException e){ //TODO check how we can produce GMToolException instead of IOException with another command
+            //we fix the path
+            project.genymotion.config.genymotionPath = goodPath
+
             assertFalse(GMTool.isDeviceCreated(deviceToDelete))
             assertTrue(devicesAreStopped(project.genymotion.devices))
         }
