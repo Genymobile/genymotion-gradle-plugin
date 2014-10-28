@@ -16,8 +16,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     boolean deleteWhenFinish = true
     private boolean create = false
 
-
-    def invalidParameterException = new IllegalArgumentException("You need to specify a valid name and/or template to declare a device")
+    private static String INVALID_PARAMETER = "You need to specify a valid name or template to declare a device"
 
 
     GenymotionVDLaunch(Map params) {
@@ -25,7 +24,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         //if no params
         if(!params){
-            throw invalidParameterException
+            throw new IllegalArgumentException(INVALID_PARAMETER)
         }
 
         boolean deviceExists = GMTool.isDeviceCreated(params.name)
@@ -33,7 +32,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         //if name & template are null or not existing
         if(!deviceExists && !templateExists){
-            throw invalidParameterException
+            throw new IllegalArgumentException("Template: $params.template, Name: $params.name. "+INVALID_PARAMETER)
         }
 
         //if declared device name exists
