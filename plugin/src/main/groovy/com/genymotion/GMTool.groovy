@@ -73,7 +73,7 @@ class GMTool {
     private static final String OPT_HEIGHT               = '--height='
     private static final String OPT_VIRTUAL_KEYBOARD     = '--virtualkeyboard='
     private static final String OPT_NAVBAR               = '--navbar='
-    private static final String OPT_NBCPU                = '--cpu='
+    private static final String OPT_NBCPU                = '--nbcpu='
     private static final String OPT_RAM                  = "--ram="
 
     //code returned by gmtool or command line
