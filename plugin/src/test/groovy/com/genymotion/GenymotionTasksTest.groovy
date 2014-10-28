@@ -24,7 +24,7 @@ class GenymotionTasksTest {
     @Test
     public void canLaunch() {
 
-        def (String vdName, int dpi, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -35,7 +35,7 @@ class GenymotionTasksTest {
         assertEquals(deleteWhenFinish, project.genymotion.devices[0].deleteWhenFinish)
 
         //we test the created VD
-        assertEquals(dpi, device.dpi)
+        assertEquals(density, device.density)
         assertEquals(width, device.width)
         assertEquals(height, device.height)
 //        assertEquals(false, device.telephony) //TODO uncomment when implemented on gmtool and plugin
@@ -56,7 +56,7 @@ class GenymotionTasksTest {
     @Test
     public void canFinish() {
 
-        def (String vdName, int dpi, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 

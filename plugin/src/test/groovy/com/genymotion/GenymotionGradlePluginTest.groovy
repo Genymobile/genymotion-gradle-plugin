@@ -160,12 +160,12 @@ class GenymotionGradlePluginTest {
         GMTool.deleteDevice(vdName)
 
         int intValue = 999
-        int dpi = "mdpi"
+        String density = "mdpi"
 
         project.genymotion.device(
                 name: vdName,
                 template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-                dpi: dpi,
+                density: density,
                 width: intValue,
                 height: intValue,
                 physicalButton: false,
@@ -181,7 +181,7 @@ class GenymotionGradlePluginTest {
         project.genymotion.devices[0].checkAndEdit()
 
         GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
-        assertEquals(dpi, device.dpi)
+        assertEquals(density, device.density)
         assertEquals(intValue, device.width)
         assertEquals(intValue, device.height)
 //        assertEquals(false, device.virtualKeyboard) //TODO uncomment when bug on gmtool is fixed

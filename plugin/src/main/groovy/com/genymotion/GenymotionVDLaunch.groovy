@@ -91,13 +91,13 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
 
         //if the configuration is different from the created device
-        if(!dpi?.equals(device.dpi) ||
-           !width?.equals(device.width) ||
-           !height?.equals(device.height) ||
-           !virtualKeyboard == device.virtualKeyboard ||
-           !navbarVisible == device.navbarVisible ||
-           !nbCpu?.equals(device.nbCpu) ||
-           !ram?.equals(device.ram)){
+        if(!this.density?.equals(device.density) ||
+           !this.width?.equals(device.width) ||
+           !this.height?.equals(device.height) ||
+           !this.virtualKeyboard == device.virtualKeyboard ||
+           !this.navbarVisible == device.navbarVisible ||
+           !this.nbCpu?.equals(device.nbCpu) ||
+           !this.ram?.equals(device.ram)){
 
             return GMTool.editDevice(this)
         }

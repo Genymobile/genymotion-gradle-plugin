@@ -35,18 +35,18 @@ class GenymotionVirtualDevice {
 
     GenymotionVirtualDevice(Map params) {
         if(params)
-            init(params.name, params.dpi, params.width, params.height, params.virtualKeyboard, params.navbarVisible, params.nbCpu, params.ram)
+            init(params.name, params.density, params.width, params.height, params.virtualKeyboard, params.navbarVisible, params.nbCpu, params.ram)
     }
 
-    GenymotionVirtualDevice(def name, def dpi, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
-        init(name, dpi, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
+    GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
     }
 
-    void init(def name, def dpi, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
+    void init(def name, def density, def width, def height, def physicalButton, def navbar, def nbCpu, def ram) {
         if(name?.trim())
             this.name = name
-        if(dpi)
-            this.dpi = dpi.toInteger()
+        if(density)
+            this.density= density
         if(width)
             this.width = width.toInteger()
         if(height)

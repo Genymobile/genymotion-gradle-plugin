@@ -56,7 +56,7 @@ class TestTools {
 
     static def createADetailedDevice(Project project) {
         String vdName = GenymotionVDLaunch.getRandomName("-junit")
-        int dpi = 180
+        String density = "mdpi"
         int height = 480
         int width = 320
         int ram = 2048
@@ -66,7 +66,7 @@ class TestTools {
         project.genymotion.device(
                 name: vdName,
                 template: "Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-                dpi: dpi,
+                density: density,
                 width: width,
                 height: height,
                 physicalButton: false,
@@ -75,7 +75,7 @@ class TestTools {
                 ram: ram,
                 deleteWhenFinish: deleteWhenFinish
         )
-        [vdName, dpi, width, height, nbCpu, ram, deleteWhenFinish]
+        [vdName, density, width, height, nbCpu, ram, deleteWhenFinish]
     }
 
 
