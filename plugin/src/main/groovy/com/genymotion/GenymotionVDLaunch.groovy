@@ -105,12 +105,16 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         false
     }
 
+    def start(){
+        if(start)
+            GMTool.startDevice(this)
+    }
+
     def create(){
         if(create)
             GMTool.createDevice(this)
         this.create = false
     }
-
 
     def flash(){
         GMTool.flashDevice(this, flash)
