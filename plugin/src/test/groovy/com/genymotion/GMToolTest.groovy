@@ -93,7 +93,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        device.fillFromDetails(true)
 
 
         assertNotNull(device.androidVersion)
