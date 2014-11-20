@@ -98,13 +98,10 @@ class GenymotionVirtualDevice {
     }
 
     String toString() {
-        String result = "-- Virtual Device --\n"
-        result += "name: ${name}\n"
-        result += "w.h: ${width}x${height}\n"
-        result += "virtual keyboard: ${virtualKeyboard}\n"
-        result += "navbar : ${navbarVisible}\n"
-        result += "nb cpu: ${nbCpu}\n"
-        result += "ram: ${ram}\n"
+        String keyboard = virtualKeyboard?"virtual":"physical"
+        String result = "Device: $name\n"
+        result += "${width}x${height}"
+        result += " - $keyboard keyboard"
 
         result
     }
@@ -112,7 +109,6 @@ class GenymotionVirtualDevice {
 
 
     boolean equals(GenymotionVirtualDevice other){
-        println "compare"+this.name+" "+other.name
         (this.name == other.name)
     }
 

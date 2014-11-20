@@ -2,7 +2,6 @@ package main.groovy.com.genymotion
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin
-import org.gradle.api.UnknownTaskException
 
 
 class GenymotionGradlePlugin implements Plugin<Project> {
@@ -13,7 +12,6 @@ class GenymotionGradlePlugin implements Plugin<Project> {
 
     void apply(Project project) {
 
-        println "adding Genymotion plugin"
         project.extensions.create('genymotion', GenymotionPluginExtension, project);
         project.genymotion.extensions.create('config', GenymotionConfig); //the extension name have to be different from the original nested element's name (receiver)
         project.genymotion.extensions.create('admin', GMToolAdmin); //the extension name have to be different from the original nested element's name (receiver)
@@ -33,25 +31,9 @@ class GenymotionGradlePlugin implements Plugin<Project> {
 
         project.afterEvaluate {
 
-            GenymotionPluginExtension.checkParams()
+            project.genymotion.checkParams()
 
-            def taskLaunch = project.genymotion.config.taskLaunch
-
-            try{
-                //if the automatic launch is enable and the configuration is correct
-                if (project.genymotion.config.automaticLaunch && taskLaunch != null &&
-                   (project.plugins.hasPlugin('android') || taskLaunch != GenymotionConfig.DEFAULT_ANDROID_TASK)
-                ) {
-
-                    def theTask = project.tasks.getByName(taskLaunch)
-                    println "Adding genymotion dependency to " + taskLaunch
-                    theTask.dependsOn(TASK_LAUNCH)
-                    theTask.finalizedBy(TASK_FINISH)
-                }
-
-            } catch (UnknownTaskException e){
-                println "Task $taskLaunch not found. genymotionLaunch/Finish tasks are not injected and has to be launched manually."
-            }
+            project.genymotion.injectTasks()
 
         }
     }

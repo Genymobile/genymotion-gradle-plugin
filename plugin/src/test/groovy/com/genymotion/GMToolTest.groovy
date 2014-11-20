@@ -4,6 +4,7 @@ import main.groovy.com.genymotion.GMToolException
 import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.junit.After
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.Before
 import org.gradle.api.Project
@@ -11,8 +12,8 @@ import org.gradle.api.Project
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
-
 
 class GMToolTest {
 
@@ -23,6 +24,7 @@ class GMToolTest {
     public void setUp() {
         project = TestTools.init()
     }
+
 
     @Test
     public void isConfigOK() {
@@ -203,6 +205,7 @@ class GMToolTest {
     }
 
 
+
 /*
     @Test
     public void canStopAllDevices() {
@@ -235,6 +238,7 @@ class GMToolTest {
 
     }
 */
+
 
     @Test
     public void canInstallToDevice() {
@@ -425,6 +429,34 @@ class GMToolTest {
                 flashed++
         }
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
+    }
+
+
+    @Test
+    public void canLoginAuto() {
+        String username = "testU"
+        String password = "testP"
+
+        GMTool.GENYMOTION_CONFIG.username = username
+        GMTool.GENYMOTION_CONFIG.password = password
+        GMTool.GENYMOTION_CONFIG.persist = true
+
+        def (u, p) = GMTool.checkLogin(null, null)
+        assertEquals([u, p], [null, null])
+
+        GMTool.GENYMOTION_CONFIG.persist = false
+
+        (u, p) = GMTool.checkLogin(null, null)
+        assertEquals([u, p], [username, password])
+
+        GMTool.GENYMOTION_CONFIG.username = ""
+        GMTool.GENYMOTION_CONFIG.password = ""
+
+        (u, p) = GMTool.checkLogin(username, password)
+        assertEquals([u, p], [username, password])
+
+        (u, p) = GMTool.checkLogin(null, null)
+        assertEquals([u, p], [null, null])
     }
 
 

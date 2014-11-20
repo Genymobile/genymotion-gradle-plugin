@@ -14,6 +14,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     def flash
     String logcat
     boolean deleteWhenFinish = true
+    boolean stopWhenFinish = true
     private boolean create = false
 
     private static String INVALID_PARAMETER = "You need to specify a valid name or template to declare a device"
@@ -61,6 +62,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         }
 
+        if(params.stopWhenFinish != null)
+            this.stopWhenFinish = params.stopWhenFinish
         if(params.deleteWhenFinish != null)
             this.deleteWhenFinish = params.deleteWhenFinish
         if(params.start != null)
@@ -109,6 +112,10 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         if(start)
             GMTool.startDevice(this)
     }
+    def stop(){
+        if(stopWhenFinish)
+            GMTool.stopDevice(this)
+    }
 
     def create(){
         if(create)
@@ -139,6 +146,12 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     def pullAfter(){
         GMTool.pullFromDevice(this, pullAfter)
     }
+
+    def logcat(){
+        if(logcat)
+            GMTool.routeLogcat(this, logcat)
+    }
+
 
     static String getRandomName(String extension=null){
         int nameLength = 3

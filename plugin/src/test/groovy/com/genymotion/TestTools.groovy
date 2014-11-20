@@ -28,6 +28,8 @@ class TestTools {
         //we set the config inside the GenymotionTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
+        GMTool.getConfig(true)
+
         project
     }
 
@@ -54,7 +56,7 @@ class TestTools {
         name
     }
 
-    static def createADetailedDevice(Project project) {
+    static def createADetailedDevice(Project project, boolean stopWhenFinish=true) {
         String vdName = GenymotionVDLaunch.getRandomName("-junit")
         String density = "mdpi"
         int height = 480
@@ -73,7 +75,8 @@ class TestTools {
                 navbar: false,
                 nbCpu: nbCpu,
                 ram: ram,
-                deleteWhenFinish: deleteWhenFinish
+                deleteWhenFinish: deleteWhenFinish,
+                stopWhenFinish: stopWhenFinish
         )
         [vdName, density, width, height, nbCpu, ram, deleteWhenFinish]
     }
@@ -82,6 +85,9 @@ class TestTools {
     static void cleanAfterTests(){
 
         println "Cleaning after tests"
+
+        GMTool.getConfig(true)
+
         try{
             def devices = GMTool.getAllDevices(false, false, true)
             def pattern = ~/^.+?\-junit$/

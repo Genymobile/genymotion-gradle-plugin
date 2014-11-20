@@ -20,7 +20,7 @@ class GenymotionEndTask extends DefaultTask {
                 try{
                     it.pushAfter()
                     it.pullAfter()
-                    GMTool.stopDevice(it)
+                    it.stop()
                     if(it.deleteWhenFinish)
                         GMTool.deleteDevice(it)
                 }

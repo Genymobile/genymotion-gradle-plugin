@@ -6,6 +6,7 @@ import org.gradle.api.tasks.TaskAction
 
 class GenymotionLaunchTask extends DefaultTask {
 
+
     @TaskAction
     def exec() {
         //we configure the environment
@@ -14,17 +15,26 @@ class GenymotionLaunchTask extends DefaultTask {
         if (project.genymotion.config.verbose)
             println("Starting devices")
 
+        def devices = project.genymotion.getDevices()
+        def runningDevices = []
+
+        if(devices.size() > 0)
+            runningDevices = GMTool.getRunningDevices(project.genymotion.config.verbose, false, true)
+
         //process declared devices
-        project.genymotion.getDevices().each(){
+        devices.each(){
 
             if(it.start){
                 if (project.genymotion.config.verbose)
                     println("Starting ${it.name}")
 
                 try{
-                    it.create()
-                    it.checkAndEdit()
-                    it.start()
+                    if(it.name && !runningDevices.contains(it.name)){
+                        it.create()
+                        it.checkAndEdit()
+                        it.logcat()
+                        it.start()
+                    }
                     it.flash()
                     it.install()
                     it.pushBefore()

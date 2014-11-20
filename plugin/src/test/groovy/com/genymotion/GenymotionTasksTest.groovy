@@ -1,11 +1,13 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GMTool
+import main.groovy.com.genymotion.GenymotionConfig
 import main.groovy.com.genymotion.GenymotionVDLaunch
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import java.io.IOException
 
@@ -20,6 +22,7 @@ class GenymotionTasksTest {
     public void setUp() {
         project = TestTools.init()
     }
+
 
     @Test
     public void canLaunch() {
@@ -99,6 +102,30 @@ class GenymotionTasksTest {
                 return false
         }
     }
+
+
+    @Test
+    public void canLoginAndRegister() {
+
+        //ENTER HERE the path to a properties file containing good credential (username, password & license)
+        String path = "/home/eyal/genymotion/gradle-plugin/junit/config.properties"
+
+        File f = new File(path)
+        assertTrue("Config file does not exists to test login feature. Set the path to be able to run the test", f.exists())
+
+        project.genymotion.config.fromFile = path
+        project.genymotion.config.persist = true
+
+        //we set the config file
+        project.tasks.genymotionLaunch.exec()
+
+        GenymotionConfig config = GMTool.getConfig(true)
+
+        assertEquals(project.genymotion.config.username, config.username)
+
+        //TODO test license registration
+    }
+
 
     @After
     public void finishTest(){
