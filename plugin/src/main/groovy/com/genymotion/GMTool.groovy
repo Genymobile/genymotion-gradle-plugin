@@ -52,19 +52,7 @@ class GMTool {
     private static final String VALIDITY = "validity"
     //options
     private static final String OPT_USERNAME             = "--username="
-    private static final String OPT_STATISTICS           = "--statistics="
     private static final String OPT_PASSWORD             = "--password="
-    private static final String OPT_STORE_CREDENTIALS    = "--store_credentials="
-    private static final String OPT_PROXY                = "--proxy="
-    private static final String OPT_PROXY_ADDRESS        = "--proxy_address="
-    private static final String OPT_PROXY_PORT           = "--proxy_port="
-    private static final String OPT_PROXY_AUTH           = "--proxy_auth="
-    private static final String OPT_PROXY_USERNAME       = "--proxy_username="
-    private static final String OPT_PROXY_PASSWORD       = "--proxy_password="
-    private static final String OPT_DEVICES_PATH         = "--devices_path="
-    private static final String OPT_SDK_PATH             = "--sdk_path="
-    private static final String OPT_USE_CUSTOM_SDK       = "--use_custom_sdk="
-    private static final String OPT_SCREEN_CAPTURES_PATH = "--screen_captures_path="
     private static final String OPT_RUNNING              = "--running"
     private static final String OPT_OFF                  = "--off"
     private static final String OPT_FULL                 = "--full"
@@ -75,21 +63,39 @@ class GMTool {
     private static final String OPT_NAVBAR               = '--navbar='
     private static final String OPT_NBCPU                = '--nbcpu='
     private static final String OPT_RAM                  = "--ram="
+    private static final String OPT_NAME                  = "-n="
+    private static final String OPT_STATISTICS           = "statistics="
+    private static final String OPT_USERNAME_CONFIG      = "username="
+    private static final String OPT_PASSWORD_CONFIG      = "password="
+    private static final String OPT_STORE_CREDENTIALS    = "store_credentials="
+    private static final String OPT_PROXY                = "proxy="
+    private static final String OPT_PROXY_ADDRESS        = "proxy_address="
+    private static final String OPT_PROXY_PORT           = "proxy_port="
+    private static final String OPT_PROXY_AUTH           = "proxy_auth="
+    private static final String OPT_PROXY_USERNAME       = "proxy_username="
+    private static final String OPT_PROXY_PASSWORD       = "proxy_password="
+    private static final String OPT_VIRTUAL_DEVICE_PATH  = "virtual_device_path="
+    private static final String OPT_SDK_PATH             = "sdk_path="
+    private static final String OPT_USE_CUSTOM_SDK       = "use_custom_sdk="
+    private static final String OPT_SCREEN_CAPTURE_PATH = "screen_capture_path="
+
 
     //code returned by gmtool or command line
-    public static final int RETURN_DEVICE_NOT_FOUND       = -1
-    public static final int RETURN_NO_ERROR               = 0
-    public static final int RETURN_GENERIC_ERROR          = 1
-    public static final int RETURN_NO_SUCH_ACTION         = 2
-    public static final int RETURN_CANT_LOGIN             = 3
-    public static final int RETURN_CANT_REGISTER_LICENSE  = 4
-    public static final int RETURN_CANT_ACTIVATE_LICENSE  = 5
-    public static final int RETURN_NO_ACTIVATED_LICENSE   = 6
-    public static final int RETURN_INVALID_LICENSE        = 7
-    public static final int RETURN_PENDING_ACTION         = 8
-    public static final int RETURN_ARGS_ERROR             = 9
-    public static final int RETURN_VM_NOT_STOPPED         = 10
-    public static final int RETURN_COMMAND_NOT_FOUND_UNIX = 127
+    public static final int RETURN_NO_ERROR                = 0
+    public static final int RETURN_NO_SUCH_ACTION          = 1
+    public static final int RETURN_BAD_PARAM_VALUE         = 2
+    public static final int RETURN_COMMAND_FAILED          = 3
+    public static final int RETURN_VMENGINE_ERROR          = 4
+    public static final int RETURN_DEVICE_NOT_FOUND        = 5
+    public static final int RETURN_CANT_LOGIN              = 6
+    public static final int RETURN_CANT_REGISTER_LICENSE   = 7
+    public static final int RETURN_CANT_ACTIVATE_LICENSE   = 8
+    public static final int RETURN_NO_ACTIVATED_LICENSE    = 9
+    public static final int RETURN_INVALID_LICENSE         = 10
+    public static final int RETURN_MISSING_ARGUMENTS       = 11
+    public static final int RETURN_VM_NOT_STOPPED          = 12
+    public static final int RETURN_LICENSE_REQUIRED        = 13
+    public static final int RETURN_COMMAND_NOT_FOUND_UNIX  = 127
 
 
     static def usage(){
@@ -116,7 +122,7 @@ class GMTool {
         def command = [GENYTOOL, LOGZIP]
 
         if(vdName?.trim()){
-            command.push("-n="+vdName)
+            command.push(OPT_NAME+vdName)
         }
 
         if(path?.trim())
@@ -132,48 +138,45 @@ class GMTool {
 
         def exitCode = cmd([GENYTOOL, CONFIG, PRINT], verbose) { line, count ->
 
-            String[] info = line.split("\\=")
-            if (info[1].trim()){
+            String[] info = line.split("=")
+            if (info.length > 1 && info[1].trim()){
 
                 switch (info[0].trim()) {
                     case "statistics":
-                        config.statistics = info[1].trim()
+                        config.statistics = info[1].trim().toBoolean()
                         break
                     case "username":
                         config.username = info[1].trim()
                         break
                     case "store_credentials":
-                        config.store_credentials = info[1].trim()
+                        config.store_credentials = info[1].trim().toBoolean()
                         break
                     case "proxy":
-                        config.proxy = info[1].trim()
+                        config.proxy = info[1].trim().toBoolean()
                         break
                     case "proxy_address":
                         config.proxy_address = info[1].trim()
                         break
                     case "proxy_port":
-                        config.proxy_port = info[1].trim()
+                        config.proxy_port = info[1].toInteger()
                         break
                     case "proxy_auth":
-                        config.proxy_auth = info[1].trim()
+                        config.proxy_auth = info[1].trim().toBoolean()
                         break
                     case "proxy_username":
                         config.proxy_username = info[1].trim()
                         break
-                    case "proxy_password":
-                        config.proxy_password = info[1].trim()
-                        break
-                    case "devices_path":
-                        config.devices_path = info[1].trim()
+                    case "virtual_device_path":
+                        config.virtual_device_path = info[1].trim()
                         break
                     case "sdk_path":
                         config.sdk_path = info[1].trim()
                         break
                     case "use_custom_sdk":
-                        config.use_custom_sdk = info[1].trim()
+                        config.use_custom_sdk = info[1].trim().toBoolean()
                         break
-                    case "screen_captures_path":
-                        config.screen_captures_path = info[1].trim()
+                    case "screen_capture_path":
+                        config.screen_capture_path = info[1].trim()
                         break
                 }
             }
@@ -185,44 +188,48 @@ class GMTool {
     }
 
     static def setConfig(GenymotionConfig config, boolean verbose=false){
-        return setConfig(config.statistics, config.username, config.password, config.store_credentials, config.proxy, config.proxy_address, config.proxy_port, config.proxy_auth, config.proxy_username, config.proxy_password, config.devices_path, config.sdk_path, config.use_custom_sdk, config.screen_captures_path=null, verbose)
+        if(!config)
+            return false
+        return setConfig(config.statistics, config.username, config.password, config.store_credentials, config.proxy, config.proxy_address, config.proxy_port, config.proxy_auth, config.proxy_username, config.proxy_password, config.virtual_device_path, config.sdk_path, config.use_custom_sdk, config.screen_capture_path, verbose)
     }
 
 
-    static def setConfig(def statistics=null, def username=null, def password=null, def store_credentials=null, def proxy=null, def proxy_address=null, def proxy_port=null, def proxy_auth=null, def proxy_username=null, def proxy_password=null, def devices_path=null, def sdk_path=null, def use_custom_sdk=null, def screen_captures_path=null, boolean verbose=false){
+    static def setConfig(def statistics=null, String username=null, String password=null, def store_credentials=null, def proxy=null, String proxy_address=null, def proxy_port=null, def proxy_auth=null, String proxy_username=null, String proxy_password=null, String virtual_device_path=null, String sdk_path=null, def use_custom_sdk=null, String screen_capture_path=null, boolean verbose=false) {
 
         (username, password) = checkLogin(username, password)
 
         def command = [GENYTOOL, CONFIG]
 
-        if(statistics)
-            command.push(OPT_STATISTICS+statistics)
-        if(username)
-            command.push(OPT_USERNAME+username)
-        if(password)
-            command.push(OPT_PASSWORD+password)
-        if(store_credentials)
+        if (username != null && password != null) {
+            command.push(OPT_USERNAME_CONFIG + username)
+            command.push(OPT_PASSWORD_CONFIG + password)
+        } else if((username != null || password != null) && verbose)
+            println "username and password need to be both transmitted. Ignoring these both arguments"
+
+        if (statistics != null)
+            command.push(OPT_STATISTICS + statistics)
+        if(store_credentials != null)
             command.push(OPT_STORE_CREDENTIALS+store_credentials)
-        if(proxy)
+        if(proxy != null)
             command.push(OPT_PROXY+proxy)
-        if(proxy_address)
+        if(proxy_address != null)
             command.push(OPT_PROXY_ADDRESS+proxy_address)
-        if(proxy_port)
+        if(proxy_port != null)
             command.push(OPT_PROXY_PORT+proxy_port)
-        if(proxy_auth)
+        if(proxy_auth != null)
             command.push(OPT_PROXY_AUTH+proxy_auth)
-        if(proxy_username)
+        if(proxy_username != null)
             command.push(OPT_PROXY_USERNAME+proxy_username)
-        if(proxy_password)
+        if(proxy_password != null)
             command.push(OPT_PROXY_PASSWORD+proxy_password)
-        if(devices_path)
-            command.push(OPT_DEVICES_PATH+devices_path)
-        if(sdk_path)
+        if(virtual_device_path != null)
+            command.push(OPT_VIRTUAL_DEVICE_PATH+virtual_device_path)
+        if(sdk_path != null)
             command.push(OPT_SDK_PATH+sdk_path)
-        if(use_custom_sdk)
+        if(use_custom_sdk != null)
             command.push(OPT_USE_CUSTOM_SDK+use_custom_sdk)
-        if(screen_captures_path)
-            command.push(OPT_SCREEN_CAPTURES_PATH+screen_captures_path)
+        if(screen_capture_path != null)
+            command.push(OPT_SCREEN_CAPTURE_PATH+screen_capture_path)
 
         return cmd(command, verbose) { line, count ->
         }
@@ -684,7 +691,7 @@ class GMTool {
 
         files.each(){
 
-            def command = [GENYTOOL, DEVICE, '-n='+deviceName, PUSH]
+            def command = [GENYTOOL, DEVICE, OPT_NAME+deviceName, PUSH]
             if(files instanceof Map){
                 command.push(it.key)
                 command.push(it.value)
@@ -720,7 +727,7 @@ class GMTool {
 
         files.each(){
 
-            def command = [GENYTOOL, DEVICE, '-n='+deviceName, PULL]
+            def command = [GENYTOOL, DEVICE, OPT_NAME+deviceName, PULL]
             if(files instanceof Map){
                 command.push(it.key)
                 command.push(it.value)
@@ -746,14 +753,14 @@ class GMTool {
             return false
 
         if(apks instanceof String){
-            cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, apks], verbose){line, count ->
+            cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, INSTALL, apks], verbose){line, count ->
             }
 
         } else if(apks instanceof ArrayList){
 
             def exitValues = []
             apks.each(){
-                int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, INSTALL, it], verbose){line, count ->
+                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, INSTALL, it], verbose){line, count ->
                 }
                 exitValues.add(exitValue)
             }
@@ -773,13 +780,13 @@ class GMTool {
             return false
 
         if(zips instanceof String){
-            return cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, zips], verbose){line, count ->
+            return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, FLASH, zips], verbose){line, count ->
             }
 
         } else if(zips instanceof ArrayList){
             def exitValues = []
             zips.each(){
-                int exitValue = cmd([GENYTOOL, DEVICE, '-n='+deviceName, FLASH, it], verbose){line, count ->
+                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, FLASH, it], verbose){line, count ->
                 }
                 exitValues.add(exitValue)
             }
@@ -793,7 +800,7 @@ class GMTool {
     }
 
     static def adbDisconnectDevice(def deviceName, boolean verbose=false){
-        return cmd([GENYTOOL, DEVICE, deviceName, ADBDISCONNECT], verbose){line, count ->
+        return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, ADBDISCONNECT], verbose){line, count ->
         }
     }
 
@@ -802,7 +809,7 @@ class GMTool {
     }
 
     static def adbConnectDevice(def deviceName, boolean verbose=false){
-        return cmd([GENYTOOL, DEVICE, deviceName, ADBCONNECT], verbose){line, count ->
+        return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, ADBCONNECT], verbose){line, count ->
         }
     }
 
@@ -811,7 +818,7 @@ class GMTool {
     }
 
     static def routeLogcat(def deviceName, def path, boolean verbose=false){
-        return cmd([GENYTOOL, DEVICE, deviceName, LOGCAT, path], verbose){line, count ->
+        return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, LOGCAT, path], verbose){line, count ->
         }
     }
 
