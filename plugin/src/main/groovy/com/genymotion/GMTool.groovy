@@ -853,7 +853,7 @@ class GMTool {
             }
         }
 
-        if(verbose) {
+        if(verbose || GENYMOTION_CONFIG.verbose) {
             if(toExec[0].contains(GENYTOOL))
                 toExec.addAll(1, [VERBOSE])
 
@@ -867,7 +867,7 @@ class GMTool {
 
         p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
 
-        if(verbose){
+        if(verbose || GENYMOTION_CONFIG.verbose){
             println "out:" + out.toString()
         }
 
