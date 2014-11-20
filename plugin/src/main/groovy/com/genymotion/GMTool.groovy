@@ -945,8 +945,8 @@ class GMTool {
      */
     static def checkLogin(String username, String password) {
 
-        if(username && password)
-            return [null, null]
+        if((username && password) || GENYMOTION_CONFIG.persist)
+            return [username, password]
 
         if(GENYMOTION_CONFIG.username && GENYMOTION_CONFIG.password)
             return [GENYMOTION_CONFIG.username, GENYMOTION_CONFIG.password]
