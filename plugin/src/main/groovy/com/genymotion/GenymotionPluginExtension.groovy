@@ -135,8 +135,6 @@ class GenymotionPluginExtension {
                     config.screen_capture_path = props.screen_capture_path
                 if(props.taskLaunch)
                     config.taskLaunch = props.taskLaunch
-                if(props.taskFinish)
-                    config.taskFinish = props.taskFinish
                 if(props.automaticLaunch)
                     config.automaticLaunch = props.automaticLaunch.toBoolean()
                 if(props.processTimeout)
