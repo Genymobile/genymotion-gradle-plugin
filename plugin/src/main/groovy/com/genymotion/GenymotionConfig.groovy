@@ -5,8 +5,6 @@ package main.groovy.com.genymotion
  */
 class GenymotionConfig {
 
-    static final DEFAULT_ANDROID_TASK = "connectedAndroidTest"
-
     //plugin config
     def genymotionPath = ""           //set the Genymotion path to PATH
 
@@ -30,8 +28,7 @@ class GenymotionConfig {
     def screen_capture_path     //set le dossier de stockage des screenshots
 
     //task configs
-    String taskLaunch = DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task
-    String taskFinish = DEFAULT_ANDROID_TASK     //NOT USED FOR NOW define the task that the genymotion finish task depends on
+    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task
     boolean automaticLaunch = true               //enable or not the genymotion tasks injection
     int processTimeout = 300000                  //timeout for all the processes launched in command line
     boolean verbose = true                       //verbose mode
