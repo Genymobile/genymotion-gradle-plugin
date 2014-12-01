@@ -40,13 +40,12 @@ class GenymotionConfig {
 
 
     boolean isEmpty(){
-        //TODO y a un bug la non???!!
         if(statistics != null || username != null || password != null || store_credentials != null || license != null ||
            proxy != null || proxy_address != null || proxy_port != null || proxy_auth != null || proxy_username != null ||
            proxy_password != null || virtual_device_path != null || sdk_path != null || use_custom_sdk != null ||
            screen_capture_path != null)
-            return true
+            return false
 
-        return false
+        return true
     }
 }
