@@ -6,6 +6,7 @@ import org.gradle.api.tasks.TaskAction
 
 class GenymotionLaunchTask extends DefaultTask {
 
+    String flavor
 
     @TaskAction
     def exec() {
@@ -15,7 +16,7 @@ class GenymotionLaunchTask extends DefaultTask {
         if (project.genymotion.config.verbose)
             println("Starting devices")
 
-        def devices = project.genymotion.getDevices()
+        def devices = project.genymotion.getDevices(flavor)
         def runningDevices = []
 
         if(devices.size() > 0)
@@ -23,45 +24,48 @@ class GenymotionLaunchTask extends DefaultTask {
 
         //process declared devices
         devices.each(){
-
-            if(it.start){
-                if (project.genymotion.config.verbose)
-                    println("Starting ${it.name}")
-
-                try{
-                    if(it.name && !runningDevices.contains(it.name)){
-                        it.create()
-                        it.checkAndEdit()
-                        it.logcat()
-                        it.start()
-                    }
-                    it.flash()
-                    it.install()
-                    it.pushBefore()
-                    it.pullBefore()
-                }
-                //if a gmtool command fail
-                catch(Exception e){
-
-                    println e.getMessage()
-                    println "Stoping all launched devices and deleting when needed"
-                    project.genymotion.getDevices().each(){
-                        //we close the opened devices
-                        GMTool.stopDevice(it)
-                        //and delete them if needed
-                        if(it.deleteWhenFinish)
-                            GMTool.deleteDevice(it)
-                    }
-                    //then, we thow a new exception to end task, if needed
-                    if(project.genymotion.config.abortOnError)
-                        throw new GMToolException("GMTool command failed. Check the output to solve the problem")
-                }
-            }
+            processDevice(it)
         }
 
         if (project.genymotion.config.verbose) {
             println("-- Running devices --")
             GMTool.getRunningDevices(true)
+        }
+    }
+
+    private void processDevice(device) {
+        if (device.start) {
+            if (project.genymotion.config.verbose)
+                println("Starting ${device.name}")
+
+            try {
+                if (device.name && !runningDevices.contains(device.name)) {
+                    device.create()
+                    device.checkAndEdit()
+                    device.logcat()
+                    device.start()
+                }
+                device.flash()
+                device.install()
+                device.pushBefore()
+                device.pullBefore()
+            }
+            //if a gmtool command fail
+            catch (Exception e) {
+
+                println e.getMessage()
+                println "Stoping all launched devices and deleting when needed"
+                project.genymotion.getDevices(flavor).each() {
+                    //we close the opened devices
+                    GMTool.stopDevice(device)
+                    //and delete them if needed
+                    if (device.deleteWhenFinish)
+                        GMTool.deleteDevice(device)
+                }
+                //then, we thow a new exception to end task, if needed
+                if (project.genymotion.config.abortOnError)
+                    throw new GMToolException("GMTool command failed. Check the output to solve the problem")
+            }
         }
     }
 }
