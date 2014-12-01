@@ -1,12 +1,1 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.5
-version = '1.0'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
