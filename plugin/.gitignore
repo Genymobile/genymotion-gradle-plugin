@@ -5,3 +5,6 @@
 #gradle
 .gradle
 build/
+
+#default property file (DO NOT REMOVE THIS LINE)
+res/test/default.properties
