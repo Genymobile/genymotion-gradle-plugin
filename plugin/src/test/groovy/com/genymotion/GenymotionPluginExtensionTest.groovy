@@ -15,6 +15,7 @@ import static org.junit.Assert.*
 class GenymotionPluginExtensionTest {
 
     Project project
+    boolean changedUser = false
 
     @Before
     public void setUp() {
@@ -27,6 +28,9 @@ class GenymotionPluginExtensionTest {
         GenymotionConfig config = GMTool.getConfig(true)
 
         project.genymotion.config.fromFile = "res/test/config.properties"
+
+        //we set the user as changed to set it again after the test
+        changedUser = true
 
         //we set the config file
         project.tasks.genymotionLaunch.exec()
@@ -180,5 +184,11 @@ class GenymotionPluginExtensionTest {
 
     @After
     public void finishTest(){
+        TestTools.cleanAfterTests()
+
+        if(changedUser){
+            TestTools.setDefaultUser(true)
+            changedUser = false
+        }
     }
 }
