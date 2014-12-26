@@ -54,10 +54,11 @@ class TestTools {
         String[] keys = DEVICES.keySet() as String[]
         String name = keys[index]
         GMTool.createDevice(DEVICES[name], name)
+
         name
     }
 
-    static def createADetailedDevice(Project project, boolean stopWhenFinish=true) {
+    static def declareADetailedDevice(Project project, boolean stopWhenFinish=true) {
         String vdName = GenymotionVDLaunch.getRandomName("-junit")
         String density = "mdpi"
         int height = 480
