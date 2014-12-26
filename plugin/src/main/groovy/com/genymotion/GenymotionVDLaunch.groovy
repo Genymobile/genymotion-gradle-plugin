@@ -164,4 +164,21 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             name += extension
         name
     }
+
+
+    def setStopWhenFinish(boolean value){
+        this.stopWhenFinish = value
+
+        //we disable device deletion if we don't stop the device
+        if(!value)
+            this.deleteWhenFinish = value
+    }
+
+    def setDeleteWhenFinish(boolean value){
+        this.deleteWhenFinish = value
+
+        //we disable device stop if we delete the device
+        if(value)
+            this.stopWhenFinish = value
+    }
 }
