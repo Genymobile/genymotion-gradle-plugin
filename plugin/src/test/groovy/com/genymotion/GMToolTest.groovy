@@ -4,6 +4,7 @@ import main.groovy.com.genymotion.GMToolException
 import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.junit.After
+import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.Before
@@ -15,10 +16,16 @@ import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
 
+@Ignore
 class GMToolTest {
 
-
     Project project
+
+    @BeforeClass
+    public static void setUpClass() {
+        TestTools.init()
+        TestTools.setDefaultUser(true)
+    }
 
     @Before
     public void setUp() {

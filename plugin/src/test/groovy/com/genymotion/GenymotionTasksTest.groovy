@@ -7,16 +7,21 @@ import main.groovy.com.genymotion.GenymotionVirtualDevice
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
-import java.io.IOException
-
 
 import static org.junit.Assert.*
 
 class GenymotionTasksTest {
 
     Project project
+
+    @BeforeClass
+    public static void setUpClass() {
+        TestTools.init()
+        TestTools.setDefaultUser(true)
+    }
 
     @Before
     public void setUp() {

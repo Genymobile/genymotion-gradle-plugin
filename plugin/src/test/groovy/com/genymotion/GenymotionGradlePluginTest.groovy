@@ -535,5 +535,10 @@ class GenymotionGradlePluginTest {
     @After
     public void finishTest(){
         TestTools.cleanAfterTests()
+
+        if(changedUser){
+            TestTools.setDefaultUser(true)
+            changedUser = false
+        }
     }
 }
