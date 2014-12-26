@@ -244,5 +244,4 @@ class GenymotionPluginExtension {
             logger.error("$config.fromFile file is missing, impossible to load configuration")
         }
     }
-
 }
