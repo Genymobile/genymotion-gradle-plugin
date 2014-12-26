@@ -27,7 +27,7 @@ class GenymotionTasksTest {
     @Test
     public void canLaunch() {
 
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -59,7 +59,7 @@ class GenymotionTasksTest {
     @Test
     public void canFinish() {
 
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
