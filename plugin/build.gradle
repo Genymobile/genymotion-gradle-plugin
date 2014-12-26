@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.11'
-    testCompile "com.android.tools.build:gradle:1.0.0-rc1"
+    testCompile "com.android.tools.build:gradle:1.0.0"
 }
 
 group = 'com.genymotion'
