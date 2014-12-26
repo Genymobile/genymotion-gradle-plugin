@@ -1,18 +1,19 @@
 package test.groovy.com.genymotion
 
+import java.util.List
+
 import main.groovy.com.genymotion.GenymotionEndTask
 import main.groovy.com.genymotion.GenymotionGradlePlugin
 import main.groovy.com.genymotion.GenymotionLaunchTask
-import org.junit.After
-import org.junit.Ignore
-
-import java.util.List
 import main.groovy.com.genymotion.GMToolAdmin
 import main.groovy.com.genymotion.GenymotionConfig
 import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
 import main.groovy.com.genymotion.GenymotionPluginExtension
+
+import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.gradle.api.Project
 
@@ -23,6 +24,13 @@ import static org.junit.Assert.assertNotNull
 class GenymotionGradlePluginTest {
 
     Project project
+    boolean changedUser = false
+
+    @BeforeClass
+    public static void setUpClass() {
+        TestTools.init()
+        TestTools.setDefaultUser(true)
+    }
 
     @Before
     public void setUp() {
@@ -464,40 +472,62 @@ class GenymotionGradlePluginTest {
         file = new File("temp/pulled/build.prop")
         assertTrue("Pulled file not found", file.exists())
     }
-/*
 
-//TODO
     @Test
-    public void canPullListFromDevice() {
-
+    public void canPullBeforeListToDevice() {
         String name = TestTools.createADevice()
-
-        def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
 
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":"temp/pulled/", "/data/app/GestureBuilder.apk":"temp/pulled/"]
-        GMTool.pullFromDevice(name, listOfFiles, true)
+        def listOfFiles = ["/system/build.prop":"temp/pulled/build.prop", "/system/bin/adb":"temp/pulled/adb"]
+        project.genymotion.device(name:name, pullBefore:listOfFiles)
+        project.tasks.genymotionLaunch.exec()
 
-        File file = new File("temp/pulled/build.prop")
-        assertTrue("build.propfile not found", file.exists())
+        int pushed = 0
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+            if(line.contains("test.txt") || line.contains("test2.txt"))
+                pushed++
+        }
 
-        file = new File("temp/pulled/GestureBuilder.apk")
-        assertTrue("GestureBuilder.apk not found", file.exists())
+        listOfFiles.each {key, value ->
+            File file = new File(value)
+            assertTrue("Pulled file not found", file.exists())
+        }
+    }
+
+    @Test
+    public void canPullAfterListToDevice() {
+        String name = TestTools.createADevice()
+
+        //removing the pulled files
+        TestTools.recreatePulledDirectory()
+
+        def listOfFiles = ["/system/build.prop":"temp/pulled/build.prop", "/system/bin/adb":"temp/pulled/adb"]
+        project.genymotion.device(name:name, pullAfter:listOfFiles, stopWhenFinish:false)
+        project.tasks.genymotionLaunch.exec()
+
+        listOfFiles.each {key, value ->
+            File file = new File(value)
+            assertFalse("Pulled file found. Should not happen", file.exists())
+        }
+
+        project.tasks.genymotionFinish.exec()
+
+        listOfFiles.each {key, value ->
+            File file = new File(value)
+            assertTrue("Pulled file not found", file.exists())
+        }
     }
 
 
     @Test
     public void canFlashDevice() {
-
         String name = TestTools.createADevice()
 
-        def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        project.genymotion.device(name:name, flash:"res/test/test.zip")
+        project.tasks.genymotionLaunch.exec()
 
-        GMTool.flashDevice(name, "res/test/test.zip", true)
         boolean flashed = false
         GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
             if(line.contains("touchdown"))
@@ -509,14 +539,14 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canFlashListToDevice() {
-
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
         assertTrue("Start failed", exitCode == 0)
 
         def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
-        GMTool.flashDevice(name, listOfFiles, true)
+        project.genymotion.device(name:name, flash:listOfFiles)
+        project.tasks.genymotionLaunch.exec()
 
         int flashed = 0
         GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
@@ -526,7 +556,77 @@ class GenymotionGradlePluginTest {
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
 
-*/
+
+    @Test
+    public void canInjectTasks(){
+
+        String taskName = "dummy"
+        project.task(taskName) << {}
+
+        project.genymotion.config.taskLaunch = taskName
+        //we inject the genymotion task on the task hierarchy
+        project.genymotion.injectTasks()
+
+        def task = project.tasks.getByName(taskName) //throw exception if task not found
+        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH) //throw exception if task not found
+
+        assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
+        assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
+    }
+
+    @Test
+    public void canConfigFromFile(){
+
+        GenymotionConfig config = GMTool.getConfig(true)
+
+        project.genymotion.config.fromFile = "res/test/config.properties"
+
+        //we set the user as changed to set it again after the test
+        changedUser = true
+
+        //we set the config file
+        project.tasks.genymotionLaunch.exec()
+
+        assertEquals("statistics not loaded from file",           false,          project.genymotion.config.statistics)
+        assertEquals("username not loaded from file",             "testName",     project.genymotion.config.username)
+        assertEquals("password not loaded from file",             "testPWD",      project.genymotion.config.password)
+        assertEquals("store_credentials not loaded from file",    true,          project.genymotion.config.store_credentials)
+        assertEquals("license not loaded from file",              "testLicense",  project.genymotion.config.license)
+        assertEquals("proxy not loaded from file",                true,           project.genymotion.config.proxy)
+        assertEquals("proxy_address not loaded from file",        "testAddress",  project.genymotion.config.proxy_address)
+        assertEquals("proxy not loaded from file",                true,           project.genymotion.config.proxy)
+        assertEquals("proxy_port not loaded from file",           12345,          project.genymotion.config.proxy_port)
+        assertEquals("proxy_auth not loaded from file",           true,           project.genymotion.config.proxy_auth)
+        assertEquals("proxy_username not loaded from file",       "testUsername", project.genymotion.config.proxy_username)
+        assertEquals("proxy_password not loaded from file",       "testPWD",      project.genymotion.config.proxy_password)
+        assertEquals("virtual_device_path not loaded from file",  "testPath",     project.genymotion.config.virtual_device_path)
+        assertEquals("sdk_path not loaded from file",             "testPath",     project.genymotion.config.sdk_path)
+        assertEquals("use_custom_sdk not loaded from file",       true,           project.genymotion.config.use_custom_sdk)
+        assertEquals("screen_capture_path not loaded from file",  "testPath",     project.genymotion.config.screen_capture_path)
+        assertEquals("taskLaunch not loaded from file",           "testTask",     project.genymotion.config.taskLaunch)
+        assertEquals("taskFinish not loaded from file",           "testTask",     project.genymotion.config.taskFinish)
+        assertEquals("automaticLaunch not loaded from file",      true,           project.genymotion.config.automaticLaunch)
+        assertEquals("processTimeout not loaded from file",       500000,         project.genymotion.config.processTimeout)
+        assertEquals("verbose not loaded from file",              true,           project.genymotion.config.verbose)
+        assertEquals("persist not loaded from file",              true,           project.genymotion.config.persist)
+        assertEquals("abortOnError not loaded from file",         false,          project.genymotion.config.abortOnError)
+
+        //we set the last config back
+        GMTool.setConfig(config, true)
+
+        //ENTER HERE the path to a properties file containing good credential (username, password & license)
+        String path = "/home/eyal/genymotion/gradle-plugin/junit/config.properties"
+
+        File f = new File(path)
+        assertTrue("Config file does not exists to restore good a configuration. Set the path on the source code to continue correctly the tests", f.exists())
+
+        project.genymotion.config.fromFile = path
+        project.genymotion.config.persist = true
+
+        //we set the config file
+        project.genymotion.applyConfigFromFile()
+        GMTool.setConfig(config, true)
+    }
 
     @After
     public void finishTest(){
