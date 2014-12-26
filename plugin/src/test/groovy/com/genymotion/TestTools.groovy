@@ -11,8 +11,6 @@ import java.util.logging.Logger
 
 class TestTools {
 
-    static def GENYMOTION_PATH = "/home/eyal/genymotion/genymotion-softs/build/"
-
     static def DEVICES = [
             "Nexus7-junit":"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
             "Nexus10-junit":"Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
@@ -24,7 +22,7 @@ class TestTools {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
 
-        project.genymotion.config.genymotionPath = GENYMOTION_PATH
+        project.genymotion.config.genymotionPath = getDefaultConfig().genymotionPath
         project.genymotion.config.verbose = true
         //we set the config inside the GenymotionTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
