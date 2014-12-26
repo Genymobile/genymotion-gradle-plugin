@@ -279,7 +279,7 @@ class GenymotionGradlePluginTest {
 
         String name = TestTools.createADevice()
 
-        project.genymotion.device(name:name, pushAfter:"res/test/test.txt")
+        project.genymotion.device(name:name, pushAfter:"res/test/test.txt", stopWhenFinish:false)
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
@@ -319,10 +319,10 @@ class GenymotionGradlePluginTest {
     @Test
     public void canPushAfterListToDevice() {
 
-        def (String name, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project, false)
+        String name = TestTools.createADevice()
 
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
-        project.genymotion.device(name:name, pushAfter:listOfFiles)
+        project.genymotion.device(name:name, pushAfter:listOfFiles, stopWhenFinish:false)
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
@@ -363,11 +363,11 @@ class GenymotionGradlePluginTest {
     @Test
     public void canPushAfterToDeviceWithDest() {
 
-        def (String name, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project, false)
+        String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt":destination]
-        project.genymotion.device(name:name, pushAfter:listOfFiles)
+        project.genymotion.device(name:name, pushAfter:listOfFiles, stopWhenFinish:false)
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
@@ -389,7 +389,6 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canPushBeforeListToDeviceWithDest() {
-
         String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
@@ -407,12 +406,11 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canPushAfterListToDeviceWithDest() {
-
-        def (String name, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project, false)
+        String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
-        project.genymotion.device(name:name, pushAfter:listOfFiles)
+        project.genymotion.device(name:name, pushAfter:listOfFiles, stopWhenFinish:false)
         project.tasks.genymotionLaunch.exec()
 
 
@@ -436,7 +434,6 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canPullBeforeFromDevice() {
-
         String name = TestTools.createADevice()
 
         //removing the pulled files
@@ -451,13 +448,12 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canPullAfterFromDevice() {
-
-        def (String name, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.createADetailedDevice(project, false)
+        String name = TestTools.createADevice()
 
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        project.genymotion.device(name:name, pullAfter:["/system/build.prop":"temp/pulled/"])
+        project.genymotion.device(name:name, pullAfter:["/system/build.prop":"temp/pulled/"], stopWhenFinish:false)
         project.tasks.genymotionLaunch.exec()
 
         File file = new File("temp/pulled/build.prop")
