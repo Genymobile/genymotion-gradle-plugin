@@ -108,7 +108,7 @@ class GenymotionTasksTest {
     public void canLoginAndRegister() {
 
         //ENTER HERE the path to a properties file containing good credential (username, password & license)
-        String path = "/home/eyal/genymotion/gradle-plugin/junit/config.properties"
+        String path = "res/test/default.properties"
 
         File f = new File(path)
         assertTrue("Config file does not exists to test login feature. Set the path to be able to run the test", f.exists())
