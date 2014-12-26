@@ -1,13 +1,14 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.GMTool
+import main.groovy.com.genymotion.GenymotionConfig
 import main.groovy.com.genymotion.GenymotionVDLaunch
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
 
-/**
- * Created by eyal on 08/10/14.
- */
+import java.util.logging.Logger
+
+
 class TestTools {
 
     static def GENYMOTION_PATH = "/home/eyal/genymotion/genymotion-softs/build/"
@@ -114,5 +115,85 @@ class TestTools {
                 tempDir.delete()
         }
         tempDir.mkdirs()
+    }
+
+    static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties"){
+        // We get the APK signing properties from a file
+        GenymotionConfig config = new GenymotionConfig()
+        def Properties props = new Properties()
+        def propFile = new File(path)
+        if (propFile.canRead()){
+            props.load(new FileInputStream(propFile))
+
+            if (props!=null){
+                //Reflection could be another solution to fill the object but I prefer to avoid it.
+                //This method allows a better control on the data changed and avoid side loading non-allowed values
+                if(props.statistics)
+                    config.statistics = props.statistics.toBoolean()
+                if(props.username)
+                    config.username = props.username
+                if(props.password)
+                    config.password = props.password
+                if(props.store_credentials)
+                    config.store_credentials = props.store_credentials.toBoolean()
+                if(props.license)
+                    config.license = props.license
+                if(props.proxy)
+                    config.proxy = props.proxy.toBoolean()
+                if(props.proxy_address)
+                    config.proxy_address = props.proxy_address
+                if(props.proxy_port)
+                    config.proxy_port = props.proxy_port.toInteger()
+                if(props.proxy_auth)
+                    config.proxy_auth = props.proxy_auth.toBoolean()
+                if(props.proxy_username)
+                    config.proxy_username = props.proxy_username
+                if(props.proxy_password)
+                    config.proxy_password = props.proxy_password
+                if(props.virtual_device_path)
+                    config.virtual_device_path = props.virtual_device_path
+                if(props.sdk_path)
+                    config.sdk_path = props.sdk_path
+                if(props.use_custom_sdk)
+                    config.use_custom_sdk = props.use_custom_sdk.toBoolean()
+                if(props.screen_capture_path)
+                    config.screen_capture_path = props.screen_capture_path
+                if(props.taskLaunch)
+                    config.taskLaunch = props.taskLaunch
+                if(props.taskFinish)
+                    config.taskFinish = props.taskFinish
+                if(props.automaticLaunch)
+                    config.automaticLaunch = props.automaticLaunch.toBoolean()
+                if(props.processTimeout)
+                    config.processTimeout = props.processTimeout.toInteger()
+                if(props.verbose)
+                    config.verbose = props.verbose.toBoolean()
+                if(props.persist)
+                    config.persist = props.persist.toBoolean()
+                if(props.abortOnError)
+                    config.abortOnError = props.abortOnError.toBoolean()
+                if(props.genymotionPath)
+                    config.genymotionPath = props.genymotionPath
+
+            } else {
+                Logger.anonymousLogger.error("$config.fromFile file is missing, impossible to load configuration")
+                return null
+            }
+        } else {
+            Logger.anonymousLogger.error("$config.fromFile file is missing, impossible to load configuration")
+            return null
+        }
+        return config
+    }
+
+    static setDefaultUser(registerLicense = false){
+        GenymotionConfig config = getDefaultConfig()
+
+        if(config.username && config.password){
+            GMTool.setConfig(config, true)
+
+            if(config.license && registerLicense)
+                GMTool.setLicense(config.license, null, null, true)
+        }
     }
 }
