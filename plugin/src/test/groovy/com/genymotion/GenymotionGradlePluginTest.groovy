@@ -143,7 +143,7 @@ class GenymotionGradlePluginTest {
         assertNotNull("No device found", project.genymotion.devices[0])
         assertNotNull("Device not filled", project.genymotion.devices[0].name)
         assertTrue("Device not created", project.genymotion.devices[0].create)
-        assertTrue(project.genymotion.devices[0].deleteWhenFinish)
+        assertTrue(project.genymotion.devices[0].deleteWhenFinish) //unnamed devices are deleted when finish by default
     }
 
     @Test
@@ -154,7 +154,7 @@ class GenymotionGradlePluginTest {
         assertNotNull("No device found", project.genymotion.devices[0])
         assertNotNull("Device not filled", project.genymotion.devices[0].name)
         assertTrue("Device not created", project.genymotion.devices[0].create)
-        assertTrue(project.genymotion.devices[0].deleteWhenFinish)
+        assertNull(project.genymotion.devices[0].deleteWhenFinish)
     }
 
 

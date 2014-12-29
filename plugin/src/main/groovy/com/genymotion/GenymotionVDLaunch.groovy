@@ -13,8 +13,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     def install
     def flash
     String logcat
-    boolean deleteWhenFinish = true
-    boolean stopWhenFinish = true
+    def deleteWhenFinish = null
+    def stopWhenFinish = null
     private boolean create = false
 
     private static String INVALID_PARAMETER = "You need to specify a valid name or template to declare a device"
@@ -113,14 +113,29 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             GMTool.startDevice(this)
     }
     def stop(){
-        if(stopWhenFinish)
-            GMTool.stopDevice(this)
+        GMTool.stopDevice(this)
+    }
+
+    def stopWhenFinish(){
+        //if stop is not explicitly disabled, we stop
+        if(stopWhenFinish != false)
+            stop()
+    }
+
+    def deleteWhenFinish(){
+        //if stop and delete are not explicitly disabled, we delete
+        if(stopWhenFinish != false && deleteWhenFinish != false)
+            delete()
     }
 
     def create(){
         if(create)
             GMTool.createDevice(this)
         this.create = false
+    }
+
+    def delete(){
+        GMTool.deleteDevice(this)
     }
 
     def flash(){
@@ -163,22 +178,5 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         if(extension)
             name += extension
         name
-    }
-
-
-    def setStopWhenFinish(boolean value){
-        this.stopWhenFinish = value
-
-        //we disable device deletion if we don't stop the device
-        if(!value)
-            this.deleteWhenFinish = value
-    }
-
-    def setDeleteWhenFinish(boolean value){
-        this.deleteWhenFinish = value
-
-        //we disable device stop if we delete the device
-        if(value)
-            this.stopWhenFinish = value
     }
 }

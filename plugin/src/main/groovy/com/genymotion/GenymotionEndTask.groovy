@@ -11,25 +11,23 @@ class GenymotionEndTask extends DefaultTask {
     @TaskAction
     def exec() {
 
-        println("Stopping devices")
+        println("Finishing devices")
         //get the declared devices
         project.genymotion.getDevices(flavor).each(){
             processDeviceEnd(it)
         }
     }
 
-    private void processDeviceEnd(device) {
-        println("Stopping ${device.name}")
+    def processDeviceEnd(device) {
+        println("Finishing ${device.name}")
         //TODO check if the device is already started
         if (device.start) {
 
             try{
-                it.pushAfter()
-                it.pullAfter()
-                if(it.stopWhenFinish || it.deleteWhenFinish)
-                    it.stop()
-                if(it.deleteWhenFinish)
-                    GMTool.deleteDevice(it)
+                device.pushAfter()
+                device.pullAfter()
+                device.stopWhenFinish()
+                device.deleteWhenFinish()
             }
             //if a gmtool command fail
             catch(Exception e){
@@ -38,10 +36,9 @@ class GenymotionEndTask extends DefaultTask {
                 println "Stoping all launched devices and deleting when needed"
                 project.genymotion.getDevices(flavor).each() {
                     //we close the opened devices
-                    GMTool.stopDevice(device)
+                    device.stopWhenFinish()
                     //and delete them if needed
-                    if (device.deleteWhenFinish)
-                        GMTool.deleteDevice(device)
+                    device.deleteWhenFinish()
                 }
                 //then, we thow a new exception to end task, if needed
                 if(project.genymotion.config.abortOnError)

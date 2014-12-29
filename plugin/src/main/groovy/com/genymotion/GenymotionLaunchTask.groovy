@@ -24,7 +24,7 @@ class GenymotionLaunchTask extends DefaultTask {
 
         //process declared devices
         devices.each(){
-            processDevice(it)
+            processDevice(it, runningDevices)
         }
 
         if (project.genymotion.config.verbose) {
@@ -33,7 +33,7 @@ class GenymotionLaunchTask extends DefaultTask {
         }
     }
 
-    private void processDevice(device) {
+    def processDevice(device, runningDevices) {
         if (device.start) {
             if (project.genymotion.config.verbose)
                 println("Starting ${device.name}")
@@ -57,10 +57,9 @@ class GenymotionLaunchTask extends DefaultTask {
                 println "Stoping all launched devices and deleting when needed"
                 project.genymotion.getDevices(flavor).each() {
                     //we close the opened devices
-                    GMTool.stopDevice(device)
+                    device.stopWhenFinish()
                     //and delete them if needed
-                    if (device.deleteWhenFinish)
-                        GMTool.deleteDevice(device)
+                    device.deleteWhenFinish()
                 }
                 //then, we thow a new exception to end task, if needed
                 if (project.genymotion.config.abortOnError)
