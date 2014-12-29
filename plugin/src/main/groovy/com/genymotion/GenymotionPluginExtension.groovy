@@ -88,7 +88,7 @@ class GenymotionPluginExtension {
             else if(taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK){
 
                 //and we detect the android plugin or the default android test task
-                if(AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.contains(AndroidPluginTools.DEFAULT_ANDROID_TASK)){
+                if(AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null){
 
                     //if there are flavors
                     if(project.android.productFlavors.size() > 0) {
