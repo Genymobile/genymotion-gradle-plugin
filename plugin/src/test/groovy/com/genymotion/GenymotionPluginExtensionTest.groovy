@@ -125,7 +125,6 @@ class GenymotionPluginExtensionTest {
     public void canInjectToDefaultAndroidTask(){
 
         project = getAndroidProject()
-        project.genymotion.config.genymotionPath = TestTools.GENYMOTION_PATH
         project.genymotion.config.verbose = true
         project.evaluate() //internal method but: "... it is actually an internal method and is therefore potentially subject to change in future releases. There will be a supported mechanism for doing this kind of thing in the near future." http://gradle.1045684.n5.nabble.com/why-doesn-t-gradle-project-afterEvaluate-execute-in-my-unit-test-td4512335.html
 
@@ -171,6 +170,7 @@ class GenymotionPluginExtensionTest {
         project.android {
             compileSdkVersion 21
         }
+        project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
 
         project.afterEvaluate {
             println "TASKS AFTER "+project.tasks
