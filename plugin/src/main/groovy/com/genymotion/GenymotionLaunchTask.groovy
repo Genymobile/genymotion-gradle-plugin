@@ -52,7 +52,7 @@ class GenymotionLaunchTask extends DefaultTask {
             }
             //if a gmtool command fail
             catch (Exception e) {
-
+                e.printStackTrace()
                 println e.getMessage()
                 println "Stoping all launched devices and deleting when needed"
                 project.genymotion.getDevices(flavor).each() {
