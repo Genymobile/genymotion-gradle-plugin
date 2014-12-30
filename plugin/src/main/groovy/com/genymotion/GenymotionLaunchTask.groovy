@@ -42,9 +42,9 @@ class GenymotionLaunchTask extends DefaultTask {
                 if (device.name && !runningDevices.contains(device.name)) {
                     device.create()
                     device.checkAndEdit()
-                    device.logcat()
                     device.start()
                 }
+                device.logcat()
                 device.flash()
                 device.install()
                 device.pushBefore()
