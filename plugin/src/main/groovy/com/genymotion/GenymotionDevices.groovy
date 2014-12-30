@@ -12,11 +12,11 @@ public class GenymotionDevices {
     Project project
     def devices = []
 
+    GenymotionDevices(Project project){
+        this.project = project
+    }
+
     def add(GenymotionVDLaunch device) {
-        if (project.genymotion.config.verbose){
-            println "Add a device"
-            println device.toString()
-        }
         this.devices.add(device)
     }
 
