@@ -1,6 +1,6 @@
 package main.groovy.com.genymotion
 
-import org.apache.tools.ant.Project
+import org.gradle.api.Project
 
 class ProductFlavor {
 
