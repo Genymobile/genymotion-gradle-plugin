@@ -31,7 +31,7 @@ class GenymotionConfig {
     def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task
     boolean automaticLaunch = true               //enable or not the genymotion tasks injection
     int processTimeout = 300000                  //timeout for all the processes launched in command line
-    boolean verbose = true                       //verbose mode
+    boolean verbose = false                       //verbose mode
     boolean persist = true                       //persist the configurations on genymotion or reset them back after the task execution
     boolean abortOnError = false                 //abort the task execution if a GMTool error occurs
 
