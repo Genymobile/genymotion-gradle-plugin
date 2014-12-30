@@ -14,7 +14,7 @@ class GenymotionPluginExtension {
     def genymotionDevices = new GenymotionDevices()
 
     final NamedDomainObjectContainer<ProductFlavor> productFlavors
-    def productFlavorsDevices = []
+    def productFlavorsDevices = [:]
 
     public GenymotionConfig currentConfiguration = null
 
@@ -51,7 +51,7 @@ class GenymotionPluginExtension {
         devices.addAll(genymotionDevices.devices)
 
         if(flavor && productFlavorsDevices[flavor]){
-            devices.addAll(productFlavorsDevices[flavor])
+            devices.addAll((productFlavorsDevices[flavor] as GenymotionDevices).devices)
         }
 
         return devices

@@ -39,7 +39,7 @@ class GenymotionLaunchTask extends DefaultTask {
                 println("Starting ${device.name}")
 
             try {
-                if (device.name && !runningDevices.contains(device.name)) {
+                if (device.name && runningDevices != null && !runningDevices?.contains(device.name)) {
                     device.create()
                     device.checkAndEdit()
                     device.start()

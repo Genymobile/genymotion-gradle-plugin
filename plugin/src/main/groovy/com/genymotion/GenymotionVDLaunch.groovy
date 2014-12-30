@@ -1,8 +1,11 @@
 package main.groovy.com.genymotion
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
-    private static RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+    private static String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
     boolean start = true
     String template
@@ -28,8 +31,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             throw new IllegalArgumentException(INVALID_PARAMETER)
         }
 
-        boolean deviceExists = GMTool.isDeviceCreated(params.name)
-        boolean templateExists = GMTool.isTemplateExists(params.template)
+        boolean deviceExists = GMTool.isDeviceCreated(params.name.toString())
+        boolean templateExists = GMTool.isTemplateExists(params.template.toString())
 
         //if name & template are null or not existing
         if(!deviceExists && !templateExists){
@@ -41,8 +44,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
             //if a template is declared
             if(params.template != null){
-                println params.name + " already exists. A new device won't be created before launch and template is ignored"
-                params.template = null
+                println params.name.toString() + " already exists. A new device won't be created before launch and template is ignored"
             }
         }
 
@@ -68,7 +70,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             this.deleteWhenFinish = params.deleteWhenFinish
         if(params.start != null)
             this.start = params.start
-        if(params.template?.trim())
+        if(params.template != null && params.template?.toString().trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
             this.template = params.template
         if(params.pushBefore)
             this.pushBefore = params.pushBefore
@@ -82,7 +84,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             this.install = params.install
         if(params.flash)
             this.flash = params.flash
-        if(params.logcat?.trim())
+        if(params.logcat != null && params.logcat?.toString().trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
             this.logcat = params.logcat
     }
 

@@ -320,7 +320,10 @@ class GMTool {
 
     static boolean isDeviceRunning(String name, boolean verbose=false) {
         def devices = getRunningDevices(verbose, false, true)
-        devices.contains(name)
+        if(devices)
+            devices?.contains(name)
+
+        return false
     }
 
     private static def parseList(int count, String line, boolean nameOnly) {
@@ -483,7 +486,7 @@ class GMTool {
 
         def templates = getTemplatesNames(verbose, username, password)
         if(templates instanceof ArrayList)
-            templates.contains(template)
+            templates?.contains(template)
         else
             return false
     }
@@ -854,7 +857,7 @@ class GMTool {
         }
 
         if(verbose || GENYMOTION_CONFIG.verbose) {
-            if(toExec[0].contains(GENYTOOL))
+            if(toExec[0]?.contains(GENYTOOL))
                 toExec.addAll(1, [VERBOSE])
 
 
@@ -888,7 +891,7 @@ class GMTool {
     static def cleanCommand(def list) {
         def output = list.clone()
         output.each(){
-            if(it.contains(OPT_PASSWORD))
+            if(it?.contains(OPT_PASSWORD))
                it = OPT_PASSWORD+"*****"
         }
         return output
