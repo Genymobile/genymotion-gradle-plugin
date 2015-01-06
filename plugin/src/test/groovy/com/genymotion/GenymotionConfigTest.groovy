@@ -26,18 +26,18 @@ class GenymotionConfigTest {
         ["statistics",
          "username",
          "password",
-         "store_credentials",
+         "storeCredentials",
          "license",
          "proxy",
-         "proxy_address",
-         "proxy_port",
-         "proxy_auth",
-         "proxy_username",
-         "proxy_password",
-         "virtual_device_path",
-         "sdk_path",
-         "use_custom_sdk",
-         "screen_capture_path"].each {
+         "proxyAddress",
+         "proxyPort",
+         "proxyAuth",
+         "proxyUsername",
+         "proxyPassword",
+         "virtualDevicePath",
+         "sdkPath",
+         "useCustomSdk",
+         "screenCapturePath"].each {
             testEmptyFromValue(it, "notNull")
         }
     }

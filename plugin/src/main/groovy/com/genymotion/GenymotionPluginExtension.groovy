@@ -200,30 +200,30 @@ class GenymotionPluginExtension {
                     config.username = props.username
                 if(props.password)
                     config.password = props.password
-                if(props.store_credentials)
-                    config.store_credentials = props.store_credentials.toBoolean()
+                if(props.storeCredentials)
+                    config.storeCredentials = props.storeCredentials.toBoolean()
                 if(props.license)
                     config.license = props.license
                 if(props.proxy)
                     config.proxy = props.proxy.toBoolean()
-                if(props.proxy_address)
-                    config.proxy_address = props.proxy_address
-                if(props.proxy_port)
-                    config.proxy_port = props.proxy_port.toInteger()
-                if(props.proxy_auth)
-                    config.proxy_auth = props.proxy_auth.toBoolean()
-                if(props.proxy_username)
-                    config.proxy_username = props.proxy_username
-                if(props.proxy_password)
-                    config.proxy_password = props.proxy_password
-                if(props.virtual_device_path)
-                    config.virtual_device_path = props.virtual_device_path
-                if(props.sdk_path)
-                    config.sdk_path = props.sdk_path
-                if(props.use_custom_sdk)
-                    config.use_custom_sdk = props.use_custom_sdk.toBoolean()
-                if(props.screen_capture_path)
-                    config.screen_capture_path = props.screen_capture_path
+                if(props.proxyAddress)
+                    config.proxyAddress = props.proxyAddress
+                if(props.proxyPort)
+                    config.proxyPort = props.proxyPort.toInteger()
+                if(props.proxyAuth)
+                    config.proxyAuth = props.proxyAuth.toBoolean()
+                if(props.proxyUsername)
+                    config.proxyUsername = props.proxyUsername
+                if(props.proxyPassword)
+                    config.proxyPassword = props.proxyPassword
+                if(props.virtualDevicePath)
+                    config.virtualDevicePath = props.virtualDevicePath
+                if(props.sdkPath)
+                    config.sdkPath = props.sdkPath
+                if(props.useCustomSdk)
+                    config.useCustomSdk = props.useCustomSdk.toBoolean()
+                if(props.screenCapturePath)
+                    config.screenCapturePath = props.screenCapturePath
                 if(props.taskLaunch)
                     config.taskLaunch = props.taskLaunch
                 if(props.automaticLaunch)

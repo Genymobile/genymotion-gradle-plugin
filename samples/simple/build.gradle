@@ -19,18 +19,18 @@ genymotion.config{
 //    statistics              //enable stats
 //    username                //set the login
 //    password                //set the password
-//    store_credentials       //keep the configured account logged in genymotion
+//    storeCredentials       //keep the configured account logged in genymotion
 //    license                 //set license
 //    proxy                   //active le proxy ou non (maybe accept true|false)
-//    proxy_address           //set l'adresse du proxy a ADRESS
-//    proxy_port              //set the proxy port
-//    proxy_auth              //definit le protocole du proxy, voir avec ced pour plus d infos
-//    proxy_username          //definit le protocole du proxy, voir avec ced pour plus d infos
-//    proxy_password          //definit le protocole du proxy, voir avec ced pour plus d infos
-//    virtual_device_path     //set le dossier ou sont stockées les configs
-//    sdk_path                //set le dossier du sdk alternatif
-//    use_custom_sdk          //utilise le sdk alternatif ou non (maybe accept true|false)
-//    screen_capture_path     //set le dossier de stockage des screenshots
+//    proxyAddress           //set l'adresse du proxy a ADRESS
+//    proxyPort              //set the proxy port
+//    proxyAuth              //definit le protocole du proxy, voir avec ced pour plus d infos
+//    proxyUsername          //definit le protocole du proxy, voir avec ced pour plus d infos
+//    proxyPassword          //definit le protocole du proxy, voir avec ced pour plus d infos
+//    virtualDevicePath     //set le dossier ou sont stockées les configs
+//    sdkPath                //set le dossier du sdk alternatif
+//    useCustomSdk          //utilise le sdk alternatif ou non (maybe accept true|false)
+//    screenCapturePath     //set le dossier de stockage des screenshots
 //
 //    //task configs
 //    taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task

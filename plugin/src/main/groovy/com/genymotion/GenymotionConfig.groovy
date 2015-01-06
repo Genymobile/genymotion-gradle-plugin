@@ -14,18 +14,18 @@ class GenymotionConfig {
     def statistics              //enable stats
     def username                //set the login
     def password                //set the password
-    def store_credentials       //keep the configured account logged in genymotion
+    def storeCredentials       //keep the configured account logged in genymotion
     def license                 //set license
     def proxy                   //active le proxy ou non (maybe accept true|false)
-    def proxy_address           //set l'adresse du proxy a ADRESS
-    def proxy_port              //set the proxy port
-    def proxy_auth              //definit le protocole du proxy, voir avec ced pour plus d infos
-    def proxy_username          //definit le protocole du proxy, voir avec ced pour plus d infos
-    def proxy_password          //definit le protocole du proxy, voir avec ced pour plus d infos
-    def virtual_device_path     //set le dossier ou sont stockées les configs
-    def sdk_path                //set le dossier du sdk alternatif
-    def use_custom_sdk          //utilise le sdk alternatif ou non (maybe accept true|false)
-    def screen_capture_path     //set le dossier de stockage des screenshots
+    def proxyAddress           //set l'adresse du proxy a ADRESS
+    def proxyPort              //set the proxy port
+    def proxyAuth              //definit le protocole du proxy, voir avec ced pour plus d infos
+    def proxyUsername          //definit le protocole du proxy, voir avec ced pour plus d infos
+    def proxyPassword          //definit le protocole du proxy, voir avec ced pour plus d infos
+    def virtualDevicePath     //set le dossier ou sont stockées les configs
+    def sdkPath                //set le dossier du sdk alternatif
+    def useCustomSdk          //utilise le sdk alternatif ou non (maybe accept true|false)
+    def screenCapturePath     //set le dossier de stockage des screenshots
 
     //task configs
     def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task
@@ -37,10 +37,10 @@ class GenymotionConfig {
 
 
     boolean isEmpty(){
-        if(statistics != null || username != null || password != null || store_credentials != null || license != null ||
-           proxy != null || proxy_address != null || proxy_port != null || proxy_auth != null || proxy_username != null ||
-           proxy_password != null || virtual_device_path != null || sdk_path != null || use_custom_sdk != null ||
-           screen_capture_path != null)
+        if(statistics != null || username != null || password != null || storeCredentials != null || license != null ||
+           proxy != null || proxyAddress != null || proxyPort != null || proxyAuth != null || proxyUsername != null ||
+           proxyPassword != null || virtualDevicePath != null || sdkPath != null || useCustomSdk != null ||
+           screenCapturePath != null)
             return false
 
         return true

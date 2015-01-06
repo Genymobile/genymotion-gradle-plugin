@@ -149,34 +149,34 @@ class GMTool {
                         config.username = info[1].trim()
                         break
                     case "store_credentials":
-                        config.store_credentials = info[1].trim().toBoolean()
+                        config.storeCredentials = info[1].trim().toBoolean()
                         break
                     case "proxy":
                         config.proxy = info[1].trim().toBoolean()
                         break
                     case "proxy_address":
-                        config.proxy_address = info[1].trim()
+                        config.proxyAddress = info[1].trim()
                         break
                     case "proxy_port":
-                        config.proxy_port = info[1].toInteger()
+                        config.proxyPort = info[1].toInteger()
                         break
                     case "proxy_auth":
-                        config.proxy_auth = info[1].trim().toBoolean()
+                        config.proxyAuth = info[1].trim().toBoolean()
                         break
                     case "proxy_username":
-                        config.proxy_username = info[1].trim()
+                        config.proxyUsername = info[1].trim()
                         break
                     case "virtual_device_path":
-                        config.virtual_device_path = info[1].trim()
+                        config.virtualDevicePath = info[1].trim()
                         break
                     case "sdk_path":
-                        config.sdk_path = info[1].trim()
+                        config.sdkPath = info[1].trim()
                         break
                     case "use_custom_sdk":
-                        config.use_custom_sdk = info[1].trim().toBoolean()
+                        config.useCustomSdk = info[1].trim().toBoolean()
                         break
                     case "screen_capture_path":
-                        config.screen_capture_path = info[1].trim()
+                        config.screenCapturePath = info[1].trim()
                         break
                 }
             }
@@ -190,11 +190,11 @@ class GMTool {
     static def setConfig(GenymotionConfig config, boolean verbose=false){
         if(!config)
             return false
-        return setConfig(config.statistics, config.username, config.password, config.store_credentials, config.proxy, config.proxy_address, config.proxy_port, config.proxy_auth, config.proxy_username, config.proxy_password, config.virtual_device_path, config.sdk_path, config.use_custom_sdk, config.screen_capture_path, verbose)
+        return setConfig(config.statistics, config.username, config.password, config.storeCredentials, config.proxy, config.proxyAddress, config.proxyPort, config.proxyAuth, config.proxyUsername, config.proxyPassword, config.virtualDevicePath, config.sdkPath, config.useCustomSdk, config.screenCapturePath, verbose)
     }
 
 
-    static def setConfig(def statistics=null, String username=null, String password=null, def store_credentials=null, def proxy=null, String proxy_address=null, def proxy_port=null, def proxy_auth=null, String proxy_username=null, String proxy_password=null, String virtual_device_path=null, String sdk_path=null, def use_custom_sdk=null, String screen_capture_path=null, boolean verbose=false) {
+    static def setConfig(def statistics=null, String username=null, String password=null, def storeCredentials=null, def proxy=null, String proxyAddress=null, def proxyPort=null, def proxyAuth=null, String proxyUsername=null, String proxyPassword=null, String virtualDevicePath=null, String sdkPath=null, def useCustomSdk=null, String screenCapturePath=null, boolean verbose=false) {
 
         (username, password) = checkLogin(username, password)
 
@@ -208,28 +208,28 @@ class GMTool {
 
         if (statistics != null)
             command.push(OPT_STATISTICS + statistics)
-        if(store_credentials != null)
-            command.push(OPT_STORE_CREDENTIALS+store_credentials)
+        if(storeCredentials != null)
+            command.push(OPT_STORE_CREDENTIALS+storeCredentials)
         if(proxy != null)
             command.push(OPT_PROXY+proxy)
-        if(proxy_address != null)
-            command.push(OPT_PROXY_ADDRESS+proxy_address)
-        if(proxy_port != null)
-            command.push(OPT_PROXY_PORT+proxy_port)
-        if(proxy_auth != null)
-            command.push(OPT_PROXY_AUTH+proxy_auth)
-        if(proxy_username != null)
-            command.push(OPT_PROXY_USERNAME+proxy_username)
-        if(proxy_password != null)
-            command.push(OPT_PROXY_PASSWORD+proxy_password)
-        if(virtual_device_path != null)
-            command.push(OPT_VIRTUAL_DEVICE_PATH+virtual_device_path)
-        if(sdk_path != null)
-            command.push(OPT_SDK_PATH+sdk_path)
-        if(use_custom_sdk != null)
-            command.push(OPT_USE_CUSTOM_SDK+use_custom_sdk)
-        if(screen_capture_path != null)
-            command.push(OPT_SCREEN_CAPTURE_PATH+screen_capture_path)
+        if(proxyAddress != null)
+            command.push(OPT_PROXY_ADDRESS+proxyAddress)
+        if(proxyPort != null)
+            command.push(OPT_PROXY_PORT+proxyPort)
+        if(proxyAuth != null)
+            command.push(OPT_PROXY_AUTH+proxyAuth)
+        if(proxyUsername != null)
+            command.push(OPT_PROXY_USERNAME+proxyUsername)
+        if(proxyPassword != null)
+            command.push(OPT_PROXY_PASSWORD+proxyPassword)
+        if(virtualDevicePath != null)
+            command.push(OPT_VIRTUAL_DEVICE_PATH+virtualDevicePath)
+        if(sdkPath != null)
+            command.push(OPT_SDK_PATH+sdkPath)
+        if(useCustomSdk != null)
+            command.push(OPT_USE_CUSTOM_SDK+useCustomSdk)
+        if(screenCapturePath != null)
+            command.push(OPT_SCREEN_CAPTURE_PATH+screenCapturePath)
 
         return cmd(command, verbose) { line, count ->
         }
