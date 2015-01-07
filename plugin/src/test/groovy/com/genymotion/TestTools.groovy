@@ -71,7 +71,7 @@ class TestTools {
                 density: density,
                 width: width,
                 height: height,
-                physicalButton: false,
+                virtualKeyboard: false,
                 navbar: false,
                 nbCpu: nbCpu,
                 ram: ram,

@@ -62,7 +62,7 @@ genymotion{
 //            density: 0                                                                                            //change screen density
 //            width: 0                                                                                              //change screen with
 //            height: 0                                                                                             //change screen height
-//            physicalButton: true                                                                                  //display physical button or not
+//            virtualKeyboard: true                                                                                 //display physical button or not
 //            navbarVisible: true                                                                                   //display navbar or not
 //            nbCpu: 0                                                                                              //set number of CPUs
 //            ram: 0                                                                                                //set amount of RAM

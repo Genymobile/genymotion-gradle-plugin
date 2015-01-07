@@ -21,12 +21,12 @@ class GMToolAdmin {
      * @param dpi
      * @param width
      * @param height
-     * @param physicalButton
+     * @param virtualKeyboard
      * @param navbar
      * @param nbCpu
      * @param ram
      */
-    void create(String template, String apiLevel, String vdName, int dpi=0, int width=0, int height=0, physicalButton=true, navbar=true, int nbCpu=0, int ram=0){
+    void create(String template, String apiLevel, String vdName, int dpi=0, int width=0, int height=0, virtualKeyboard=true, navbar=true, int nbCpu=0, int ram=0){
         //TODO
     }
 
@@ -37,12 +37,12 @@ class GMToolAdmin {
      * @param dpi
      * @param width
      * @param height
-     * @param physicalButton
+     * @param virtualKeyboard
      * @param navbar
      * @param nbCpu
      * @param ram
      */
-    void edit(String vdName, int dpi=0, int width=0, int height=0, physicalButton=true, navbar=true, int nbCpu=0, int ram=0){
+    void edit(String vdName, int dpi=0, int width=0, int height=0, virtualKeyboard=true, navbar=true, int nbCpu=0, int ram=0){
         //TODO
     }
 

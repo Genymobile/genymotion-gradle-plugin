@@ -181,7 +181,7 @@ class GenymotionGradlePluginTest {
                 density: density,
                 width: intValue,
                 height: intValue,
-                physicalButton: false,
+                virtualKeyboard: false,
                 navbar: false,
                 nbCpu: 1,
                 ram: 2048
