@@ -910,10 +910,10 @@ class GMTool {
         if(exitValue == RETURN_NO_ERROR){
             //do nothing
         } else {
-            println "error: "+error.toString()
-
             if(GENYMOTION_CONFIG.abortOnError){
-                throw new GMToolException("GMTool command failed. Error code: $exitValue. Check the output to solve the problem")
+                throw new GMToolException("GMTool command failed. Error code: $exitValue." + error.toString())
+            } else {
+                println "error: "+error.toString()
             }
         }
         exitValue
