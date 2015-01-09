@@ -33,7 +33,7 @@ class GenymotionConfig {
     int processTimeout = 300000                  //timeout for all the processes launched in command line
     boolean verbose = false                       //verbose mode
     boolean persist = true                       //persist the configurations on genymotion or reset them back after the task execution
-    boolean abortOnError = false                 //abort the task execution if a GMTool error occurs
+    boolean abortOnError = true                 //abort the task execution if a GMTool error occurs
 
 
     boolean isEmpty(){
