@@ -6,6 +6,9 @@ import groovy.transform.CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     private static String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+    private static String INVALID_PARAMETER = "You need to specify a valid name or template to declare a device"
+
+    private def templateExists = null
 
     boolean start = true
     String template
@@ -20,8 +23,6 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     def stopWhenFinish = null
     private boolean create = false
 
-    private static String INVALID_PARAMETER = "You need to specify a valid name or template to declare a device"
-
 
     GenymotionVDLaunch(Map params) {
         super(params)
@@ -32,7 +33,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         }
 
         boolean deviceExists = GMTool.isDeviceCreated(params.name.toString())
-        boolean templateExists = GMTool.isTemplateExists(params.template.toString())
+        templateExists = GMTool.isTemplateExists(params.template.toString())
 
         //if name & template are null or not existing
         if(!deviceExists && !templateExists){
@@ -131,7 +132,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     def create(){
-        if(template != null && template.toString().trim())
+        if(template != null && template.toString().trim() && templateExists)
             GMTool.createDevice(this)
     }
 

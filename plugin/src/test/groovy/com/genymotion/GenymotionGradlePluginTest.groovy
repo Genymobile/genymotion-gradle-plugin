@@ -115,9 +115,10 @@ class GenymotionGradlePluginTest {
     public void canAddDeviceToLaunchByNameWithTemplate(){
 
         String vdName = TestTools.createADevice()
+        String template = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
 
-        project.genymotion.device(name:vdName, template: "Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
-        assertNull(project.genymotion.devices[0].template)
+        project.genymotion.device(name:vdName, template: template)
+        assertEquals(template, project.genymotion.devices[0].template)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
         GMTool.deleteDevice(vdName)
@@ -129,7 +130,7 @@ class GenymotionGradlePluginTest {
         String vdName = TestTools.createADevice()
 
         project.genymotion.device(name:vdName, template: "frtfgfdgtgsgrGFGFDGFD")
-        assertNull(project.genymotion.devices[0].template)
+        assertEquals(false, project.genymotion.devices[0].templateExists)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
         GMTool.deleteDevice(vdName)
