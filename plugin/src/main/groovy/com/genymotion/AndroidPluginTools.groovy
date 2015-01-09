@@ -8,6 +8,7 @@ import org.gradle.api.Project
 class AndroidPluginTools {
 
     public static final DEFAULT_ANDROID_TASK = "connectedAndroidTest"
+    public static final DEFAULT_PROPERTIES = "local.properties"
 
     public static String getFlavorTaskName(String flavor) {
         DEFAULT_ANDROID_TASK + flavor.capitalize() + "Debug"

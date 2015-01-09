@@ -120,70 +120,12 @@ class TestTools {
     static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties"){
         // We get the APK signing properties from a file
         GenymotionConfig config = new GenymotionConfig()
-        def Properties props = new Properties()
-        def propFile = new File(path)
-        if (propFile.canRead()){
-            props.load(new FileInputStream(propFile))
+        config.fromFile = path
 
-            if (props!=null){
-                //Reflection could be another solution to fill the object but I prefer to avoid it.
-                //This method allows a better control on the data changed and avoid side loading non-allowed values
-                if(props.statistics)
-                    config.statistics = props.statistics.toBoolean()
-                if(props.username)
-                    config.username = props.username
-                if(props.password)
-                    config.password = props.password
-                if(props.storeCredentials)
-                    config.storeCredentials = props.storeCredentials.toBoolean()
-                if(props.license)
-                    config.license = props.license
-                if(props.proxy)
-                    config.proxy = props.proxy.toBoolean()
-                if(props.proxyAddress)
-                    config.proxyAddress = props.proxyAddress
-                if(props.proxyPort)
-                    config.proxyPort = props.proxyPort.toInteger()
-                if(props.proxyAuth)
-                    config.proxyAuth = props.proxyAuth.toBoolean()
-                if(props.proxyUsername)
-                    config.proxyUsername = props.proxyUsername
-                if(props.proxyPassword)
-                    config.proxyPassword = props.proxyPassword
-                if(props.virtualDevicePath)
-                    config.virtualDevicePath = props.virtualDevicePath
-                if(props.sdkPath)
-                    config.sdkPath = props.sdkPath
-                if(props.useCustomSdk)
-                    config.useCustomSdk = props.useCustomSdk.toBoolean()
-                if(props.screenCapturePath)
-                    config.screenCapturePath = props.screenCapturePath
-                if(props.taskLaunch)
-                    config.taskLaunch = props.taskLaunch
-                if(props.taskFinish)
-                    config.taskFinish = props.taskFinish
-                if(props.automaticLaunch)
-                    config.automaticLaunch = props.automaticLaunch.toBoolean()
-                if(props.processTimeout)
-                    config.processTimeout = props.processTimeout.toInteger()
-                if(props.verbose)
-                    config.verbose = props.verbose.toBoolean()
-                if(props.persist)
-                    config.persist = props.persist.toBoolean()
-                if(props.abortOnError)
-                    config.abortOnError = props.abortOnError.toBoolean()
-                if(props.genymotionPath)
-                    config.genymotionPath = props.genymotionPath
+        if(config.applyConfigFromFile(null))
+            return config
 
-            } else {
-                Logger.anonymousLogger.error("$config.fromFile file is missing, impossible to load configuration")
-                return null
-            }
-        } else {
-            Logger.anonymousLogger.error("$config.fromFile file is missing, impossible to load configuration")
-            return null
-        }
-        return config
+        return null
     }
 
     static setDefaultUser(registerLicense = false){

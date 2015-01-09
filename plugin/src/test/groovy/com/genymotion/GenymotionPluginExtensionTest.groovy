@@ -22,57 +22,16 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canConfigFromFile(){
+    public void canConfigFromLocalProperties(){
 
-        project = TestTools.init()
-        GenymotionConfig config = GMTool.getConfig(true)
+        project = getAndroidProject()
+        project.evaluate() //internal method but: "... it is actually an internal method and is therefore potentially subject to change in future releases. There will be a supported mechanism for doing this kind of thing in the near future." http://gradle.1045684.n5.nabble.com/why-doesn-t-gradle-project-afterEvaluate-execute-in-my-unit-test-td4512335.html
+        project.genymotion.processConfiguration()
 
-        project.genymotion.config.fromFile = "res/test/config.properties"
-
-        //we set the user as changed to set it again after the test
-        changedUser = true
-
-        //we set the config file
-        project.tasks.genymotionLaunch.exec()
-
-        assertEquals("statistics not loaded from file",           false,          project.genymotion.config.statistics)
-        assertEquals("username not loaded from file",             "testName",     project.genymotion.config.username)
-        assertEquals("password not loaded from file",             "testPWD",      project.genymotion.config.password)
-        assertEquals("storeCredentials not loaded from file",    true,          project.genymotion.config.storeCredentials)
-        assertEquals("license not loaded from file",              "testLicense",  project.genymotion.config.license)
-        assertEquals("proxy not loaded from file",                true,           project.genymotion.config.proxy)
-        assertEquals("proxyAddress not loaded from file",        "testAddress",  project.genymotion.config.proxyAddress)
-        assertEquals("proxy not loaded from file",                true,           project.genymotion.config.proxy)
-        assertEquals("proxyPort not loaded from file",           12345,          project.genymotion.config.proxyPort)
-        assertEquals("proxyAuth not loaded from file",           true,           project.genymotion.config.proxyAuth)
-        assertEquals("proxyUsername not loaded from file",       "testUsername", project.genymotion.config.proxyUsername)
-        assertEquals("proxyPassword not loaded from file",       "testPWD",      project.genymotion.config.proxyPassword)
-        assertEquals("virtualDevicePath not loaded from file",  "testPath",     project.genymotion.config.virtualDevicePath)
-        assertEquals("sdkPath not loaded from file",             "testPath",     project.genymotion.config.sdkPath)
-        assertEquals("useCustomSdk not loaded from file",       true,           project.genymotion.config.useCustomSdk)
-        assertEquals("screenCapturePath not loaded from file",  "testPath",     project.genymotion.config.screenCapturePath)
-        assertEquals("taskLaunch not loaded from file",           "testTask",     project.genymotion.config.taskLaunch)
-        assertEquals("automaticLaunch not loaded from file",      true,           project.genymotion.config.automaticLaunch)
-        assertEquals("processTimeout not loaded from file",       500000,         project.genymotion.config.processTimeout)
-        assertEquals("verbose not loaded from file",              true,           project.genymotion.config.verbose)
-        assertEquals("persist not loaded from file",              true,           project.genymotion.config.persist)
-        assertEquals("abortOnError not loaded from file",         false,          project.genymotion.config.abortOnError)
-
-        //we set the last config back
-        GMTool.setConfig(config, true)
-
-        //ENTER HERE the path to a properties file containing good credential (username, password & license)
-        String path = "/home/eyal/genymotion/gradle-plugin/junit/config.properties"
-
-        File f = new File(path)
-        assertTrue("Config file does not exists to restore good a configuration. Set the path on the source code to continue correctly the tests", f.exists())
-
-        project.genymotion.config.fromFile = path
-        project.genymotion.config.persist = true
-
-        //we set the config file
-        project.genymotion.applyConfigFromFile()
-        GMTool.setConfig(config, true)
+        assertEquals("genymotion.username is not catched from local.properties",    "user",     project.genymotion.config.username)
+        assertEquals("genymotion.password is not catched from local.properties",    "password", project.genymotion.config.password)
+        assertEquals("genymotion.statistics is not catched from local.properties",  true,       project.genymotion.config.statistics)
+        assertEquals("genymotion.proxyPort is not catched from local.properties",   100,        project.genymotion.config.proxyPort)
     }
 
     @Test
@@ -160,6 +119,8 @@ class GenymotionPluginExtensionTest {
             assertTrue("Finish task not injected in flavor $flavor.name", task.finalizedBy.getDependencies().contains(endTask))
         }
     }
+
+
 
     private static Project getAndroidProject() {
         Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();

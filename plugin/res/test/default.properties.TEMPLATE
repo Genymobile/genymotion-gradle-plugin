@@ -1,5 +1,5 @@
 #Enter your valid Genymotion login/password/license on default.properties file
-username=TODO
-password=TODO
-license=TODO
-genymotionPath=TODO
+genymotion.username=TODO
+genymotion.password=TODO
+genymotion.license=TODO
+genymotion.genymotionPath=TODO

@@ -147,9 +147,7 @@ class GenymotionPluginExtension {
 
     def processConfiguration() {
         GenymotionConfig config = project.genymotion.config
-        if(config.fromFile){
-            applyConfigFromFile()
-        }
+        config.applyConfigFromFile(project)
 
         if(!config.isEmpty()){
             //if we persists the data
@@ -180,68 +178,6 @@ class GenymotionPluginExtension {
         //if we do not persist the data
         if(!config.persist && this.currentConfiguration){
             GMTool.setConfig(this.currentConfiguration, this.genymotionConfig.verbose)
-        }
-    }
-
-    def applyConfigFromFile(){
-        // We get the APK signing properties from a file
-        GenymotionConfig config = project.genymotion.config
-        def Properties props = new Properties()
-        def propFile = new File(config.fromFile)
-        if (propFile.canRead()){
-            props.load(new FileInputStream(propFile))
-
-            if (props!=null){
-                //Reflection could be another solution to fill the object but I prefer to avoid it.
-                //This method allows a better control on the data changed and avoid side loading non-allowed values
-                if(props.statistics)
-                    config.statistics = props.statistics.toBoolean()
-                if(props.username)
-                    config.username = props.username
-                if(props.password)
-                    config.password = props.password
-                if(props.storeCredentials)
-                    config.storeCredentials = props.storeCredentials.toBoolean()
-                if(props.license)
-                    config.license = props.license
-                if(props.proxy)
-                    config.proxy = props.proxy.toBoolean()
-                if(props.proxyAddress)
-                    config.proxyAddress = props.proxyAddress
-                if(props.proxyPort)
-                    config.proxyPort = props.proxyPort.toInteger()
-                if(props.proxyAuth)
-                    config.proxyAuth = props.proxyAuth.toBoolean()
-                if(props.proxyUsername)
-                    config.proxyUsername = props.proxyUsername
-                if(props.proxyPassword)
-                    config.proxyPassword = props.proxyPassword
-                if(props.virtualDevicePath)
-                    config.virtualDevicePath = props.virtualDevicePath
-                if(props.sdkPath)
-                    config.sdkPath = props.sdkPath
-                if(props.useCustomSdk)
-                    config.useCustomSdk = props.useCustomSdk.toBoolean()
-                if(props.screenCapturePath)
-                    config.screenCapturePath = props.screenCapturePath
-                if(props.taskLaunch)
-                    config.taskLaunch = props.taskLaunch
-                if(props.automaticLaunch)
-                    config.automaticLaunch = props.automaticLaunch.toBoolean()
-                if(props.processTimeout)
-                    config.processTimeout = props.processTimeout.toInteger()
-                if(props.verbose)
-                    config.verbose = props.verbose.toBoolean()
-                if(props.persist)
-                    config.persist = props.persist.toBoolean()
-                if(props.abortOnError)
-                    config.abortOnError = props.abortOnError.toBoolean()
-
-            } else {
-                logger.error("$config.fromFile file is missing, impossible to load configuration")
-            }
-        } else {
-            logger.error("$config.fromFile file is missing, impossible to load configuration")
         }
     }
 }
