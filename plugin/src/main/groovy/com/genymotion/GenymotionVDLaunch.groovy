@@ -131,7 +131,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     def create(){
-        GMTool.createDevice(this)
+        if(template != null && template.toString().trim())
+            GMTool.createDevice(this)
     }
 
     def delete(){
