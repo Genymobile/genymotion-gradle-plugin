@@ -24,6 +24,7 @@ class TestTools {
 
         project.genymotion.config.genymotionPath = getDefaultConfig().genymotionPath
         project.genymotion.config.verbose = true
+        project.genymotion.config.abortOnError = false
         //we set the config inside the GenymotionTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
