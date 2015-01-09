@@ -86,7 +86,7 @@ class GenymotionTasksTest {
         String goodPath = project.genymotion.config.genymotionPath
 
         try{
-            project.genymotion.config.abordOnError = true
+            project.genymotion.config.abortOnError = true
             project.genymotion.config.genymotionPath = "ssqfkjfksùfsdlkf"
             project.tasks.genymotionLaunch.exec()
             fail("Expected GMToolException to be thrown")
