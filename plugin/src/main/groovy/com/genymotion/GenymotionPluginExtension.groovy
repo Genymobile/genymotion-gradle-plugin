@@ -5,12 +5,10 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 
-
 class GenymotionPluginExtension {
 
     final Project project
     def genymotionConfig = new GenymotionConfig()
-    def genymotionAdmin = new GMToolAdmin()
     def genymotionDevices = new GenymotionDevices()
 
     final NamedDomainObjectContainer<ProductFlavor> productFlavors

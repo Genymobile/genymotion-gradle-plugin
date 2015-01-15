@@ -3,9 +3,7 @@ package test.groovy.com.genymotion
 import java.util.List
 
 import main.groovy.com.genymotion.GenymotionEndTask
-import main.groovy.com.genymotion.GenymotionGradlePlugin
 import main.groovy.com.genymotion.GenymotionLaunchTask
-import main.groovy.com.genymotion.GMToolAdmin
 import main.groovy.com.genymotion.GenymotionConfig
 import main.groovy.com.genymotion.GMTool
 import main.groovy.com.genymotion.GenymotionVirtualDevice
@@ -47,7 +45,6 @@ class GenymotionGradlePluginTest {
     public void canAddExtensionToProject() {
         assertTrue(project.genymotion instanceof GenymotionPluginExtension)
         assertTrue(project.genymotion.config instanceof GenymotionConfig)
-        assertTrue(project.genymotion.admin instanceof GMToolAdmin)
         assertTrue(project.genymotion.devices instanceof List)
     }
 
