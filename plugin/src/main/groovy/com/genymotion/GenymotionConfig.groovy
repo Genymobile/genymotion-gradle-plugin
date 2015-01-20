@@ -7,6 +7,7 @@ import org.gradle.api.Project
  */
 class GenymotionConfig {
 
+    //TODO prendre en charge avec et sans le '/' dans le build.gradle
     //plugin config
     def genymotionPath = ""           //set the Genymotion path to PATH
 
