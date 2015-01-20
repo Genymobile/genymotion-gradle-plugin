@@ -71,7 +71,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             this.deleteWhenFinish = params.deleteWhenFinish
         if(params.start != null)
             this.start = params.start
-        if(params.template != null && params.template?.toString().trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
+        if(params.template != null && params.template?.toString()?.trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
             this.template = params.template
         if(params.pushBefore)
             this.pushBefore = params.pushBefore
@@ -85,7 +85,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             this.install = params.install
         if(params.flash)
             this.flash = params.flash
-        if(params.logcat != null && params.logcat?.toString().trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
+        if(params.logcat != null && params.logcat?.toString()?.trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
             this.logcat = params.logcat
     }
 
