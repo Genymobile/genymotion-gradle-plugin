@@ -66,7 +66,9 @@ class GMToolTest {
     public void canGetStoppedDevices() {
         String name = TestTools.createADevice()
 
-        GMTool.stopDevice(name)
+        def runningDevices = GMTool.getRunningDevices(true, false, true)
+        if(runningDevices.contains(name))
+            GMTool.stopDevice(name)
         def devices = GMTool.getStoppedDevices(true, false, true)
 
         assertTrue("Error, device not stopped", devices.contains(name))

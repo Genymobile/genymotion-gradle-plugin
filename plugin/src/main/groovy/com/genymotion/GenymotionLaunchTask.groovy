@@ -17,14 +17,23 @@ class GenymotionLaunchTask extends DefaultTask {
             println("Starting devices")
 
         def devices = project.genymotion.getDevices(flavor)
+
+        if(devices.size() == 0)
+            return
+
         def runningDevices = []
 
-        if(devices.size() > 0)
-            runningDevices = GMTool.getRunningDevices(project.genymotion.config.verbose, false, true)
+        def virtualDevices = GMTool.getAllDevices(project.genymotion.config.verbose, false, false)
+        virtualDevices.each {
+            if(it.state == GenymotionVirtualDevice.STATE_ON)
+                runningDevices.add(it.name)
+        }
+
+        def virtualDevicesNames = virtualDevices*.name
 
         //process declared devices
         devices.each(){
-            processDevice(it, runningDevices)
+            processDevice(it, runningDevices, virtualDevicesNames)
         }
 
         if (project.genymotion.config.verbose) {
@@ -33,38 +42,42 @@ class GenymotionLaunchTask extends DefaultTask {
         }
     }
 
-    def processDevice(device, runningDevices) {
-        if (device.start) {
-            if (project.genymotion.config.verbose)
-                println("Starting ${device.name}")
+    def processDevice(device, runningDevices, virtualDevicesNames) {
+        if (!device.start)
+            return
 
-            try {
-                if (device.name && runningDevices != null && !runningDevices?.contains(device.name)) {
+        if (project.genymotion.config.verbose)
+            println("Starting ${device.name}")
+
+        try {
+            if (device.name && runningDevices != null && !runningDevices?.contains(device.name)) {
+                if(!virtualDevicesNames?.contains(device.name))
                     device.create()
-                    device.checkAndEdit()
-                    device.start()
-                }
-                device.logcat()
-                device.flash()
-                device.install()
-                device.pushBefore()
-                device.pullBefore()
+                device.checkAndEdit()
+                device.start()
             }
-            //if a gmtool command fail
-            catch (Exception e) {
-                e.printStackTrace()
-                println e.getMessage()
-                println "Stoping all launched devices and deleting when needed"
-                project.genymotion.getDevices(flavor).each() {
-                    //we close the opened devices
-                    device.stopWhenFinish()
-                    //and delete them if needed
-                    device.deleteWhenFinish()
-                }
-                //then, we thow a new exception to end task, if needed
-                if (project.genymotion.config.abortOnError)
-                    throw new GMToolException("GMTool command failed. Check the output to solve the problem")
-            }
+            device.logcat()
+            device.flash()
+            device.install()
+            device.pushBefore()
+            device.pullBefore()
+
+        } catch (Exception e) { //if a gmtool command fail
+            abortLaunch(device)
+            e.printStackTrace()
+            //then, we thow a new exception to end task, if needed
+            if (project.genymotion.config.abortOnError)
+                throw new GMToolException("GMTool command failed. "+e.getMessage())
+        }
+    }
+
+    public void abortLaunch(device) {
+        println "An error occured. Stoping and deleting all launched devices, if needed."
+        project.genymotion.getDevices(flavor).each() {
+            //we close the opened devices
+            device.stopWhenFinish()
+            //and delete them if needed
+            device.deleteWhenFinish()
         }
     }
 }

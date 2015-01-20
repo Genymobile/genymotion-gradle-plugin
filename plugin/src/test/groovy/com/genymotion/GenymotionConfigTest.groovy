@@ -12,6 +12,7 @@ import static org.junit.Assert.*
 class GenymotionConfigTest {
 
     Project project
+    boolean changedUser = false
 
     @Test
     public void isEmptyWhenEmpty() {
@@ -92,4 +93,12 @@ class GenymotionConfigTest {
         GMTool.setConfig(TestTools.getDefaultConfig(), true)
     }
 
+    @After
+    public void finishTest(){
+
+        if(changedUser){
+            TestTools.setDefaultUser(true)
+            changedUser = false
+        }
+    }
 }

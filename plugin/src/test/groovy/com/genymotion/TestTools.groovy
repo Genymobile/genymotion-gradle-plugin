@@ -24,7 +24,6 @@ class TestTools {
 
         project.genymotion.config.genymotionPath = getDefaultConfig().genymotionPath
         project.genymotion.config.verbose = true
-        project.genymotion.config.abortOnError = false
         //we set the config inside the GenymotionTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
@@ -57,29 +56,30 @@ class TestTools {
         name
     }
 
-    static def declareADetailedDevice(Project project, boolean stopWhenFinish=true) {
+    static def declareADetailedDevice(Project project, boolean stop=true) {
         String vdName = GenymotionVDLaunch.getRandomName("-junit")
-        String density = "mdpi"
-        int height = 480
-        int width = 320
-        int ram = 2048
-        int nbCpu = 1
-        boolean deleteWhenFinish = true
+        String densityName = "mdpi"
+        int heightInt = 480
+        int widthInt = 320
+        int ramInt = 2048
+        int nbCpuInt = 1
+        boolean delete = true
 
-        project.genymotion.device(
-                name: vdName,
-                template: "Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-                density: density,
-                width: width,
-                height: height,
-                virtualKeyboard: false,
-                navbar: false,
-                nbCpu: nbCpu,
-                ram: ram,
-                deleteWhenFinish: deleteWhenFinish,
-                stopWhenFinish: stopWhenFinish
-        )
-        [vdName, density, width, height, nbCpu, ram, deleteWhenFinish]
+        project.genymotion.devices {
+            "$vdName" {
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+                density densityName
+                width widthInt
+                height heightInt
+                virtualKeyboard false
+                navbarVisible false
+                nbCpu nbCpuInt
+                ram ramInt
+                deleteWhenFinish delete
+                stopWhenFinish stop
+            }
+        }
+        [vdName, densityName, widthInt, heightInt, nbCpuInt, ramInt, delete]
     }
 
 
@@ -90,15 +90,16 @@ class TestTools {
         GMTool.getConfig(true)
 
         try{
-            def devices = GMTool.getAllDevices(false, false, true)
+            def devices = GMTool.getAllDevices(false, false, false)
             def pattern = ~/^.+?\-junit$/
             println devices
 
             devices.each(){
-                if(pattern.matcher(it).matches()){
-                    println "Removing $it"
-                    GMTool.stopDevice(it, true)
-                    GMTool.deleteDevice(it, true)
+                if(pattern.matcher(it.name).matches()){
+                    println "Removing $it.name"
+                    if(it.isRunning())
+                        GMTool.stopDevice(it.name, true)
+                    GMTool.deleteDevice(it.name, true)
                 }
             }
         } catch (Exception e){

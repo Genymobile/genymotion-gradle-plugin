@@ -59,41 +59,61 @@ class GenymotionGradlePluginTest {
         project.genymotion.config.genymotionPath = previousPath
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsWhenAddDeviceWithoutParams(){
+    @Test
+    public void canAddNoDevice(){
 
-        project.genymotion.device(null)
-
+        project.genymotion.devices{}
+        assertEquals(0, project.genymotion.devices.size())
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenAddDeviceWithoutNameAndTemplate(){
 
-        project.genymotion.device(hola:"buenos dias")
+        project.genymotion.devices {
+            "test" {pullAfter "buenos dias"}
+        }
+        project.genymotion.checkParams()
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenAddDeviceWithNameNotCreated(){
 
-        project.genymotion.device(name:"DSFGTFSHgfgdfTFGQFQHG")
+        project.genymotion.devices {
+            "DSFGTFSHgfgdfTFGQFQHG"{}
+        }
+        project.genymotion.checkParams()
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenAddDeviceWithTemplateNotCreated(){
 
-        project.genymotion.device(template: "DSFGTFSHgfgdfTFGQFQHG")
+        project.genymotion.devices {
+            "test" {
+                template "DSFGTFSHgfgdfTFGQFQHG"
+            }
+        }
+        project.genymotion.checkParams()
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsWhenAddDeviceWithNameAndTemplateNotCreated(){
 
-        project.genymotion.device(name:"DSFGTFSHTFGQFQHG", template:"ferrfgfgdshghGFGDFGfgfd")
+        project.genymotion.devices {
+            "DSFGTFSHTFGQFQHG" {
+                template "ferrfgfgdshghGFGDFGfgfd"
+            }
+        }
+        project.genymotion.checkParams()
     }
 
     @Test
     public void throwsWhenAddDeviceWithNameAndTemplateNotCreated2(){
 
-        project.genymotion.device(name:"DSFGTFSHTFGQFQHG", template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
+        project.genymotion.devices {
+            "DSFGTFSHTFGQFQHG" {
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+            }
+        }
     }
 
     @Test
@@ -101,7 +121,9 @@ class GenymotionGradlePluginTest {
 
         String vdName = TestTools.createADevice()
 
-        project.genymotion.device(name:vdName)
+        project.genymotion.devices {
+            "$vdName" {}
+        }
         assertNull(project.genymotion.devices[0].template)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
@@ -112,42 +134,48 @@ class GenymotionGradlePluginTest {
     public void canAddDeviceToLaunchByNameWithTemplate(){
 
         String vdName = TestTools.createADevice()
-        String template = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+        String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
 
-        project.genymotion.device(name:vdName, template: template)
-        assertEquals(template, project.genymotion.devices[0].template)
+        project.genymotion.devices {
+            "$vdName" {
+                template templateName
+            }
+        }
+        assertEquals(templateName, project.genymotion.devices[0].template)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
         GMTool.deleteDevice(vdName)
     }
+
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated(){
 
         String vdName = TestTools.createADevice()
 
-        project.genymotion.device(name:vdName, template: "frtfgfdgtgsgrGFGFDGFD")
-        assertEquals(false, project.genymotion.devices[0].templateExists)
+        project.genymotion.devices {
+            "$vdName" {
+                template "frtfgfdgtgsgrGFGFDGFD"
+            }
+        }
+        project.genymotion.checkParams()
+
+        assertFalse(project.genymotion.devices[0].templateExists)
         assertEquals(vdName, project.genymotion.devices[0].name)
 
         GMTool.deleteDevice(vdName)
     }
 
     @Test
-    public void canAddDeviceToLaunchByTemplate(){
-
-        project.genymotion.device(template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
-
-        assertNotNull("No device found", project.genymotion.devices[0])
-        assertNotNull("Device not filled", project.genymotion.devices[0].name)
-        assertTrue("Device not created", project.genymotion.devices[0].create)
-        assertTrue(project.genymotion.devices[0].deleteWhenFinish) //unnamed devices are deleted when finish by default
-    }
-
-    @Test
     public void canAddDeviceToLaunchByTemplateWithNameNotCreated(){
 
-        project.genymotion.device(template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280", name: "dfsdgffgdgqsdg")
+        project.genymotion.devices {
+            "dfsdgffgdgqsdg"{
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+            }
+        }
+
+        project.genymotion.checkParams()
 
         assertNotNull("No device found", project.genymotion.devices[0])
         assertNotNull("Device not filled", project.genymotion.devices[0].name)
@@ -155,11 +183,15 @@ class GenymotionGradlePluginTest {
         assertNull(project.genymotion.devices[0].deleteWhenFinish)
     }
 
-
     @Test
     public void canAvoidDeviceToBeLaunched(){
 
-        project.genymotion.device(template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280", start: false)
+        project.genymotion.devices {
+            "test" {
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+                start false
+            }
+        }
 
         assertFalse(project.genymotion.devices[0].start)
     }
@@ -167,23 +199,26 @@ class GenymotionGradlePluginTest {
     @Test
     public void canEditDeviceBeforeLaunch(){
 
-        String vdName = "OKOK"
-        GMTool.deleteDevice(vdName)
+        String vdName = "OKOK-junit"
+        def devices = GMTool.getAllDevices(true, false, true)
+        if(devices.contains(vdName))
+            GMTool.deleteDevice(vdName)
 
         int intValue = 999
-        String density = "mdpi"
+        String densityValue = "mdpi"
 
-        project.genymotion.device(
-                name: vdName,
-                template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-                density: density,
-                width: intValue,
-                height: intValue,
-                virtualKeyboard: false,
-                navbar: false,
-                nbCpu: 1,
-                ram: 2048
-        )
+        project.genymotion.devices {
+            "$vdName" {
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+                density densityValue
+                width intValue
+                height intValue
+                virtualKeyboard false
+                navbarVisible false
+                nbCpu 1
+                ram 2048
+            }
+        }
 
         assertNotNull(project.genymotion.devices[0])
         assertEquals(project.genymotion.devices[0].name, vdName)
@@ -192,11 +227,11 @@ class GenymotionGradlePluginTest {
         project.genymotion.devices[0].checkAndEdit()
 
         GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
-        assertEquals(density, device.density)
+        assertEquals(densityValue, device.density)
         assertEquals(intValue, device.width)
         assertEquals(intValue, device.height)
-//        assertEquals(false, device.virtualKeyboard) //TODO uncomment when bug on gmtool is fixed
-//        assertEquals(false, device.navbarVisible) //TODO uncomment when bug on gmtool is fixed
+        assertFalse(device.virtualKeyboard)
+        assertFalse(device.navbarVisible)
         assertEquals(1, device.nbCpu)
         assertEquals(2048, device.ram)
 
@@ -209,7 +244,11 @@ class GenymotionGradlePluginTest {
     public void canSetDeleteWhenFinish(){
         String vdName = TestTools.createADevice()
 
-        project.genymotion.device(name:vdName, deleteWhenFinish: true)
+        project.genymotion.devices {
+            "$vdName" {
+                deleteWhenFinish true
+            }
+        }
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
@@ -220,11 +259,15 @@ class GenymotionGradlePluginTest {
     public void canAvoidDeleteWhenFinish(){
         String vdName = TestTools.createADevice()
 
-        project.genymotion.device(name:vdName, deleteWhenFinish: false)
+        project.genymotion.devices {
+            "$vdName" {
+                deleteWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assertTrue("The device is still existing", GMTool.isDeviceCreated(vdName, true))
+        assertTrue("The device has been deleted, should still be listed", GMTool.isDeviceCreated(vdName, true))
     }
 
 
@@ -233,7 +276,11 @@ class GenymotionGradlePluginTest {
 
         String vdName = TestTools.createADevice()
 
-        project.genymotion.device(name:vdName, install:"res/test/test.apk")
+        project.genymotion.devices {
+            "$vdName" {
+                install "res/test/test.apk"
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         boolean installed = false
@@ -250,7 +297,11 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
-        project.genymotion.device(name:name, install:listOfApps)
+        project.genymotion.devices {
+            "$name" {
+                install listOfApps
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         int installed = 0
@@ -268,7 +319,11 @@ class GenymotionGradlePluginTest {
 
         String name = TestTools.createADevice()
 
-        project.genymotion.device(name:name, pushBefore:"res/test/test.txt")
+        project.genymotion.devices{
+            "$name" {
+                pushBefore "res/test/test.txt"
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
@@ -284,7 +339,12 @@ class GenymotionGradlePluginTest {
 
         String name = TestTools.createADevice()
 
-        project.genymotion.device(name:name, pushAfter:"res/test/test.txt", stopWhenFinish:false)
+        project.genymotion.devices {
+            "$name" {
+                pushAfter "res/test/test.txt"
+                stopWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
@@ -310,7 +370,11 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
-        project.genymotion.device(name:name, pushBefore:listOfFiles)
+        project.genymotion.devices {
+            "$name" {
+                pushBefore listOfFiles
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
@@ -327,7 +391,12 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
-        project.genymotion.device(name:name, pushAfter:listOfFiles, stopWhenFinish:false)
+        project.genymotion.devices {
+            "$name" {
+                pushAfter listOfFiles
+                stopWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
@@ -354,7 +423,11 @@ class GenymotionGradlePluginTest {
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt":destination]
-        project.genymotion.device(name:name, pushBefore:listOfFiles)
+        project.genymotion.devices {
+            "$name" {
+                pushBefore listOfFiles
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
@@ -372,7 +445,12 @@ class GenymotionGradlePluginTest {
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt":destination]
-        project.genymotion.device(name:name, pushAfter:listOfFiles, stopWhenFinish:false)
+        project.genymotion.devices {
+            "$name" {
+                pushAfter listOfFiles
+                stopWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
@@ -398,7 +476,11 @@ class GenymotionGradlePluginTest {
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
-        project.genymotion.device(name:name, pushBefore:listOfFiles)
+        project.genymotion.devices {
+            "$name" {
+                pushBefore listOfFiles
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
@@ -415,7 +497,12 @@ class GenymotionGradlePluginTest {
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
-        project.genymotion.device(name:name, pushAfter:listOfFiles, stopWhenFinish:false)
+        project.genymotion.devices {
+            "$name" {
+                pushAfter listOfFiles
+                stopWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
 
@@ -444,7 +531,11 @@ class GenymotionGradlePluginTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        project.genymotion.device(name:name, pullBefore:["/system/build.prop":"temp/pulled/"])
+        project.genymotion.devices {
+            "$name" {
+                pullBefore "/system/build.prop":"temp/pulled/"
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         File file = new File("temp/pulled/build.prop")
@@ -458,7 +549,12 @@ class GenymotionGradlePluginTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        project.genymotion.device(name:name, pullAfter:["/system/build.prop":"temp/pulled/"], stopWhenFinish:false)
+        project.genymotion.devices {
+            "$name" {
+                pullAfter "/system/build.prop":"temp/pulled/"
+                stopWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         File file = new File("temp/pulled/build.prop")
@@ -478,7 +574,11 @@ class GenymotionGradlePluginTest {
         TestTools.recreatePulledDirectory()
 
         def listOfFiles = ["/system/build.prop":"temp/pulled/build.prop", "/system/bin/adb":"temp/pulled/adb"]
-        project.genymotion.device(name:name, pullBefore:listOfFiles)
+        project.genymotion.devices {
+            "$name" {
+                pullBefore listOfFiles
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
@@ -501,7 +601,12 @@ class GenymotionGradlePluginTest {
         TestTools.recreatePulledDirectory()
 
         def listOfFiles = ["/system/build.prop":"temp/pulled/build.prop", "/system/bin/adb":"temp/pulled/adb"]
-        project.genymotion.device(name:name, pullAfter:listOfFiles, stopWhenFinish:false)
+        project.genymotion.devices {
+            "$name" {
+                pullAfter listOfFiles
+                stopWhenFinish false
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         listOfFiles.each {key, value ->
@@ -522,7 +627,11 @@ class GenymotionGradlePluginTest {
     public void canFlashDevice() {
         String name = TestTools.createADevice()
 
-        project.genymotion.device(name:name, flash:"res/test/test.zip")
+        project.genymotion.devices {
+            "$name" {
+                flash "res/test/test.zip"
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         boolean flashed = false
@@ -542,7 +651,11 @@ class GenymotionGradlePluginTest {
         assertTrue("Start failed", exitCode == 0)
 
         def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
-        project.genymotion.device(name:name, flash:listOfFiles)
+        project.genymotion.devices {
+            "$name" {
+                flash listOfFiles
+            }
+        }
         project.tasks.genymotionLaunch.exec()
 
         int flashed = 0

@@ -46,7 +46,7 @@ class GenymotionVirtualDevice {
         if(name?.trim())
             this.name = name
         if(density)
-            this.density= density
+            this.density = density
         if(width)
             this.width = width.toInteger()
         if(height)
@@ -73,36 +73,32 @@ class GenymotionVirtualDevice {
         this.ram = ram
     }
 
-    def start(){
+    protected def start(){
         GMTool.startDevice(this)
     }
 
-    def restart(){
+    protected def restart(){
         GMTool.restartDevice(this)
     }
 
-    def stop(){
+    protected def stop(){
         GMTool.stopDevice(this)
     }
 
-    def reset(){
+    protected def reset(){
         GMTool.resetDevice(this)
     }
 
-    def adbdisconnect(){
+    protected def adbdisconnect(){
         GMTool.adbDisconnectDevice(this)
     }
 
-    def adbconnect(){
+    protected def adbconnect(){
         GMTool.adbConnectDevice(this)
     }
 
     String toString() {
-        String keyboard = virtualKeyboard?"virtual":"physical"
         String result = "Device: $name\n"
-        result += "${width}x${height}"
-        result += " - $keyboard keyboard"
-
         result
     }
 
@@ -114,5 +110,9 @@ class GenymotionVirtualDevice {
 
     def fillFromDetails(boolean verbose=false){
         GMTool.getDevice(this, verbose)
+    }
+
+    boolean isRunning(){
+        state == STATE_ON
     }
 }

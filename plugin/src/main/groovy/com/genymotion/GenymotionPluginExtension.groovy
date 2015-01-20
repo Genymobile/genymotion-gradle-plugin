@@ -9,56 +9,60 @@ class GenymotionPluginExtension {
 
     final Project project
     def genymotionConfig = new GenymotionConfig()
-    def genymotionDevices = new GenymotionDevices()
 
-    final NamedDomainObjectContainer<ProductFlavor> productFlavors
-    def productFlavorsDevices = [:]
+    private final NamedDomainObjectContainer<VDLaunchCall> deviceLaunches
 
     public GenymotionConfig currentConfiguration = null
 
 
-    GenymotionPluginExtension(Project project, productFlavors) {
+    GenymotionPluginExtension(Project project, deviceLaunches) {
         this.project = project
-        this.productFlavors = productFlavors
-
-        this.genymotionDevices.project = project
+        this.deviceLaunches = deviceLaunches
     }
 
-    def productFlavors(Closure closure) {
-        productFlavors.configure(closure)
+    //TODO handle declaration when there is no closure after name (ex: genymotion.devices{"name"})
+    def devices(Closure closure) {
+        deviceLaunches.configure(closure)
     }
 
 
-    void device(Map params){
-        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
-        this.genymotionDevices.add(device)
-    }
-
-    void device(Map params, String flavorName){
-        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
-
-        if(!productFlavorsDevices[flavorName])
-            productFlavorsDevices[flavorName] = new GenymotionDevices()
-
-        productFlavorsDevices[flavorName].add(device)
-    }
+//    void device(Map params){
+//        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
+//        this.genymotionDevices.add(device)
+//    }
+//
+//    void device(Map params, String flavorName){
+//        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
+//
+//        if(!productFlavorsDevices[flavorName])
+//            productFlavorsDevices[flavorName] = new GenymotionDevices()
+//
+//        productFlavorsDevices[flavorName].add(device)
+//    }
 
 
     def getDevices(String flavor = null){
+
+        if(flavor == null)
+            return deviceLaunches.toList()
+
         def devices = []
-        devices.addAll(genymotionDevices.devices)
-
-        if(flavor && productFlavorsDevices[flavor]){
-            devices.addAll((productFlavorsDevices[flavor] as GenymotionDevices).devices)
+        deviceLaunches.each {
+            if(it.hasFlavor(flavor))
+                devices.add(it)
         }
-
         return devices
     }
 
     def checkParams(){
         //TODO Check all the Genymotion configuration and fire Exceptions if needed
 
+        //check similar names
         //Check if the flavors entered are good?
+        //check params types
+        deviceLaunches.each {
+            it.checkParams()
+        }
     }
 
 

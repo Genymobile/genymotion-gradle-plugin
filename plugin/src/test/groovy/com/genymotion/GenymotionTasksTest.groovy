@@ -46,11 +46,10 @@ class GenymotionTasksTest {
         assertEquals(density, device.density)
         assertEquals(width, device.width)
         assertEquals(height, device.height)
-//        assertEquals(false, device.telephony) //TODO uncomment when implemented on gmtool and plugin
-//        assertEquals(false, device.virtualKeyboard) //TODO uncomment when bug on gmtool is fixed
-//        assertEquals(false, device.navbarVisible) //TODO uncomment when bug on gmtool is fixed
-//        assertEquals(nbCpu, device.nbCpu) //TODO uncomment when bug on gmtool is fixed
-//        assertEquals(ram, device.ram) //TODO uncomment when bug on gmtool is fixed
+        assertEquals(false, device.virtualKeyboard)
+        assertEquals(false, device.navbarVisible)
+        assertEquals(nbCpu, device.nbCpu)
+        assertEquals(ram, device.ram)
 
         //we test if the device is running
         assertEquals(GenymotionVirtualDevice.STATE_ON, device.state)
@@ -80,8 +79,17 @@ class GenymotionTasksTest {
         String deviceToDelete = GenymotionVDLaunch.getRandomName()
         String deviceToThrowError = GenymotionVDLaunch.getRandomName()
 
-        project.genymotion.device(name: deviceToStop, template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280", deleteWhenFinish: false)
-        project.genymotion.device(name: deviceToDelete, template:"Google Nexus 7 - 4.1.1 - API 16 - 800x1280")
+        project.genymotion.devices {
+            "$deviceToStop" {
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+                deleteWhenFinish false
+            }
+        }
+        project.genymotion.devices {
+            "$deviceToDelete" {
+                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+            }
+        }
 
         String goodPath = project.genymotion.config.genymotionPath
 

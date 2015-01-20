@@ -15,7 +15,6 @@ import static org.junit.Assert.*
 class GenymotionPluginExtensionTest {
 
     Project project
-    boolean changedUser = false
 
     @Before
     public void setUp() {
@@ -120,6 +119,30 @@ class GenymotionPluginExtensionTest {
         }
     }
 
+    @Test
+    public void canGetGenymotionDevices(){
+
+        project = TestTools.init()
+
+        project.genymotion.devices {
+            "default" {}
+            "both" {
+                productFlavors "flavor1", "flavor2"
+            }
+            "product1" {
+                productFlavors "flavor1"
+            }
+            "product2" {
+                productFlavors "flavor2"
+            }
+        }
+
+        //IMPORTANT: Tab needs to be in alphabetical order
+        assertEquals(["both", "default", "product1", "product2"], project.genymotion.getDevices()*.name)
+        assertEquals(["both", "default", "product1"], project.genymotion.getDevices("flavor1")*.name)
+        assertEquals(["both", "default", "product2"], project.genymotion.getDevices("flavor2")*.name)
+        assertEquals(["default"], project.genymotion.getDevices("toto")*.name)
+    }
 
 
     private static Project getAndroidProject() {
@@ -146,10 +169,5 @@ class GenymotionPluginExtensionTest {
     @After
     public void finishTest(){
         TestTools.cleanAfterTests()
-
-        if(changedUser){
-            TestTools.setDefaultUser(true)
-            changedUser = false
-        }
     }
 }

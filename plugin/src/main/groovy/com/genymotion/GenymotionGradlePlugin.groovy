@@ -24,12 +24,11 @@ class GenymotionGradlePlugin implements Plugin<Project> {
 
     void apply(Project project) {
 
-        def productFlavors = project.container(ProductFlavor, new ProductFlavorFactory(instantiator, project))
+        def devicesLaunch = project.container(VDLaunchCall, new VDLaunchCallFactory(instantiator, project))
 
-        project.extensions.create('genymotion', GenymotionPluginExtension, project, productFlavors)
+        project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch)
         //TODO try to merge the next extensions adds to the previous "create genymotion extension" line. Liek it is done for productFlavors
         project.genymotion.extensions.create('config', GenymotionConfig) //the extension name have to be different from the original nested element's name (receiver)
-        project.genymotion.extensions.create('devices', GenymotionDevices, project) //the extension name have to be different from the original nested element's name (receiver)
 
         project.task(TASK_LAUNCH, type: GenymotionLaunchTask){
             description 'Starting task for Genymotion plugin'
