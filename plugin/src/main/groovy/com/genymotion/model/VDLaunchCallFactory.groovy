@@ -24,9 +24,6 @@ import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 import org.gradle.internal.reflect.Instantiator
 
-/**
- * Created by eyal on 27/11/14.
- */
 class VDLaunchCallFactory implements NamedDomainObjectFactory<VDLaunchCall> {
 
     final Instantiator instantiator

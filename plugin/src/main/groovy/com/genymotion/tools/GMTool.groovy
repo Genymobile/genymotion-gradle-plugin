@@ -25,9 +25,6 @@ import main.groovy.com.genymotion.model.GenymotionVDLaunch
 import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import org.codehaus.groovy.runtime.NullObject
 
-/**
- * Created by eyal on 10/09/14.
- */
 class GMTool {
 
     public static GenymotionConfig GENYMOTION_CONFIG = null

@@ -22,9 +22,6 @@ package main.groovy.com.genymotion.tools
 import main.groovy.com.genymotion.GenymotionGradlePlugin
 import org.gradle.api.Project
 
-/**
- * Created by eyal on 28/11/14.
- */
 class AndroidPluginTools {
 
     public static final DEFAULT_ANDROID_TASK = "connectedAndroidTest"

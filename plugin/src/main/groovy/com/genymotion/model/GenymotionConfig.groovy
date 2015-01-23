@@ -22,9 +22,6 @@ package main.groovy.com.genymotion.model
 import main.groovy.com.genymotion.tools.AndroidPluginTools
 import org.gradle.api.Project
 
-/**
- * Created by eyal on 05/09/14.
- */
 class GenymotionConfig {
 
     //TODO prendre en charge avec et sans le '/' dans le build.gradle
