@@ -14,6 +14,7 @@ apply plugin: "genymotion"
 
 genymotion.config{
     genymotionPath = "/home/eyal/genymotion/genymotion-softs/build/"       //set the Genymotion path to PATH
+    verbose = true
 //    fromFile                //get the whole configuration from a file. The content get the priority to the .gradle file
 //
 //    statistics              //enable stats
@@ -44,11 +45,23 @@ genymotion.config{
 }
 
 
-genymotion{
-    device(
-            name: "Nexus5",
-            template: "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
-//            start: false //ask to not start the device
+genymotion {
+    devices {
+        //TODO fixer le stop en trop qui fait fail le lancement
+        nexus5 {
+            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+        }
+//        "my nexus 10" {
+//            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+//            productFlavors "flavor1"
+//        }
+//        "nexus 7" {
+//            template "Google Nexus 10..."
+//            productFlavors "flavor1", "flavor2"
+//        }
+    }
+}
+
 //            pushBefore: [<PATH_ORIG>: [PATH_DEST], <PATH_ORIG>: [PATH_DEST]] default PATH_DEST: /sdcard/Downloads //push file before tests
 //            pullBefore: [<PATH_ORIG> <PATH_DEST>, <PATH_ORIG> <PATH_DEST>]                                        //pull file before tests
 //            pushAfter: [<PATH_ORIG>: [PATH_DEST], <PATH_ORIG>: [PATH_DEST]] default PATH_DEST: /sdcard/Downloads  //push file after tests
@@ -59,13 +72,10 @@ genymotion{
 //            deleteWhenFinish: true                                                                                //delete device when finish
 //            stopWhenFinish: true                                                                                  //stop device when finish
 //
-//            density: 0                                                                                            //change screen density
+//            density: ldpi                                                                                         //change screen density
 //            width: 0                                                                                              //change screen with
 //            height: 0                                                                                             //change screen height
 //            virtualKeyboard: true                                                                                 //display physical button or not
 //            navbarVisible: true                                                                                   //display navbar or not
 //            nbCpu: 0                                                                                              //set number of CPUs
 //            ram: 0                                                                                                //set amount of RAM
-    )
-}
-
