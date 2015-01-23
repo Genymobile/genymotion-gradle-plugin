@@ -21,6 +21,7 @@ class GenymotionPluginExtension {
     }
 
     //TODO handle declaration when there is no closure after name (ex: genymotion.devices{"name"})
+    //TODO try to have a more explicite message when genymotionPath is not good
     def devices(Closure closure) {
         deviceLaunches.configure(closure)
     }
