@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     private static String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
-    private static String INVALID_PARAMETER = "You need to specify a valid name or template to declare a device"
+    private static String INVALID_PARAMETER = "You need to specify an already created device name or a valid template to declare a device"
 
     protected def templateExists = null
     protected def deviceExists = null
