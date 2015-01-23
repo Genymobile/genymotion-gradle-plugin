@@ -1,6 +1,7 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.*
+import main.groovy.com.genymotion.tools.AndroidPluginTools
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
@@ -10,7 +11,6 @@ import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.*
-
 
 class GenymotionPluginExtensionTest {
 
@@ -112,10 +112,10 @@ class GenymotionPluginExtensionTest {
             def task = project.tasks.getByName(flavorTaskName) //throw exception if task not found
 
             Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavor.name))
-            Task endTask = project.tasks.findByName(AndroidPluginTools.getFlavorEndTask(flavor.name))
+            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavor.name))
 
             assertTrue("Launch task not injected in flavor $flavor.name", task.dependsOn.contains(launchTask))
-            assertTrue("Finish task not injected in flavor $flavor.name", task.finalizedBy.getDependencies().contains(endTask))
+            assertTrue("Finish task not injected in flavor $flavor.name", task.finalizedBy.getDependencies().contains(finishTask))
         }
     }
 

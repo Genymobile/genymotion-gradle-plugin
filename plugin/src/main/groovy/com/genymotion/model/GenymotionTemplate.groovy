@@ -1,4 +1,4 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.model
 
 /**
  * Created by eyal on 05/09/14.

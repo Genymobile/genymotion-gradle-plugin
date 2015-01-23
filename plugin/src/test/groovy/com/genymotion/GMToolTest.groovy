@@ -1,8 +1,8 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GMToolException
-import main.groovy.com.genymotion.GMTool
-import main.groovy.com.genymotion.GenymotionVirtualDevice
+import main.groovy.com.genymotion.tools.GMToolException
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import org.junit.After
 import org.junit.BeforeClass
 import org.junit.Ignore
@@ -13,7 +13,6 @@ import org.gradle.api.Project
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
 
 class GMToolTest {

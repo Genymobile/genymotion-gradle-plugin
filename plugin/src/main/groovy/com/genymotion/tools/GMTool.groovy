@@ -1,5 +1,9 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.tools
 
+import main.groovy.com.genymotion.model.GenymotionConfig
+import main.groovy.com.genymotion.model.GenymotionTemplate
+import main.groovy.com.genymotion.model.GenymotionVDLaunch
+import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import org.codehaus.groovy.runtime.NullObject
 
 /**

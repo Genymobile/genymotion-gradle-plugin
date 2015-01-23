@@ -1,10 +1,10 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.tasks
 
-import main.groovy.com.genymotion.GMTool
+import main.groovy.com.genymotion.tools.GMToolException
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class GenymotionEndTask extends DefaultTask {
+class GenymotionFinishTask extends DefaultTask {
 
     String flavor = null
 

@@ -1,5 +1,6 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.model
 
+import main.groovy.com.genymotion.model.VDLaunchCall
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 import org.gradle.internal.reflect.Instantiator

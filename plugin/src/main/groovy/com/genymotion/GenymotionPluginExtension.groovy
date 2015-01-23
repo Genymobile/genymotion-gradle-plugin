@@ -1,5 +1,11 @@
 package main.groovy.com.genymotion
 
+import main.groovy.com.genymotion.tools.AndroidPluginTools
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.model.GenymotionConfig
+import main.groovy.com.genymotion.model.VDLaunchCall
+import main.groovy.com.genymotion.tasks.GenymotionFinishTask
+import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -21,26 +27,10 @@ class GenymotionPluginExtension {
     }
 
     //TODO handle declaration when there is no closure after name (ex: genymotion.devices{"name"})
-    //TODO try to have a more explicite message when genymotionPath is not good
+    //TODO try to have a more explicit message when genymotionPath is not good
     def devices(Closure closure) {
         deviceLaunches.configure(closure)
     }
-
-
-//    void device(Map params){
-//        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
-//        this.genymotionDevices.add(device)
-//    }
-//
-//    void device(Map params, String flavorName){
-//        GenymotionVDLaunch device = new GenymotionVDLaunch(params)
-//
-//        if(!productFlavorsDevices[flavorName])
-//            productFlavorsDevices[flavorName] = new GenymotionDevices()
-//
-//        productFlavorsDevices[flavorName].add(device)
-//    }
-
 
     def getDevices(String flavor = null){
 
@@ -83,7 +73,7 @@ class GenymotionPluginExtension {
             if(taskLaunch instanceof ArrayList){
                 taskLaunch.each {
                     injectTasksInto(it)
-                    //TODO fix to customize the launch/end tasks name
+                    //TODO fix to customize the launch/finish tasks name
                 }
             }
 
@@ -133,9 +123,9 @@ class GenymotionPluginExtension {
             launchTask.flavor = flavor
             theTask.dependsOn(launchTask)
 
-            Task endTask = project.tasks.create(AndroidPluginTools.getFlavorEndTask(flavor), GenymotionEndTask)
-            endTask.flavor = flavor
-            theTask.finalizedBy(endTask)
+            Task finishTask = project.tasks.create(AndroidPluginTools.getFlavorFinishTask(flavor), GenymotionFinishTask)
+            finishTask.flavor = flavor
+            theTask.finalizedBy(finishTask)
 
         } else {
             theTask.dependsOn(GenymotionGradlePlugin.TASK_LAUNCH)

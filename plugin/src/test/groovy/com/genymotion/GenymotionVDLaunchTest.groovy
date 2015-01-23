@@ -1,7 +1,5 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GMTool
-import main.groovy.com.genymotion.GenymotionVDLaunch
 import org.junit.*
 
 import static org.junit.Assert.*

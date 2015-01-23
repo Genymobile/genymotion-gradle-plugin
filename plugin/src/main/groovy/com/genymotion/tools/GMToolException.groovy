@@ -1,8 +1,6 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.tools
 
 import groovy.transform.CompileStatic
-
-import java.lang.Exception
 
 /**
  * Created by eyal on 17/10/14.

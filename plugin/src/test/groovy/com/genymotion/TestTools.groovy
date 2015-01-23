@@ -1,13 +1,10 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.GMTool
-import main.groovy.com.genymotion.GenymotionConfig
-import main.groovy.com.genymotion.GenymotionVDLaunch
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.model.GenymotionConfig
+import main.groovy.com.genymotion.model.GenymotionVDLaunch
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
-
-import java.util.logging.Logger
-
 
 class TestTools {
 

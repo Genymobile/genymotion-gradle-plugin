@@ -1,9 +1,14 @@
 package main.groovy.com.genymotion
 
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.model.GenymotionConfig
+import main.groovy.com.genymotion.model.VDLaunchCall
+import main.groovy.com.genymotion.model.VDLaunchCallFactory
+import main.groovy.com.genymotion.tasks.GenymotionFinishTask
+import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.internal.reflect.Instantiator
-import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 
 import javax.inject.Inject
 
@@ -34,7 +39,7 @@ class GenymotionGradlePlugin implements Plugin<Project> {
             description 'Starting task for Genymotion plugin'
             group PLUGIN_GROUP
         }
-        project.task(TASK_FINISH, type: GenymotionEndTask){
+        project.task(TASK_FINISH, type: GenymotionFinishTask){
             description 'Finishing task for Genymotion plugin'
             group PLUGIN_GROUP
         }

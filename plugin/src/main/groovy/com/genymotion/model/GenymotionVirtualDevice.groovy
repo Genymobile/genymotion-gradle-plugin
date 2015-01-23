@@ -1,8 +1,8 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.model
 
-/**
- * Created by eyal on 05/09/14.
- */
+import main.groovy.com.genymotion.tools.GMTool
+
+
 class GenymotionVirtualDevice {
 
     static String STATE_ON = "On"

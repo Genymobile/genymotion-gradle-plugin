@@ -1,6 +1,8 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.tasks
 
-import org.codehaus.groovy.control.messages.ExceptionMessage
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.tools.GMToolException
+import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -63,8 +65,8 @@ class GenymotionLaunchTask extends DefaultTask {
             device.pullBefore()
 
         } catch (Exception e) { //if a gmtool command fail
-            abortLaunch(device)
             e.printStackTrace()
+            abortLaunch(device)
             //then, we thow a new exception to end task, if needed
             if (project.genymotion.config.abortOnError)
                 throw new GMToolException("GMTool command failed. "+e.getMessage())

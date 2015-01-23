@@ -1,12 +1,11 @@
 package test.groovy.com.genymotion
 
-import java.util.List
-
-import main.groovy.com.genymotion.GenymotionEndTask
-import main.groovy.com.genymotion.GenymotionLaunchTask
-import main.groovy.com.genymotion.GenymotionConfig
-import main.groovy.com.genymotion.GMTool
-import main.groovy.com.genymotion.GenymotionVirtualDevice
+import org.junit.Ignore
+import main.groovy.com.genymotion.tasks.GenymotionFinishTask
+import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
+import main.groovy.com.genymotion.model.GenymotionConfig
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import main.groovy.com.genymotion.GenymotionPluginExtension
 
 import org.junit.After
@@ -38,7 +37,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddsTaskToProject() {
         assertTrue(project.tasks.genymotionLaunch instanceof GenymotionLaunchTask)
-        assertTrue(project.tasks.genymotionFinish instanceof GenymotionEndTask)
+        assertTrue(project.tasks.genymotionFinish instanceof GenymotionFinishTask)
     }
 
     @Test

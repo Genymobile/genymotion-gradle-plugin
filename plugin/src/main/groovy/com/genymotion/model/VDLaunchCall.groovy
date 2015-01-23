@@ -1,6 +1,7 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.model
 
 import groovy.transform.CompileStatic
+import main.groovy.com.genymotion.model.GenymotionVDLaunch
 
 /**
  * Created by eyal on 15/01/15.

@@ -1,9 +1,9 @@
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.*
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.model.GenymotionConfig
 import org.gradle.api.Project
 import org.junit.After
-import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 

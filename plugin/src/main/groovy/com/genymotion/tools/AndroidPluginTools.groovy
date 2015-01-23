@@ -1,5 +1,6 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.tools
 
+import main.groovy.com.genymotion.GenymotionGradlePlugin
 import org.gradle.api.Project
 
 /**
@@ -14,7 +15,7 @@ class AndroidPluginTools {
         DEFAULT_ANDROID_TASK + flavor.capitalize() + "Debug"
     }
 
-    public static String getFlavorEndTask(String flavor) {
+    public static String getFlavorFinishTask(String flavor) {
         GenymotionGradlePlugin.TASK_FINISH + flavor.capitalize()
     }
 

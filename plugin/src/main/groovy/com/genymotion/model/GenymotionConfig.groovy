@@ -1,5 +1,6 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.model
 
+import main.groovy.com.genymotion.tools.AndroidPluginTools
 import org.gradle.api.Project
 
 /**
@@ -85,8 +86,10 @@ class GenymotionConfig {
         def Properties props = new Properties()
         def propFile
 
-        if(fromFile == null && project != null)
-            propFile = new File(project.rootDir, AndroidPluginTools.DEFAULT_PROPERTIES)
+        if(fromFile == null && project != null){
+            fromFile = AndroidPluginTools.DEFAULT_PROPERTIES
+            propFile = new File(project.rootDir, fromFile)
+        }
         else if(fromFile != null)
             propFile = new File(fromFile)
         else

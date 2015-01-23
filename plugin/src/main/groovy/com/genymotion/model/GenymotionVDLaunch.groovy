@@ -1,6 +1,7 @@
-package main.groovy.com.genymotion
+package main.groovy.com.genymotion.model
 
 import groovy.transform.CompileStatic
+import main.groovy.com.genymotion.tools.GMTool
 
 @CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
