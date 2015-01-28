@@ -78,6 +78,21 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
+    public void canFixGenymotionPath(){
+
+        project = TestTools.init()
+        String path = "/path/to/test"
+        project.genymotion.config.genymotionPath = path
+        project.evaluate()
+        project.genymotion.processConfiguration()
+
+        assertEquals(path+File.separator, project.genymotion.config.genymotionPath)
+
+        project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
+
+    }
+
+    @Test
     public void canAddNoDevice(){
 
         project.genymotion.devices{}

@@ -41,6 +41,14 @@ class GenymotionConfigTest {
     }
 
     @Test
+    public void canFixGenymotionPath() {
+        GenymotionConfig config = new GenymotionConfig()
+        config.genymotionPath = "something/without/slash"
+
+        assertEquals(File.separator, config.genymotionPath.getAt(config.genymotionPath.size()-1))
+    }
+
+    @Test
     public void isNotEmptyWhenNotEmpty() {
 
         ["statistics",

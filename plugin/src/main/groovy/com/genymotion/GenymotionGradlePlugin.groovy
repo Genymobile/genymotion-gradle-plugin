@@ -63,7 +63,7 @@ class GenymotionGradlePlugin implements Plugin<Project> {
             group PLUGIN_GROUP
         }
 
-        //we set the config inside the GenymotionTool
+        //we set the config inside the GMTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
         project.afterEvaluate {

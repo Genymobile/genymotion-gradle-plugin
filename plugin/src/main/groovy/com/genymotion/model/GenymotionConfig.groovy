@@ -24,7 +24,6 @@ import org.gradle.api.Project
 
 class GenymotionConfig {
 
-    //TODO prendre en charge avec et sans le '/' dans le build.gradle
     //plugin config
     def genymotionPath = ""           //set the Genymotion path to PATH
 
@@ -138,5 +137,12 @@ class GenymotionConfig {
             return false
         }
         return true
+    }
+
+    public void setGenymotionPath(String value){
+        if (value != null && value != "" && value.getAt(value.size() - 1) != File.separator) {
+            value += File.separator
+        }
+        genymotionPath = value
     }
 }
