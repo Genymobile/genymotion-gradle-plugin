@@ -1,5 +1,7 @@
 package test.groovy.com.genymotion
 
+import main.groovy.com.genymotion.model.GenymotionVDLaunch
+import main.groovy.com.genymotion.tools.GMTool
 import org.junit.*
 
 import static org.junit.Assert.*
@@ -49,5 +51,15 @@ class GenymotionVDLaunchTest {
         assertTrue(project.genymotion.devices[0].templateExists)
         assertFalse(project.genymotion.devices[0].deviceExists)
     }
+
+    @Test
+    public void canUpdateWhenIsRunning() {
+        String name = TestTools.createADevice()
+        def device = GMTool.getDevice(name)
+        assertFalse(device.isRunning())
+        GMTool.startDevice(device)
+        assertTrue(device.isRunning())
+    }
+
 
 }

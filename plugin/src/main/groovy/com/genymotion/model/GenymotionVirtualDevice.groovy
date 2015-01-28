@@ -131,7 +131,14 @@ class GenymotionVirtualDevice {
         GMTool.getDevice(this, verbose)
     }
 
-    boolean isRunning(){
+    def update(){
+        GMTool.getDevice(this)
+    }
+
+    boolean isRunning(update = true){
+        if(update)
+            this.update()
+
         state == STATE_ON
     }
 }
