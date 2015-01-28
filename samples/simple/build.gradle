@@ -47,7 +47,6 @@ genymotion.config{
 
 genymotion {
     devices {
-        //TODO fixer le stop en trop qui fait fail le lancement
         nexus5 {
             template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
         }
