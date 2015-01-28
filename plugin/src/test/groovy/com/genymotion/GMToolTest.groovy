@@ -19,6 +19,8 @@
 
 package test.groovy.com.genymotion
 
+import main.groovy.com.genymotion.model.GenymotionVDLaunch
+import main.groovy.com.genymotion.model.VDLaunchCall
 import main.groovy.com.genymotion.tools.GMToolException
 import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.model.GenymotionVirtualDevice
@@ -231,37 +233,27 @@ class GMToolTest {
     }
 
 
-
-/*
     @Test
     public void canStopAllDevices() {
 
-        //TODO uncomment when stopall is implemented
-        GenymotionTestTools.createAllDevices()
+        TestTools.createAllDevices()
 
-        DEVICES.each(){
-            GenymotionTool.startDevice(it.name)
+        TestTools.DEVICES.each(){
+            TestTools.startDevice(it.name)
         }
 
-        GenymotionTool.stopAllDevices()
+        GMTool.stopAllDevices()
 
-        GenymotionTestTools.deleteAllDevices()
+        def runningDevices = GMTool.getRunningDevices(true, false, true)
+        assertEquals([], runningDevices)
+
     }
-*/
+
 
 /*
     @Test
     public void canResetDevice() {
-        //TODO implement when stopall is implemented
-
-    }
-*/
-
-/*
-    @Test
-    public void canStartAutoDevice() {
-        //TODO implement it when startauto is implemented
-
+        //TODO
     }
 */
 
