@@ -39,13 +39,14 @@ class GenymotionFinishTask extends DefaultTask {
 
     def processDeviceEnd(device) {
         println("Finishing ${device.name}")
-        //TODO check if the device is already started
         if (device.start) {
 
             try{
-                device.pushAfter()
-                device.pullAfter()
-                device.stopWhenFinish()
+                if(device.isRunning()){
+                    device.pushAfter()
+                    device.pullAfter()
+                    device.stopWhenFinish()
+                }
                 device.deleteWhenFinish()
             }
             //if a gmtool command fail
