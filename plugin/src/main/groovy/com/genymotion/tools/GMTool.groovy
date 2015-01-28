@@ -48,7 +48,6 @@ class GMTool {
     private static final String STOP          = "stop"
     private static final String STOPALL       = "stopall"
     private static final String FACTORY_RESET = "factoryreset"
-    private static final String STARTAUTO = ""//TODO
     //device actions
     private static final String DEVICE        = "device"
     private static final String PUSH          = "push"
