@@ -68,8 +68,8 @@ class GenymotionGradlePlugin implements Plugin<Project> {
 
         project.afterEvaluate {
 
+            project.genymotion.processConfiguration()
             project.genymotion.checkParams()
-
             project.genymotion.injectTasks()
 
         }
