@@ -46,7 +46,6 @@ class GenymotionPluginExtension {
     }
 
     //TODO handle declaration when there is no closure after name (ex: genymotion.devices{"name"})
-    //TODO try to have a more explicit message when genymotionPath is not good
     def devices(Closure closure) {
         deviceLaunches.configure(closure)
     }
@@ -73,6 +72,9 @@ class GenymotionPluginExtension {
         deviceLaunches.each {
             it.checkParams()
         }
+
+        //check gmtool path is found
+        GMTool.usage()
     }
 
 
