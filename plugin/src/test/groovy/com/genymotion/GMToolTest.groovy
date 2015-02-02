@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
+import static org.junit.Assert.fail
 
 class GMToolTest {
 
@@ -56,6 +57,20 @@ class GMToolTest {
     public void isConfigOK() {
         def exitCode = GMTool.usage()
         assertTrue("Genymotion not accessible, check the GENYMOTION_PATH variable", exitCode == GMTool.RETURN_NO_ERROR)
+    }
+
+
+    @Test
+    public void checkGMToolNotFoundError() {
+        project.genymotion.config.genymotionPath = "nowhere"
+        project.genymotion.config.abortOnError = true
+
+        try {
+            GMTool.usage()
+            fail("FileNotFoundException expected")
+        } catch (Exception e) {
+            assertEquals(GMTool.GENYMOTION_PATH_ERROR_MESSAGE, e.message)
+        }
     }
 
 

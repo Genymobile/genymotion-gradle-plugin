@@ -116,6 +116,8 @@ class GMTool {
     public static final int RETURN_LICENSE_REQUIRED        = 13
     public static final int RETURN_COMMAND_NOT_FOUND_UNIX  = 127
 
+    static String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the Genymotion path with the genymotion.config.genymotionPath parameter."
+
 
     static def usage(){
         return cmd([GENYTOOL, "-h"]){line, count ->
@@ -882,22 +884,26 @@ class GMTool {
 
             println cleanCommand(toExec)
         }
-        Process p = toExec.execute()
-        StringBuffer error = new StringBuffer()
-        StringBuffer out = new StringBuffer()
-        p.consumeProcessOutput(out, error)
+        try {
+            Process p = toExec.execute()
+            StringBuffer error = new StringBuffer()
+            StringBuffer out = new StringBuffer()
+            p.consumeProcessOutput(out, error)
 
-        p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
+            p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
 
-        if(verbose || GENYMOTION_CONFIG.verbose){
-            println "out:" + out.toString()
+            if(verbose || GENYMOTION_CONFIG.verbose){
+                println "out:" + out.toString()
+            }
+
+            out.eachLine {line, count ->
+                c(line, count)
+            }
+
+            return handleExitValue(p.exitValue(), error)
+        } catch (IOException e) {
+            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE)
         }
-
-        out.eachLine {line, count ->
-            c(line, count)
-        }
-
-        return handleExitValue(p.exitValue(), error)
     }
 
     /**
@@ -928,6 +934,9 @@ class GMTool {
     static def handleExitValue(int exitValue, StringBuffer error) {
         if(exitValue == RETURN_NO_ERROR){
             //do nothing
+        } else if(exitValue == RETURN_COMMAND_NOT_FOUND_UNIX){
+            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE)
+
         } else {
             if(GENYMOTION_CONFIG.abortOnError){
                 throw new GMToolException("GMTool command failed. Error code: $exitValue." + error.toString())
