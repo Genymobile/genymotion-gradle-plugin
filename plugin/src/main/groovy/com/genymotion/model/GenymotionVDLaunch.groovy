@@ -21,6 +21,7 @@ package main.groovy.com.genymotion.model
 
 import groovy.transform.CompileStatic
 import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.tools.Tools
 
 @CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
@@ -83,7 +84,28 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     public void checkParams() {
+        checkNameAndTemplate()
+        checkPaths()
+    }
 
+    def checkPaths() {
+
+        if((name = Tools.checkFilesExist(pushBefore)) != true)
+            throw new FileNotFoundException("The file $name on pushBefore instruction for the device ${this.name} is not found.")
+
+        if((name = Tools.checkFilesExist(pushAfter)) != true)
+            throw new FileNotFoundException("The file $name on pushAfter instruction for the device ${this.name} is not found.")
+
+        if((name = Tools.checkFilesExist(flash)) != true)
+            throw new FileNotFoundException("The file $name on flash instruction for the device ${this.name} is not found.")
+
+        if((name = Tools.checkFilesExist(install)) != true)
+            throw new FileNotFoundException("The file $name on install instruction for the device ${this.name} is not found.")
+
+        return true
+    }
+
+    public void checkNameAndTemplate() {
         deviceExists = GMTool.isDeviceCreated(name)
         templateExists = GMTool.isTemplateExists(template)
 

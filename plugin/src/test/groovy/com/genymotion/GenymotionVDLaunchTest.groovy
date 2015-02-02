@@ -2,7 +2,9 @@ package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.model.GenymotionVDLaunch
 import main.groovy.com.genymotion.tools.GMTool
-import org.junit.*
+import org.junit.BeforeClass
+import org.junit.Ignore
+import org.junit.Test
 
 import static org.junit.Assert.*
 
@@ -61,5 +63,61 @@ class GenymotionVDLaunchTest {
         assertTrue(device.isRunning())
     }
 
+    @Test
+    public void canCheckPaths(){
+        def vd = new GenymotionVDLaunch("device_name")
+        vd.pushBefore = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
+        vd.pushAfter = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
+                        "res/test/test.zip":"/sdcard/Downloads/", "res/test/test2.zip":"/sdcard/Downloads/"]
+        vd.install = "res/test/test.txt"
+        vd.flash = "res/test/test.txt"
+
+        assertTrue(vd.checkPaths())
+
+
+        vd = new GenymotionVDLaunch("device_name")
+        vd.pushBefore = ["res/test/test.txt", "NOPE", "res/test/test.zip", "res/test/test2.zip"]
+        try {
+            vd.checkPaths()
+            fail("Expected NotFoundException to be thrown")
+        } catch (Exception e) {
+            assert e instanceof FileNotFoundException
+            assert e.message == "The file NOPE on pushBefore instruction for the device ${vd.name} is not found."
+        }
+
+
+        vd = new GenymotionVDLaunch("device_name")
+        vd.pushAfter = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
+                        "res/test/test.zip":"/sdcard/Downloads/", "NOPE":"/sdcard/Downloads/"]
+        try {
+            vd.checkPaths()
+            fail("Expected NotFoundException to be thrown")
+        } catch (Exception e) {
+            assert e instanceof FileNotFoundException
+            assert e.message == "The file NOPE on pushAfter instruction for the device ${vd.name} is not found."
+        }
+
+
+        vd = new GenymotionVDLaunch("device_name")
+        vd.install = "NOPE"
+        try {
+            vd.checkPaths()
+            fail("Expected NotFoundException to be thrown")
+        } catch (Exception e) {
+            assert e instanceof FileNotFoundException
+            assert e.message == "The file NOPE on install instruction for the device ${vd.name} is not found."
+        }
+
+
+        vd = new GenymotionVDLaunch("device_name")
+        vd.flash = "NOPE"
+        try {
+            vd.checkPaths()
+            fail("Expected NotFoundException to be thrown")
+        } catch (Exception e) {
+            assert e instanceof FileNotFoundException
+            assert e.message == "The file NOPE on flash instruction for the device ${vd.name} is not found."
+        }
+    }
 
 }
