@@ -73,8 +73,6 @@ class GenymotionTasksTest {
         //we test if the device is running
         assertEquals(GenymotionVirtualDevice.STATE_ON, device.state)
 
-        //TODO test push, install, flash
-
         GMTool.stopDevice(vdName)
         GMTool.deleteDevice(vdName)
     }
