@@ -1,6 +1,7 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.model.GenymotionVDLaunch
+import main.groovy.com.genymotion.model.VDLaunchCall
 import main.groovy.com.genymotion.tools.GMTool
 import org.junit.BeforeClass
 import org.junit.Ignore
@@ -8,7 +9,8 @@ import org.junit.Test
 
 import static org.junit.Assert.*
 
-class GenymotionVDLaunchTest {
+@Ignore
+class VDLaunchCallTest {
 
     @BeforeClass
     public static void setUpClass() {
@@ -118,6 +120,23 @@ class GenymotionVDLaunchTest {
             assert e instanceof FileNotFoundException
             assert e.message == "The file NOPE on flash instruction for the device ${vd.name} is not found."
         }
+    }
+
+    @Test
+    public void canSetProductFlavor(){
+        VDLaunchCall vd = new VDLaunchCall("device")
+
+        vd.productFlavors "NONO"
+        assert vd.productFlavors == ["NONO"]
+
+        vd.productFlavors = ["NONO", "NINI"]
+        assert vd.productFlavors == ["NONO", "NINI"]
+
+        vd.productFlavors "NONO", "NINI"
+        assert vd.productFlavors == ["NONO", "NINI"]
+
+        vd.productFlavors = null
+        assert vd.productFlavors == []
     }
 
 }

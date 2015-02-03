@@ -19,12 +19,13 @@
 
 package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.tools.AndroidPluginTools
-import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.model.GenymotionConfig
 import main.groovy.com.genymotion.model.VDLaunchCall
 import main.groovy.com.genymotion.tasks.GenymotionFinishTask
 import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
+import main.groovy.com.genymotion.tools.AndroidPluginTools
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.tools.GMToolException
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -64,11 +65,11 @@ class GenymotionPluginExtension {
     }
 
     def checkParams(){
-        //TODO Check all the Genymotion configuration and fire Exceptions if needed
 
-        //check similar names
-        //Check if the flavors entered are good?
-        //check params types
+        //Check if the flavors entered exist
+        checkProductFlavors()
+
+        //check device params
         deviceLaunches.each {
             it.checkParams()
         }
@@ -77,7 +78,28 @@ class GenymotionPluginExtension {
         GMTool.usage()
     }
 
+    public void checkProductFlavors() {
+        def androidFlavors = project.android.productFlavors*.name
 
+        deviceLaunches.each {
+            for(String flavor in it.productFlavors){
+
+                if(flavor == null){
+                    if(project.genymotion.config.abortOnError)
+                        throw new GMToolException("You entered a null product flavor on device $it.name. Please remove it to be able to continue the job")
+                    else
+                        print "You entered a null product flavor on device $it.name. It will be ignored."
+
+                } else if (!androidFlavors.contains(flavor)){
+                    if(project.genymotion.config.abortOnError)
+                        throw new GMToolException("Product flavor $flavor on device $it.name does not exists.")
+                    else
+                        print "Product flavor $flavor does not exists. It will be ignored."
+                }
+            }
+
+        }
+    }
     /**
      * Task management
      */

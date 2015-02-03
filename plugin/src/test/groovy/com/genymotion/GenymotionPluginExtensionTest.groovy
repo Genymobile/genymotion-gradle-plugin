@@ -19,8 +19,9 @@
 
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.*
+import main.groovy.com.genymotion.GenymotionGradlePlugin
 import main.groovy.com.genymotion.tools.AndroidPluginTools
+import main.groovy.com.genymotion.tools.GMToolException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
@@ -139,6 +140,62 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    public void canCheckProductFlavorsAndAbort(){
+        project = getAndroidProject()
+        project.android.productFlavors{
+            flavor1
+            flavor2
+        }
+
+        def wrongFlavor = "NONONO"
+        String device2 = "device2"
+
+        project.genymotion.config.abortOnError = true
+        project.genymotion.devices {
+            "device1" {}
+            "$device2" {
+                productFlavors wrongFlavor
+            }
+        }
+
+        try {
+            project.evaluate()
+            fail("Excpeted GMToolException")
+        } catch (Exception e) {
+            assert e.cause.causes[0] instanceof GMToolException
+            assert e.cause.causes[0].message == "Product flavor $wrongFlavor on device $device2 does not exists."
+        }
+    }
+
+    @Test
+    public void canCheckNullProductFlavorsAndAbort(){
+        project = getAndroidProject()
+        project.android.productFlavors{
+            flavor1
+            flavor2
+        }
+
+        def wrongFlavor = "NONONO"
+        String device2 = "device2"
+
+        project.genymotion.config.abortOnError = true
+        project.genymotion.devices {
+            "device1" {}
+            "$device2" {
+                productFlavors "flavor1", null
+            }
+        }
+
+        try {
+            project.evaluate()
+            fail("Excpeted GMToolException")
+        } catch (Exception e) {
+            assert e.cause.causes[0] instanceof GMToolException
+            assert e.cause.causes[0].message == "You entered a null product flavor on device $device2. Please remove it to be able to continue the job"
+        }
+    }
+
+    @Test
     public void canGetGenymotionDevices(){
 
         project = TestTools.init()
@@ -178,9 +235,6 @@ class GenymotionPluginExtensionTest {
         project.afterEvaluate {
             println "TASKS AFTER "+project.tasks
         }
-//        project.beforeEvaluate {
-//            println "TASKS BEFORE w"+project.tasks
-//        }
 
         return project
     }

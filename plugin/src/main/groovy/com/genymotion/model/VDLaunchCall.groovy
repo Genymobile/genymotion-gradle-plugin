@@ -20,12 +20,11 @@
 package main.groovy.com.genymotion.model
 
 import groovy.transform.CompileStatic
-import main.groovy.com.genymotion.model.GenymotionVDLaunch
 
 @CompileStatic
 class VDLaunchCall extends GenymotionVDLaunch{
 
-    def productFlavors
+    List<String> productFlavors
 
     VDLaunchCall(String name) {
         super(name)
@@ -36,26 +35,48 @@ class VDLaunchCall extends GenymotionVDLaunch{
     }
 
     boolean hasFlavor(String flavor){
-
-        if(productFlavors instanceof String)
-            productFlavors == flavor
-
-        else if(productFlavors instanceof ArrayList<String>)
-            (productFlavors as ArrayList).contains(flavor) //Fix for CompileStatic
-
-        else
-            true
+        productFlavors.contains(flavor)
     }
 
     public void setProductFlavors(String... flavors){
-        if(flavors == null || flavors.size() == 0)
-            return
-        else if(flavors.size() == 1)
-            productFlavors = flavors[0]
+        if(flavors?.size() == 1)
+            productFlavors = [flavors[0]]
         else {
             productFlavors = []
-            (productFlavors as ArrayList).addAll(flavors) //Fix for CompileStatic
+            productFlavors.addAll(flavors)
+        }
+    }
+
+    public void setProductFlavors(String flavor){
+        if(flavor == null){
+            productFlavors = []
+            return
         }
 
+        productFlavors = [flavor]
     }
+
+    public void setProductFlavors(Collection<String> flavors){
+        if(flavors == null){
+            productFlavors = []
+            return
+        }
+
+        productFlavors = []
+        productFlavors.addAll(flavors)
+    }
+
+
+    public void productFlavors(String flavor){
+        setProductFlavors(flavor)
+    }
+
+    public void productFlavors(String... flavors){
+        setProductFlavors(flavors)
+    }
+
+    public void productFlavors(Collection<String> flavors){
+        setProductFlavors(flavors)
+    }
+
 }
