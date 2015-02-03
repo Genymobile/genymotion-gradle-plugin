@@ -35,6 +35,8 @@ class VDLaunchCall extends GenymotionVDLaunch{
     }
 
     boolean hasFlavor(String flavor){
+        if(flavor == null || productFlavors == null) //if there is no flavor, we consider it as true
+            return true
         productFlavors.contains(flavor)
     }
 
