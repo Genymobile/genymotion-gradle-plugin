@@ -89,18 +89,19 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     def checkPaths() {
+        def file
 
-        if((name = Tools.checkFilesExist(pushBefore)) != true)
-            throw new FileNotFoundException("The file $name on pushBefore instruction for the device ${this.name} is not found.")
+        if((file = Tools.checkFilesExist(pushBefore)) != true)
+            throw new FileNotFoundException("The file $file on pushBefore instruction for the device $name is not found.")
 
-        if((name = Tools.checkFilesExist(pushAfter)) != true)
-            throw new FileNotFoundException("The file $name on pushAfter instruction for the device ${this.name} is not found.")
+        if((file = Tools.checkFilesExist(pushAfter)) != true)
+            throw new FileNotFoundException("The file $file on pushAfter instruction for the device $name is not found.")
 
-        if((name = Tools.checkFilesExist(flash)) != true)
-            throw new FileNotFoundException("The file $name on flash instruction for the device ${this.name} is not found.")
+        if((file = Tools.checkFilesExist(flash)) != true)
+            throw new FileNotFoundException("The file $file on flash instruction for the device $name is not found.")
 
-        if((name = Tools.checkFilesExist(install)) != true)
-            throw new FileNotFoundException("The file $name on install instruction for the device ${this.name} is not found.")
+        if((file = Tools.checkFilesExist(install)) != true)
+            throw new FileNotFoundException("The file $file on install instruction for the device $name is not found.")
 
         return true
     }
