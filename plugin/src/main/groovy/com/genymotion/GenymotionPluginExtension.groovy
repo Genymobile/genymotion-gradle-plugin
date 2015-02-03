@@ -46,13 +46,11 @@ class GenymotionPluginExtension {
         this.deviceLaunches = deviceLaunches
     }
 
-    //TODO handle declaration when there is no closure after name (ex: genymotion.devices{"name"})
     def devices(Closure closure) {
         deviceLaunches.configure(closure)
     }
 
     def getDevices(String flavor = null){
-
         if(flavor == null)
             return deviceLaunches.toList()
 
