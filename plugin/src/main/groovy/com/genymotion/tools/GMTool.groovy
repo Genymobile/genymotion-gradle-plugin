@@ -863,7 +863,7 @@ class GMTool {
      * @param verbose true if you want to print each line returned by the prompt
      * @param c the closure to implement after the call
      */
-    static def cmd(def command, boolean verbose=true, Closure c){
+    static def cmd(def command, boolean verbose=false, Closure c){
 
         def toExec = command
 
