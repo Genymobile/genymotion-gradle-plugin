@@ -19,16 +19,12 @@
 
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.model.GenymotionConfig
 import main.groovy.com.genymotion.model.GenymotionVDLaunch
 import main.groovy.com.genymotion.model.GenymotionVirtualDevice
+import main.groovy.com.genymotion.tools.GMTool
 import org.gradle.api.Project
-import org.junit.After
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.*
 
 import static org.junit.Assert.*
 

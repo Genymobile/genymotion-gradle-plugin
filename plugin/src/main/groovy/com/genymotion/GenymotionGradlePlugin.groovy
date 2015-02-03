@@ -19,18 +19,17 @@
 
 package main.groovy.com.genymotion
 
-import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.model.GenymotionConfig
 import main.groovy.com.genymotion.model.VDLaunchCall
 import main.groovy.com.genymotion.model.VDLaunchCallFactory
 import main.groovy.com.genymotion.tasks.GenymotionFinishTask
 import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
-import org.gradle.api.Project
+import main.groovy.com.genymotion.tools.GMTool
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.internal.reflect.Instantiator
 
 import javax.inject.Inject
-
 
 class GenymotionGradlePlugin implements Plugin<Project> {
 

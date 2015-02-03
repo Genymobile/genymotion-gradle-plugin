@@ -19,23 +19,13 @@
 
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.model.GenymotionVDLaunch
-import main.groovy.com.genymotion.model.VDLaunchCall
-import main.groovy.com.genymotion.tools.GMToolException
-import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.model.GenymotionVirtualDevice
-import org.junit.After
-import org.junit.BeforeClass
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.Before
+import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.tools.GMToolException
 import org.gradle.api.Project
+import org.junit.*
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.fail
+import static org.junit.Assert.*
 
 class GMToolTest {
 
