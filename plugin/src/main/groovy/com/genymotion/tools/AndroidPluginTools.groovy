@@ -25,18 +25,27 @@ import org.gradle.api.Project
 class AndroidPluginTools {
 
     public static final DEFAULT_ANDROID_TASK = "connectedAndroidTest"
+    public static final ASSEMBLE_PREFIX = "assemble"
     public static final DEFAULT_PROPERTIES = "local.properties"
 
-    public static String getFlavorTaskName(String flavor) {
+
+    public static String getFlavorTestTaskName(String flavor) {
         DEFAULT_ANDROID_TASK + flavor.capitalize() + "Debug"
     }
 
-    public static String getFlavorFinishTask(String flavor) {
-        GenymotionGradlePlugin.TASK_FINISH + flavor.capitalize()
+    public static String getFlavorAssembleDebugTaskName(String flavor = null) {
+        if(flavor == null)
+            return ASSEMBLE_PREFIX + "Debug"
+        else
+            return ASSEMBLE_PREFIX + flavor.capitalize() + "Debug"
     }
 
-    public static String getFlavorLaunchTask(String flavor) {
-        GenymotionGradlePlugin.TASK_LAUNCH + flavor.capitalize()
+    public static String getFlavorFinishTask(String suffix) {
+        GenymotionGradlePlugin.TASK_FINISH + suffix.capitalize()
+    }
+
+    public static String getFlavorLaunchTask(String suffix) {
+        GenymotionGradlePlugin.TASK_LAUNCH + suffix.capitalize()
     }
 
     static boolean hasAndroidPlugin(Project project) {

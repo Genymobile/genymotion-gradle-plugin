@@ -113,6 +113,11 @@ class GenymotionPluginExtensionTest {
 
         assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
         assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
+
+        def debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName()
+        def debugTask = project.tasks.getByName(debugTaskName) //throw exception if task not found
+        def taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
+        assert debugTask.dependsOn.contains(taskLaunch)
     }
 
     @Test
@@ -128,14 +133,24 @@ class GenymotionPluginExtensionTest {
         String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
 
         project.android.productFlavors.all { flavor ->
-            String flavorTaskName = AndroidPluginTools.getFlavorTaskName(flavor.name)
+            String flavorTaskName = AndroidPluginTools.getFlavorTestTaskName(flavor.name)
             def task = project.tasks.getByName(flavorTaskName) //throw exception if task not found
 
-            Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavor.name))
-            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavor.name))
+            Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavorTaskName))
+            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavorTaskName))
 
-            assertTrue("Launch task not injected in flavor $flavor.name", task.dependsOn.contains(launchTask))
-            assertTrue("Finish task not injected in flavor $flavor.name", task.finalizedBy.getDependencies().contains(finishTask))
+            assert task.dependsOn.contains(launchTask)
+            assert task.finalizedBy.getDependencies().contains(finishTask)
+
+            def debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor1")
+            def debugTask = project.tasks.getByName(debugTaskName) //throw exception if task not found
+            def taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
+            assert debugTask.dependsOn.contains(taskLaunch)
+
+            debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor2")
+            debugTask = project.tasks.getByName(debugTaskName) //throw exception if task not found
+            taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
+            assert debugTask.dependsOn.contains(taskLaunch )
         }
     }
 

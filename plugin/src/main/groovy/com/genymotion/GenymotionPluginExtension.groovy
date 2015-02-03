@@ -116,7 +116,6 @@ class GenymotionPluginExtension {
             if(taskLaunch instanceof ArrayList){
                 taskLaunch.each {
                     injectTasksInto(it)
-                    //TODO fix to customize the launch/finish tasks name
                 }
             }
 
@@ -129,10 +128,12 @@ class GenymotionPluginExtension {
                     //if there are flavors
                     if(project.android.productFlavors.size() > 0) {
                         project.android.productFlavors.all { flavor ->
-                            injectTasksInto(AndroidPluginTools.getFlavorTaskName(flavor.name), flavor.name)
+                            injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
+                            injectIntoDebugTask(flavor.name)
                         }
                     } else {
                         injectTasksInto(AndroidPluginTools.DEFAULT_ANDROID_TASK)
+                        injectIntoDebugTask()
                     }
 
                 } else {
@@ -157,16 +158,31 @@ class GenymotionPluginExtension {
         }
     }
 
-    void injectTasksInto(String taskName, String flavor = null) throws UnknownTaskException{
+    public void injectIntoDebugTask(String flavorName = null) {
+        String taskName = AndroidPluginTools.getFlavorAssembleDebugTaskName(flavorName)
         def theTask = project.tasks.getByName(taskName)
-        println "Adding genymotion dependency to " + taskName
+
+        Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(taskName), GenymotionLaunchTask)
+        if(flavorName != null)
+            launchTask.flavor = flavorName
+
+        theTask.dependsOn(launchTask)
+
+        if(project.genymotion.config.verbose)
+            println "Adding genymotion dependency to " + taskName
+    }
+
+    public void injectTasksInto(String taskName, String flavor = null) throws UnknownTaskException{
+        def theTask = project.tasks.getByName(taskName)
+        if(project.genymotion.config.verbose)
+            println "Adding genymotion dependency to " + taskName
 
         if(flavor?.trim()){
-            Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(flavor), GenymotionLaunchTask)
+            Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(taskName), GenymotionLaunchTask)
             launchTask.flavor = flavor
             theTask.dependsOn(launchTask)
 
-            Task finishTask = project.tasks.create(AndroidPluginTools.getFlavorFinishTask(flavor), GenymotionFinishTask)
+            Task finishTask = project.tasks.create(AndroidPluginTools.getFlavorFinishTask(taskName), GenymotionFinishTask)
             finishTask.flavor = flavor
             theTask.finalizedBy(finishTask)
 
