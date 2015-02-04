@@ -19,11 +19,11 @@
 
 package test.groovy.com.genymotion
 
-import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.model.GenymotionConfig
 import main.groovy.com.genymotion.model.GenymotionVDLaunch
-import org.gradle.testfixtures.ProjectBuilder
+import main.groovy.com.genymotion.tools.GMTool
 import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 
 class TestTools {
 
@@ -121,6 +121,9 @@ class TestTools {
         } catch (Exception e){
             println e
         }
+
+        //Delete temp folder
+        new File("temp").deleteDir()
     }
 
     static void recreatePulledDirectory() {

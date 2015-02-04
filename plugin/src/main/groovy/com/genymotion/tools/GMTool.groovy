@@ -54,7 +54,8 @@ class GMTool {
     private static final String PULL          = "pull"
     private static final String INSTALL       = "install"
     private static final String FLASH         = "flash"
-    private static final String LOGCAT        = "logcat"
+    private static final String LOGCAT_CLEAR  = "logcatclear"
+    private static final String LOGCAT_DUMP   = "logcatdump"
     private static final String ADBDISCONNECT = "adbdisconnect"
     private static final String ADBCONNECT    = "adbconnect"
     //config actions
@@ -837,12 +838,21 @@ class GMTool {
         }
     }
 
-    static def routeLogcat(GenymotionVirtualDevice device, path, boolean verbose=false){
-        return routeLogcat(device.name, path, verbose)
+    static def logcatClear(GenymotionVirtualDevice device, boolean verbose=false){
+        return logcatClear(device.name, verbose)
     }
 
-    static def routeLogcat(def deviceName, def path, boolean verbose=false){
-        return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, LOGCAT, path], verbose){line, count ->
+    static def logcatClear(def deviceName, boolean verbose=false){
+        return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, LOGCAT_CLEAR], verbose){line, count ->
+        }
+    }
+
+    static def logcatDump(GenymotionVirtualDevice device, path, boolean verbose=false){
+        return logcatDump(device.name, path, verbose)
+    }
+
+    static def logcatDump(def deviceName, def path, boolean verbose=false){
+        return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, LOGCAT_DUMP, path], verbose){line, count ->
         }
     }
 

@@ -264,6 +264,77 @@ class GMToolTest {
     }
 */
 
+    @Test
+    public void canLogcatClear() {
+        String name = TestTools.createADevice()
+        def exitCode = GMTool.startDevice(name)
+        assert exitCode == 0
+
+        boolean gotIt = false
+        String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
+        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true){line, count ->
+        }
+        String path = "temp/logcat.dump"
+        File file = new File(path)
+        file.delete()
+
+        GMTool.logcatDump(name, path, true)
+
+        file = new File(path)
+        assert file.exists()
+        file.eachLine {
+            if(it.contains(uniqueString))
+                gotIt = true
+        }
+        assert gotIt
+        file.delete()
+
+        exitCode = GMTool.logcatClear(name,true)
+        assert exitCode == 0
+
+        gotIt = false
+        GMTool.logcatDump(name, path)
+
+        file = new File(path)
+        assert file.exists()
+
+        file.eachLine {
+            if(it.contains(uniqueString))
+                gotIt = true
+        }
+
+        assert !gotIt
+    }
+
+    @Test
+    public void canLogcatDump() {
+        String name = TestTools.createADevice()
+        def exitCode = GMTool.startDevice(name)
+        assert exitCode == 0
+
+        String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
+        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true){line, count ->
+        }
+
+        String path = "temp/logcat.dump"
+
+        exitCode = GMTool.logcatDump(name,path, true)
+        assert exitCode == 0
+
+        boolean gotIt = false
+
+        File file = new File(path)
+        assert file.exists()
+
+        file.eachLine {
+            if(it.contains(uniqueString))
+                gotIt = true
+        }
+
+        assert gotIt
+    }
+
+
 
     @Test
     public void canInstallToDevice() {
@@ -271,7 +342,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         GMTool.installToDevice(name, "res/test/test.apk", true)
         boolean installed = false
@@ -279,7 +350,7 @@ class GMToolTest {
             if(line.contains("com.genymotion.test"))
                 installed = true
         }
-        assertTrue("Install failed", installed)
+        assert installed
     }
 
     @Test
