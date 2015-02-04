@@ -20,8 +20,8 @@
 package main.groovy.com.genymotion
 
 import main.groovy.com.genymotion.model.GenymotionConfig
-import main.groovy.com.genymotion.model.VDLaunchCall
-import main.groovy.com.genymotion.model.VDLaunchCallFactory
+import main.groovy.com.genymotion.model.VDLaunchDsl
+import main.groovy.com.genymotion.model.VDLaunchDslFactory
 import main.groovy.com.genymotion.tasks.GenymotionFinishTask
 import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
 import main.groovy.com.genymotion.tools.GMTool
@@ -47,7 +47,7 @@ class GenymotionGradlePlugin implements Plugin<Project> {
 
     void apply(Project project) {
 
-        def devicesLaunch = project.container(VDLaunchCall, new VDLaunchCallFactory(instantiator, project))
+        def devicesLaunch = project.container(VDLaunchDsl, new VDLaunchDslFactory(instantiator, project))
 
         project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch)
         project.genymotion.extensions.create('config', GenymotionConfig) //the extension name have to be different from the original nested element's name (receiver)

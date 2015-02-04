@@ -1,7 +1,7 @@
 package test.groovy.com.genymotion
 
 import main.groovy.com.genymotion.model.GenymotionVDLaunch
-import main.groovy.com.genymotion.model.VDLaunchCall
+import main.groovy.com.genymotion.model.VDLaunchDsl
 import main.groovy.com.genymotion.tools.GMTool
 import org.junit.BeforeClass
 import org.junit.Ignore
@@ -10,7 +10,7 @@ import org.junit.Test
 import static org.junit.Assert.*
 
 @Ignore
-class VDLaunchCallTest {
+class VDLaunchDslTest {
 
     @BeforeClass
     public static void setUpClass() {
@@ -124,7 +124,7 @@ class VDLaunchCallTest {
 
     @Test
     public void canSetProductFlavor(){
-        VDLaunchCall vd = new VDLaunchCall("device")
+        VDLaunchDsl vd = new VDLaunchDsl("device")
 
         vd.productFlavors "NONO"
         assert vd.productFlavors == ["NONO"]

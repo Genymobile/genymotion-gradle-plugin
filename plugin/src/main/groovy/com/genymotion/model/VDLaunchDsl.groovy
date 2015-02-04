@@ -22,16 +22,12 @@ package main.groovy.com.genymotion.model
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class VDLaunchCall extends GenymotionVDLaunch{
+class VDLaunchDsl extends GenymotionVDLaunch{
 
     List<String> productFlavors
 
-    VDLaunchCall(String name) {
+    VDLaunchDsl(String name) {
         super(name)
-    }
-
-    VDLaunchCall(Map params) {
-        super(params)
     }
 
     boolean hasFlavor(String flavor){

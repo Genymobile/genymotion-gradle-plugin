@@ -19,23 +19,22 @@
 
 package main.groovy.com.genymotion.model
 
-import main.groovy.com.genymotion.model.VDLaunchCall
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 import org.gradle.internal.reflect.Instantiator
 
-class VDLaunchCallFactory implements NamedDomainObjectFactory<VDLaunchCall> {
+class VDLaunchDslFactory implements NamedDomainObjectFactory<VDLaunchDsl> {
 
     final Instantiator instantiator
     final Project project
 
-    public VDLaunchCallFactory(Instantiator instantiator, Project project) {
+    public VDLaunchDslFactory(Instantiator instantiator, Project project) {
         this.instantiator = instantiator
         this.project = project
     }
 
     @Override
-    VDLaunchCall create(String name) {
-        return instantiator.newInstance(VDLaunchCall.class, name)
+    VDLaunchDsl create(String name) {
+        return instantiator.newInstance(VDLaunchDsl.class, name)
     }
 }

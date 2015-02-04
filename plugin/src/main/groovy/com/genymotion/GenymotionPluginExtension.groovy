@@ -20,7 +20,7 @@
 package main.groovy.com.genymotion
 
 import main.groovy.com.genymotion.model.GenymotionConfig
-import main.groovy.com.genymotion.model.VDLaunchCall
+import main.groovy.com.genymotion.model.VDLaunchDsl
 import main.groovy.com.genymotion.tasks.GenymotionFinishTask
 import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
 import main.groovy.com.genymotion.tools.AndroidPluginTools
@@ -38,7 +38,7 @@ class GenymotionPluginExtension {
 
     def genymotionConfig = new GenymotionConfig()
 
-    private final NamedDomainObjectContainer<VDLaunchCall> deviceLaunches
+    private final NamedDomainObjectContainer<VDLaunchDsl> deviceLaunches
 
     public GenymotionConfig currentConfiguration = null
 
