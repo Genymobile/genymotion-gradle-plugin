@@ -50,40 +50,6 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         super(name)
     }
 
-    GenymotionVDLaunch(Map params) {
-        super(params)
-
-        //if no params
-        if(!params) {
-            throw new IllegalArgumentException(INVALID_PARAMETER)
-        }
-
-        if(params.stopWhenFinish != null)
-            this.stopWhenFinish = params.stopWhenFinish
-        if(params.deleteWhenFinish != null)
-            this.deleteWhenFinish = params.deleteWhenFinish
-        if(params.start != null)
-            this.start = params.start
-        if(params.template != null && params.template?.toString()?.trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
-            this.template = params.template
-        if(params.pushBefore)
-            this.pushBefore = params.pushBefore
-        if(params.pullBefore)
-            this.pullBefore = params.pullBefore
-        if(params.pushAfter)
-            this.pushAfter = params.pushAfter
-        if(params.pullAfter)
-            this.pullAfter = params.pullAfter
-        if(params.install)
-            this.install = params.install
-        if(params.flash)
-            this.flash = params.flash
-        if(params.logcat != null && params.logcat?.toString()?.trim()) //quick fix, safe navigation (?) buggy with groovy 2.3.6 when CompileStatic
-            this.logcat = params.logcat
-
-        checkParams()
-    }
-
     public void checkParams() {
         checkNameAndTemplate()
         checkPaths()
