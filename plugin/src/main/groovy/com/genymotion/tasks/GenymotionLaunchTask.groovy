@@ -19,9 +19,10 @@
 
 package main.groovy.com.genymotion.tasks
 
+import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.tools.GMToolException
-import main.groovy.com.genymotion.model.GenymotionVirtualDevice
+import main.groovy.com.genymotion.tools.Log
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -35,7 +36,7 @@ class GenymotionLaunchTask extends DefaultTask {
         project.genymotion.processConfiguration()
 
         if (project.genymotion.config.verbose)
-            println("Starting devices")
+            Log.info("Starting devices")
 
         def devices = project.genymotion.getDevices(flavor)
 
@@ -58,7 +59,7 @@ class GenymotionLaunchTask extends DefaultTask {
         }
 
         if (project.genymotion.config.verbose) {
-            println("-- Running devices --")
+            Log.debug("-- Running devices --")
             GMTool.getRunningDevices(true)
         }
     }
@@ -68,7 +69,7 @@ class GenymotionLaunchTask extends DefaultTask {
             return
 
         if (project.genymotion.config.verbose)
-            println("Starting ${device.name}")
+            Log.debug("Starting ${device.name}")
 
         try {
             if (device.name && runningDevices != null && !runningDevices?.contains(device.name)) {
@@ -93,7 +94,7 @@ class GenymotionLaunchTask extends DefaultTask {
     }
 
     public void abortLaunch(device) {
-        println "An error occured. Stoping and deleting all launched devices, if needed."
+        Log.error("An error occured. Stoping and deleting all launched devices, if needed.")
         project.genymotion.getDevices(flavor).each() {
             //we close the opened devices
             device.stopWhenFinish()

@@ -225,7 +225,7 @@ class GMTool {
             command.push(OPT_USERNAME_CONFIG + username)
             command.push(OPT_PASSWORD_CONFIG + password)
         } else if((username != null || password != null) && verbose)
-            println "username and password need to be both transmitted. Ignoring these both arguments"
+            Log.error("username and password need to be both transmitted. Ignoring these both arguments")
 
         if (statistics != null)
             command.push(OPT_STATISTICS + statistics)
@@ -882,7 +882,7 @@ class GMTool {
                 toExec.addAll(1, [VERBOSE])
 
 
-            println cleanCommand(toExec)
+            Log.debug(cleanCommand(toExec))
         }
         try {
             Process p = toExec.execute()
@@ -893,7 +893,7 @@ class GMTool {
             p.waitForOrKill(GENYMOTION_CONFIG.processTimeout)
 
             if(verbose || GENYMOTION_CONFIG.verbose){
-                println "out:" + out.toString()
+                Log.debug("out:" + out.toString())
             }
 
             out.eachLine {line, count ->
@@ -941,7 +941,7 @@ class GMTool {
             if(GENYMOTION_CONFIG.abortOnError){
                 throw new GMToolException("GMTool command failed. Error code: $exitValue." + error.toString())
             } else {
-                println "error: "+error.toString()
+                Log.error("error: "+error.toString())
             }
         }
         exitValue

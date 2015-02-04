@@ -20,6 +20,7 @@
 package main.groovy.com.genymotion.model
 
 import main.groovy.com.genymotion.tools.AndroidPluginTools
+import main.groovy.com.genymotion.tools.Log
 import org.gradle.api.Project
 
 class GenymotionConfig {
@@ -129,11 +130,11 @@ class GenymotionConfig {
                     }
                 }
             } else {
-                println "$fromFile file is missing, impossible to load configuration"
+                Log.warn("$fromFile file is missing, impossible to load configuration")
                 return false
             }
         } else {
-            println "$fromFile file is missing, impossible to load configuration"
+            Log.warn("$fromFile file is missing, impossible to load configuration")
             return false
         }
         return true

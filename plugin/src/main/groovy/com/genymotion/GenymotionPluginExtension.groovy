@@ -26,6 +26,7 @@ import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
 import main.groovy.com.genymotion.tools.AndroidPluginTools
 import main.groovy.com.genymotion.tools.GMTool
 import main.groovy.com.genymotion.tools.GMToolException
+import main.groovy.com.genymotion.tools.Log
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -34,6 +35,7 @@ import org.gradle.api.UnknownTaskException
 class GenymotionPluginExtension {
 
     final Project project
+
     def genymotionConfig = new GenymotionConfig()
 
     private final NamedDomainObjectContainer<VDLaunchCall> deviceLaunches
@@ -86,13 +88,13 @@ class GenymotionPluginExtension {
                     if(project.genymotion.config.abortOnError)
                         throw new GMToolException("You entered a null product flavor on device $it.name. Please remove it to be able to continue the job")
                     else
-                        print "You entered a null product flavor on device $it.name. It will be ignored."
+                        Log.warn("You entered a null product flavor on device $it.name. It will be ignored.")
 
                 } else if (!androidFlavors.contains(flavor)){
                     if(project.genymotion.config.abortOnError)
                         throw new GMToolException("Product flavor $flavor on device $it.name does not exists.")
                     else
-                        print "Product flavor $flavor does not exists. It will be ignored."
+                        Log.warn("Product flavor $flavor does not exists. It will be ignored.")
                 }
             }
 
@@ -135,7 +137,7 @@ class GenymotionPluginExtension {
                     }
 
                 } else {
-                    println "$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, genymotionLaunch/Finish tasks are not injected and has to be launched manually."
+                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
                     return
                 }
             }
@@ -145,14 +147,15 @@ class GenymotionPluginExtension {
                 injectTasksInto(taskLaunch)
             }
 
+            //else, there is no task indicated
             else {
-                println "not found, genymotionLaunch/Finish tasks are not injected and has to be launched manually."
+                Log.warn("No destination task found, genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
                 return
             }
 
 
         } catch (UnknownTaskException e) {
-            println "Task $taskLaunch not found. genymotionLaunch/Finish tasks are not injected and has to be launched manually."
+            Log.error("Task $taskLaunch not found. genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
         }
     }
 
@@ -167,13 +170,13 @@ class GenymotionPluginExtension {
         theTask.dependsOn(launchTask)
 
         if(project.genymotion.config.verbose)
-            println "Adding genymotion dependency to " + taskName
+            Log.info("Adding genymotion dependency to " + taskName)
     }
 
     public void injectTasksInto(String taskName, String flavor = null) throws UnknownTaskException{
         def theTask = project.tasks.getByName(taskName)
         if(project.genymotion.config.verbose)
-            println "Adding genymotion dependency to " + taskName
+            Log.info("Adding genymotion dependency to " + taskName)
 
         if(flavor?.trim()){
             Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(taskName), GenymotionLaunchTask)

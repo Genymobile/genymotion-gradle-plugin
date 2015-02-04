@@ -20,6 +20,7 @@
 package main.groovy.com.genymotion.tasks
 
 import main.groovy.com.genymotion.tools.GMToolException
+import main.groovy.com.genymotion.tools.Log
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -30,7 +31,7 @@ class GenymotionFinishTask extends DefaultTask {
     @TaskAction
     def exec() {
 
-        println("Finishing devices")
+        Log.info("Finishing devices")
         //get the declared devices
         project.genymotion.getDevices(flavor).each(){
             processDeviceEnd(it)
@@ -38,7 +39,7 @@ class GenymotionFinishTask extends DefaultTask {
     }
 
     def processDeviceEnd(device) {
-        println("Finishing ${device.name}")
+        Log.info("Finishing ${device.name}")
         if (device.start) {
 
             try{
@@ -52,8 +53,8 @@ class GenymotionFinishTask extends DefaultTask {
             //if a gmtool command fail
             catch(Exception e){
                 e.printStackTrace()
-                println e.getMessage()
-                println "Stoping all launched devices and deleting when needed"
+                Log.error(e.getMessage())
+                Log.info("Stoping all launched devices and deleting when needed")
                 project.genymotion.getDevices(flavor).each() {
                     //we close the opened devices
                     device.stopWhenFinish()

@@ -21,6 +21,7 @@ package main.groovy.com.genymotion.model
 
 import groovy.transform.CompileStatic
 import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.tools.Log
 import main.groovy.com.genymotion.tools.Tools
 
 @CompileStatic
@@ -120,7 +121,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
             //if a template is declared
             if (template != null) {
-                println name + " already exists. A new device won't be created before launch and template is ignored"
+                Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
             }
         }
 
