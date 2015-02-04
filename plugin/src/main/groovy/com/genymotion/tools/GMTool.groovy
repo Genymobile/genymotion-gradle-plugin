@@ -914,10 +914,14 @@ class GMTool {
      * @return the same list, without the content of --password or -p options
      */
     static def cleanCommand(def list) {
-        def output = list.clone()
-        output.each(){
-            if(it?.contains(OPT_PASSWORD))
-               it = OPT_PASSWORD+"*****"
+        def output = []
+        for(String entry in list){
+            if(entry.contains(OPT_PASSWORD) && entry.split("=").size() > 1)
+                output << OPT_PASSWORD+"*****"
+            else if(entry.contains(OPT_PASSWORD_CONFIG) && entry.split("=").size() > 1)
+                output << OPT_PASSWORD_CONFIG+"*****"
+            else
+                output << entry
         }
         return output
     }

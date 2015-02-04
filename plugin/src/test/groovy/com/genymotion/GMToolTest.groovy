@@ -454,6 +454,12 @@ class GMToolTest {
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
 
+    @Test
+    public void canHidePassword() {
+        def command = ["ok", "nok", "--password=toto", "password=tutu", "--password=", "password="]
+        def result = GMTool.cleanCommand(command)
+        assert result == ["ok", "nok", "--password=*****", "password=*****", "--password=", "password="]
+    }
 
     @Test
     public void canLoginAuto() {
