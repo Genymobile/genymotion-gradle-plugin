@@ -43,6 +43,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     def install
     def flash
     String logcat
+    boolean clearLogAfterBoot = true
     def deleteWhenFinish = null
     def stopWhenFinish = null
 
@@ -175,9 +176,18 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         GMTool.pullFromDevice(this, pullAfter)
     }
 
-    protected def logcat() {
-        if(logcat)
-            GMTool.routeLogcat(this, logcat)
+    protected def logcatClear() {
+        GMTool.logcatClear(this)
+    }
+
+    protected def logcatClearIfNeeded() {
+        if(logcat?.trim() && clearLogAfterBoot)
+            GMTool.logcatClear(this)
+    }
+
+    protected def logcatDump() {
+        if(logcat?.trim())
+            GMTool.logcatDump(this, logcat)
     }
 
     static String getRandomName(String extension=null) {

@@ -263,6 +263,70 @@ class GenymotionGradlePluginTest {
     }
 
 
+    @Test
+    public void canLogcat(){
+        String vdName = TestTools.createADevice()
+
+        String path = "temp/${vdName}.logcat"
+
+        project.genymotion.devices {
+            "$vdName" {
+                logcat "temp/${vdName}.logcat"
+            }
+        }
+
+        def (boolean clearedAfterBoot, boolean logcatDumped) = runAndCheckLogcat(path)
+
+        assert clearedAfterBoot
+        assert logcatDumped
+
+    }
+
+    @Test
+    public void canLogcatAndAvoidLogcatClearAfterBoot(){
+        String vdName = TestTools.createADevice()
+
+        String path = "temp/${vdName}.logcat"
+
+        project.genymotion.devices {
+            "$vdName" {
+                logcat "temp/${vdName}.logcat"
+                clearLogAfterBoot false
+            }
+        }
+
+        def (boolean clearedAfterBoot, boolean logcatDumped) = runAndCheckLogcat(path)
+
+        assert !clearedAfterBoot
+        assert logcatDumped
+
+    }
+
+    public List runAndCheckLogcat(String path) {
+        project.evaluate()
+        project.tasks.genymotionLaunch.exec()
+
+        //we add a line into logcat
+        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
+        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true) { line, count ->
+        }
+
+        project.tasks.genymotionFinish.exec()
+
+        //we reach the file created
+        File file = new File(path)
+
+        boolean clearedAfterBoot = true
+        boolean logcatDumped = false
+
+        file.eachLine {
+            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<"))
+                clearedAfterBoot = false
+            if (it.contains(uniqueString))
+                logcatDumped = true
+        }
+        [clearedAfterBoot, logcatDumped]
+    }
 
     @Test
     public void canSetDeleteWhenFinish(){

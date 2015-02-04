@@ -76,7 +76,8 @@ class GenymotionLaunchTask extends DefaultTask {
                 device.checkAndEdit()
                 device.start()
             }
-            device.logcat()
+
+            device.logcatClearIfNeeded()
             device.flash()
             device.install()
             device.pushBefore()

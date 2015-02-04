@@ -44,6 +44,7 @@ class GenymotionFinishTask extends DefaultTask {
 
             try{
                 if(device.isRunning()){
+                    device.logcatDump()
                     device.pushAfter()
                     device.pullAfter()
                     device.stopWhenFinish()
