@@ -19,23 +19,16 @@
 
 package test.groovy.com.genymotion
 
-import org.junit.Ignore
+import main.groovy.com.genymotion.GenymotionPluginExtension
+import main.groovy.com.genymotion.model.GenymotionConfig
+import main.groovy.com.genymotion.model.GenymotionVirtualDevice
 import main.groovy.com.genymotion.tasks.GenymotionFinishTask
 import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
-import main.groovy.com.genymotion.model.GenymotionConfig
 import main.groovy.com.genymotion.tools.GMTool
-import main.groovy.com.genymotion.model.GenymotionVirtualDevice
-import main.groovy.com.genymotion.GenymotionPluginExtension
-
-import org.junit.After
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
 import org.gradle.api.Project
-
+import org.junit.*
 
 import static org.junit.Assert.*
-import static org.junit.Assert.assertNotNull
 
 class GenymotionGradlePluginTest {
 
@@ -68,11 +61,11 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canConfigGenymotion(){
-        String path = "TEST"
+        String path = "TEST/"
         String previousPath = project.genymotion.config.genymotionPath
         project.genymotion.config.genymotionPath = path
 
-        assertEquals(path, project.genymotion.config.genymotionPath)
+        assert path == project.genymotion.config.genymotionPath
 
         project.genymotion.config.genymotionPath = previousPath
     }
@@ -83,10 +76,8 @@ class GenymotionGradlePluginTest {
         project = TestTools.init()
         String path = "/path/to/test"
         project.genymotion.config.genymotionPath = path
-        project.evaluate()
-        project.genymotion.processConfiguration()
 
-        assertEquals(path+File.separator, project.genymotion.config.genymotionPath)
+        assert path+File.separator == project.genymotion.config.genymotionPath
 
         project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
 

@@ -137,17 +137,17 @@ class GenymotionTasksTest {
         String path = "res/test/default.properties"
 
         File f = new File(path)
-        assertTrue("Config file does not exists to test login feature. Set the path to be able to run the test", f.exists())
+        assert f.exists(), "Config file does not exists to test login feature. Set the path to be able to run the test"
 
         project.genymotion.config.fromFile = path
         project.genymotion.config.persist = true
 
         //we set the config file
-        project.tasks.genymotionLaunch.exec()
+        project.genymotion.processConfiguration()
 
         GenymotionConfig config = GMTool.getConfig(true)
 
-        assertEquals(project.genymotion.config.username, config.username)
+        assert project.genymotion.config.username == config.username
 
         //TODO test license registration
     }
