@@ -79,6 +79,9 @@ class GenymotionPluginExtension {
     }
 
     public void checkProductFlavors() {
+        if(!AndroidPluginTools.hasAndroidPlugin(project))
+            return
+
         def androidFlavors = project.android.productFlavors*.name
 
         deviceLaunches.each {
