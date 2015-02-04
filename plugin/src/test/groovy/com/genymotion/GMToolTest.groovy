@@ -246,7 +246,7 @@ class GMToolTest {
         TestTools.createAllDevices()
 
         TestTools.DEVICES.each(){
-            TestTools.startDevice(it.name)
+            GMTool.startDevice(it.key)
         }
 
         GMTool.stopAllDevices()
