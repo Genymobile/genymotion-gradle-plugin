@@ -32,8 +32,6 @@ class GenymotionLaunchTask extends DefaultTask {
 
     @TaskAction
     def exec() {
-        //we configure the environment
-        project.genymotion.processConfiguration()
 
         if (project.genymotion.config.verbose)
             Log.info("Starting devices")
