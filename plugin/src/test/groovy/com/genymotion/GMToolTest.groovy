@@ -30,6 +30,7 @@ import static org.junit.Assert.*
 class GMToolTest {
 
     Project project
+    def genymotionPath = null
 
     @BeforeClass
     public static void setUpClass() {
@@ -52,6 +53,7 @@ class GMToolTest {
 
     @Test
     public void checkGMToolNotFoundError() {
+        this.genymotionPath = project.genymotion.config.genymotionPath
         project.genymotion.config.genymotionPath = "nowhere"
         project.genymotion.config.abortOnError = true
 
@@ -491,6 +493,8 @@ class GMToolTest {
 
     @After
     public void finishTest(){
+        if(genymotionPath != null)
+            project.genymotion.config.genymotionPath = genymotionPath
         TestTools.cleanAfterTests()
     }
 
