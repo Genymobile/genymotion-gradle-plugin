@@ -29,12 +29,12 @@ class VDLaunchCallTest {
         }
         project.genymotion.checkParams()
 
-        assertNotNull(project.genymotion.devices)
-        assertFalse(project.genymotion.devices[0].stopWhenFinish)
-        assertNull(project.genymotion.devices[0].deleteWhenFinish)
-        assertEquals(TestTools.DEVICES."Nexus10-junit", project.genymotion.devices[0].template)
-        assertTrue(project.genymotion.devices[0].templateExists)
-        assertFalse(project.genymotion.devices[0].deviceExists)
+        assert project.genymotion.devices != null
+        assert project.genymotion.devices[0].stopWhenFinish == false
+        assert project.genymotion.devices[0].deleteWhenFinish == null
+        assert TestTools.DEVICES."Nexus10-junit" == project.genymotion.devices[0].template
+        assert project.genymotion.devices[0].templateExists
+        assert project.genymotion.devices[0].deviceExists == false
     }
 
     @Test
@@ -48,12 +48,12 @@ class VDLaunchCallTest {
         }
         project.genymotion.checkParams()
 
-        assertNotNull(project.genymotion.devices)
-        assertNull(project.genymotion.devices[0].stopWhenFinish)
-        assertTrue(project.genymotion.devices[0].deleteWhenFinish)
-        assertEquals(TestTools.DEVICES."Nexus10-junit", project.genymotion.devices[0].template)
-        assertTrue(project.genymotion.devices[0].templateExists)
-        assertFalse(project.genymotion.devices[0].deviceExists)
+        assert project.genymotion.devices != null
+        assert project.genymotion.devices[0].stopWhenFinish == null
+        assert project.genymotion.devices[0].deleteWhenFinish == true
+        assert TestTools.DEVICES."Nexus10-junit" == project.genymotion.devices[0].template
+        assert project.genymotion.devices[0].templateExists
+        assert project.genymotion.devices[0].deviceExists == false
     }
 
     @Test
