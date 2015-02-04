@@ -23,6 +23,10 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: uri('../repo'))
+
+            pom.artifactId = 'gradlePlugin'
+            pom.groupId = project.group
+            pom.version = project.version
         }
     }
 }
