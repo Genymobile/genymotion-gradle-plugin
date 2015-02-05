@@ -338,10 +338,7 @@ class GMTool {
 
     static boolean isDeviceRunning(String name, boolean verbose=false) {
         def devices = getRunningDevices(verbose, false, true)
-        if(devices)
-            devices?.contains(name)
-
-        return false
+        return devices?.contains(name)
     }
 
     private static def parseList(int count, String line, boolean nameOnly) {
