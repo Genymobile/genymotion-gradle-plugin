@@ -36,7 +36,7 @@ class GMTool {
     private static final String LOGZIP        = "logzip"
     //admin actions
     private static final String ADMIN         = "admin"
-    private static final String LIST          = "list" //"VBoxManage list "
+    private static final String LIST          = "list"
     private static final String TEMPLATES     = "templates"
     private static final String CREATE        = "create"
     private static final String EDIT          = "edit"
