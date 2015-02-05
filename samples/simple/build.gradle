@@ -57,9 +57,6 @@ genymotion {
 //        "nexus 7" {
 //            template "Google Nexus 10..."
 //            productFlavors "flavor1", "flavor2"
-//        }
-    }
-}
 
 //            pushBefore: [<PATH_ORIG>: [PATH_DEST], <PATH_ORIG>: [PATH_DEST]] default PATH_DEST: /sdcard/Downloads //push file before tests
 //            pullBefore: [<PATH_ORIG> <PATH_DEST>, <PATH_ORIG> <PATH_DEST>]                                        //pull file before tests
@@ -78,3 +75,7 @@ genymotion {
 //            navbarVisible: true                                                                                   //display navbar or not
 //            nbCpu: 0                                                                                              //set number of CPUs
 //            ram: 0                                                                                                //set amount of RAM
+//        }
+    }
+}
+
