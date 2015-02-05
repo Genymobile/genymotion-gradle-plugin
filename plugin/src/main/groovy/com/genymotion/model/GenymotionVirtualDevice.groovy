@@ -51,16 +51,6 @@ class GenymotionVirtualDevice {
             fillFromDetails()
     }
 
-
-    GenymotionVirtualDevice(Map params) {
-        if(params)
-            init(params.name, params.density, params.width, params.height, params.virtualKeyboard, params.navbarVisible, params.nbCpu, params.ram)
-    }
-
-    GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
-        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
-    }
-
     void init(def name, def density, def width, def height, def virtualKeyboard, def navbar, def nbCpu, def ram) {
         if(name?.trim())
             this.name = name

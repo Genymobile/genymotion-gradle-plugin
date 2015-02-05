@@ -37,6 +37,4 @@ class GenymotionTemplate {
     boolean virtualKeyboard = true
     boolean navbarVisible = true
 
-    GenymotionTemplate() {
-    }
 }
