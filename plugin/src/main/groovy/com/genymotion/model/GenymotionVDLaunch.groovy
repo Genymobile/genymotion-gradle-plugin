@@ -86,9 +86,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         else if (deviceExists) {
 
             //if a template is declared
-            if (template != null) {
+            if (template != null)
                 Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
-            }
         }
 
         //if declared template exists
