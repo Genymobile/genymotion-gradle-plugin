@@ -855,7 +855,7 @@ class GMTool {
      * @param verbose true if you want to print each line returned by the prompt
      */
     static def cmd(def command, boolean verbose=false) {
-
+        cmd(command, verbose, null)
     }
 
     /**
