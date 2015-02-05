@@ -853,9 +853,23 @@ class GMTool {
      *
      * @param command the command line to execute. It can be a String or a table
      * @param verbose true if you want to print each line returned by the prompt
+     */
+    static def cmd(def command, boolean verbose=false) {
+
+    }
+
+    /**
+     * Fire a command line and process the result.
+     * This function runs a closure for each line returned by the prompt.
+     * The closure contains the parameters:
+     * - <b>line</b> (containing the line's text)
+     * - <b>count</b> (index of the line)
+     *
+     * @param command the command line to execute. It can be a String or a table
+     * @param verbose true if you want to print each line returned by the prompt
      * @param c the closure to implement after the call
      */
-    static def cmd(def command, boolean verbose=false, Closure c=null) {
+    static def cmd(def command, boolean verbose=false, Closure c) {
 
         if(GENYMOTION_CONFIG == null)
             return
