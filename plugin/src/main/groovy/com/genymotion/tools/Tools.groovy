@@ -33,6 +33,13 @@ class Tools {
         return true
     }
 
+    /**
+     * Transforming String and Maps to ArrayList<String>
+     * For the Map, the key is considered by the function, the value is ignored
+     *
+     * @param input your input
+     * @return a list of String forged with the input param
+     */
     public static ArrayList<String> getStringTable(def input)  {
 
         def values = []
