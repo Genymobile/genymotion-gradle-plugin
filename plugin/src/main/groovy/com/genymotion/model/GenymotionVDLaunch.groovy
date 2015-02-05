@@ -27,8 +27,7 @@ import main.groovy.com.genymotion.tools.Tools
 @CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
-    private static String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
-    private static String INVALID_PARAMETER = "You need to specify an already created device name or a valid template to declare a device"
+    public static final String INVALID_PARAMETER = "You need to specify an already created device name or a valid template to declare a device"
 
     protected def templateExists = null
     protected def deviceExists = null
@@ -188,17 +187,5 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     protected def logcatDump() {
         if(logcat?.trim())
             GMTool.logcatDump(this, logcat)
-    }
-
-    static String getRandomName(String extension=null) {
-        int nameLength = 3
-        String name = ""
-        Random r = new Random()
-        nameLength.times(){
-            name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
-        }
-        if(extension)
-            name += extension
-        name
     }
 }

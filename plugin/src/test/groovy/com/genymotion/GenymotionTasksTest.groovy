@@ -88,9 +88,9 @@ class GenymotionTasksTest {
     @Test
     public void throwsWhenCommandError() {
 
-        String deviceToStop = GenymotionVDLaunch.getRandomName()
-        String deviceToDelete = GenymotionVDLaunch.getRandomName()
-        String deviceToThrowError = GenymotionVDLaunch.getRandomName()
+        String deviceToStop = TestTools.getRandomName()
+        String deviceToDelete = TestTools.getRandomName()
+        String deviceToThrowError = TestTools.getRandomName()
 
         project.genymotion.devices {
             "$deviceToStop" {

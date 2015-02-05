@@ -27,7 +27,9 @@ import org.gradle.testfixtures.ProjectBuilder
 
 class TestTools {
 
-    static def DEVICES = [
+    public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+
+    public static def DEVICES = [
             "Nexus7-junit":"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
             "Nexus10-junit":"Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
             "Nexus4-junit":"Google Nexus 4 - 4.3 - API 18 - 768x1280"
@@ -73,7 +75,7 @@ class TestTools {
     }
 
     static def declareADetailedDevice(Project project, boolean stop=true) {
-        String vdName = GenymotionVDLaunch.getRandomName("-junit")
+        String vdName = getRandomName("-junit")
         String densityName = "mdpi"
         int heightInt = 480
         int widthInt = 320
@@ -157,5 +159,17 @@ class TestTools {
             if(config.license && registerLicense)
                 GMTool.setLicense(config.license, null, null, true)
         }
+    }
+
+    static String getRandomName(String extension=null) {
+        int nameLength = 3
+        String name = ""
+        Random r = new Random()
+        nameLength.times(){
+            name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
+        }
+        if(extension)
+            name += extension
+        name
     }
 }
