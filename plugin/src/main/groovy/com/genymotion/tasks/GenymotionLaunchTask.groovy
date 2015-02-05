@@ -38,7 +38,7 @@ class GenymotionLaunchTask extends DefaultTask {
 
         def devices = project.genymotion.getDevices(flavor)
 
-        if(devices.size() == 0)
+        if(devices?.size() == 0)
             return
 
         def runningDevices = []
