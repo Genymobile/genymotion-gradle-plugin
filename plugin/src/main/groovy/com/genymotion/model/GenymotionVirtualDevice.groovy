@@ -24,8 +24,8 @@ import main.groovy.com.genymotion.tools.GMTool
 
 class GenymotionVirtualDevice {
 
-    static String STATE_ON = "On"
-    static String STATE_OFF = "Off"
+    static final String STATE_ON = "On"
+    static final String STATE_OFF = "Off"
 
     String name
     String androidVersion
