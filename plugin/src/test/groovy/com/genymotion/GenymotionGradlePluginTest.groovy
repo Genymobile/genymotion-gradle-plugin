@@ -90,7 +90,7 @@ class GenymotionGradlePluginTest {
         assertEquals(0, project.genymotion.devices.size())
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = GMToolException.class)
     public void throwsWhenAddDeviceWithoutNameAndTemplate() {
 
         project.genymotion.devices {
@@ -99,7 +99,7 @@ class GenymotionGradlePluginTest {
         project.genymotion.checkParams()
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = GMToolException.class)
     public void throwsWhenAddDeviceWithNameNotCreated() {
 
         project.genymotion.devices {
@@ -108,7 +108,7 @@ class GenymotionGradlePluginTest {
         project.genymotion.checkParams()
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = GMToolException.class)
     public void throwsWhenAddDeviceWithTemplateNotCreated() {
 
         project.genymotion.devices {
@@ -119,7 +119,7 @@ class GenymotionGradlePluginTest {
         project.genymotion.checkParams()
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = GMToolException.class)
     public void throwsWhenAddDeviceWithNameAndTemplateNotCreated() {
 
         project.genymotion.devices {

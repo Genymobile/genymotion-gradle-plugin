@@ -21,6 +21,7 @@ package main.groovy.com.genymotion.model
 
 import groovy.transform.CompileStatic
 import main.groovy.com.genymotion.tools.GMTool
+import main.groovy.com.genymotion.tools.GMToolException
 import main.groovy.com.genymotion.tools.Log
 import main.groovy.com.genymotion.tools.Tools
 
@@ -77,7 +78,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         //if name & template are null or not existing
         if (!deviceExists && !templateExists) {
-            throw new IllegalArgumentException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
+            throw new GMToolException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
         }
 
         //if declared device name exists
