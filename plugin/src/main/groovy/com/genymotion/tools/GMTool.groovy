@@ -280,7 +280,7 @@ class GMTool {
         def devices = []
 
         cmd([GENYTOOL, ADMIN, LIST], verbose){line, count ->
-            def device = parseList(count, line, nameOnly)
+            def device = parseListLine(count, line, nameOnly)
             if(device)
                 devices.add(device)
         }
@@ -299,7 +299,7 @@ class GMTool {
         def devices = []
 
         cmd([GENYTOOL, ADMIN, LIST, OPT_RUNNING], verbose){line, count ->
-            def device = parseList(count, line, nameOnly)
+            def device = parseListLine(count, line, nameOnly)
             if(device)
                 devices.add(device)
         }
@@ -318,7 +318,7 @@ class GMTool {
         def devices = []
 
         cmd([GENYTOOL, ADMIN, LIST, OPT_OFF], verbose){line, count ->
-            def device = parseList(count, line, nameOnly)
+            def device = parseListLine(count, line, nameOnly)
             if(device)
                 devices.add(device)
         }
@@ -341,7 +341,7 @@ class GMTool {
         return devices?.contains(name)
     }
 
-    private static def parseList(int count, String line, boolean nameOnly) {
+    private static def parseListLine(int count, String line, boolean nameOnly) {
 
         //we skip the first 2 lines
         if(count < 2)
