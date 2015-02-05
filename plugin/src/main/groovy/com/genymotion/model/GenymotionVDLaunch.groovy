@@ -69,8 +69,6 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         if((file = Tools.checkFilesExist(install)) != true)
             throw new FileNotFoundException("The file $file on install instruction for the device $name is not found.")
-
-        return true
     }
 
     public void checkNameAndTemplate() {
