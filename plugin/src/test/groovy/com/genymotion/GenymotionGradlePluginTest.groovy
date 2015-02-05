@@ -308,8 +308,7 @@ class GenymotionGradlePluginTest {
 
         //we add a line into logcat
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true) { line, count ->
-        }
+        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
 
         project.tasks.genymotionFinish.exec()
 

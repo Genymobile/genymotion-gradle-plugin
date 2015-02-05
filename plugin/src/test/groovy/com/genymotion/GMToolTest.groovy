@@ -272,8 +272,7 @@ class GMToolTest {
 
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
-        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true){line, count ->
-        }
+        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
         String path = "temp/logcat.dump"
         File file = new File(path)
         file.delete()
@@ -313,8 +312,7 @@ class GMToolTest {
         assert exitCode == 0
 
         String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
-        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true){line, count ->
-        }
+        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
 
         String path = "temp/logcat.dump"
 
