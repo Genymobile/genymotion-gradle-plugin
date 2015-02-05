@@ -55,7 +55,7 @@ class GenymotionFinishTask extends DefaultTask {
             catch(Exception e){
                 e.printStackTrace()
                 Log.error(e.getMessage())
-                Log.info("Stoping all launched devices and deleting when needed")
+                Log.info("Stopping all launched devices and deleting when needed")
                 project.genymotion.getDevices(flavor).each() {
                     //we close the opened devices
                     device.stopWhenFinish()

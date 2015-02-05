@@ -93,7 +93,7 @@ class GenymotionLaunchTask extends DefaultTask {
     }
 
     public void abortLaunch(device) {
-        Log.error("An error occured. Stoping and deleting all launched devices, if needed.")
+        Log.error("An error occured. Stopping and deleting all launched devices, if needed.")
         project.genymotion.getDevices(flavor).each() {
             //we close the opened devices
             device.stopWhenFinish()
