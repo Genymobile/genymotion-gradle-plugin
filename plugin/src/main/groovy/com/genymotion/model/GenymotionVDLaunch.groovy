@@ -102,18 +102,23 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
 
         //if the configuration is different from the created device
-        if(!this.density?.equals(device.density) ||
-           !this.width?.equals(device.width) ||
-           !this.height?.equals(device.height) ||
-           !this.virtualKeyboard == device.virtualKeyboard ||
-           !this.navbarVisible == device.navbarVisible ||
-           !this.nbCpu?.equals(device.nbCpu) ||
-           !this.ram?.equals(device.ram)) {
+        if(isDifferentFrom(device)) {
 
             return GMTool.editDevice(this)
         }
 
-        false
+        return false
+    }
+
+    public boolean isDifferentFrom(GenymotionVirtualDevice device) {
+        
+        this.density != device.density                  ||
+        this.width != device.width                      ||
+        this.height != device.height                    ||
+        this.virtualKeyboard != device.virtualKeyboard  ||
+        this.navbarVisible != device.navbarVisible      ||
+        this.nbCpu != device.nbCpu                      ||
+        this.ram != device.ram
     }
 
     protected def start() {
