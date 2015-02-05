@@ -29,7 +29,7 @@ genymotion.config{
 //    proxyUsername          //definit le protocole du proxy, voir avec ced pour plus d infos
 //    proxyPassword          //definit le protocole du proxy, voir avec ced pour plus d infos
 //    virtualDevicePath     //set le dossier ou sont stockées les configs
-//    sdkPath                //set le dossier du sdk alternatif
+//    androidSdkPath                //set le dossier du sdk alternatif
 //    useCustomSdk          //utilise le sdk alternatif ou non (maybe accept true|false)
 //    screenCapturePath     //set le dossier de stockage des screenshots
 //

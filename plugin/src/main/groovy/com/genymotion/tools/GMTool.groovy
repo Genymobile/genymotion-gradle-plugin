@@ -212,7 +212,7 @@ class GMTool {
     }
 
 
-    static def setConfig(def statistics=null, String username=null, String password=null, def storeCredentials=null, def proxy=null, String proxyAddress=null, def proxyPort=null, def proxyAuth=null, String proxyUsername=null, String proxyPassword=null, String virtualDevicePath=null, String sdkPath=null, def useCustomSdk=null, String screenCapturePath=null, boolean verbose=false) {
+    static def setConfig(def statistics=null, String username=null, String password=null, def storeCredentials=null, def proxy=null, String proxyAddress=null, def proxyPort=null, def proxyAuth=null, String proxyUsername=null, String proxyPassword=null, String virtualDevicePath=null, String androidSdkPath=null, def useCustomSdk=null, String screenCapturePath=null, boolean verbose=false) {
 
         (username, password) = checkLogin(username, password)
 
@@ -243,8 +243,8 @@ class GMTool {
             command.push(OPT_PROXY_PASSWORD+proxyPassword)
         if(virtualDevicePath != null)
             command.push(OPT_VIRTUAL_DEVICE_PATH+virtualDevicePath)
-        if(sdkPath != null)
-            command.push(OPT_SDK_PATH+sdkPath)
+        if(androidSdkPath != null)
+            command.push(OPT_SDK_PATH+androidSdkPath)
         if(useCustomSdk != null)
             command.push(OPT_USE_CUSTOM_SDK+useCustomSdk)
         if(screenCapturePath != null)
