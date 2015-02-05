@@ -70,14 +70,14 @@ class GenymotionConfigTest {
         }
     }
 
-    private testEmptyFromValue(String valueName, def value){
+    private testEmptyFromValue(String valueName, def value) {
         GenymotionConfig config = new GenymotionConfig()
         config.setProperty(valueName, value)
         assertFalse("Should not be empty, $valueName not tested", config.isEmpty())
     }
 
     @Test
-    public void canConfigFromFile(){
+    public void canConfigFromFile() {
 
         project = TestTools.init()
         GenymotionConfig config = GMTool.getConfig(true)
@@ -122,9 +122,9 @@ class GenymotionConfigTest {
 
 
     @After
-    public void finishTest(){
+    public void finishTest() {
 
-        if(changedUser){
+        if(changedUser) {
             TestTools.setDefaultUser(true)
             changedUser = false
         }

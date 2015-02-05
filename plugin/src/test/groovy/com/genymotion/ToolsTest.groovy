@@ -41,7 +41,7 @@ class ToolsTest {
     }
 
     @Test
-    public void canGetStringTable(){
+    public void canGetStringTable() {
 
         def list = ["ok", "nok", "sorry"]
         def result = Tools.getStringTable(list)
@@ -60,7 +60,7 @@ class ToolsTest {
     }
 
     @Test
-    public void canCheckFileExists(){
+    public void canCheckFileExists() {
 
         def list = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
         assertTrue(Tools.checkFilesExist(list))
@@ -76,7 +76,7 @@ class ToolsTest {
     }
 
     @Test
-    public void canCheckFileDoesNotExists(){
+    public void canCheckFileDoesNotExists() {
 
         def list = ["res/test/test.txt", "NOPE", "res/test/test.zip", "res/test/test2.zip"]
         assertEquals("NOPE", Tools.checkFilesExist(list))
@@ -90,7 +90,7 @@ class ToolsTest {
     }
 
     @After
-    public void finishTest(){
+    public void finishTest() {
     }
 
 }

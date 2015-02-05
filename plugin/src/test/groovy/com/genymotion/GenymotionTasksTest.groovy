@@ -112,7 +112,7 @@ class GenymotionTasksTest {
             project.tasks.genymotionLaunch.exec()
             fail("Expected GMToolException to be thrown")
 
-        } catch (IOException e){ //TODO check how we can produce GMToolException instead of IOException with another command
+        } catch (IOException e) { //TODO check how we can produce GMToolException instead of IOException with another command
             //we fix the path
             project.genymotion.config.genymotionPath = goodPath
 
@@ -123,7 +123,7 @@ class GenymotionTasksTest {
 
     boolean devicesAreStopped(def devices) {
         def stoppedDevices = GMTool.getRunningDevices(false, false, true)
-        devices.each(){
+        devices.each() {
             if(!it.deleteWhenFinish && !stoppedDevices.contains(it.name))
                 return false
         }
@@ -154,7 +154,7 @@ class GenymotionTasksTest {
 
 
     @After
-    public void finishTest(){
+    public void finishTest() {
         TestTools.cleanAfterTests()
     }
 }

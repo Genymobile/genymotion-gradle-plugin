@@ -33,7 +33,7 @@ class GenymotionFinishTask extends DefaultTask {
 
         Log.info("Finishing devices")
         //get the declared devices
-        project.genymotion.getDevices(flavor).each(){
+        project.genymotion.getDevices(flavor).each() {
             processDeviceEnd(it)
         }
     }
@@ -43,7 +43,7 @@ class GenymotionFinishTask extends DefaultTask {
         if (device.start) {
 
             try{
-                if(device.isRunning()){
+                if(device.isRunning()) {
                     device.logcatDump()
                     device.pushAfter()
                     device.pullAfter()
@@ -52,7 +52,7 @@ class GenymotionFinishTask extends DefaultTask {
                 device.deleteWhenFinish()
             }
             //if a gmtool command fail
-            catch(Exception e){
+            catch(Exception e) {
                 e.printStackTrace()
                 Log.error(e.getMessage())
                 Log.info("Stopping all launched devices and deleting when needed")

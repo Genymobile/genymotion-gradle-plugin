@@ -26,7 +26,7 @@ class Tools {
 
         for (String path in values) {
             File f = new File(path)
-            if(!f.exists()){
+            if(!f.exists()) {
                 return path
             }
         }
@@ -39,9 +39,9 @@ class Tools {
 
         if (input instanceof String)
             values = [input]
-        else if(input instanceof Map){
+        else if(input instanceof Map) {
             values = input.keySet().toArray()
-        } else if(input instanceof ArrayList){
+        } else if(input instanceof ArrayList) {
             values = input
         }
 

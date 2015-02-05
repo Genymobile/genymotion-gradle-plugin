@@ -66,7 +66,7 @@ class VDLaunchDslTest {
     }
 
     @Test
-    public void canCheckPaths(){
+    public void canCheckPaths() {
         def vd = new GenymotionVDLaunch("device_name")
         vd.pushBefore = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
         vd.pushAfter = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
@@ -123,7 +123,7 @@ class VDLaunchDslTest {
     }
 
     @Test
-    public void canSetProductFlavor(){
+    public void canSetProductFlavor() {
         VDLaunchDsl vd = new VDLaunchDsl("device")
 
         vd.productFlavors "NONO"

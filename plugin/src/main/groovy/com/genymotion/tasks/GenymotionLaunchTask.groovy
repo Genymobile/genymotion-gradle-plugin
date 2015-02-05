@@ -52,7 +52,7 @@ class GenymotionLaunchTask extends DefaultTask {
         def virtualDevicesNames = virtualDevices*.name
 
         //process declared devices
-        devices.each(){
+        devices.each() {
             processDevice(it, runningDevices, virtualDevicesNames)
         }
 

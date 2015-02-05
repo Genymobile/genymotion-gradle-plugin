@@ -23,11 +23,11 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class GMToolException extends Exception {
-    GMToolException(){
+    GMToolException() {
         super()
     }
 
-    GMToolException(String message){
+    GMToolException(String message) {
         super(message)
     }
 }

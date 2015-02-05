@@ -41,7 +41,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canConfigFromLocalProperties(){
+    public void canConfigFromLocalProperties() {
 
         project = getAndroidProject()
         project.evaluate() //internal method but: "... it is actually an internal method and is therefore potentially subject to change in future releases. There will be a supported mechanism for doing this kind of thing in the near future." http://gradle.1045684.n5.nabble.com/why-doesn-t-gradle-project-afterEvaluate-execute-in-my-unit-test-td4512335.html
@@ -54,7 +54,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canInjectToCustomTask(){
+    public void canInjectToCustomTask() {
 
         project = TestTools.init()
 
@@ -73,7 +73,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canInjectToCustomTasks(){
+    public void canInjectToCustomTasks() {
 
         project = TestTools.init()
 
@@ -100,7 +100,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canInjectToDefaultAndroidTask(){
+    public void canInjectToDefaultAndroidTask() {
 
         project = getAndroidProject()
         project.genymotion.config.verbose = true
@@ -121,7 +121,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canInjectToVariants(){
+    public void canInjectToVariants() {
 
         project = getAndroidProject()
         project.android.productFlavors{
@@ -155,7 +155,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canCheckProductFlavorsAndAbort(){
+    public void canCheckProductFlavorsAndAbort() {
         project = getAndroidProject()
         project.android.productFlavors{
             flavor1
@@ -183,7 +183,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canCheckNullProductFlavorsAndAbort(){
+    public void canCheckNullProductFlavorsAndAbort() {
         project = getAndroidProject()
         project.android.productFlavors{
             flavor1
@@ -211,7 +211,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
-    public void canGetGenymotionDevices(){
+    public void canGetGenymotionDevices() {
 
         project = TestTools.init()
 
@@ -255,7 +255,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @After
-    public void finishTest(){
+    public void finishTest() {
         TestTools.cleanAfterTests()
     }
 }

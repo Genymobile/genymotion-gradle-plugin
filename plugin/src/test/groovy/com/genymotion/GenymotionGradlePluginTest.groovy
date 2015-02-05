@@ -60,7 +60,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canConfigGenymotion(){
+    public void canConfigGenymotion() {
         String path = "TEST/"
         String previousPath = project.genymotion.config.genymotionPath
         project.genymotion.config.genymotionPath = path
@@ -71,7 +71,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canFixGenymotionPath(){
+    public void canFixGenymotionPath() {
 
         project = TestTools.init()
         String path = "/path/to/test"
@@ -84,14 +84,14 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canAddNoDevice(){
+    public void canAddNoDevice() {
 
         project.genymotion.devices{}
         assertEquals(0, project.genymotion.devices.size())
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsWhenAddDeviceWithoutNameAndTemplate(){
+    public void throwsWhenAddDeviceWithoutNameAndTemplate() {
 
         project.genymotion.devices {
             "test" {pullAfter "buenos dias"}
@@ -100,7 +100,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsWhenAddDeviceWithNameNotCreated(){
+    public void throwsWhenAddDeviceWithNameNotCreated() {
 
         project.genymotion.devices {
             "DSFGTFSHgfgdfTFGQFQHG"{}
@@ -109,7 +109,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsWhenAddDeviceWithTemplateNotCreated(){
+    public void throwsWhenAddDeviceWithTemplateNotCreated() {
 
         project.genymotion.devices {
             "test" {
@@ -120,7 +120,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated(){
+    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated() {
 
         project.genymotion.devices {
             "DSFGTFSHTFGQFQHG" {
@@ -131,7 +131,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated2(){
+    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated2() {
 
         project.genymotion.devices {
             "DSFGTFSHTFGQFQHG" {
@@ -141,7 +141,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canAddDeviceToLaunchByName(){
+    public void canAddDeviceToLaunchByName() {
 
         String vdName = TestTools.createADevice()
 
@@ -155,7 +155,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canAddDeviceToLaunchByNameWithTemplate(){
+    public void canAddDeviceToLaunchByNameWithTemplate() {
 
         String vdName = TestTools.createADevice()
         String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
@@ -173,7 +173,7 @@ class GenymotionGradlePluginTest {
 
 
     @Test
-    public void canAddDeviceToLaunchByNameWithTemplateNotCreated(){
+    public void canAddDeviceToLaunchByNameWithTemplateNotCreated() {
 
         String vdName = TestTools.createADevice()
 
@@ -191,7 +191,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canAddDeviceToLaunchByTemplateWithNameNotCreated(){
+    public void canAddDeviceToLaunchByTemplateWithNameNotCreated() {
 
         project.genymotion.devices {
             "dfsdgffgdgqsdg"{
@@ -208,7 +208,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canAvoidDeviceToBeLaunched(){
+    public void canAvoidDeviceToBeLaunched() {
 
         project.genymotion.devices {
             "test" {
@@ -221,7 +221,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canEditDeviceBeforeLaunch(){
+    public void canEditDeviceBeforeLaunch() {
 
         String vdName = "OKOK-junit"
         def devices = GMTool.getAllDevices(true, false, true)
@@ -264,7 +264,7 @@ class GenymotionGradlePluginTest {
 
 
     @Test
-    public void canLogcat(){
+    public void canLogcat() {
         String vdName = TestTools.createADevice()
 
         String path = "temp/${vdName}.logcat"
@@ -283,7 +283,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canLogcatAndAvoidLogcatClearAfterBoot(){
+    public void canLogcatAndAvoidLogcatClearAfterBoot() {
         String vdName = TestTools.createADevice()
 
         String path = "temp/${vdName}.logcat"
@@ -328,7 +328,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canSetDeleteWhenFinish(){
+    public void canSetDeleteWhenFinish() {
         String vdName = TestTools.createADevice()
 
         project.genymotion.devices {
@@ -343,7 +343,7 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void canAvoidDeleteWhenFinish(){
+    public void canAvoidDeleteWhenFinish() {
         String vdName = TestTools.createADevice()
 
         project.genymotion.devices {
@@ -371,7 +371,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean installed = false
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
             if(line.contains("com.genymotion.test"))
                 installed = true
         }
@@ -392,7 +392,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int installed = 0
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
             if(line.contains("com.genymotion.test") || line.contains("com.genymotion.test2"))
                 installed++
         }
@@ -414,7 +414,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -435,7 +435,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -444,7 +444,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionFinish.exec()
 
         pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -465,7 +465,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -487,7 +487,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -496,7 +496,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionFinish.exec()
 
         pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -518,7 +518,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -541,7 +541,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -550,7 +550,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionFinish.exec()
 
         pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -571,7 +571,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -594,7 +594,7 @@ class GenymotionGradlePluginTest {
 
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -603,7 +603,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionFinish.exec()
 
         pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -669,7 +669,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -722,7 +722,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean flashed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
             if(line.contains("touchdown"))
                 flashed = true
         }
@@ -746,7 +746,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int flashed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
             if(line.contains("touchdown") || line.contains("touchdown2"))
                 flashed++
         }
@@ -754,7 +754,7 @@ class GenymotionGradlePluginTest {
     }
 
     @After
-    public void finishTest(){
+    public void finishTest() {
         TestTools.cleanAfterTests()
     }
 }

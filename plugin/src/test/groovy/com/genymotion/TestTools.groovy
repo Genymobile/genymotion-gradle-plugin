@@ -35,7 +35,7 @@ class TestTools {
             "Nexus4-junit":"Google Nexus 4 - 4.3 - API 18 - 768x1280"
     ]
 
-    static def init(){
+    static def init() {
 
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
@@ -101,7 +101,7 @@ class TestTools {
     }
 
 
-    static void cleanAfterTests(){
+    static void cleanAfterTests() {
 
         println "Cleaning after tests"
 
@@ -112,15 +112,15 @@ class TestTools {
             def pattern = ~/^.+?\-junit$/
             println devices
 
-            devices.each(){
-                if(pattern.matcher(it.name).matches()){
+            devices.each() {
+                if(pattern.matcher(it.name).matches()) {
                     println "Removing $it.name"
                     if(it.isRunning())
                         GMTool.stopDevice(it.name, true)
                     GMTool.deleteDevice(it.name, true)
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             println e
         }
 
@@ -139,7 +139,7 @@ class TestTools {
         tempDir.mkdirs()
     }
 
-    static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties"){
+    static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties") {
         // We get the APK signing properties from a file
         GenymotionConfig config = new GenymotionConfig()
         config.fromFile = path
@@ -150,10 +150,10 @@ class TestTools {
         return null
     }
 
-    static setDefaultUser(registerLicense = false){
+    static setDefaultUser(registerLicense = false) {
         GenymotionConfig config = getDefaultConfig()
 
-        if(config.username && config.password){
+        if(config.username && config.password) {
             GMTool.setConfig(config, true)
 
             if(config.license && registerLicense)
@@ -165,7 +165,7 @@ class TestTools {
         int nameLength = 3
         String name = ""
         Random r = new Random()
-        nameLength.times(){
+        nameLength.times() {
             name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
         }
         if(extension)

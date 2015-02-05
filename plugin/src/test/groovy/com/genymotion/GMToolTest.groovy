@@ -113,7 +113,7 @@ class GMToolTest {
         TestTools.DEVICES.each() { key, value ->
             boolean exists = false
             devices.each() {
-                if(it.name == key){
+                if(it.name == key) {
                     exists = true
                     return
                 }
@@ -245,7 +245,7 @@ class GMToolTest {
 
         TestTools.createAllDevices()
 
-        TestTools.DEVICES.each(){
+        TestTools.DEVICES.each() {
             GMTool.startDevice(it.key)
         }
 
@@ -344,7 +344,7 @@ class GMToolTest {
 
         GMTool.installToDevice(name, "res/test/test.apk", true)
         boolean installed = false
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
             if(line.contains("com.genymotion.test"))
                 installed = true
         }
@@ -364,7 +364,7 @@ class GMToolTest {
         GMTool.installToDevice(name, listOfApps, true)
 
         int installed = 0
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
             if(line.contains("com.genymotion.test") || line.contains("com.genymotion.test2"))
                 installed++
         }
@@ -383,7 +383,7 @@ class GMToolTest {
 
         GMTool.pushToDevice(name, "res/test/test.txt", true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -403,7 +403,7 @@ class GMToolTest {
         GMTool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -422,7 +422,7 @@ class GMToolTest {
         def destination = "/sdcard/"
         GMTool.pushToDevice(name, ["res/test/test.txt":destination], true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt"))
                 pushed = true
         }
@@ -442,7 +442,7 @@ class GMToolTest {
         GMTool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
@@ -498,7 +498,7 @@ class GMToolTest {
 
         GMTool.flashDevice(name, "res/test/test.zip", true)
         boolean flashed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
             if(line.contains("touchdown"))
                 flashed = true
         }
@@ -518,7 +518,7 @@ class GMToolTest {
         GMTool.flashDevice(name, listOfFiles, true)
 
         int flashed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true){line, count ->
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
             if(line.contains("touchdown") || line.contains("touchdown2"))
                 flashed++
         }
@@ -561,7 +561,7 @@ class GMToolTest {
 
 
     @After
-    public void finishTest(){
+    public void finishTest() {
         if(genymotionPath != null)
             project.genymotion.config.genymotionPath = genymotionPath
         TestTools.cleanAfterTests()

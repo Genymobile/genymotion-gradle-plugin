@@ -79,7 +79,7 @@ class GenymotionConfig {
                                      "persist":Boolean.class,
                                      "abortOnError":Boolean.class]
 
-    boolean isEmpty(){
+    boolean isEmpty() {
         if(statistics != null || username != null || password != null || storeCredentials != null || license != null ||
            proxy != null || proxyAddress != null || proxyPort != null || proxyAuth != null || proxyUsername != null ||
            proxyPassword != null || virtualDevicePath != null || androidSdkPath != null || useCustomSdk != null ||
@@ -97,12 +97,12 @@ class GenymotionConfig {
      *
      * @return returns true if the object has been field from a file or false otherwise
      */
-    def applyConfigFromFile(Project project){
+    def applyConfigFromFile(Project project) {
         // We get the APK signing properties from a file
         def Properties props = new Properties()
         def propFile
 
-        if(fromFile == null && project != null){
+        if(fromFile == null && project != null) {
             fromFile = AndroidPluginTools.DEFAULT_PROPERTIES
             propFile = new File(project.rootDir, fromFile)
         }
@@ -111,7 +111,7 @@ class GenymotionConfig {
         else
             return false
 
-        if (propFile.canRead()){
+        if (propFile.canRead()) {
             try {
                 props.load(new FileInputStream(propFile))
 
@@ -122,14 +122,14 @@ class GenymotionConfig {
                 CONFIG_PROPERTIES.each {key, value ->
                     def val = props.getProperty(CONFIG_PREFIX + key)
 
-                    if(val != null){
+                    if(val != null) {
                         if(value == Boolean.class)
                             val = val.toBoolean()
 
                         this.setProperty(key, val.asType(value))
                     }
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.warn("$fromFile file is missing, impossible to load configuration. " + e.message)
                 return false
             }
@@ -140,7 +140,7 @@ class GenymotionConfig {
         return true
     }
 
-    public void setGenymotionPath(String value){
+    public void setGenymotionPath(String value) {
         if (value != null && value != "" && value.getAt(value.size() - 1) != File.separator) {
             value += File.separator
         }

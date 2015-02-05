@@ -92,27 +92,27 @@ class GenymotionVirtualDevice {
         this.ram = ram
     }
 
-    protected def start(){
+    protected def start() {
         GMTool.startDevice(this)
     }
 
-    protected def restart(){
+    protected def restart() {
         GMTool.restartDevice(this)
     }
 
-    protected def stop(){
+    protected def stop() {
         GMTool.stopDevice(this)
     }
 
-    protected def reset(){
+    protected def reset() {
         GMTool.resetDevice(this)
     }
 
-    protected def adbdisconnect(){
+    protected def adbdisconnect() {
         GMTool.adbDisconnectDevice(this)
     }
 
-    protected def adbconnect(){
+    protected def adbconnect() {
         GMTool.adbConnectDevice(this)
     }
 
@@ -123,19 +123,19 @@ class GenymotionVirtualDevice {
 
 
 
-    boolean equals(GenymotionVirtualDevice other){
+    boolean equals(GenymotionVirtualDevice other) {
         (this.name == other.name)
     }
 
-    def fillFromDetails(boolean verbose=false){
+    def fillFromDetails(boolean verbose=false) {
         GMTool.getDevice(this, verbose)
     }
 
-    def update(){
+    def update() {
         GMTool.getDevice(this)
     }
 
-    boolean isRunning(update = true){
+    boolean isRunning(update = true) {
         if(update)
             this.update()
 

@@ -40,7 +40,7 @@ class GenymotionGradlePlugin implements Plugin<Project> {
     protected Instantiator instantiator
 
     @Inject
-    GenymotionGradlePlugin(Instantiator instantiator){
+    GenymotionGradlePlugin(Instantiator instantiator) {
         this.instantiator = instantiator
         //TODO check if gradle.services.get(Instantiator) is a better way to reach it
     }
@@ -52,11 +52,11 @@ class GenymotionGradlePlugin implements Plugin<Project> {
         project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch)
         project.genymotion.extensions.create('config', GenymotionConfig) //the extension name have to be different from the original nested element's name (receiver)
 
-        project.task(TASK_LAUNCH, type: GenymotionLaunchTask){
+        project.task(TASK_LAUNCH, type: GenymotionLaunchTask) {
             description 'Starting task for Genymotion plugin'
             group PLUGIN_GROUP
         }
-        project.task(TASK_FINISH, type: GenymotionFinishTask){
+        project.task(TASK_FINISH, type: GenymotionFinishTask) {
             description 'Finishing task for Genymotion plugin'
             group PLUGIN_GROUP
         }

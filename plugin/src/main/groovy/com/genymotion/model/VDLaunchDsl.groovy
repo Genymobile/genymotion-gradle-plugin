@@ -30,13 +30,13 @@ class VDLaunchDsl extends GenymotionVDLaunch{
         super(name)
     }
 
-    boolean hasFlavor(String flavor){
+    boolean hasFlavor(String flavor) {
         if(flavor == null || productFlavors == null) //if there is no flavor, we consider it as true
             return true
         productFlavors.contains(flavor)
     }
 
-    public void setProductFlavors(String... flavors){
+    public void setProductFlavors(String... flavors) {
         if(flavors?.size() == 1)
             productFlavors = [flavors[0]]
         else {
@@ -45,8 +45,8 @@ class VDLaunchDsl extends GenymotionVDLaunch{
         }
     }
 
-    public void setProductFlavors(String flavor){
-        if(flavor == null){
+    public void setProductFlavors(String flavor) {
+        if(flavor == null) {
             productFlavors = []
             return
         }
@@ -54,8 +54,8 @@ class VDLaunchDsl extends GenymotionVDLaunch{
         productFlavors = [flavor]
     }
 
-    public void setProductFlavors(Collection<String> flavors){
-        if(flavors == null){
+    public void setProductFlavors(Collection<String> flavors) {
+        if(flavors == null) {
             productFlavors = []
             return
         }
@@ -65,15 +65,15 @@ class VDLaunchDsl extends GenymotionVDLaunch{
     }
 
 
-    public void productFlavors(String flavor){
+    public void productFlavors(String flavor) {
         setProductFlavors(flavor)
     }
 
-    public void productFlavors(String... flavors){
+    public void productFlavors(String... flavors) {
         setProductFlavors(flavors)
     }
 
-    public void productFlavors(Collection<String> flavors){
+    public void productFlavors(Collection<String> flavors) {
         setProductFlavors(flavors)
     }
 

@@ -52,7 +52,7 @@ class GenymotionPluginExtension {
         deviceLaunches.configure(closure)
     }
 
-    def getDevices(String flavor = null){
+    def getDevices(String flavor = null) {
         if(flavor == null)
             return deviceLaunches.toList()
 
@@ -64,7 +64,7 @@ class GenymotionPluginExtension {
         return devices
     }
 
-    def checkParams(){
+    def checkParams() {
 
         //Check if the flavors entered exist
         checkProductFlavors()
@@ -85,15 +85,15 @@ class GenymotionPluginExtension {
         def androidFlavors = project.android.productFlavors*.name
 
         deviceLaunches.each {
-            for(String flavor in it.productFlavors){
+            for(String flavor in it.productFlavors) {
 
-                if(flavor == null){
+                if(flavor == null) {
                     if(project.genymotion.config.abortOnError)
                         throw new GMToolException("You entered a null product flavor on device $it.name. Please remove it to be able to continue the job")
                     else
                         Log.warn("You entered a null product flavor on device $it.name. It will be ignored.")
 
-                } else if (!androidFlavors.contains(flavor)){
+                } else if (!androidFlavors.contains(flavor)) {
                     if(project.genymotion.config.abortOnError)
                         throw new GMToolException("Product flavor $flavor on device $it.name does not exists.")
                     else
@@ -116,17 +116,17 @@ class GenymotionPluginExtension {
 
         try {
             //if taskLaunch is an array of tasks
-            if(taskLaunch instanceof ArrayList){
+            if(taskLaunch instanceof ArrayList) {
                 taskLaunch.each {
                     injectTasksInto(it)
                 }
             }
 
             //if the task is the default android test task
-            else if(taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK){
+            else if(taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK) {
 
                 //and we detect the android plugin or the default android test task
-                if(AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null){
+                if(AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null) {
 
                     //if there are flavors
                     if(project.android.productFlavors.size() > 0) {
@@ -181,7 +181,7 @@ class GenymotionPluginExtension {
         if(project.genymotion.config.verbose)
             Log.info("Adding genymotion dependency to " + taskName)
 
-        if(flavor?.trim()){
+        if(flavor?.trim()) {
             Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(taskName), GenymotionLaunchTask)
             launchTask.flavor = flavor
             theTask.dependsOn(launchTask)
@@ -205,9 +205,9 @@ class GenymotionPluginExtension {
         GenymotionConfig config = project.genymotion.config
         config.applyConfigFromFile(project)
 
-        if(!config.isEmpty()){
+        if(!config.isEmpty()) {
             //if we persists the data
-            if(config.persist){
+            if(config.persist) {
                 GMTool.setConfig(config, config.verbose)
             }
             //if we do not persist the data
@@ -232,7 +232,7 @@ class GenymotionPluginExtension {
 
     def endConfiguration() {
         //if we do not persist the data
-        if(!config.persist && this.currentConfiguration){
+        if(!config.persist && this.currentConfiguration) {
             GMTool.setConfig(this.currentConfiguration, this.genymotionConfig.verbose)
         }
     }
