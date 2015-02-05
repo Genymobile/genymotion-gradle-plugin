@@ -26,34 +26,34 @@ import org.gradle.api.Project
 class GenymotionConfig {
 
     //plugin config
-    def genymotionPath = ""           //set the Genymotion path to PATH
+    def genymotionPath = ""     //set the Genymotion path to PATH
 
     //genymotion config
-    def fromFile = null               //get the whole configuration from a file. The content get the priority to the .gradle file
+    def fromFile = null         //get the whole configuration from a file. The content get the priority to the .gradle file
 
     def statistics              //enable stats
     def username                //set the login
     def password                //set the password
-    def storeCredentials       //keep the configured account logged in genymotion
+    def storeCredentials        //keep the configured account logged in genymotion
     def license                 //set license
-    def proxy                   //active le proxy ou non (maybe accept true|false)
-    def proxyAddress           //set l'adresse du proxy a ADRESS
-    def proxyPort              //set the proxy port
-    def proxyAuth              //definit le protocole du proxy, voir avec ced pour plus d infos
-    def proxyUsername          //definit le protocole du proxy, voir avec ced pour plus d infos
-    def proxyPassword          //definit le protocole du proxy, voir avec ced pour plus d infos
-    def virtualDevicePath     //set le dossier ou sont stockées les configs
-    def androidSdkPath                 //set the Android SDK folder
-    def useCustomSdk          //utilise le sdk alternatif ou non (maybe accept true|false)
-    def screenCapturePath     //set le dossier de stockage des screenshots
+    def proxy                   //enables the proxy
+    def proxyAddress            //set the proxy address
+    def proxyPort               //set the proxy port
+    def proxyAuth               //set the proxy protocol
+    def proxyUsername           //set the proxy username
+    def proxyPassword           //set the proxy password
+    def virtualDevicePath       //set le dossier ou sont stockées les configs
+    def androidSdkPath          //set the Android SDK folder
+    def useCustomSdk            //enables the use of the Android sdk given by androidSdkPath
+    def screenCapturePath       //set le dossier de stockage des screenshots
 
     //task configs
-    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK     //define the task that depends on the genymotion launch task
-    boolean automaticLaunch = true               //enable or not the genymotion tasks injection
-    int processTimeout = 300000                  //timeout for all the processes launched in command line
-    boolean verbose = false                       //verbose mode
-    boolean persist = true                       //persist the configurations on genymotion or reset them back after the task execution
-    boolean abortOnError = true                 //abort the task execution if a GMTool error occurs
+    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on the genymotion launch task
+    boolean automaticLaunch = true                              //enable or not the genymotion tasks injection
+    int processTimeout = 300000                                 //timeout for all the processes launched in command line
+    boolean verbose = false                                     //verbose mode
+    boolean persist = true                                      //persist the configurations on genymotion or reset them back after the task execution
+    boolean abortOnError = true                                 //abort the task execution if a GMTool error occurs
 
     protected String CONFIG_PREFIX = "genymotion."
     private Map CONFIG_PROPERTIES = ["genymotionPath":String.class,
