@@ -43,7 +43,7 @@ class GenymotionConfig {
     def proxyUsername          //definit le protocole du proxy, voir avec ced pour plus d infos
     def proxyPassword          //definit le protocole du proxy, voir avec ced pour plus d infos
     def virtualDevicePath     //set le dossier ou sont stockées les configs
-    def sdkPath                //set le dossier du sdk alternatif
+    def androidSdkPath                 //set the Android SDK folder
     def useCustomSdk          //utilise le sdk alternatif ou non (maybe accept true|false)
     def screenCapturePath     //set le dossier de stockage des screenshots
 
@@ -69,7 +69,7 @@ class GenymotionConfig {
                                      "proxyUsername":String.class,
                                      "proxyPassword":String.class,
                                      "virtualDevicePath":String.class,
-                                     "sdkPath":String.class,
+                                     "androidSdkPath":String.class,
                                      "useCustomSdk":Boolean.class,
                                      "screenCapturePath":String.class,
                                      "taskLaunch":String.class,
@@ -82,7 +82,7 @@ class GenymotionConfig {
     boolean isEmpty(){
         if(statistics != null || username != null || password != null || storeCredentials != null || license != null ||
            proxy != null || proxyAddress != null || proxyPort != null || proxyAuth != null || proxyUsername != null ||
-           proxyPassword != null || virtualDevicePath != null || sdkPath != null || useCustomSdk != null ||
+           proxyPassword != null || virtualDevicePath != null || androidSdkPath != null || useCustomSdk != null ||
            screenCapturePath != null)
             return false
 

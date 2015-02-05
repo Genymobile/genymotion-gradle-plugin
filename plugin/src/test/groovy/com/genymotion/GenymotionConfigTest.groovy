@@ -63,7 +63,7 @@ class GenymotionConfigTest {
          "proxyUsername",
          "proxyPassword",
          "virtualDevicePath",
-         "sdkPath",
+         "androidSdkPath",
          "useCustomSdk",
          "screenCapturePath"].each {
             testEmptyFromValue(it, "notNull")
@@ -103,7 +103,7 @@ class GenymotionConfigTest {
         assert "testUsername"   == project.genymotion.config.proxyUsername
         assert "testPWD"        == project.genymotion.config.proxyPassword
         assert "testPath"       == project.genymotion.config.virtualDevicePath
-        assert "testPath"       == project.genymotion.config.sdkPath
+        assert "testPath"       == project.genymotion.config.androidSdkPath
         assert true             == project.genymotion.config.useCustomSdk
         assert "testPath"       == project.genymotion.config.screenCapturePath
         assert "testTask"       == project.genymotion.config.taskLaunch

@@ -192,7 +192,7 @@ class GMTool {
                         config.virtualDevicePath = info[1].trim()
                         break
                     case "sdk_path":
-                        config.sdkPath = info[1].trim()
+                        config.androidSdkPath = info[1].trim()
                         break
                     case "use_custom_sdk":
                         config.useCustomSdk = info[1].trim().toBoolean()
@@ -212,7 +212,7 @@ class GMTool {
     static def setConfig(GenymotionConfig config, boolean verbose=false){
         if(!config)
             return false
-        return setConfig(config.statistics, config.username, config.password, config.storeCredentials, config.proxy, config.proxyAddress, config.proxyPort, config.proxyAuth, config.proxyUsername, config.proxyPassword, config.virtualDevicePath, config.sdkPath, config.useCustomSdk, config.screenCapturePath, verbose)
+        return setConfig(config.statistics, config.username, config.password, config.storeCredentials, config.proxy, config.proxyAddress, config.proxyPort, config.proxyAuth, config.proxyUsername, config.proxyPassword, config.virtualDevicePath, config.androidSdkPath, config.useCustomSdk, config.screenCapturePath, verbose)
     }
 
 
