@@ -58,6 +58,8 @@ class Log {
             message.each {
                 result += it.toString()
             }
+        } else {
+            message.toString()
         }
     }
 }
