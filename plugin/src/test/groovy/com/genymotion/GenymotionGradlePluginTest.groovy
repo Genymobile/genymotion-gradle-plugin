@@ -131,16 +131,6 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
-    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated2() {
-
-        project.genymotion.devices {
-            "DSFGTFSHTFGQFQHG" {
-                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
-            }
-        }
-    }
-
-    @Test
     public void canAddDeviceToLaunchByName() {
 
         String vdName = TestTools.createADevice()
