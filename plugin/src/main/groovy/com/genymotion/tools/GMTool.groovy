@@ -83,7 +83,7 @@ class GMTool {
     private static final String OPT_NAVBAR               = '--navbar='
     private static final String OPT_NBCPU                = '--nbcpu='
     private static final String OPT_RAM                  = "--ram="
-    private static final String OPT_NAME                  = "-n="
+    private static final String OPT_NAME                 = "-n="
     private static final String OPT_STATISTICS           = "statistics="
     private static final String OPT_USERNAME_CONFIG      = "username="
     private static final String OPT_PASSWORD_CONFIG      = "password="
@@ -97,7 +97,7 @@ class GMTool {
     private static final String OPT_VIRTUAL_DEVICE_PATH  = "virtual_device_path="
     private static final String OPT_SDK_PATH             = "sdk_path="
     private static final String OPT_USE_CUSTOM_SDK       = "use_custom_sdk="
-    private static final String OPT_SCREEN_CAPTURE_PATH = "screen_capture_path="
+    private static final String OPT_SCREEN_CAPTURE_PATH  = "screen_capture_path="
 
 
     //code returned by gmtool or command line
