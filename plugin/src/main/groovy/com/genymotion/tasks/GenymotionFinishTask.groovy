@@ -54,7 +54,6 @@ class GenymotionFinishTask extends DefaultTask {
             //if a gmtool command fail
             catch(Exception e) {
                 e.printStackTrace()
-                Log.error(e.getMessage())
                 Log.info("Stopping all launched devices and deleting when needed")
                 project.genymotion.getDevices(flavor).each() {
                     //we close the opened devices
@@ -64,7 +63,7 @@ class GenymotionFinishTask extends DefaultTask {
                 }
                 //then, we thow a new exception to end task, if needed
                 if(project.genymotion.config.abortOnError)
-                    throw new GMToolException("GMTool command failed. Check the output to solve the problem")
+                    throw new GMToolException("GMTool command failed. "+e.getMessage())
 
             }
             //anyway...
