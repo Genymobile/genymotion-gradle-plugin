@@ -50,7 +50,7 @@ class GenymotionGradlePlugin implements Plugin<Project> {
         def devicesLaunch = project.container(VDLaunchDsl, new VDLaunchDslFactory(instantiator, project))
 
         project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch)
-        project.genymotion.extensions.create('config', GenymotionConfig) //the extension name have to be different from the original nested element's name (receiver)
+        project.genymotion.extensions.create('config', GenymotionConfig)
 
         project.task(TASK_LAUNCH, type: GenymotionLaunchTask) {
             description 'Starting task for Genymotion plugin'

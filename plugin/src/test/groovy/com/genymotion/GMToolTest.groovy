@@ -368,7 +368,7 @@ class GMToolTest {
             if(line.contains("com.genymotion.test") || line.contains("com.genymotion.test2"))
                 installed++
         }
-        assertEquals("All apps are not found", listOfApps.size(), installed)
+        assertEquals("No app was found", listOfApps.size(), installed)
     }
 
 
@@ -407,7 +407,7 @@ class GMToolTest {
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
-        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+        assertEquals("Some pushed files are not found", listOfFiles.size(), pushed)
 
     }
 

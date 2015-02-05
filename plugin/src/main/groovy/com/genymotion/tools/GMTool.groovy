@@ -924,7 +924,7 @@ class GMTool {
     }
 
     /**
-     * Handle the exist code after a command line execution.
+     * Handle the exit code after a command line execution.
      * This function analyse the return and throws an exception if needed.
      *
      * @param exitValue the command line exit value
@@ -961,7 +961,7 @@ class GMTool {
 
         def exit = c()
 
-        //set as defaut
+        //set as default
         NullObject.metaClass.toString = {return nullLabel}
 
         return exit

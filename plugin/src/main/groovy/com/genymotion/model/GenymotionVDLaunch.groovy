@@ -112,7 +112,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     public boolean isDifferentFrom(GenymotionVirtualDevice device) {
-        
+
         this.density != device.density                  ||
         this.width != device.width                      ||
         this.height != device.height                    ||
