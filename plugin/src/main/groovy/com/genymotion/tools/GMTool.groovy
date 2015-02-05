@@ -857,10 +857,13 @@ class GMTool {
      */
     static def cmd(def command, boolean verbose=false, Closure c=null) {
 
+        if(GENYMOTION_CONFIG == null)
+            return
+
         def toExec = command
 
         //we eventually insert the genymotion binary path
-        if(GENYMOTION_CONFIG != null && GENYMOTION_CONFIG.genymotionPath != null) {
+        if(GENYMOTION_CONFIG.genymotionPath != null) {
             if(toExec instanceof String) {
                 toExec = GENYMOTION_CONFIG.genymotionPath + toExec
             } else {
