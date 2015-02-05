@@ -48,7 +48,7 @@ class AndroidPluginTools {
         GenymotionGradlePlugin.TASK_LAUNCH + suffix.capitalize()
     }
 
-    static boolean hasAndroidPlugin(Project project) {
+    public static boolean hasAndroidPlugin(Project project) {
         project.plugins.hasPlugin('android') || project.plugins.hasPlugin('com.android.application')
     }
 }
