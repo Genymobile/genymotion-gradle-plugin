@@ -51,7 +51,11 @@ class GenymotionVirtualDevice {
             fillFromDetails()
     }
 
-    void init(def name, def density, def width, def height, def virtualKeyboard, def navbar, def nbCpu, def ram) {
+    GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
+    }
+
+    void init(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
         if(name?.trim())
             this.name = name
         if(density)
@@ -62,8 +66,8 @@ class GenymotionVirtualDevice {
             this.height = height.toInteger()
         if(virtualKeyboard != null)
             this.virtualKeyboard = virtualKeyboard.toBoolean()
-        if(navbar != null)
-            this.navbarVisible = navbar.toBoolean()
+        if(navbarVisible != null)
+            this.navbarVisible = navbarVisible.toBoolean()
         if(nbCpu)
             this.nbCpu = nbCpu.toInteger()
         if(ram)
