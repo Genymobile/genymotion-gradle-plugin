@@ -225,8 +225,9 @@ class GMTool {
         if (username != null && password != null) {
             command.push(OPT_USERNAME_CONFIG + username)
             command.push(OPT_PASSWORD_CONFIG + password)
-        } else if((username != null || password != null) && verbose)
+        } else if((username != null || password != null) && verbose) {
             Log.error("username and password need to be both transmitted. Ignoring these both arguments")
+        }
 
         if (statistics != null)
             command.push(OPT_STATISTICS + statistics)
