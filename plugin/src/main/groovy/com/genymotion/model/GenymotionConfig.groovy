@@ -112,9 +112,9 @@ class GenymotionConfig {
             return false
 
         if (propFile.canRead()){
-            props.load(new FileInputStream(propFile))
+            try {
+                props.load(new FileInputStream(propFile))
 
-            if (props!=null){
                 //Reflection could be another solution to fill the object but I prefer to avoid it.
                 //This method allows a better control on the data changed and avoid side loading non-allowed values
 
@@ -129,8 +129,8 @@ class GenymotionConfig {
                         this.setProperty(key, val.asType(value))
                     }
                 }
-            } else {
-                Log.warn("$fromFile file is missing, impossible to load configuration")
+            } catch (Exception e){
+                Log.warn("$fromFile file is missing, impossible to load configuration. " + e.message)
                 return false
             }
         } else {
