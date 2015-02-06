@@ -520,8 +520,7 @@ class GMTool {
 
         def exitValue = noNull() {
             cmd([GENYTOOL, ADMIN, CREATE, template, deviceName,
-                 OPT_DENSITY+density, OPT_WIDTH+width, OPT_HEIGHT+height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram, OPT_USERNAME+username, OPT_PASSWORD+password]) {line, count ->
-            }
+                 OPT_DENSITY+density, OPT_WIDTH+width, OPT_HEIGHT+height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram, OPT_USERNAME+username, OPT_PASSWORD+password])
         }
 
         if(exitValue == RETURN_NO_ERROR)
@@ -538,8 +537,7 @@ class GMTool {
 
         return noNull() {
             return cmd([GENYTOOL, ADMIN, EDIT, deviceName,
-                 OPT_DENSITY +density, OPT_WIDTH +width, OPT_HEIGHT +height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram]) {line, count ->
-            }
+                 OPT_DENSITY +density, OPT_WIDTH +width, OPT_HEIGHT +height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram])
         }
     }
 
@@ -710,8 +708,7 @@ class GMTool {
             else
                 command.push(it)
 
-            int exitValue = cmd(command, verbose) {line, count ->
-            }
+            int exitValue = cmd(command, verbose)
             exitValues.add(exitValue)
         }
 
@@ -746,8 +743,7 @@ class GMTool {
             else
                 command.push(it)
 
-            int exitValue = cmd(command, verbose) {line, count ->
-            }
+            int exitValue = cmd(command, verbose)
             exitValues.add(exitValue)
         }
 
@@ -764,15 +760,13 @@ class GMTool {
             return false
 
         if(apks instanceof String) {
-            cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, INSTALL, apks], verbose) {line, count ->
-            }
+            cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, INSTALL, apks], verbose)
 
         } else if(apks instanceof ArrayList) {
 
             def exitValues = []
             apks.each() {
-                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, INSTALL, it], verbose) {line, count ->
-                }
+                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, INSTALL, it], verbose)
                 exitValues.add(exitValue)
             }
             return exitValues
@@ -791,14 +785,12 @@ class GMTool {
             return false
 
         if(zips instanceof String) {
-            return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, FLASH, zips], verbose) {line, count ->
-            }
+            return cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, FLASH, zips], verbose)
 
         } else if(zips instanceof ArrayList) {
             def exitValues = []
             zips.each() {
-                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, FLASH, it], verbose) {line, count ->
-                }
+                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME+deviceName, FLASH, it], verbose)
                 exitValues.add(exitValue)
             }
             return exitValues
