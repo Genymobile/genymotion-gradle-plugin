@@ -44,7 +44,7 @@ class GenymotionPluginExtensionTest {
     public void canConfigFromLocalProperties() {
 
         project = getAndroidProject()
-        project.evaluate() //internal method but: "... it is actually an internal method and is therefore potentially subject to change in future releases. There will be a supported mechanism for doing this kind of thing in the near future." http://gradle.1045684.n5.nabble.com/why-doesn-t-gradle-project-afterEvaluate-execute-in-my-unit-test-td4512335.html
+        project.evaluate()
         project.genymotion.processConfiguration()
 
         assertEquals("genymotion.username is not catched from local.properties",    "user",     project.genymotion.config.username)
@@ -104,7 +104,7 @@ class GenymotionPluginExtensionTest {
 
         project = getAndroidProject()
         project.genymotion.config.verbose = true
-        project.evaluate() //internal method but: "... it is actually an internal method and is therefore potentially subject to change in future releases. There will be a supported mechanism for doing this kind of thing in the near future." http://gradle.1045684.n5.nabble.com/why-doesn-t-gradle-project-afterEvaluate-execute-in-my-unit-test-td4512335.html
+        project.evaluate()
 
         String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
 
@@ -128,7 +128,7 @@ class GenymotionPluginExtensionTest {
             flavor1
             flavor2
         }
-        project.evaluate() //internal method but: "... it is actually an internal method and is therefore potentially subject to change in future releases. There will be a supported mechanism for doing this kind of thing in the near future." http://gradle.1045684.n5.nabble.com/why-doesn-t-gradle-project-afterEvaluate-execute-in-my-unit-test-td4512335.html
+        project.evaluate()
 
         String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
 
