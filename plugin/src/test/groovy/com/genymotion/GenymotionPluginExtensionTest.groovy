@@ -203,7 +203,7 @@ class GenymotionPluginExtensionTest {
 
         try {
             project.evaluate()
-            fail("Excpeted GMToolException")
+            fail("Expected GMToolException")
         } catch (Exception e) {
             assert e.cause.causes[0] instanceof GMToolException
             assert e.cause.causes[0].message == "You entered a null product flavor on device $device2. Please remove it to be able to continue the job"
