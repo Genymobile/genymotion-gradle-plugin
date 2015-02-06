@@ -256,13 +256,10 @@ class GMToolTest {
 
     }
 
-
-/*
     @Test
     public void canResetDevice() {
         //TODO
     }
-*/
 
     @Test
     public void canLogcatClear() {
