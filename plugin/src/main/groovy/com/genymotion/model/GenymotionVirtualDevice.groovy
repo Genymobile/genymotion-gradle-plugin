@@ -111,8 +111,7 @@ class GenymotionVirtualDevice {
     }
 
     String toString() {
-        String result = "Device: $name\n"
-        result
+        "Device: $name\n"
     }
 
 
