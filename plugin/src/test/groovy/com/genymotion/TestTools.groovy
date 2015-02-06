@@ -17,11 +17,11 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package test.groovy.com.genymotion
+package com.genymotion
 
-import main.groovy.com.genymotion.model.GenymotionConfig
-import main.groovy.com.genymotion.model.GenymotionVDLaunch
-import main.groovy.com.genymotion.tools.GMTool
+import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.GenymotionVDLaunch
+import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 

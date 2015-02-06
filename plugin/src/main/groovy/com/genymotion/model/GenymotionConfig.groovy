@@ -17,10 +17,10 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.model
+package com.genymotion.model
 
-import main.groovy.com.genymotion.tools.AndroidPluginTools
-import main.groovy.com.genymotion.tools.Log
+import com.genymotion.tools.AndroidPluginTools
+import com.genymotion.tools.Log
 import org.gradle.api.Project
 
 class GenymotionConfig {

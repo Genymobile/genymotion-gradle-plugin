@@ -1,8 +1,8 @@
-package test.groovy.com.genymotion
+package com.genymotion
 
-import main.groovy.com.genymotion.model.GenymotionVDLaunch
-import main.groovy.com.genymotion.model.VDLaunchDsl
-import main.groovy.com.genymotion.tools.GMTool
+import com.genymotion.model.GenymotionVDLaunch
+import com.genymotion.model.VDLaunchDsl
+import com.genymotion.tools.GMTool
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test

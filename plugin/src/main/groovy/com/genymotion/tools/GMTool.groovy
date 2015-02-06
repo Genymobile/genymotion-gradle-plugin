@@ -17,12 +17,12 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.tools
+package com.genymotion.tools
 
-import main.groovy.com.genymotion.model.GenymotionConfig
-import main.groovy.com.genymotion.model.GenymotionTemplate
-import main.groovy.com.genymotion.model.GenymotionVDLaunch
-import main.groovy.com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.GenymotionTemplate
+import com.genymotion.model.GenymotionVDLaunch
+import com.genymotion.model.GenymotionVirtualDevice
 import org.codehaus.groovy.runtime.NullObject
 
 class GMTool {

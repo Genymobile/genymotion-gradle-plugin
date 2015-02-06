@@ -17,14 +17,14 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion
+package com.genymotion
 
-import main.groovy.com.genymotion.model.GenymotionConfig
-import main.groovy.com.genymotion.model.VDLaunchDsl
-import main.groovy.com.genymotion.model.VDLaunchDslFactory
-import main.groovy.com.genymotion.tasks.GenymotionFinishTask
-import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
-import main.groovy.com.genymotion.tools.GMTool
+import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.VDLaunchDsl
+import com.genymotion.model.VDLaunchDslFactory
+import com.genymotion.tasks.GenymotionFinishTask
+import com.genymotion.tasks.GenymotionLaunchTask
+import com.genymotion.tools.GMTool
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.internal.reflect.Instantiator

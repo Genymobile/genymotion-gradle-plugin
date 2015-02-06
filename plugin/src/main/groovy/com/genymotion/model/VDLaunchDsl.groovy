@@ -17,7 +17,7 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.model
+package com.genymotion.model
 
 import groovy.transform.CompileStatic
 

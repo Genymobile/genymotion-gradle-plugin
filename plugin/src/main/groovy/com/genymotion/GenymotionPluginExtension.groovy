@@ -17,16 +17,16 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion
+package com.genymotion
 
-import main.groovy.com.genymotion.model.GenymotionConfig
-import main.groovy.com.genymotion.model.VDLaunchDsl
-import main.groovy.com.genymotion.tasks.GenymotionFinishTask
-import main.groovy.com.genymotion.tasks.GenymotionLaunchTask
-import main.groovy.com.genymotion.tools.AndroidPluginTools
-import main.groovy.com.genymotion.tools.GMTool
-import main.groovy.com.genymotion.tools.GMToolException
-import main.groovy.com.genymotion.tools.Log
+import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.VDLaunchDsl
+import com.genymotion.tasks.GenymotionFinishTask
+import com.genymotion.tasks.GenymotionLaunchTask
+import com.genymotion.tools.AndroidPluginTools
+import com.genymotion.tools.GMTool
+import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Log
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task

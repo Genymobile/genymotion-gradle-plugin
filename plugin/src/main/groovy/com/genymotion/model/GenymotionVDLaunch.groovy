@@ -17,13 +17,13 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.model
+package com.genymotion.model
 
 import groovy.transform.CompileStatic
-import main.groovy.com.genymotion.tools.GMTool
-import main.groovy.com.genymotion.tools.GMToolException
-import main.groovy.com.genymotion.tools.Log
-import main.groovy.com.genymotion.tools.Tools
+import com.genymotion.tools.GMTool
+import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Log
+import com.genymotion.tools.Tools
 
 @CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice{

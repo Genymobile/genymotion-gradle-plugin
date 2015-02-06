@@ -17,9 +17,9 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.tools
+package com.genymotion.tools
 
-import main.groovy.com.genymotion.GenymotionGradlePlugin
+import com.genymotion.GenymotionGradlePlugin
 import org.gradle.api.Project
 
 class AndroidPluginTools {

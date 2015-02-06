@@ -17,10 +17,10 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.tasks
+package com.genymotion.tasks
 
-import main.groovy.com.genymotion.tools.GMToolException
-import main.groovy.com.genymotion.tools.Log
+import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Log
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

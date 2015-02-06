@@ -17,9 +17,9 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.groovy.com.genymotion.model
+package com.genymotion.model
 
-import main.groovy.com.genymotion.tools.GMTool
+import com.genymotion.tools.GMTool
 
 
 class GenymotionVirtualDevice {
