@@ -58,7 +58,7 @@ class GenymotionVirtualDevice {
     void init(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
         if(name?.trim())
             this.name = name
-        if(density)
+        if(density?.trim())
             this.density = density
         if(width)
             this.width = width.toInteger()
