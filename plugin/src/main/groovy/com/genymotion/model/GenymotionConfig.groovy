@@ -134,7 +134,7 @@ class GenymotionConfig {
                 return false
             }
         } else {
-            Log.warn("$fromFile file is missing, impossible to load configuration")
+            Log.warn("$fromFile file is missing, no configuration to load")
             return false
         }
         return true
