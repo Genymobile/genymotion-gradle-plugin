@@ -33,7 +33,7 @@ To compile the plugin, go to the root project folder and run the following comma
 
 The build result is a Maven repository. It will be pushed into a new folder: `repo`
 
-You can now use the plugin as a simple repository. To add it to your project file, you must add these lines to your build.gradle file:
+You can now use the plugin as a simple repository. To add it to your project, you must add these lines to your build.gradle file:
 
 ```groovy
 buildscript {
