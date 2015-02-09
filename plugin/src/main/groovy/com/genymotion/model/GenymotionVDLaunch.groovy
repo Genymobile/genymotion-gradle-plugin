@@ -74,7 +74,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     public void checkNameAndTemplate() {
         deviceExists = GMTool.isDeviceCreated(name)
-        templateExists = GMTool.isTemplateExists(template)
+        templateExists = GMTool.templateExists(template)
 
         //if name & template are null or not existing
         if (!deviceExists && !templateExists) {

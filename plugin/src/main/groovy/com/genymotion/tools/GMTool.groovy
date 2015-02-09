@@ -494,7 +494,7 @@ class GMTool {
             return exitCode
     }
 
-    static boolean isTemplateExists(String template, boolean verbose=false, String username=null, String password=null) {
+    static boolean templateExists(String template, boolean verbose=false, String username=null, String password=null) {
 
         if(!template?.trim())
             return false
