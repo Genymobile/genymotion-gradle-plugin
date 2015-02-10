@@ -68,3 +68,17 @@ Contributing
 The Gradle Plugin for Genymotion is an open source project under GPL v3 license.
 
 Pull requests are strongly encouraged.
+
+Before pulling, you need to run the functional tests on the project. You can run it with the command:
+
+```sh
+./gradlew :plugin:test
+```
+
+Before running the tests you need gmtool, the command line tool for Genymotion.
+
+You also need to fill a few files like follows:
+
+1. Copy the `plugin/res/test/default.properties.TEMPLATE` file and name it `default.properties`
+2. Fill the new file with your information (genymotion username, password, license) and the path to your local Genymotion installation (genymotionPath).
+3. Also, in the file `plugin/res/test/android-app/local.properties` precise the `sdk.dir` field with your Android SDK path 
