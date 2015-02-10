@@ -73,7 +73,7 @@ class VDLaunchDslTest {
         vd.install = "res/test/test.txt"
         vd.flash = "res/test/test.txt"
 
-        vd.checkPaths() //throw exception if problem
+        vd.checkPaths() //throws exception if problem
 
 
         vd = new GenymotionVDLaunch("device_name")

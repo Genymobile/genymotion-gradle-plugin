@@ -113,7 +113,6 @@ class GenymotionTasksTest {
             fail("Expected GMToolException to be thrown")
 
         } catch (IOException e) { //TODO check how we can produce GMToolException instead of IOException with another command
-            //we fix the path
             project.genymotion.config.genymotionPath = goodPath
 
             assertFalse(GMTool.isDeviceCreated(deviceToDelete))
@@ -142,7 +141,6 @@ class GenymotionTasksTest {
         project.genymotion.config.fromFile = path
         project.genymotion.config.persist = true
 
-        //we set the config file
         project.genymotion.processConfiguration()
 
         GenymotionConfig config = GMTool.getConfig(true)

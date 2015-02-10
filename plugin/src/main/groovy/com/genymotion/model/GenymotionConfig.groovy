@@ -98,7 +98,6 @@ class GenymotionConfig {
      * @return returns true if the object has been field from a file or false otherwise
      */
     def applyConfigFromFile(Project project) {
-        // We get the APK signing properties from a file
         def Properties props = new Properties()
         def propFile
 

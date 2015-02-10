@@ -62,11 +62,10 @@ class GenymotionPluginExtensionTest {
         project.task(taskName) << {}
 
         project.genymotion.config.taskLaunch = taskName
-        //we inject the genymotion task on the task hierarchy
         project.genymotion.injectTasks()
 
-        def task = project.tasks.getByName(taskName) //throw exception if task not found
-        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH) //throw exception if task not found
+        def task = project.tasks.getByName(taskName)
+        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH)
 
         assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
         assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
@@ -86,12 +85,11 @@ class GenymotionPluginExtensionTest {
 
         project.genymotion.config.taskLaunch = tasks
 
-        //we inject the genymotion task on the task hierarchy
         project.genymotion.injectTasks()
 
         tasks.each {
-            def task = project.tasks.getByName(it) //throw exception if task not found
-            def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH) //throw exception if task not found
+            def task = project.tasks.getByName(it)
+            def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH)
 
             assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
             assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
@@ -108,8 +106,8 @@ class GenymotionPluginExtensionTest {
 
         String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
 
-        def task = project.tasks.getByName(taskName) //throw exception if task not found
-        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH) //throw exception if task not found
+        def task = project.tasks.getByName(taskName)
+        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH)
 
         assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
         assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
@@ -134,7 +132,7 @@ class GenymotionPluginExtensionTest {
 
         project.android.productFlavors.all { flavor ->
             String flavorTaskName = AndroidPluginTools.getFlavorTestTaskName(flavor.name)
-            def task = project.tasks.getByName(flavorTaskName) //throw exception if task not found
+            def task = project.tasks.getByName(flavorTaskName)
 
             Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavorTaskName))
             Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavorTaskName))
@@ -143,12 +141,12 @@ class GenymotionPluginExtensionTest {
             assert task.finalizedBy.getDependencies().contains(finishTask)
 
             def debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor1")
-            def debugTask = project.tasks.getByName(debugTaskName) //throw exception if task not found
+            def debugTask = project.tasks.getByName(debugTaskName)
             def taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
             assert debugTask.dependsOn.contains(taskLaunch)
 
             debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor2")
-            debugTask = project.tasks.getByName(debugTaskName) //throw exception if task not found
+            debugTask = project.tasks.getByName(debugTaskName)
             taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
             assert debugTask.dependsOn.contains(taskLaunch )
         }

@@ -42,7 +42,6 @@ class TestTools {
 
         project.genymotion.config.genymotionPath = getDefaultConfig().genymotionPath
         project.genymotion.config.verbose = true
-        //we set the config inside the GenymotionTool
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
         GMTool.getConfig(true)
@@ -124,7 +123,6 @@ class TestTools {
             println e
         }
 
-        //Delete temp folder
         new File("temp").deleteDir()
     }
 
@@ -140,7 +138,6 @@ class TestTools {
     }
 
     static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties") {
-        // We get the APK signing properties from a file
         GenymotionConfig config = new GenymotionConfig()
         config.fromFile = path
 

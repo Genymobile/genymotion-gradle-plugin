@@ -69,7 +69,6 @@ class GenymotionPluginExtension {
         //Check if the flavors entered exist
         checkProductFlavors()
 
-        //check device params
         deviceLaunches.each {
             it.checkParams()
         }
@@ -110,25 +109,26 @@ class GenymotionPluginExtension {
     void injectTasks() {
         def taskLaunch = project.genymotion.config.taskLaunch
 
-        //if the automatic launch is disabled or the configuration is not correct we skip
-        if (!project.genymotion.config.automaticLaunch || !taskLaunch)
+        if (!project.genymotion.config.automaticLaunch) {
+            Log.info("Genymotion automatic launch disabled. Set automaticLaunch to true if you want to start genymotion devices automatically.")
             return
+        }
+        if (!taskLaunch){
+            Log.info("No task defined to launch Genymotion devices. Set a correct taskLaunch if you want to start genymotion devices automatically.")
+            return
+        }
 
         try {
-            //if taskLaunch is an array of tasks
             if(taskLaunch instanceof ArrayList) {
                 taskLaunch.each {
                     injectTasksInto(it)
                 }
-            }
 
-            //if the task is the default android test task
-            else if(taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK) {
+            } else if(taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK) {
 
-                //and we detect the android plugin or the default android test task
+                //if we detect the android plugin or the default android test task
                 if(AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null) {
 
-                    //if there are flavors
                     if(project.android.productFlavors.size() > 0) {
                         project.android.productFlavors.all { flavor ->
                             injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
@@ -143,15 +143,11 @@ class GenymotionPluginExtension {
                     Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
                     return
                 }
-            }
 
-            //else, we inject the genymotion tasks around the given taskLaunch
-            else if(taskLaunch instanceof String) {
+            } else if(taskLaunch instanceof String) {
                 injectTasksInto(taskLaunch)
-            }
 
-            //else, there is no task indicated
-            else {
+            } else {
                 Log.warn("No destination task found, genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
                 return
             }
@@ -206,16 +202,15 @@ class GenymotionPluginExtension {
         config.applyConfigFromFile(project)
 
         if(!config.isEmpty()) {
-            //if we persists the data
+
             if(config.persist) {
                 GMTool.setConfig(config, config.verbose)
-            }
-            //if we do not persist the data
-            else {
+
+            } else {
                 //we store the current configuration
                 this.currentConfiguration = GMTool.getConfig(config.verbose)
 
-                //we forget the login info during configuration
+                //we don't change the login info during configuration
                 String username = config.username
                 String password = config.password
                 config.username = null
@@ -231,7 +226,6 @@ class GenymotionPluginExtension {
     }
 
     def endConfiguration() {
-        //if we do not persist the data
         if(!config.persist && this.currentConfiguration) {
             GMTool.setConfig(this.currentConfiguration, this.genymotionConfig.verbose)
         }

@@ -368,7 +368,6 @@ class GMTool {
         if(!name?.trim())
             return false
 
-        //we check if the VD name already exists
         boolean alreadyExists = false
 
         def devices = GMTool.getAllDevices(verbose, false)
@@ -377,7 +376,7 @@ class GMTool {
             if(it.name.equals(name))
                 alreadyExists = true
         }
-        alreadyExists
+        return alreadyExists
     }
 
     static def getTemplatesNames(boolean verbose=false, String username=null, String password=null) {
@@ -427,7 +426,7 @@ class GMTool {
         int exitCode = noNull {
             return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_FULL, OPT_USERNAME + username, OPT_PASSWORD + password], verbose) { line, count ->
 
-                //if empty line and template filled
+                //if empty line and the template is filled
                 if (!line && template.name) {
                     templates.add(template)
                     template = new GenymotionTemplate()
@@ -537,7 +536,7 @@ class GMTool {
 
         return noNull() {
             return cmd([GENYTOOL, ADMIN, EDIT, deviceName,
-                 OPT_DENSITY +density, OPT_WIDTH +width, OPT_HEIGHT +height, OPT_VIRTUAL_KEYBOARD +virtualKeyboard, OPT_NAVBAR +navbarVisible, OPT_NBCPU +nbcpu, OPT_RAM +ram])
+                 OPT_DENSITY+density, OPT_WIDTH+width, OPT_HEIGHT+height, OPT_VIRTUAL_KEYBOARD+virtualKeyboard, OPT_NAVBAR+navbarVisible, OPT_NBCPU+nbcpu, OPT_RAM+ram])
         }
     }
 
@@ -571,7 +570,6 @@ class GMTool {
         if(device == null)
             return null
 
-        //we get the device details
         cmd([GENYTOOL, ADMIN, DETAILS, device.name], verbose) {line, count ->
 
             String[] info = line.split("\\:")

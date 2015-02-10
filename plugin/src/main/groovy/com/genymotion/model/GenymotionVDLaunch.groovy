@@ -76,21 +76,13 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         deviceExists = GMTool.isDeviceCreated(name)
         templateExists = GMTool.templateExists(template)
 
-        //if name & template are null or not existing
         if (!deviceExists && !templateExists) {
             throw new GMToolException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
-        }
 
-        //if declared device name exists
-        else if (deviceExists) {
+        } else if (deviceExists && template != null) {
+            Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
 
-            //if a template is declared
-            if (template != null)
-                Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
-        }
-
-        //if declared template exists
-        else if (templateExists) {
+        } else if (templateExists) {
             create = true
         }
     }
@@ -102,9 +94,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
 
-        //if the configuration is different from the created device
         if(isDifferentFrom(device)) {
-
             return GMTool.editDevice(this)
         }
 
@@ -131,13 +121,11 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     protected def stopWhenFinish() {
-        //if stop is not explicitly disabled, we stop
         if(stopWhenFinish != false)
             stop()
     }
 
     protected def deleteWhenFinish() {
-        //if stop and delete are not explicitly disabled, we delete
         if(stopWhenFinish != false && deleteWhenFinish != false)
             delete()
     }

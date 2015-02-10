@@ -51,7 +51,6 @@ class GenymotionLaunchTask extends DefaultTask {
 
         def virtualDevicesNames = virtualDevices*.name
 
-        //process declared devices
         devices.each() {
             processDevice(it, runningDevices, virtualDevicesNames)
         }
@@ -83,9 +82,10 @@ class GenymotionLaunchTask extends DefaultTask {
             device.pushBefore()
             device.pullBefore()
 
-        } catch (Exception e) { //if a gmtool command fail
+        } catch (Exception e) {
             e.printStackTrace()
             abortLaunch(device)
+
             //then, we thow a new exception to end task, if needed
             if (project.genymotion.config.abortOnError)
                 throw new GMToolException("GMTool command failed. "+e.getMessage())
@@ -95,9 +95,7 @@ class GenymotionLaunchTask extends DefaultTask {
     public void abortLaunch(device) {
         Log.error("An error occured. Stopping and deleting all launched devices, if needed.")
         project.genymotion.getDevices(flavor).each() {
-            //we close the opened devices
             device.stopWhenFinish()
-            //and delete them if needed
             device.deleteWhenFinish()
         }
     }
