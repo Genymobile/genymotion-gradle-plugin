@@ -136,7 +136,7 @@ class GenymotionTasksTest {
         String path = "res/test/default.properties"
 
         File f = new File(path)
-        assert f.exists(), "Config file does not exists to test login feature. Set the path to be able to run the test"
+        assert f.exists(), "Config file does not exist to test login feature. Set the path to be able to run the test"
 
         project.genymotion.config.fromFile = path
         project.genymotion.config.persist = true

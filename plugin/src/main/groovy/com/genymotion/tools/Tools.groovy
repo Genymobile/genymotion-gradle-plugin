@@ -25,7 +25,7 @@ class Tools {
      * This function check if the file(s) passed as parameters exist(s)
      *
      * @param value the files list to check
-     * @return returns true if all files exists or the first unfounded file name otherwise
+     * @return returns the first missing file name otherwise returns true
      */
     public static def checkFilesExist(value) {
         def values = getStringTable(value)

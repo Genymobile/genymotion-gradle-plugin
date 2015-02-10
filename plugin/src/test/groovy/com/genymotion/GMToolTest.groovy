@@ -443,7 +443,7 @@ class GMToolTest {
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
-        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
 
 

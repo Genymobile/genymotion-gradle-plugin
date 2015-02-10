@@ -77,7 +77,7 @@ class ToolsTest {
     }
 
     @Test
-    public void canCheckFileDoesNotExists() {
+    public void canCheckFileDoesNotExist() {
 
         def list = ["res/test/test.txt", "NOPE", "res/test/test.zip", "res/test/test2.zip"]
         assertEquals("NOPE", Tools.checkFilesExist(list))

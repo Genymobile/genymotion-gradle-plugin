@@ -176,7 +176,7 @@ class GenymotionPluginExtensionTest {
             fail("Expected GMToolException")
         } catch (Exception e) {
             assert e.cause.causes[0] instanceof GMToolException
-            assert e.cause.causes[0].message == "Product flavor $wrongFlavor on device $device2 does not exists."
+            assert e.cause.causes[0].message == "Product flavor $wrongFlavor on device $device2 does not exist."
         }
     }
 

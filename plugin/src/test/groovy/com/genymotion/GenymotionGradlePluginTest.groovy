@@ -330,7 +330,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assertFalse("The device is still existing", GMTool.isDeviceCreated(vdName, true))
+        assertFalse("The device still exists", GMTool.isDeviceCreated(vdName, true))
     }
 
     @Test
@@ -460,7 +460,7 @@ class GenymotionGradlePluginTest {
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
-        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
 
     @Test
@@ -491,7 +491,7 @@ class GenymotionGradlePluginTest {
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
-        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
 
     @Test
@@ -566,7 +566,7 @@ class GenymotionGradlePluginTest {
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
-        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
 
     @Test
@@ -598,7 +598,7 @@ class GenymotionGradlePluginTest {
             if(line.contains("test.txt") || line.contains("test2.txt"))
                 pushed++
         }
-        assertEquals("All pushed files are not found", listOfFiles.size(), pushed)
+        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
 
     }
 

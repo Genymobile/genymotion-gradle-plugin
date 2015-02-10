@@ -94,9 +94,9 @@ class GenymotionPluginExtension {
 
                 } else if (!androidFlavors.contains(flavor)) {
                     if(project.genymotion.config.abortOnError)
-                        throw new GMToolException("Product flavor $flavor on device $it.name does not exists.")
+                        throw new GMToolException("Product flavor $flavor on device $it.name does not exist.")
                     else
-                        Log.warn("Product flavor $flavor does not exists. It will be ignored.")
+                        Log.warn("Product flavor $flavor does not exist. It will be ignored.")
                 }
             }
 
