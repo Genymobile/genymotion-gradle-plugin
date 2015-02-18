@@ -117,7 +117,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             GMTool.startDevice(this)
     }
     protected def stop() {
-        GMTool.stopDevice(this)
+        if(isRunning(true))
+            GMTool.stopDevice(this)
     }
 
     protected def stopWhenFinish() {
