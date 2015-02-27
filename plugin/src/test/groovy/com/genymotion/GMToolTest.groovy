@@ -270,7 +270,7 @@ class GMToolTest {
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
         GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
-        String path = "temp/logcat.dump"
+        String path = TestTools.TEMP_PATH+"logcat.dump"
         File file = new File(path)
         file.delete()
 
@@ -311,7 +311,7 @@ class GMToolTest {
         String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
         GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
 
-        String path = "temp/logcat.dump"
+        String path = TestTools.TEMP_PATH+"logcat.dump"
 
         exitCode = GMTool.logcatDump(name,path, true)
         assert exitCode == 0
@@ -458,8 +458,8 @@ class GMToolTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        GMTool.pullFromDevice(name, "/system/build.prop", "temp/pulled/", true)
-        File file = new File("temp/pulled/build.prop")
+        GMTool.pullFromDevice(name, "/system/build.prop", TestTools.PULLED_PATH, true)
+        File file = new File(TestTools.PULLED_PATH + "build.prop")
         assertTrue("Pulled file not found", file.exists())
     }
 
@@ -474,13 +474,13 @@ class GMToolTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":"temp/pulled/", "/data/app/GestureBuilder.apk":"temp/pulled/"]
+        def listOfFiles = ["/system/build.prop":TestTools.PULLED_PATH, "/data/app/GestureBuilder.apk":TestTools.PULLED_PATH]
         GMTool.pullFromDevice(name, listOfFiles, true)
 
-        File file = new File("temp/pulled/build.prop")
+        File file = new File(TestTools.PULLED_PATH+"build.prop")
         assertTrue("build.propfile not found", file.exists())
 
-        file = new File("temp/pulled/GestureBuilder.apk")
+        file = new File(TestTools.PULLED_PATH+"GestureBuilder.apk")
         assertTrue("GestureBuilder.apk not found", file.exists())
     }
 

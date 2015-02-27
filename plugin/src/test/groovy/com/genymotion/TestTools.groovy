@@ -29,6 +29,9 @@ class TestTools {
 
     public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
+    public static String TEMP_PATH= "temp"+File.separator
+    public static String PULLED_PATH= TEMP_PATH+"pulled"+File.separator
+
     public static def DEVICES = [
             "Nexus7-junit":"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
             "Nexus10-junit":"Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
@@ -127,7 +130,7 @@ class TestTools {
     }
 
     static void recreatePulledDirectory() {
-        File tempDir = new File("temp/pulled")
+        File tempDir = new File(PULLED_PATH)
         if (tempDir.exists()) {
             if (tempDir.isDirectory())
                 tempDir.deleteDir()

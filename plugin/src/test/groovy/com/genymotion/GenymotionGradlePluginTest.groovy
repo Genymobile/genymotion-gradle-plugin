@@ -62,7 +62,7 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canConfigGenymotion() {
-        String path = "TEST/"
+        String path = "TEST"+File.separator
         String previousPath = project.genymotion.config.genymotionPath
         project.genymotion.config.genymotionPath = path
 
@@ -258,11 +258,11 @@ class GenymotionGradlePluginTest {
     public void canLogcat() {
         String vdName = TestTools.createADevice()
 
-        String path = "temp/${vdName}.logcat"
+        String path = TestTools.TEMP_PATH+vdName+".logcat"
 
         project.genymotion.devices {
             "$vdName" {
-                logcat "temp/${vdName}.logcat"
+                logcat path
             }
         }
 
@@ -277,11 +277,11 @@ class GenymotionGradlePluginTest {
     public void canLogcatAndAvoidLogcatClearAfterBoot() {
         String vdName = TestTools.createADevice()
 
-        String path = "temp/${vdName}.logcat"
+        String path = TestTools.TEMP_PATH+vdName+".logcat"
 
         project.genymotion.devices {
             "$vdName" {
-                logcat "temp/${vdName}.logcat"
+                logcat path
                 clearLogAfterBoot false
             }
         }
@@ -611,12 +611,12 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.devices {
             "$name" {
-                pullBefore "/system/build.prop":"temp/pulled/"
+                pullBefore "/system/build.prop":TestTools.PULLED_PATH
             }
         }
         project.tasks.genymotionLaunch.exec()
 
-        File file = new File("temp/pulled/build.prop")
+        File file = new File(TestTools.PULLED_PATH+"build.prop")
         assertTrue("Pulled file not found", file.exists())
     }
 
@@ -629,18 +629,18 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.devices {
             "$name" {
-                pullAfter "/system/build.prop":"temp/pulled/"
+                pullAfter "/system/build.prop":TestTools.PULLED_PATH
                 stopWhenFinish false
             }
         }
         project.tasks.genymotionLaunch.exec()
 
-        File file = new File("temp/pulled/build.prop")
+        File file = new File(TestTools.PULLED_PATH+"build.prop")
         assertFalse("Pulled file found. Should not happen", file.exists())
 
         project.tasks.genymotionFinish.exec()
 
-        file = new File("temp/pulled/build.prop")
+        file = new File(TestTools.PULLED_PATH+"build.prop")
         assertTrue("Pulled file not found", file.exists())
     }
 
@@ -651,7 +651,7 @@ class GenymotionGradlePluginTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":"temp/pulled/build.prop", "/system/bin/adb":"temp/pulled/adb"]
+        def listOfFiles = ["/system/build.prop":TestTools.PULLED_PATH+"build.prop", "/system/bin/adb":TestTools.PULLED_PATH+"adb"]
         project.genymotion.devices {
             "$name" {
                 pullBefore listOfFiles
@@ -678,7 +678,7 @@ class GenymotionGradlePluginTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":"temp/pulled/build.prop", "/system/bin/adb":"temp/pulled/adb"]
+        def listOfFiles = ["/system/build.prop":TestTools.PULLED_PATH+"build.prop", "/system/bin/adb":TestTools.PULLED_PATH+"adb"]
         project.genymotion.devices {
             "$name" {
                 pullAfter listOfFiles
