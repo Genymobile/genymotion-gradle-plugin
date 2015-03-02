@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'nu.studer:gradle-plugindev-plugin:1.0.3'
+    }
+}
+apply plugin: 'nu.studer.plugindev'
 apply plugin: 'groovy'
 
 dependencies {
@@ -63,4 +72,26 @@ test {
             println "excludeCat $excludeCat"
         }
     }
+}
+
+plugindev {
+    pluginId 'com.genymotion.gradleplugin'
+    pluginName 'genymotion-gradle-plugin'
+    pluginImplementationClass 'com.genymotion.GenymotionGradlePlugin'
+    pluginDescription 'The Genymotion Gradle Plugin allows you to control your Genymotion instances just with your build.gradle file'
+    pluginLicenses 'GPL-3.0'
+    pluginTags 'plugin', 'gradle', 'android', 'genymotion', 'automation', 'test', 'unit test', 'functional test', 'CI', 'continuous integration', 'jenkins'
+    authorId 'Genymobile'
+    authorName 'Genymobile'
+    authorEmail 'support@genymotion.com'
+    projectUrl 'https://github.com/Genymobile/genymotion-gradle-plugin'
+    projectInceptionYear '2015'
+    done() // do not omit this
+}
+
+bintray {
+    //Add these values to your ~/.gradle/gradle.properties file
+    user = "$BINTRAY_USER_GENY"
+    key = "$BINTRAY_API_KEY_GENY"
+    pkg.repo = 'Genymotion'
 }
