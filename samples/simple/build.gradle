@@ -1,9 +1,9 @@
 buildscript {
     repositories {
-        maven { url uri('../../repo') }
+        jcenter()
     }
     dependencies {
-        classpath 'com.genymotion:gradlePlugin:0.5'
+        classpath 'com.genymotion:plugin:+'
     }
 }
 
