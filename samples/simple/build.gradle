@@ -10,7 +10,7 @@ buildscript {
 apply plugin: "genymotion"
 
 genymotion.config{
-    genymotionPath = "/home/eyal/genymotion/genymotion-softs/build/"       //set the Genymotion path to PATH
+    genymotionPath = "/Applications/Genymotion.app/Content/MacOS/" //TODO change it if needed
     verbose = true
 //    fromFile                  //get the whole configuration from a file. The content get the priority to the .gradle file
 //
