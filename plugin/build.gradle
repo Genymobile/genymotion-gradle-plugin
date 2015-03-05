@@ -75,7 +75,7 @@ test {
 }
 
 plugindev {
-    pluginId 'com.genymotion.gradleplugin'
+    pluginId 'com.genymotion.plugin'
     pluginName 'genymotion-gradle-plugin'
     pluginImplementationClass 'com.genymotion.GenymotionGradlePlugin'
     pluginDescription 'The Genymotion Gradle Plugin allows you to control your Genymotion instances just with your build.gradle file'
