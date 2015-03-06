@@ -34,6 +34,7 @@ class GMTool {
 
     //root actions
     private static final String LOGZIP        = "logzip"
+    private static final String HELP          = "help"
     //admin actions
     private static final String ADMIN         = "admin"
     private static final String LIST          = "list"
@@ -121,7 +122,7 @@ class GMTool {
 
 
     static def usage() {
-        return cmd([GENYTOOL, "-h"])
+        return cmd([GENYTOOL, HELP])
     }
 
     /*
