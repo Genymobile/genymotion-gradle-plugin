@@ -3,7 +3,7 @@ Gradle Plugin for Genymotion
 
 Gradle Plugin Documentation
 ------------------
-To learn how to use the Gradle plugin for Genymotion, you can read the official documentation here.
+To learn how to use the Gradle plugin for Genymotion, on production, read the official documentation.
 
 Link coming soon...
 
@@ -41,7 +41,7 @@ buildscript {
         maven { url uri('<path/to/local/repo>') }
     }
     dependencies {
-        classpath 'com.genymotion:gradlePlugin:0.5'
+        classpath 'com.genymotion:plugin:+'
     }
 }
 ```
