@@ -70,13 +70,14 @@ class GenymotionGradlePluginTest {
     public void canFixGenymotionPath() {
 
         project = TestTools.init()
+        String defaultPath = project.genymotion.config.genymotionPath
+
         String path = "/path/to/test"
         project.genymotion.config.genymotionPath = path
 
         assert path+File.separator == project.genymotion.config.genymotionPath
 
-        project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
-
+        TestTools.setDefaultGenymotionPath(project, defaultPath)
     }
 
     @Test

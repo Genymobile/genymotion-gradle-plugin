@@ -60,4 +60,13 @@ class Tools {
 
         return values
     }
+
+    /**
+     * Get the Operating System name we are running on, following the system properties.
+     *
+     * @return a String containing the name of the OS
+     */
+    public static String getOSName() {
+        return System.getProperties().getProperty("os.name")
+    }
 }

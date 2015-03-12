@@ -43,13 +43,24 @@ class TestTools {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
 
-        project.genymotion.config.genymotionPath = getDefaultConfig().genymotionPath
+        setDefaultGenymotionPath(project)
+
         project.genymotion.config.verbose = true
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
         GMTool.getConfig(true)
 
         project
+    }
+
+    private static void setDefaultGenymotionPath(Project project, String defaultPath=null) {
+        String path = getDefaultConfig()?.genymotionPath
+        if(path)
+            project.genymotion.config.genymotionPath = path
+        else if(defaultPath)
+            project.genymotion.config.genymotionPath = defaultPath
+        else
+            project.genymotion.config.genymotionPath = GenymotionConfig.getDefaultGenymotionPath()
     }
 
     static void deleteAllDevices() {
@@ -152,6 +163,9 @@ class TestTools {
 
     static setDefaultUser(registerLicense = false) {
         GenymotionConfig config = getDefaultConfig()
+
+        if(!config)
+            return
 
         if(config.username && config.password) {
             GMTool.setConfig(config, true)

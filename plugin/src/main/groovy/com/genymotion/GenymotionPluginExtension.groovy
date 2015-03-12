@@ -113,7 +113,7 @@ class GenymotionPluginExtension {
             Log.info("Genymotion automatic launch disabled. Set automaticLaunch to true if you want to start genymotion devices automatically.")
             return
         }
-        if (!taskLaunch){
+        if (!taskLaunch) {
             Log.info("No task defined to launch Genymotion devices. Set a correct taskLaunch if you want to start genymotion devices automatically.")
             return
         }
