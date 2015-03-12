@@ -243,7 +243,8 @@ class GenymotionPluginExtensionTest {
         project.android {
             compileSdkVersion 21
         }
-        project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
+
+        TestTools.setDefaultGenymotionPath(project)
 
         project.afterEvaluate {
             println "TASKS AFTER "+project.tasks

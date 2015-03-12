@@ -904,7 +904,8 @@ class GMTool {
 
             return handleExitValue(p.exitValue(), error)
         } catch (IOException e) {
-            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE)
+            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
+                                            " Current value: "+GENYMOTION_CONFIG.genymotionPath)
         }
     }
 
@@ -941,7 +942,8 @@ class GMTool {
         if(exitValue == RETURN_NO_ERROR) {
             //do nothing
         } else if(exitValue == RETURN_COMMAND_NOT_FOUND_UNIX) {
-            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE)
+            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
+                                            " Current value: "+GENYMOTION_CONFIG.genymotionPath)
 
         } else {
             if(GENYMOTION_CONFIG.abortOnError) {

@@ -21,9 +21,15 @@ package com.genymotion.model
 
 import com.genymotion.tools.AndroidPluginTools
 import com.genymotion.tools.Log
+import com.genymotion.tools.Tools
 import org.gradle.api.Project
 
 class GenymotionConfig {
+
+    static final String DEFAULT_GENYMOTION_PATH_MAC     = "/Applications/Genymotion.app/Contents/MacOS/"
+    static final String DEFAULT_GENYMOTION_PATH_WINDOWS = "C:\\Program Files\\Genymobile\\Genymotion\\"
+    static final String DEFAULT_GENYMOTION_PATH_LINUX   = ""
+    static final String DEFAULT_GENYMOTION_PATH         = ""
 
     //plugin config
     def genymotionPath = ""     //set the Genymotion path to PATH
@@ -78,6 +84,10 @@ class GenymotionConfig {
                                      "verbose":Boolean.class,
                                      "persist":Boolean.class,
                                      "abortOnError":Boolean.class]
+
+    GenymotionConfig() {
+        genymotionPath = getDefaultGenymotionPath()
+    }
 
     boolean isEmpty() {
         if(statistics != null || username != null || password != null || storeCredentials != null || license != null ||
@@ -144,5 +154,22 @@ class GenymotionConfig {
             value += File.separator
         }
         genymotionPath = value
+    }
+
+    public static String getDefaultGenymotionPath() {
+        String os = Tools.getOSName().toLowerCase()
+
+        if(os.contains("mac")) {
+            return DEFAULT_GENYMOTION_PATH_MAC
+
+        } else if(os.contains("windows")) {
+            return DEFAULT_GENYMOTION_PATH_WINDOWS
+
+        } else if(os.contains("linux")) {
+            return DEFAULT_GENYMOTION_PATH_LINUX
+
+        } else {
+            return DEFAULT_GENYMOTION_PATH
+        }
     }
 }
