@@ -25,6 +25,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -44,10 +45,10 @@ class GenymotionPluginExtensionTest {
         project.evaluate()
         project.genymotion.processConfiguration()
 
-        assertEquals("genymotion.username is not catched from local.properties", "user", project.genymotion.config.username)
-        assertEquals("genymotion.password is not catched from local.properties", "password", project.genymotion.config.password)
-        assertEquals("genymotion.statistics is not catched from local.properties", true, project.genymotion.config.statistics)
-        assertEquals("genymotion.proxyPort is not catched from local.properties", 100, project.genymotion.config.proxyPort)
+        assertEquals("genymotion.username is not catched from local.properties",    "user",     project.genymotion.config.username)
+        assertEquals("genymotion.password is not catched from local.properties",    "password", project.genymotion.config.password)
+        assertEquals("genymotion.statistics is not catched from local.properties",  true,       project.genymotion.config.statistics)
+        assertEquals("genymotion.proxyPort is not catched from local.properties",   100,        project.genymotion.config.proxyPort)
     }
 
     @Test
@@ -145,7 +146,7 @@ class GenymotionPluginExtensionTest {
             debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor2")
             debugTask = project.tasks.getByName(debugTaskName)
             taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
-            assert debugTask.dependsOn.contains(taskLaunch)
+            assert debugTask.dependsOn.contains(taskLaunch )
         }
     }
 
