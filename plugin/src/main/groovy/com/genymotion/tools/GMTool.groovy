@@ -958,14 +958,7 @@ class GMTool {
 
             return handleExitValue(p.exitValue(), error)
         } catch (IOException e) {
-            if (GENYMOTION_CONFIG.abortOnError) {
-                throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
-                        " Current value: " + GENYMOTION_CONFIG.genymotionPath)
-            } else {
-                Log.warn(GENYMOTION_PATH_ERROR_MESSAGE +
-                        " Current value: " + GENYMOTION_CONFIG.genymotionPath +
-                        " Genymotion Gradle plugin won't work.")
-            }
+            throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE)
         }
     }
 
