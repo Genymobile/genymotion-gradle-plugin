@@ -172,4 +172,22 @@ class TestTools {
             name += extension
         name
     }
+
+    static Project getAndroidProject() {
+        Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
+
+        project.apply plugin: 'com.android.application'
+        project.apply plugin: 'genymotion'
+
+        project.android {
+            compileSdkVersion 21
+        }
+        project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
+
+        project.afterEvaluate {
+            println "TASKS AFTER "+project.tasks
+        }
+
+        return project
+    }
 }
