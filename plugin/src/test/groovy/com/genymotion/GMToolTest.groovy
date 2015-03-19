@@ -61,7 +61,8 @@ class GMToolTest {
             GMTool.usage()
             fail("FileNotFoundException expected")
         } catch (Exception e) {
-            assertEquals(GMTool.GENYMOTION_PATH_ERROR_MESSAGE, e.message)
+            assertEquals(GMTool.GENYMOTION_PATH_ERROR_MESSAGE +
+                    " Current value: " + GMTool.GENYMOTION_CONFIG.genymotionPath, e.message)
         }
     }
 

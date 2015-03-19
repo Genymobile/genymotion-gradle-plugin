@@ -51,33 +51,47 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         super(name)
     }
 
-    public void checkParams() {
-        checkNameAndTemplate()
-        checkPaths()
+    public void checkParams(boolean abortOnError=true) {
+        checkNameAndTemplate(abortOnError)
+        checkPaths(abortOnError)
     }
 
-    def checkPaths() {
+    def checkPaths(boolean abortOnError=true) {
         def file
 
-        if((file = Tools.checkFilesExist(pushBefore)) != true)
-            throw new FileNotFoundException("The file $file on pushBefore instruction for the device $name is not found.")
+        if ((file = Tools.checkFilesExist(pushBefore)) != true) {
+            handlePathError("The file $file on pushBefore instruction for the device $name was not found.", abortOnError)
+        }
 
-        if((file = Tools.checkFilesExist(pushAfter)) != true)
-            throw new FileNotFoundException("The file $file on pushAfter instruction for the device $name is not found.")
+        if ((file = Tools.checkFilesExist(pushAfter)) != true) {
+            handlePathError("The file $file on pushAfter instruction for the device $name was not found.", abortOnError)
+        }
 
-        if((file = Tools.checkFilesExist(flash)) != true)
-            throw new FileNotFoundException("The file $file on flash instruction for the device $name is not found.")
+        if ((file = Tools.checkFilesExist(flash)) != true) {
+            handlePathError("The file $file on flash instruction for the device $name is was found.", abortOnError)
+        }
 
-        if((file = Tools.checkFilesExist(install)) != true)
-            throw new FileNotFoundException("The file $file on install instruction for the device $name is not found.")
+        if ((file = Tools.checkFilesExist(install)) != true) {
+            handlePathError("The file $file on install instruction for the device $name was not found.", abortOnError)
+        }
     }
 
-    public void checkNameAndTemplate() {
+    private def handlePathError(String message, boolean abortOnError=true) {
+        if(abortOnError)
+           throw new FileNotFoundException(message)
+        else
+            Log.warn(message)
+    }
+
+    public void checkNameAndTemplate(boolean abortOnError=true) {
         deviceExists = GMTool.isDeviceCreated(name)
         templateExists = GMTool.templateExists(template)
 
         if (!deviceExists && !templateExists) {
-            throw new GMToolException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
+            if(abortOnError) {
+                throw new GMToolException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
+            } else
+                Log.warn("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
 
         } else if (deviceExists && template != null) {
             Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
@@ -131,9 +145,9 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
             delete()
     }
 
-    protected def create() {
+    protected def create(boolean abortOnError=true) {
         if(templateExists == null)
-            checkParams()
+            checkParams(abortOnError)
 
         if(template != null && template.toString().trim() && templateExists)
             GMTool.createDevice(this)

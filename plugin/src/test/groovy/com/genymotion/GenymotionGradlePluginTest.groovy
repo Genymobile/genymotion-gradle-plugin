@@ -35,15 +35,10 @@ class GenymotionGradlePluginTest {
 
     Project project
 
-    @BeforeClass
-    public static void setUpClass() {
-        TestTools.init()
-        TestTools.setDefaultUser(true)
-    }
-
     @Before
     public void setUp() {
         project = TestTools.init()
+        TestTools.setDefaultUser(true)
     }
 
 
@@ -743,6 +738,68 @@ class GenymotionGradlePluginTest {
         }
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
+
+
+    @Test
+    public void canAvoidAbortForGenymotionPath() {
+        project.genymotion {
+            config {
+                abortOnError = false
+                genymotionPath = "wrong/place"
+            }
+            devices {
+                "random" {
+                    template "wrong template"
+                }
+            }
+        }
+
+        //if exception throws => test fail
+        project.evaluate()
+    }
+
+    @Test
+    public void canAvoidAbortForDeviceConfig() {
+        project.genymotion.config.abortOnError = false
+
+        project.genymotion.devices {
+            notExisting
+            "random" {
+                template "wrong template"
+                pushBefore "wrong/path"
+                pullBefore "wrong/path"
+                pushAfter "wrong/path"
+                pullAfter "wrong/path"
+                flash "wrong/path"
+                install "wrong/path"
+            }
+        }
+
+        //if exception throws => test fail
+        project.evaluate()
+    }
+
+    @Test
+    public void canAvoidAbortForFlavorConfig() {
+        project = TestTools.getAndroidProject()
+        project.android.productFlavors{
+            flavor1
+            flavor2
+        }
+
+        project.genymotion.config.abortOnError = false
+
+        project.genymotion.devices {
+            notExisting
+            "random" {
+                productFlavors null, "notKnown", "flavor1"
+            }
+        }
+
+        //if exception throws => test fail
+        project.evaluate()
+    }
+
 
     @After
     public void finishTest() {
