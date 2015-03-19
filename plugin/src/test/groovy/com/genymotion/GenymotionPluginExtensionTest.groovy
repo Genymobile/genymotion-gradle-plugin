@@ -19,12 +19,10 @@
 
 package com.genymotion
 
-import com.genymotion.GenymotionGradlePlugin
 import com.genymotion.tools.AndroidPluginTools
 import com.genymotion.tools.GMToolException
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.testfixtures.ProjectBuilder
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -43,7 +41,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canConfigFromLocalProperties() {
 
-        project = getAndroidProject()
+        project = TestTools.getAndroidProject()
         project.evaluate()
         project.genymotion.processConfiguration()
 
@@ -100,7 +98,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToDefaultAndroidTask() {
 
-        project = getAndroidProject()
+        project = TestTools.getAndroidProject()
         project.genymotion.config.verbose = true
         project.evaluate()
 
@@ -121,7 +119,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToVariants() {
 
-        project = getAndroidProject()
+        project = TestTools.getAndroidProject()
         project.android.productFlavors{
             flavor1
             flavor2
@@ -154,7 +152,7 @@ class GenymotionPluginExtensionTest {
 
     @Test
     public void canCheckProductFlavorsAndAbort() {
-        project = getAndroidProject()
+        project = TestTools.getAndroidProject()
         project.android.productFlavors{
             flavor1
             flavor2
@@ -182,7 +180,7 @@ class GenymotionPluginExtensionTest {
 
     @Test
     public void canCheckNullProductFlavorsAndAbort() {
-        project = getAndroidProject()
+        project = TestTools.getAndroidProject()
         project.android.productFlavors{
             flavor1
             flavor2
@@ -231,26 +229,6 @@ class GenymotionPluginExtensionTest {
         assertEquals(["both", "default", "product1"], project.genymotion.getDevices("flavor1")*.name)
         assertEquals(["both", "default", "product2"], project.genymotion.getDevices("flavor2")*.name)
         assertEquals(["default"], project.genymotion.getDevices("toto")*.name)
-    }
-
-
-    private static Project getAndroidProject() {
-        Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
-
-        project.apply plugin: 'com.android.application'
-        project.apply plugin: 'genymotion'
-
-        project.android {
-            compileSdkVersion 21
-        }
-
-        TestTools.setDefaultGenymotionPath(project)
-
-        project.afterEvaluate {
-            println "TASKS AFTER "+project.tasks
-        }
-
-        return project
     }
 
     @After
