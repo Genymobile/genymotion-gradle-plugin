@@ -996,14 +996,14 @@ class GMTool {
         if (exitValue == RETURN_NO_ERROR) {
             //do nothing
 
-        } else if (exitValue == RETURN_COMMAND_NOT_FOUND_UNIX) {
-            if (GENYMOTION_CONFIG.abortOnError) {
+        } else if(exitValue == RETURN_COMMAND_NOT_FOUND_UNIX) {
+            if(GENYMOTION_CONFIG.abortOnError) {
                 throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
-                        " Current value: " + GENYMOTION_CONFIG.genymotionPath)
+                                                " Current value: " + GENYMOTION_CONFIG.genymotionPath)
             } else {
                 Log.warn(GENYMOTION_PATH_ERROR_MESSAGE +
-                        " Current value: \"" + GENYMOTION_CONFIG.genymotionPath + "\"" +
-                        " Genymotion Gradle plugin cannot work.")
+                         " Current value: \"" + GENYMOTION_CONFIG.genymotionPath + "\"" +
+                         " Genymotion Gradle plugin cannot work.")
             }
 
         } else {
