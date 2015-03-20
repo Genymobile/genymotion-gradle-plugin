@@ -137,11 +137,9 @@ class GenymotionPluginExtension {
                     if (project.android.productFlavors.size() > 0) {
                         project.android.productFlavors.all { flavor ->
                             injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
-                            injectIntoDebugTask(flavor.name)
                         }
                     } else {
                         injectTasksInto(AndroidPluginTools.DEFAULT_ANDROID_TASK)
-                        injectIntoDebugTask()
                     }
 
                 } else {
@@ -160,22 +158,6 @@ class GenymotionPluginExtension {
 
         } catch (UnknownTaskException e) {
             Log.error("Task $taskLaunch not found. genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
-        }
-    }
-
-    public void injectIntoDebugTask(String flavorName = null) {
-        String taskName = AndroidPluginTools.getFlavorAssembleDebugTaskName(flavorName)
-        def theTask = project.tasks.getByName(taskName)
-
-        Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(taskName), GenymotionLaunchTask)
-        if (flavorName != null) {
-            launchTask.flavor = flavorName
-        }
-
-        theTask.dependsOn(launchTask)
-
-        if (project.genymotion.config.verbose) {
-            Log.info("Adding genymotion dependency to " + taskName)
         }
     }
 
