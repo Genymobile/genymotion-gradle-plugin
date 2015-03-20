@@ -82,7 +82,7 @@ class VDLaunchDslTest {
             fail("Expected NotFoundException to be thrown")
         } catch (Exception e) {
             assert e instanceof FileNotFoundException
-            assert e.message == "The file NOPE on pushBefore instruction for the device ${vd.name} is not found."
+            assert e.message == "The file NOPE on pushBefore instruction for the device ${vd.name} was not found."
         }
 
 
@@ -94,7 +94,7 @@ class VDLaunchDslTest {
             fail("Expected NotFoundException to be thrown")
         } catch (Exception e) {
             assert e instanceof FileNotFoundException
-            assert e.message == "The file NOPE on pushAfter instruction for the device ${vd.name} is not found."
+            assert e.message == "The file NOPE on pushAfter instruction for the device ${vd.name} was not found."
         }
 
 
@@ -105,7 +105,7 @@ class VDLaunchDslTest {
             fail("Expected NotFoundException to be thrown")
         } catch (Exception e) {
             assert e instanceof FileNotFoundException
-            assert e.message == "The file NOPE on install instruction for the device ${vd.name} is not found."
+            assert e.message == "The file NOPE on install instruction for the device ${vd.name} was not found."
         }
 
 
@@ -116,7 +116,7 @@ class VDLaunchDslTest {
             fail("Expected NotFoundException to be thrown")
         } catch (Exception e) {
             assert e instanceof FileNotFoundException
-            assert e.message == "The file NOPE on flash instruction for the device ${vd.name} is not found."
+            assert e.message == "The file NOPE on flash instruction for the device ${vd.name} was not found."
         }
     }
 

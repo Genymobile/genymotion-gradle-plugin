@@ -69,7 +69,7 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
         }
 
         if ((file = Tools.checkFilesExist(flash)) != true) {
-            handlePathError("The file $file on flash instruction for the device $name is was found.", abortOnError)
+            handlePathError("The file $file on flash instruction for the device $name was not found.", abortOnError)
         }
 
         if ((file = Tools.checkFilesExist(install)) != true) {

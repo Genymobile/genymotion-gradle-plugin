@@ -27,7 +27,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.fail
 
 class GenymotionPluginExtensionTest {
 
@@ -35,6 +36,8 @@ class GenymotionPluginExtensionTest {
 
     @Before
     public void setUp() {
+        TestTools.init()
+        TestTools.setDefaultUser(true)
     }
 
     @Test
@@ -59,13 +62,13 @@ class GenymotionPluginExtensionTest {
         project.task(taskName) << {}
 
         project.genymotion.config.taskLaunch = taskName
-        project.genymotion.injectTasks()
+        project.evaluate()
 
         def task = project.tasks.getByName(taskName)
-        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH)
+        def finishTask = project.tasks.getByName(GenymotionPluginExtension.getFinishTaskName(taskName))
 
-        assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
-        assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
+        assert task.getTaskDependencies().getDependencies()*.name.contains(GenymotionPluginExtension.getLaunchTaskName(taskName))
+        assert task.finalizedBy.getDependencies().contains(finishTask)
     }
 
     @Test
@@ -81,15 +84,14 @@ class GenymotionPluginExtensionTest {
         }
 
         project.genymotion.config.taskLaunch = tasks
-
-        project.genymotion.injectTasks()
+        project.evaluate()
 
         tasks.each {
             def task = project.tasks.getByName(it)
-            def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH)
+            def finishTask = project.tasks.getByName(GenymotionPluginExtension.getFinishTaskName(it))
 
-            assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
-            assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
+            assert task.getTaskDependencies().getDependencies()*.name.contains(GenymotionPluginExtension.getLaunchTaskName(it))
+            assert task.finalizedBy.getDependencies().contains(finishTask)
         }
 
     }
@@ -98,21 +100,15 @@ class GenymotionPluginExtensionTest {
     public void canInjectToDefaultAndroidTask() {
 
         project = TestTools.getAndroidProject()
-        project.genymotion.config.verbose = true
         project.evaluate()
 
         String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
 
         def task = project.tasks.getByName(taskName)
-        def finishTask = project.tasks.getByName(GenymotionGradlePlugin.TASK_FINISH)
+        def finishTask = project.tasks.getByName(GenymotionPluginExtension.getFinishTaskName(taskName))
 
-        assertTrue("Launch task not injected", task.dependsOn.contains(GenymotionGradlePlugin.TASK_LAUNCH))
-        assertTrue("Finish task not injected", task.finalizedBy.getDependencies().contains(finishTask))
-
-        def debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName()
-        def debugTask = project.tasks.getByName(debugTaskName) //throw exception if task not found
-        def taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
-        assert debugTask.dependsOn.contains(taskLaunch)
+        assert task.getTaskDependencies().getDependencies()*.name.contains(GenymotionPluginExtension.getLaunchTaskName(taskName))
+        assert task.finalizedBy.getDependencies().contains(finishTask)
     }
 
     @Test
@@ -134,18 +130,8 @@ class GenymotionPluginExtensionTest {
             Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavorTaskName))
             Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavorTaskName))
 
-            assert task.dependsOn.contains(launchTask)
+            assert task.getTaskDependencies().getDependencies().contains(launchTask)
             assert task.finalizedBy.getDependencies().contains(finishTask)
-
-            def debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor1")
-            def debugTask = project.tasks.getByName(debugTaskName)
-            def taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
-            assert debugTask.dependsOn.contains(taskLaunch)
-
-            debugTaskName = AndroidPluginTools.getFlavorAssembleDebugTaskName("flavor2")
-            debugTask = project.tasks.getByName(debugTaskName)
-            taskLaunch = project.tasks.getByName(AndroidPluginTools.getFlavorLaunchTask(debugTaskName))
-            assert debugTask.dependsOn.contains(taskLaunch)
         }
     }
 
@@ -185,7 +171,6 @@ class GenymotionPluginExtensionTest {
             flavor2
         }
 
-        def wrongFlavor = "NONONO"
         String device2 = "device2"
 
         project.genymotion.config.abortOnError = true
@@ -229,6 +214,7 @@ class GenymotionPluginExtensionTest {
         assertEquals(["both", "default", "product2"], project.genymotion.getDevices("flavor2")*.name)
         assertEquals(["default"], project.genymotion.getDevices("toto")*.name)
     }
+
 
     @After
     public void finishTest() {

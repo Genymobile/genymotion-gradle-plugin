@@ -34,14 +34,14 @@ import org.gradle.api.UnknownTaskException
 
 class GenymotionPluginExtension {
 
+    private static String LAUNCH_MANUALLY_MESSAGE = "genymotionLaunch/Finish tasks are not injected " +
+            "and has to be launched manually."
+
     final Project project
-
-    def genymotionConfig = new GenymotionConfig()
-
     private final NamedDomainObjectContainer<VDLaunchDsl> deviceLaunches
 
+    def genymotionConfig = new GenymotionConfig()
     public GenymotionConfig currentConfiguration = null
-
 
     GenymotionPluginExtension(Project project, deviceLaunches) {
         this.project = project
@@ -115,11 +115,13 @@ class GenymotionPluginExtension {
         def taskLaunch = project.genymotion.config.taskLaunch
 
         if (!project.genymotion.config.automaticLaunch) {
-            Log.info("Genymotion automatic launch disabled. Set automaticLaunch to true if you want to start genymotion devices automatically.")
+            Log.info("Genymotion automatic launch disabled. " +
+                    "Set automaticLaunch to true if you want to start genymotion devices automatically.")
             return
         }
         if (!taskLaunch) {
-            Log.info("No task defined to launch Genymotion devices. Set a correct taskLaunch if you want to start genymotion devices automatically.")
+            Log.info("No task defined to launch Genymotion devices. " +
+                    "Set a correct taskLaunch if you want to start genymotion devices automatically.")
             return
         }
 
@@ -130,20 +132,11 @@ class GenymotionPluginExtension {
                 }
 
             } else if (taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK) {
-
                 //if we detect the android plugin or the default android test task
                 if (AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null) {
-
-                    if (project.android.productFlavors.size() > 0) {
-                        project.android.productFlavors.all { flavor ->
-                            injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
-                        }
-                    } else {
-                        injectTasksInto(AndroidPluginTools.DEFAULT_ANDROID_TASK)
-                    }
-
+                    injectAndroidTasks()
                 } else {
-                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
+                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, " + LAUNCH_MANUALLY_MESSAGE)
                     return
                 }
 
@@ -151,13 +144,24 @@ class GenymotionPluginExtension {
                 injectTasksInto(taskLaunch)
 
             } else {
-                Log.warn("No destination task found, genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
+                Log.warn("No destination task found, " + LAUNCH_MANUALLY_MESSAGE)
                 return
             }
 
-
         } catch (UnknownTaskException e) {
-            Log.error("Task $taskLaunch not found. genymotionLaunch/Finish tasks are not injected and has to be launched manually.")
+            Log.error("Task $taskLaunch not found. " + LAUNCH_MANUALLY_MESSAGE)
+        }
+    }
+
+    private void injectAndroidTasks() {
+        if (project.android.productFlavors.size() > 0) {
+
+            project.android.productFlavors.all { flavor ->
+                injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
+            }
+
+        } else {
+            injectTasksInto(AndroidPluginTools.DEFAULT_ANDROID_TASK)
         }
     }
 
@@ -167,19 +171,29 @@ class GenymotionPluginExtension {
             Log.info("Adding genymotion dependency to " + taskName)
         }
 
+        String launchName = getLaunchTaskName(taskName)
+        String finishName = getFinishTaskName(taskName)
+
         if (flavor?.trim()) {
-            Task launchTask = project.tasks.create(AndroidPluginTools.getFlavorLaunchTask(taskName), GenymotionLaunchTask)
-            launchTask.flavor = flavor
-            theTask.dependsOn(launchTask)
-
-            Task finishTask = project.tasks.create(AndroidPluginTools.getFlavorFinishTask(taskName), GenymotionFinishTask)
-            finishTask.flavor = flavor
-            theTask.finalizedBy(finishTask)
-
-        } else {
-            theTask.dependsOn(GenymotionGradlePlugin.TASK_LAUNCH)
-            theTask.finalizedBy(GenymotionGradlePlugin.TASK_FINISH)
+            launchName = AndroidPluginTools.getFlavorLaunchTask(taskName)
+            finishName = AndroidPluginTools.getFlavorFinishTask(taskName)
         }
+
+        Task launchTask = project.tasks.create(launchName, GenymotionLaunchTask)
+        launchTask.flavor = flavor
+        theTask.dependsOn(launchTask)
+
+        Task finishTask = project.tasks.create(finishName, GenymotionFinishTask)
+        finishTask.flavor = flavor
+        theTask.finalizedBy(finishTask)
+    }
+
+    public static String getFinishTaskName(String taskName) {
+        GenymotionGradlePlugin.TASK_FINISH + taskName.capitalize()
+    }
+
+    public static String getLaunchTaskName(String taskName) {
+        GenymotionGradlePlugin.TASK_LAUNCH + taskName.capitalize()
     }
 
     /**
