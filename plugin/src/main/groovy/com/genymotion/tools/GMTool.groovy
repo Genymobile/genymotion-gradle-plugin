@@ -944,24 +944,25 @@ class GMTool {
      * @return returns the exitCode if nothing is thrown
      */
     static def handleExitValue(int exitValue, StringBuffer error) {
-        if(exitValue == RETURN_NO_ERROR) {
+        if (exitValue == RETURN_NO_ERROR) {
             //do nothing
 
-        } else if(exitValue == RETURN_COMMAND_NOT_FOUND_UNIX) {
-            if(GENYMOTION_CONFIG.abortOnError) {
-                throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
-                                                " Current value: " + GENYMOTION_CONFIG.genymotionPath)
+        } else if (exitValue == RETURN_COMMAND_NOT_FOUND_UNIX) {
+
+            String errorMessage = GENYMOTION_PATH_ERROR_MESSAGE +
+                    " Current value: \"" + GENYMOTION_CONFIG.genymotionPath + "\""
+
+            if (GENYMOTION_CONFIG.abortOnError) {
+                throw new FileNotFoundException(errorMessage)
             } else {
-                Log.warn(GENYMOTION_PATH_ERROR_MESSAGE +
-                         " Current value: \"" + GENYMOTION_CONFIG.genymotionPath + "\"" +
-                         " Genymotion Gradle plugin cannot work.")
+                Log.warn(errorMessage + " Genymotion Gradle plugin cannot work.")
             }
 
         } else {
-            if(GENYMOTION_CONFIG.abortOnError) {
+            if (GENYMOTION_CONFIG.abortOnError) {
                 throw new GMToolException("GMTool command failed. Error code: $exitValue." + error.toString())
             } else {
-                Log.warn("Genymotion warn: "+error.toString())
+                Log.warn("Genymotion warn: " + error.toString())
             }
         }
         return exitValue
