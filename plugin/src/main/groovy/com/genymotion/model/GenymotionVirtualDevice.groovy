@@ -44,34 +44,45 @@ class GenymotionVirtualDevice {
     String state
     String ip
 
-    GenymotionVirtualDevice(String name, boolean fill=false) {
+    GenymotionVirtualDevice(String name, boolean fill = false) {
         this.name = name;
 
-        if(fill)
+        if (fill) {
             fillFromDetails()
+        }
     }
 
-    GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+    GenymotionVirtualDevice(
+            def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
         init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
     }
 
-    void init(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
-        if(name?.trim())
+    void init(
+            def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+        if (name?.trim()) {
             this.name = name
-        if(density?.trim())
+        }
+        if (density?.trim()) {
             this.density = density
-        if(width)
+        }
+        if (width) {
             this.width = width.toInteger()
-        if(height)
+        }
+        if (height) {
             this.height = height.toInteger()
-        if(virtualKeyboard != null)
+        }
+        if (virtualKeyboard != null) {
             this.virtualKeyboard = virtualKeyboard.toBoolean()
-        if(navbarVisible != null)
+        }
+        if (navbarVisible != null) {
             this.navbarVisible = navbarVisible.toBoolean()
-        if(nbCpu)
+        }
+        if (nbCpu) {
             this.nbCpu = nbCpu.toInteger()
-        if(ram)
+        }
+        if (ram) {
             this.ram = ram.toInteger()
+        }
     }
 
 
@@ -115,12 +126,11 @@ class GenymotionVirtualDevice {
     }
 
 
-
     boolean equals(GenymotionVirtualDevice other) {
         (this.name == other.name)
     }
 
-    def fillFromDetails(boolean verbose=false) {
+    def fillFromDetails(boolean verbose = false) {
         GMTool.getDevice(this, verbose)
     }
 
@@ -129,8 +139,9 @@ class GenymotionVirtualDevice {
     }
 
     boolean isRunning(update = true) {
-        if(update)
+        if (update) {
             this.update()
+        }
 
         state == STATE_ON
     }

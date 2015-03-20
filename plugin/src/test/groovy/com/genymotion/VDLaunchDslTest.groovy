@@ -4,7 +4,6 @@ import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tools.GMTool
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -68,8 +67,8 @@ class VDLaunchDslTest {
     public void canCheckPaths() {
         def vd = new GenymotionVDLaunch("device_name")
         vd.pushBefore = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
-        vd.pushAfter = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
-                        "res/test/test.zip":"/sdcard/Downloads/", "res/test/test2.zip":"/sdcard/Downloads/"]
+        vd.pushAfter = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
+                        "res/test/test.zip": "/sdcard/Downloads/", "res/test/test2.zip": "/sdcard/Downloads/"]
         vd.install = "res/test/test.txt"
         vd.flash = "res/test/test.txt"
 
@@ -88,8 +87,8 @@ class VDLaunchDslTest {
 
 
         vd = new GenymotionVDLaunch("device_name")
-        vd.pushAfter = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
-                        "res/test/test.zip":"/sdcard/Downloads/", "NOPE":"/sdcard/Downloads/"]
+        vd.pushAfter = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
+                        "res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
         try {
             vd.checkPaths()
             fail("Expected NotFoundException to be thrown")

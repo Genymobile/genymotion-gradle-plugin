@@ -19,7 +19,6 @@
 
 package com.genymotion
 
-import com.genymotion.GenymotionPluginExtension
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tasks.GenymotionFinishTask
@@ -27,7 +26,9 @@ import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import org.gradle.api.Project
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 import static org.junit.Assert.*
 
@@ -57,7 +58,7 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canConfigGenymotion() {
-        String path = "TEST"+File.separator
+        String path = "TEST" + File.separator
         String previousPath = project.genymotion.config.genymotionPath
         project.genymotion.config.genymotionPath = path
 
@@ -75,7 +76,7 @@ class GenymotionGradlePluginTest {
         String path = "/path/to/test"
         project.genymotion.config.genymotionPath = path
 
-        assert path+File.separator == project.genymotion.config.genymotionPath
+        assert path + File.separator == project.genymotion.config.genymotionPath
 
         TestTools.setDefaultGenymotionPath(project, defaultPath)
     }
@@ -83,7 +84,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAddNoDevice() {
 
-        project.genymotion.devices{}
+        project.genymotion.devices {}
         assertEquals(0, project.genymotion.devices.size())
     }
 
@@ -91,7 +92,7 @@ class GenymotionGradlePluginTest {
     public void throwsWhenAddDeviceWithoutNameAndTemplate() {
 
         project.genymotion.devices {
-            "test" {pullAfter "buenos dias"}
+            "test" { pullAfter "buenos dias" }
         }
         project.genymotion.checkParams()
     }
@@ -100,7 +101,7 @@ class GenymotionGradlePluginTest {
     public void throwsWhenAddDeviceWithNameNotCreated() {
 
         project.genymotion.devices {
-            "DSFGTFSHgfgdfTFGQFQHG"{}
+            "DSFGTFSHgfgdfTFGQFQHG" {}
         }
         project.genymotion.checkParams()
     }
@@ -181,7 +182,7 @@ class GenymotionGradlePluginTest {
     public void canAddDeviceToLaunchByTemplateWithNameNotCreated() {
 
         project.genymotion.devices {
-            "dfsdgffgdgqsdg"{
+            "dfsdgffgdgqsdg" {
                 template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
             }
         }
@@ -212,8 +213,9 @@ class GenymotionGradlePluginTest {
 
         String vdName = "OKOK-junit"
         def devices = GMTool.getAllDevices(true, false, true)
-        if(devices.contains(vdName))
+        if (devices.contains(vdName)) {
             GMTool.deleteDevice(vdName)
+        }
 
         int intValue = 999
         String densityValue = "mdpi"
@@ -254,7 +256,7 @@ class GenymotionGradlePluginTest {
     public void canLogcat() {
         String vdName = TestTools.createADevice()
 
-        String path = TestTools.TEMP_PATH+vdName+".logcat"
+        String path = TestTools.TEMP_PATH + vdName + ".logcat"
 
         project.genymotion.devices {
             "$vdName" {
@@ -273,7 +275,7 @@ class GenymotionGradlePluginTest {
     public void canLogcatAndAvoidLogcatClearAfterBoot() {
         String vdName = TestTools.createADevice()
 
-        String path = TestTools.TEMP_PATH+vdName+".logcat"
+        String path = TestTools.TEMP_PATH + vdName + ".logcat"
 
         project.genymotion.devices {
             "$vdName" {
@@ -306,10 +308,12 @@ class GenymotionGradlePluginTest {
         boolean logcatDumped = false
 
         file.eachLine {
-            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<"))
+            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<")) {
                 clearedAfterBoot = false
-            if (it.contains(uniqueString))
+            }
+            if (it.contains(uniqueString)) {
                 logcatDumped = true
+            }
         }
         [clearedAfterBoot, logcatDumped]
     }
@@ -358,9 +362,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean installed = false
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
-            if(line.contains("com.genymotion.test"))
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
+            if (line.contains("com.genymotion.test")) {
                 installed = true
+            }
         }
         assertTrue("Install failed", installed)
     }
@@ -379,13 +384,13 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int installed = 0
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
-            if(line.contains("com.genymotion.test") || line.contains("com.genymotion.test2"))
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
+            if (line.contains("com.genymotion.test") || line.contains("com.genymotion.test2")) {
                 installed++
+            }
         }
         assertEquals("All apps are not found", listOfApps.size(), installed)
     }
-
 
 
     @Test
@@ -393,7 +398,7 @@ class GenymotionGradlePluginTest {
 
         String name = TestTools.createADevice()
 
-        project.genymotion.devices{
+        project.genymotion.devices {
             "$name" {
                 pushBefore "res/test/test.txt"
             }
@@ -401,9 +406,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertTrue("Push failed", pushed)
     }
@@ -422,18 +428,20 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertFalse("Push happened but should not happen", pushed)
 
         project.tasks.genymotionFinish.exec()
 
         pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertTrue("Push failed", pushed)
     }
@@ -452,9 +460,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
@@ -474,18 +483,20 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("Pushed files, it should not happen", 0, pushed)
 
         project.tasks.genymotionFinish.exec()
 
         pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
@@ -496,7 +507,7 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt":destination]
+        def listOfFiles = ["res/test/test.txt": destination]
         project.genymotion.devices {
             "$name" {
                 pushBefore listOfFiles
@@ -505,9 +516,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertTrue("Push failed", pushed)
     }
@@ -518,7 +530,7 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt":destination]
+        def listOfFiles = ["res/test/test.txt": destination]
         project.genymotion.devices {
             "$name" {
                 pushAfter listOfFiles
@@ -528,18 +540,20 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertFalse("Pushed done. Should not happen", pushed)
 
         project.tasks.genymotionFinish.exec()
 
         pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertTrue("Push failed", pushed)
     }
@@ -549,7 +563,7 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
+        def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
         project.genymotion.devices {
             "$name" {
                 pushBefore listOfFiles
@@ -558,9 +572,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
@@ -570,7 +585,7 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
+        def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
         project.genymotion.devices {
             "$name" {
                 pushAfter listOfFiles
@@ -581,18 +596,20 @@ class GenymotionGradlePluginTest {
 
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("Pushed done. Should not happen", 0, pushed)
 
         project.tasks.genymotionFinish.exec()
 
         pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
 
@@ -607,12 +624,12 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.devices {
             "$name" {
-                pullBefore "/system/build.prop":TestTools.PULLED_PATH
+                pullBefore "/system/build.prop": TestTools.PULLED_PATH
             }
         }
         project.tasks.genymotionLaunch.exec()
 
-        File file = new File(TestTools.PULLED_PATH+"build.prop")
+        File file = new File(TestTools.PULLED_PATH + "build.prop")
         assertTrue("Pulled file not found", file.exists())
     }
 
@@ -625,18 +642,18 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.devices {
             "$name" {
-                pullAfter "/system/build.prop":TestTools.PULLED_PATH
+                pullAfter "/system/build.prop": TestTools.PULLED_PATH
                 stopWhenFinish false
             }
         }
         project.tasks.genymotionLaunch.exec()
 
-        File file = new File(TestTools.PULLED_PATH+"build.prop")
+        File file = new File(TestTools.PULLED_PATH + "build.prop")
         assertFalse("Pulled file found. Should not happen", file.exists())
 
         project.tasks.genymotionFinish.exec()
 
-        file = new File(TestTools.PULLED_PATH+"build.prop")
+        file = new File(TestTools.PULLED_PATH + "build.prop")
         assertTrue("Pulled file not found", file.exists())
     }
 
@@ -647,7 +664,7 @@ class GenymotionGradlePluginTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":TestTools.PULLED_PATH+"build.prop", "/system/bin/adb":TestTools.PULLED_PATH+"adb"]
+        def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH + "build.prop", "/system/bin/adb": TestTools.PULLED_PATH + "adb"]
         project.genymotion.devices {
             "$name" {
                 pullBefore listOfFiles
@@ -656,12 +673,13 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
 
-        listOfFiles.each {key, value ->
+        listOfFiles.each { key, value ->
             File file = new File(value)
             assertTrue("Pulled file not found", file.exists())
         }
@@ -674,7 +692,7 @@ class GenymotionGradlePluginTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":TestTools.PULLED_PATH+"build.prop", "/system/bin/adb":TestTools.PULLED_PATH+"adb"]
+        def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH + "build.prop", "/system/bin/adb": TestTools.PULLED_PATH + "adb"]
         project.genymotion.devices {
             "$name" {
                 pullAfter listOfFiles
@@ -683,14 +701,14 @@ class GenymotionGradlePluginTest {
         }
         project.tasks.genymotionLaunch.exec()
 
-        listOfFiles.each {key, value ->
+        listOfFiles.each { key, value ->
             File file = new File(value)
             assertFalse("Pulled file found. Should not happen", file.exists())
         }
 
         project.tasks.genymotionFinish.exec()
 
-        listOfFiles.each {key, value ->
+        listOfFiles.each { key, value ->
             File file = new File(value)
             assertTrue("Pulled file not found", file.exists())
         }
@@ -709,9 +727,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         boolean flashed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
-            if(line.contains("touchdown"))
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
+            if (line.contains("touchdown")) {
                 flashed = true
+            }
         }
         assertTrue("Flash failed", flashed)
 
@@ -733,9 +752,10 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         int flashed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
-            if(line.contains("touchdown") || line.contains("touchdown2"))
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
+            if (line.contains("touchdown") || line.contains("touchdown2")) {
                 flashed++
+            }
         }
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
@@ -783,7 +803,7 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAvoidAbortForFlavorConfig() {
         project = TestTools.getAndroidProject()
-        project.android.productFlavors{
+        project.android.productFlavors {
             flavor1
             flavor2
         }

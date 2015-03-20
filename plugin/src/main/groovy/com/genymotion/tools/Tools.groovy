@@ -32,7 +32,7 @@ class Tools {
 
         for (String path in values) {
             File f = new File(path)
-            if(!f.exists()) {
+            if (!f.exists()) {
                 return path
             }
         }
@@ -46,15 +46,15 @@ class Tools {
      * @param input your input
      * @return a list of String forged with the input param
      */
-    public static ArrayList<String> getStringTable(def input)  {
+    public static ArrayList<String> getStringTable(def input) {
 
         def values = []
 
-        if (input instanceof String)
+        if (input instanceof String) {
             values = [input]
-        else if(input instanceof Map) {
+        } else if (input instanceof Map) {
             values = input.keySet().toArray()
-        } else if(input instanceof ArrayList) {
+        } else if (input instanceof ArrayList) {
             values = input
         }
 
