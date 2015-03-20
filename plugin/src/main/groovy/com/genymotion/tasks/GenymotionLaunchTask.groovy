@@ -33,20 +33,23 @@ class GenymotionLaunchTask extends DefaultTask {
     @TaskAction
     def exec() {
 
-        if (project.genymotion.config.verbose)
+        if (project.genymotion.config.verbose) {
             Log.info("Starting devices")
+        }
 
         def devices = project.genymotion.getDevices(flavor)
 
-        if(devices?.size() == 0)
+        if (devices?.size() == 0) {
             return
+        }
 
         def runningDevices = []
 
         def virtualDevices = GMTool.getAllDevices(project.genymotion.config.verbose, false, false)
         virtualDevices.each {
-            if(it.state == GenymotionVirtualDevice.STATE_ON)
+            if (it.state == GenymotionVirtualDevice.STATE_ON) {
                 runningDevices.add(it.name)
+            }
         }
 
         def virtualDevicesNames = virtualDevices*.name
@@ -62,16 +65,19 @@ class GenymotionLaunchTask extends DefaultTask {
     }
 
     def processDevice(device, runningDevices, virtualDevicesNames) {
-        if (!device.start)
+        if (!device.start) {
             return
+        }
 
-        if (project.genymotion.config.verbose)
+        if (project.genymotion.config.verbose) {
             Log.debug("Starting ${device.name}")
+        }
 
         try {
             if (device.name && runningDevices != null && !runningDevices?.contains(device.name)) {
-                if(!virtualDevicesNames?.contains(device.name))
+                if (!virtualDevicesNames?.contains(device.name)) {
                     device.create()
+                }
                 device.checkAndEdit()
                 device.start()
             }
@@ -87,8 +93,9 @@ class GenymotionLaunchTask extends DefaultTask {
             abortLaunch(device)
 
             //then, we thow a new exception to end task, if needed
-            if (project.genymotion.config.abortOnError)
-                throw new GMToolException("GMTool command failed. "+e.getMessage())
+            if (project.genymotion.config.abortOnError) {
+                throw new GMToolException("GMTool command failed. " + e.getMessage())
+            }
         }
     }
 

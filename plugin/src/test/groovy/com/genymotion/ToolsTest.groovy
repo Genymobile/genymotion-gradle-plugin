@@ -18,14 +18,12 @@
  */
 
 
-
 package com.genymotion
 
 import com.genymotion.tools.Tools
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -52,7 +50,7 @@ class ToolsTest {
         result = Tools.getStringTable(single)
         assertEquals([single], result)
 
-        def map = ["ok":"er", "nok":"er", "sorry":"er"]
+        def map = ["ok": "er", "nok": "er", "sorry": "er"]
         result = Tools.getStringTable(map)
         assertEquals(list, result)
 
@@ -69,8 +67,8 @@ class ToolsTest {
         def single = "res/test/test.txt"
         assertTrue(Tools.checkFilesExist(list))
 
-        def map = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
-                   "res/test/test.zip":"/sdcard/Downloads/", "res/test/test2.zip":"/sdcard/Downloads/"]
+        def map = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
+                   "res/test/test.zip": "/sdcard/Downloads/", "res/test/test2.zip": "/sdcard/Downloads/"]
         assertTrue(Tools.checkFilesExist(list))
 
         assertTrue(Tools.checkFilesExist(null))
@@ -85,8 +83,8 @@ class ToolsTest {
         def single = "NOPE"
         assertEquals("NOPE", Tools.checkFilesExist(list))
 
-        def map = ["res/test/test.txt":"/sdcard/Downloads/", "res/test/test2.txt":"/sdcard/Downloads/",
-                   "res/test/test.zip":"/sdcard/Downloads/", "NOPE":"/sdcard/Downloads/"]
+        def map = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
+                   "res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
         assertEquals("NOPE", Tools.checkFilesExist(list))
     }
 

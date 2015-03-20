@@ -20,22 +20,22 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
 class TestTools {
 
-    public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+    public static
+    final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
-    public static String TEMP_PATH= "temp"+File.separator
-    public static String PULLED_PATH= TEMP_PATH+"pulled"+File.separator
+    public static String TEMP_PATH = "temp" + File.separator
+    public static String PULLED_PATH = TEMP_PATH + "pulled" + File.separator
 
     public static def DEVICES = [
-            "Nexus7-junit":"Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
-            "Nexus10-junit":"Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
-            "Nexus4-junit":"Google Nexus 4 - 4.3 - API 18 - 768x1280"
+            "Nexus7-junit" : "Google Nexus 7 - 4.1.1 - API 16 - 800x1280",
+            "Nexus10-junit": "Google Nexus 10 - 4.4.4 - API 19 - 2560x1600",
+            "Nexus4-junit" : "Google Nexus 4 - 4.3 - API 18 - 768x1280"
     ]
 
     static def init() {
@@ -53,14 +53,15 @@ class TestTools {
         project
     }
 
-    private static void setDefaultGenymotionPath(Project project, String defaultPath=null) {
+    private static void setDefaultGenymotionPath(Project project, String defaultPath = null) {
         String path = getDefaultConfig()?.genymotionPath
-        if(path)
+        if (path) {
             project.genymotion.config.genymotionPath = path
-        else if(defaultPath)
+        } else if (defaultPath) {
             project.genymotion.config.genymotionPath = defaultPath
-        else
+        } else {
             project.genymotion.config.genymotionPath = GenymotionConfig.getDefaultGenymotionPath()
+        }
     }
 
     static void deleteAllDevices() {
@@ -87,7 +88,7 @@ class TestTools {
         name
     }
 
-    static def declareADetailedDevice(Project project, boolean stop=true) {
+    static def declareADetailedDevice(Project project, boolean stop = true) {
         String vdName = getRandomName("-junit")
         String densityName = "mdpi"
         int heightInt = 480
@@ -120,16 +121,17 @@ class TestTools {
 
         GMTool.getConfig(true)
 
-        try{
+        try {
             def devices = GMTool.getAllDevices(false, false, false)
             def pattern = ~/^.+?\-junit$/
             println devices
 
             devices.each() {
-                if(pattern.matcher(it.name).matches()) {
+                if (pattern.matcher(it.name).matches()) {
                     println "Removing $it.name"
-                    if(it.isRunning())
+                    if (it.isRunning()) {
                         GMTool.stopDevice(it.name, true)
+                    }
                     GMTool.deleteDevice(it.name, true)
                 }
             }
@@ -143,10 +145,11 @@ class TestTools {
     static void recreatePulledDirectory() {
         File tempDir = new File(PULLED_PATH)
         if (tempDir.exists()) {
-            if (tempDir.isDirectory())
+            if (tempDir.isDirectory()) {
                 tempDir.deleteDir()
-            else
+            } else {
                 tempDir.delete()
+            }
         }
         tempDir.mkdirs()
     }
@@ -155,8 +158,9 @@ class TestTools {
         GenymotionConfig config = new GenymotionConfig()
         config.fromFile = path
 
-        if(config.applyConfigFromFile(null))
+        if (config.applyConfigFromFile(null)) {
             return config
+        }
 
         return null
     }
@@ -164,26 +168,29 @@ class TestTools {
     static setDefaultUser(registerLicense = false) {
         GenymotionConfig config = getDefaultConfig()
 
-        if(!config)
+        if (!config) {
             return
+        }
 
-        if(config.username && config.password) {
+        if (config.username && config.password) {
             GMTool.setConfig(config, true)
 
-            if(config.license && registerLicense)
+            if (config.license && registerLicense) {
                 GMTool.setLicense(config.license, null, null, true)
+            }
         }
     }
 
-    static String getRandomName(String extension=null) {
+    static String getRandomName(String extension = null) {
         int nameLength = 3
         String name = ""
         Random r = new Random()
         nameLength.times() {
             name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
         }
-        if(extension)
+        if (extension) {
             name += extension
+        }
         name
     }
 
@@ -199,7 +206,7 @@ class TestTools {
         project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
 
         project.afterEvaluate {
-            println "TASKS AFTER "+project.tasks
+            println "TASKS AFTER " + project.tasks
         }
 
         return project

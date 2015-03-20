@@ -19,16 +19,17 @@
 
 package com.genymotion.model
 
-import groovy.transform.CompileStatic
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
+import groovy.transform.CompileStatic
 
 @CompileStatic
-class GenymotionVDLaunch extends GenymotionVirtualDevice{
+class GenymotionVDLaunch extends GenymotionVirtualDevice {
 
-    public static final String INVALID_PARAMETER = "You need to specify an already created device name or a valid template to declare a device"
+    public static final String INVALID_PARAMETER = "You need to specify an already created device name " +
+            "or a valid template to declare a device"
 
     protected def templateExists = null
     protected def deviceExists = null
@@ -51,12 +52,12 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         super(name)
     }
 
-    public void checkParams(boolean abortOnError=true) {
+    public void checkParams(boolean abortOnError = true) {
         checkNameAndTemplate(abortOnError)
         checkPaths(abortOnError)
     }
 
-    def checkPaths(boolean abortOnError=true) {
+    def checkPaths(boolean abortOnError = true) {
         def file
 
         if ((file = Tools.checkFilesExist(pushBefore)) != true) {
@@ -76,22 +77,24 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
         }
     }
 
-    private def handlePathError(String message, boolean abortOnError=true) {
-        if(abortOnError)
-           throw new FileNotFoundException(message)
-        else
+    private def handlePathError(String message, boolean abortOnError = true) {
+        if (abortOnError) {
+            throw new FileNotFoundException(message)
+        } else {
             Log.warn(message)
+        }
     }
 
-    public void checkNameAndTemplate(boolean abortOnError=true) {
+    public void checkNameAndTemplate(boolean abortOnError = true) {
         deviceExists = GMTool.isDeviceCreated(name)
         templateExists = GMTool.templateExists(template)
 
         if (!deviceExists && !templateExists) {
-            if(abortOnError) {
+            if (abortOnError) {
                 throw new GMToolException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
-            } else
+            } else {
                 Log.warn("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
+            }
 
         } else if (deviceExists && template != null) {
             Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
@@ -103,12 +106,13 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
 
     boolean checkAndEdit() {
-        if(!GMTool.isDeviceCreated(this.name))
+        if (!GMTool.isDeviceCreated(this.name)) {
             return false
+        }
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
 
-        if(isDifferentFrom(device)) {
+        if (isDifferentFrom(device)) {
             return GMTool.editDevice(this)
         }
 
@@ -117,40 +121,47 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
 
     public boolean isDifferentFrom(GenymotionVirtualDevice device) {
 
-        this.density != device.density                  ||
-        this.width != device.width                      ||
-        this.height != device.height                    ||
-        this.virtualKeyboard != device.virtualKeyboard  ||
-        this.navbarVisible != device.navbarVisible      ||
-        this.nbCpu != device.nbCpu                      ||
-        this.ram != device.ram
+        return this.density != device.density ||
+                this.width != device.width ||
+                this.height != device.height ||
+                this.virtualKeyboard != device.virtualKeyboard ||
+                this.navbarVisible != device.navbarVisible ||
+                this.nbCpu != device.nbCpu ||
+                this.ram != device.ram
     }
 
     protected def start() {
-        if(start)
+        if (start) {
             GMTool.startDevice(this)
+        }
     }
+
     protected def stop() {
-        if(isRunning(true))
+        if (isRunning(true)) {
             GMTool.stopDevice(this)
+        }
     }
 
     protected def stopWhenFinish() {
-        if(stopWhenFinish != false)
+        if (stopWhenFinish != false) {
             stop()
+        }
     }
 
     protected def deleteWhenFinish() {
-        if(stopWhenFinish != false && deleteWhenFinish != false)
+        if (stopWhenFinish != false && deleteWhenFinish != false) {
             delete()
+        }
     }
 
-    protected def create(boolean abortOnError=true) {
-        if(templateExists == null)
+    protected def create(boolean abortOnError = true) {
+        if (templateExists == null) {
             checkParams(abortOnError)
+        }
 
-        if(template != null && template.toString().trim() && templateExists)
+        if (template != null && template.toString().trim() && templateExists) {
             GMTool.createDevice(this)
+        }
     }
 
     protected def delete() {
@@ -186,12 +197,14 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice{
     }
 
     protected def logcatClearIfNeeded() {
-        if(logcat?.trim() && clearLogAfterBoot)
+        if (logcat?.trim() && clearLogAfterBoot) {
             GMTool.logcatClear(this)
+        }
     }
 
     protected def logcatDump() {
-        if(logcat?.trim())
+        if (logcat?.trim()) {
             GMTool.logcatDump(this, logcat)
+        }
     }
 }

@@ -23,7 +23,10 @@ import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import org.gradle.api.Project
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 
 import static org.junit.Assert.*
 
@@ -82,7 +85,7 @@ class GMToolTest {
         GMTool.startDevice(name)
         def devices = GMTool.getRunningDevices(true, false, true)
 
-        println  "devices " + devices
+        println "devices " + devices
         assertTrue("Error, device not running", devices.contains(name))
 
         GMTool.stopDevice(name)
@@ -95,8 +98,9 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def runningDevices = GMTool.getRunningDevices(true, false, true)
-        if(runningDevices.contains(name))
+        if (runningDevices.contains(name)) {
             GMTool.stopDevice(name)
+        }
         def devices = GMTool.getStoppedDevices(true, false, true)
 
         assertTrue("Error, device not stopped", devices.contains(name))
@@ -114,7 +118,7 @@ class GMToolTest {
         TestTools.DEVICES.each() { key, value ->
             boolean exists = false
             devices.each() {
-                if(it.name == key) {
+                if (it.name == key) {
                     exists = true
                     return
                 }
@@ -160,7 +164,7 @@ class GMToolTest {
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
 
-        def newName = name+"-clone"
+        def newName = name + "-clone"
         GMTool.cloneDevice(device, newName)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
@@ -233,8 +237,9 @@ class GMToolTest {
 
         def exitCode = GMTool.startDevice(name)
 
-        if(exitCode == 0)
+        if (exitCode == 0) {
             GMTool.stopDevice(name)
+        }
 
         assertTrue("Start failed", exitCode == 0)
         assertFalse("Stop failed", GMTool.isDeviceRunning(name))
@@ -269,9 +274,9 @@ class GMToolTest {
         assert exitCode == 0
 
         boolean gotIt = false
-        String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
+        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
         GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
-        String path = TestTools.TEMP_PATH+"logcat.dump"
+        String path = TestTools.TEMP_PATH + "logcat.dump"
         File file = new File(path)
         file.delete()
 
@@ -280,13 +285,14 @@ class GMToolTest {
         file = new File(path)
         assert file.exists()
         file.eachLine {
-            if(it.contains(uniqueString))
+            if (it.contains(uniqueString)) {
                 gotIt = true
+            }
         }
         assert gotIt
         file.delete()
 
-        exitCode = GMTool.logcatClear(name,true)
+        exitCode = GMTool.logcatClear(name, true)
         assert exitCode == 0
 
         gotIt = false
@@ -296,8 +302,9 @@ class GMToolTest {
         assert file.exists()
 
         file.eachLine {
-            if(it.contains(uniqueString))
+            if (it.contains(uniqueString)) {
                 gotIt = true
+            }
         }
 
         assert !gotIt
@@ -309,12 +316,12 @@ class GMToolTest {
         def exitCode = GMTool.startDevice(name)
         assert exitCode == 0
 
-        String uniqueString = "GENYMOTION ROCKS DU PONEY "+System.currentTimeMillis()
+        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
         GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
 
-        String path = TestTools.TEMP_PATH+"logcat.dump"
+        String path = TestTools.TEMP_PATH + "logcat.dump"
 
-        exitCode = GMTool.logcatDump(name,path, true)
+        exitCode = GMTool.logcatDump(name, path, true)
         assert exitCode == 0
 
         boolean gotIt = false
@@ -323,13 +330,13 @@ class GMToolTest {
         assert file.exists()
 
         file.eachLine {
-            if(it.contains(uniqueString))
+            if (it.contains(uniqueString)) {
                 gotIt = true
+            }
         }
 
         assert gotIt
     }
-
 
 
     @Test
@@ -342,9 +349,10 @@ class GMToolTest {
 
         GMTool.installToDevice(name, "res/test/test.apk", true)
         boolean installed = false
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
-            if(line.contains("com.genymotion.test"))
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
+            if (line.contains("com.genymotion.test")) {
                 installed = true
+            }
         }
         assert installed
     }
@@ -362,13 +370,13 @@ class GMToolTest {
         GMTool.installToDevice(name, listOfApps, true)
 
         int installed = 0
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) {line, count ->
-            if(line.contains("com.genymotion.test") || line.contains("com.genymotion.test2"))
+        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
+            if (line.contains("com.genymotion.test") || line.contains("com.genymotion.test2")) {
                 installed++
+            }
         }
         assertEquals("No app was found", listOfApps.size(), installed)
     }
-
 
 
     @Test
@@ -381,9 +389,10 @@ class GMToolTest {
 
         GMTool.pushToDevice(name, "res/test/test.txt", true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertTrue("Push failed", pushed)
 
@@ -401,9 +410,10 @@ class GMToolTest {
         GMTool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("Some pushed files are not found", listOfFiles.size(), pushed)
 
@@ -418,11 +428,12 @@ class GMToolTest {
         assertTrue("Start failed", exitCode == 0)
 
         def destination = "/sdcard/"
-        GMTool.pushToDevice(name, ["res/test/test.txt":destination], true)
+        GMTool.pushToDevice(name, ["res/test/test.txt": destination], true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt")) {
                 pushed = true
+            }
         }
         assertTrue("Push failed", pushed)
     }
@@ -436,13 +447,14 @@ class GMToolTest {
         assertTrue("Start failed", exitCode == 0)
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt":destination, "res/test/test2.txt":destination]
+        def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
         GMTool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) {line, count ->
-            if(line.contains("test.txt") || line.contains("test2.txt"))
+        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+            if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
+            }
         }
         assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
     }
@@ -475,13 +487,13 @@ class GMToolTest {
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        def listOfFiles = ["/system/build.prop":TestTools.PULLED_PATH, "/data/app/GestureBuilder.apk":TestTools.PULLED_PATH]
+        def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH, "/data/app/GestureBuilder.apk": TestTools.PULLED_PATH]
         GMTool.pullFromDevice(name, listOfFiles, true)
 
-        File file = new File(TestTools.PULLED_PATH+"build.prop")
+        File file = new File(TestTools.PULLED_PATH + "build.prop")
         assertTrue("build.propfile not found", file.exists())
 
-        file = new File(TestTools.PULLED_PATH+"GestureBuilder.apk")
+        file = new File(TestTools.PULLED_PATH + "GestureBuilder.apk")
         assertTrue("GestureBuilder.apk not found", file.exists())
     }
 
@@ -496,9 +508,10 @@ class GMToolTest {
 
         GMTool.flashDevice(name, "res/test/test.zip", true)
         boolean flashed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
-            if(line.contains("touchdown"))
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
+            if (line.contains("touchdown")) {
                 flashed = true
+            }
         }
         assertTrue("Flash failed", flashed)
 
@@ -516,9 +529,10 @@ class GMToolTest {
         GMTool.flashDevice(name, listOfFiles, true)
 
         int flashed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) {line, count ->
-            if(line.contains("touchdown") || line.contains("touchdown2"))
+        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
+            if (line.contains("touchdown") || line.contains("touchdown2")) {
                 flashed++
+            }
         }
         assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
     }
@@ -560,8 +574,9 @@ class GMToolTest {
 
     @After
     public void finishTest() {
-        if(genymotionPath != null)
+        if (genymotionPath != null) {
             project.genymotion.config.genymotionPath = genymotionPath
+        }
         TestTools.cleanAfterTests()
     }
 

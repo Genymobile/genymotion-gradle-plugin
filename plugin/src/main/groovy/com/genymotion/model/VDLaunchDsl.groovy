@@ -22,7 +22,7 @@ package com.genymotion.model
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class VDLaunchDsl extends GenymotionVDLaunch{
+class VDLaunchDsl extends GenymotionVDLaunch {
 
     List<String> productFlavors
 
@@ -31,22 +31,24 @@ class VDLaunchDsl extends GenymotionVDLaunch{
     }
 
     boolean hasFlavor(String flavor) {
-        if(flavor == null || productFlavors == null) //if there is no flavor defined, we consider it as true
+        //if there is no flavor defined, we consider it as true
+        if (flavor == null || productFlavors == null) {
             return true
+        }
         productFlavors.contains(flavor)
     }
 
     public void setProductFlavors(String... flavors) {
-        if(flavors?.size() == 1)
+        if (flavors?.size() == 1) {
             productFlavors = [flavors[0]]
-        else {
+        } else {
             productFlavors = []
             productFlavors.addAll(flavors)
         }
     }
 
     public void setProductFlavors(String flavor) {
-        if(flavor == null) {
+        if (flavor == null) {
             productFlavors = []
             return
         }
@@ -55,7 +57,7 @@ class VDLaunchDsl extends GenymotionVDLaunch{
     }
 
     public void setProductFlavors(Collection<String> flavors) {
-        if(flavors == null) {
+        if (flavors == null) {
             productFlavors = []
             return
         }
