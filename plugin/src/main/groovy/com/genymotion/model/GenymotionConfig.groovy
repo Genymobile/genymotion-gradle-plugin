@@ -91,14 +91,21 @@ class GenymotionConfig {
     }
 
     boolean isEmpty() {
-        if (statistics != null || username != null || password != null || storeCredentials != null || license != null ||
-                proxy != null || proxyAddress != null || proxyPort != null || proxyAuth != null || proxyUsername != null ||
-                proxyPassword != null || virtualDevicePath != null || androidSdkPath != null || useCustomSdk != null ||
-                screenCapturePath != null) {
-            return false
-        }
-
-        return true
+        return (statistics == null &&
+                username == null &&
+                password == null &&
+                storeCredentials == null &&
+                license == null &&
+                proxy == null &&
+                proxyAddress == null &&
+                proxyPort == null &&
+                proxyAuth == null &&
+                proxyUsername == null &&
+                proxyPassword == null &&
+                virtualDevicePath == null &&
+                androidSdkPath == null &&
+                useCustomSdk == null &&
+                screenCapturePath == null)
     }
 
     /**
