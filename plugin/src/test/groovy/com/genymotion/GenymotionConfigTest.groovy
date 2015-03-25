@@ -161,6 +161,7 @@ class GenymotionConfigTest {
 
     @After
     public void finishTest() {
+        Tools.metaClass.static.getOSName = { return BASE_GET_OS_NAME }
 
         if (changedUser) {
             TestTools.setDefaultUser(true)

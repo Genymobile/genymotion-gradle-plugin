@@ -821,7 +821,6 @@ class GenymotionGradlePluginTest {
         project.evaluate()
     }
 
-
     @After
     public void finishTest() {
         TestTools.cleanAfterTests()
