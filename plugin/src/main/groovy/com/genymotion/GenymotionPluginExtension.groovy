@@ -70,7 +70,7 @@ class GenymotionPluginExtension {
         checkProductFlavors()
 
         deviceLaunches.each {
-            it.checkParams()
+            it.checkParams(project.genymotion.config.abortOnError)
         }
 
         //check gmtool path is found
