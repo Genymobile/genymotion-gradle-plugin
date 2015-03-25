@@ -21,6 +21,7 @@ package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.Tools
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Ignore
@@ -29,6 +30,8 @@ import org.junit.Test
 import static org.junit.Assert.*
 
 class GenymotionConfigTest {
+
+    private static final String BASE_GET_OS_NAME = Tools.getOSName()
 
     Project project
     boolean changedUser = false
@@ -120,9 +123,44 @@ class GenymotionConfigTest {
         GMTool.setConfig(TestTools.getDefaultConfig(), true)
     }
 
+    @Test
+    public void canAutoConfigGenymotionPath() {
+        //we emulate a mac
+        Tools.metaClass.static.getOSName = {return 'mac'}
+        GenymotionConfig config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH_MAC
+
+        Tools.metaClass.static.getOSName = {return 'Mac'}
+        config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH_MAC
+
+        //we emulate a windows
+        Tools.metaClass.static.getOSName = {return 'windows'}
+        config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH_WINDOWS
+
+        Tools.metaClass.static.getOSName = {return 'Windows'}
+        config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH_WINDOWS
+
+        //we emulate a linux
+        Tools.metaClass.static.getOSName = {return 'linux'}
+        config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH_LINUX
+
+        Tools.metaClass.static.getOSName = {return 'Linux'}
+        config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH_LINUX
+
+        //we emulate a strange thing
+        Tools.metaClass.static.getOSName = {return 'RGFQS'}
+        config = new GenymotionConfig()
+        assert config.genymotionPath == GenymotionConfig.DEFAULT_GENYMOTION_PATH
+    }
 
     @After
     public void finishTest() {
+        Tools.metaClass.static.getOSName = {return BASE_GET_OS_NAME}
 
         if(changedUser) {
             TestTools.setDefaultUser(true)
