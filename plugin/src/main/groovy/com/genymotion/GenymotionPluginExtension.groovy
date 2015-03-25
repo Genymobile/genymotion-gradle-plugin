@@ -35,7 +35,7 @@ import org.gradle.api.UnknownTaskException
 class GenymotionPluginExtension {
 
     private static String LAUNCH_MANUALLY_MESSAGE = "genymotionLaunch/Finish tasks are not injected " +
-            "and has to be launched manually."
+            "and have to be launched manually."
 
     final Project project
     private final NamedDomainObjectContainer<VDLaunchDsl> deviceLaunches
