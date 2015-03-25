@@ -26,16 +26,17 @@ import org.gradle.api.Project
 
 class GenymotionConfig {
 
-    static final String DEFAULT_GENYMOTION_PATH_MAC     = "/Applications/Genymotion.app/Contents/MacOS/"
+    static final String DEFAULT_GENYMOTION_PATH_MAC = "/Applications/Genymotion.app/Contents/MacOS/"
     static final String DEFAULT_GENYMOTION_PATH_WINDOWS = "C:\\Program Files\\Genymobile\\Genymotion\\"
-    static final String DEFAULT_GENYMOTION_PATH_LINUX   = ""
-    static final String DEFAULT_GENYMOTION_PATH         = ""
+    static final String DEFAULT_GENYMOTION_PATH_LINUX = ""
+    static final String DEFAULT_GENYMOTION_PATH = ""
 
     //plugin config
     def genymotionPath = ""     //set the Genymotion path to PATH
 
     //genymotion config
-    def fromFile = null         //get the whole configuration from a file. The content get the priority to the .gradle file
+
+    def fromFile = null         //set config from a file. The content get the priority to the build.gradle file
 
     def statistics              //enable stats
     def username                //set the login
@@ -54,49 +55,57 @@ class GenymotionConfig {
     def screenCapturePath       //set le dossier de stockage des screenshots
 
     //task configs
-    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on the genymotion launch task
+    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on our launch task
     boolean automaticLaunch = true                              //enable or not the genymotion tasks injection
     int processTimeout = 300000                                 //timeout for all the processes launched in command line
     boolean verbose = false                                     //verbose mode
-    boolean persist = true                                      //persist the configurations on genymotion or reset them back after the task execution
+    boolean persist = true                                      //keep the genymotion config or reset it after execution
     boolean abortOnError = true                                 //abort the task execution if a GMTool error occurs
 
     protected String CONFIG_PREFIX = "genymotion."
-    private Map CONFIG_PROPERTIES = ["genymotionPath":String.class,
-                                     "statistics":Boolean.class,
-                                     "username":String.class,
-                                     "password":String.class,
-                                     "storeCredentials":Boolean.class,
-                                     "license":String.class,
-                                     "proxy":Boolean.class,
-                                     "proxyAddress":String.class,
-                                     "proxyPort":Integer.class,
-                                     "proxyAuth":Boolean.class,
-                                     "proxyUsername":String.class,
-                                     "proxyPassword":String.class,
-                                     "virtualDevicePath":String.class,
-                                     "androidSdkPath":String.class,
-                                     "useCustomSdk":Boolean.class,
-                                     "screenCapturePath":String.class,
-                                     "taskLaunch":String.class,
-                                     "automaticLaunch":Boolean.class,
-                                     "processTimeout":Integer.class,
-                                     "verbose":Boolean.class,
-                                     "persist":Boolean.class,
-                                     "abortOnError":Boolean.class]
+    private Map CONFIG_PROPERTIES = ["genymotionPath"   : String.class,
+                                     "statistics"       : Boolean.class,
+                                     "username"         : String.class,
+                                     "password"         : String.class,
+                                     "storeCredentials" : Boolean.class,
+                                     "license"          : String.class,
+                                     "proxy"            : Boolean.class,
+                                     "proxyAddress"     : String.class,
+                                     "proxyPort"        : Integer.class,
+                                     "proxyAuth"        : Boolean.class,
+                                     "proxyUsername"    : String.class,
+                                     "proxyPassword"    : String.class,
+                                     "virtualDevicePath": String.class,
+                                     "androidSdkPath"   : String.class,
+                                     "useCustomSdk"     : Boolean.class,
+                                     "screenCapturePath": String.class,
+                                     "taskLaunch"       : String.class,
+                                     "automaticLaunch"  : Boolean.class,
+                                     "processTimeout"   : Integer.class,
+                                     "verbose"          : Boolean.class,
+                                     "persist"          : Boolean.class,
+                                     "abortOnError"     : Boolean.class]
 
     GenymotionConfig() {
         genymotionPath = getDefaultGenymotionPath()
     }
 
     boolean isEmpty() {
-        if(statistics != null || username != null || password != null || storeCredentials != null || license != null ||
-           proxy != null || proxyAddress != null || proxyPort != null || proxyAuth != null || proxyUsername != null ||
-           proxyPassword != null || virtualDevicePath != null || androidSdkPath != null || useCustomSdk != null ||
-           screenCapturePath != null)
-            return false
-
-        return true
+        return (statistics == null &&
+                username == null &&
+                password == null &&
+                storeCredentials == null &&
+                license == null &&
+                proxy == null &&
+                proxyAddress == null &&
+                proxyPort == null &&
+                proxyAuth == null &&
+                proxyUsername == null &&
+                proxyPassword == null &&
+                virtualDevicePath == null &&
+                androidSdkPath == null &&
+                useCustomSdk == null &&
+                screenCapturePath == null)
     }
 
     /**
@@ -111,14 +120,14 @@ class GenymotionConfig {
         def Properties props = new Properties()
         def propFile
 
-        if(fromFile == null && project != null) {
+        if (fromFile == null && project != null) {
             fromFile = AndroidPluginTools.DEFAULT_PROPERTIES
             propFile = new File(project.rootDir, fromFile)
-        }
-        else if(fromFile != null)
+        } else if (fromFile != null) {
             propFile = new File(fromFile)
-        else
+        } else {
             return false
+        }
 
         if (propFile.canRead()) {
             try {
@@ -128,12 +137,13 @@ class GenymotionConfig {
                 //This method allows a better control on the data changed and avoid side loading non-allowed values
 
                 //we iterate on the properties list to fill the config object
-                CONFIG_PROPERTIES.each {key, value ->
+                CONFIG_PROPERTIES.each { key, value ->
                     def val = props.getProperty(CONFIG_PREFIX + key)
 
-                    if(val != null) {
-                        if(value == Boolean.class)
+                    if (val != null) {
+                        if (value == Boolean.class) {
                             val = val.toBoolean()
+                        }
 
                         this.setProperty(key, val.asType(value))
                     }
@@ -159,13 +169,13 @@ class GenymotionConfig {
     public static String getDefaultGenymotionPath() {
         String os = Tools.getOSName().toLowerCase()
 
-        if(os.contains("mac")) {
+        if (os.contains("mac")) {
             return DEFAULT_GENYMOTION_PATH_MAC
 
-        } else if(os.contains("windows")) {
+        } else if (os.contains("windows")) {
             return DEFAULT_GENYMOTION_PATH_WINDOWS
 
-        } else if(os.contains("linux")) {
+        } else if (os.contains("linux")) {
             return DEFAULT_GENYMOTION_PATH_LINUX
 
         } else {

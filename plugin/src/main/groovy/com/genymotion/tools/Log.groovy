@@ -26,8 +26,9 @@ class Log {
     private static Logger logger = null
 
     static synchronized Logger checkLogger() {
-        if (logger == null)
+        if (logger == null) {
             logger = LoggerFactory.getLogger("genymotion-logger")
+        }
     }
 
     public static synchronized def error(def message) {
@@ -51,9 +52,9 @@ class Log {
     }
 
     private static String normalizeMessage(def message) {
-        if(message instanceof String)
+        if (message instanceof String) {
             return message
-        else if (message instanceof List<String>) {
+        } else if (message instanceof List<String>) {
             String result = ""
             message.each {
                 result += it.toString()

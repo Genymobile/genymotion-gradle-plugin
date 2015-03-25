@@ -41,8 +41,8 @@ class GenymotionFinishTask extends DefaultTask {
         Log.info("Finishing ${device.name}")
         if (device.start) {
 
-            try{
-                if(device.isRunning()) {
+            try {
+                if (device.isRunning()) {
                     device.logcatDump()
                     device.pushAfter()
                     device.pullAfter()
@@ -50,7 +50,7 @@ class GenymotionFinishTask extends DefaultTask {
                 }
                 device.deleteWhenFinish()
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace()
                 Log.info("Stopping all launched devices and deleting when needed")
 
@@ -59,8 +59,9 @@ class GenymotionFinishTask extends DefaultTask {
                     device.deleteWhenFinish()
                 }
                 //then, we thow a new exception to end task, if needed
-                if(project.genymotion.config.abortOnError)
-                    throw new GMToolException("GMTool command failed. "+e.getMessage())
+                if (project.genymotion.config.abortOnError) {
+                    throw new GMToolException("GMTool command failed. " + e.getMessage())
+                }
 
             } finally {
                 project.genymotion.endConfiguration()

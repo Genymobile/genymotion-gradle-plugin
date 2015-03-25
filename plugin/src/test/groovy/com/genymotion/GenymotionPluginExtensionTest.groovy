@@ -120,7 +120,7 @@ class GenymotionPluginExtensionTest {
     public void canInjectToVariants() {
 
         project = TestTools.getAndroidProject()
-        project.android.productFlavors{
+        project.android.productFlavors {
             flavor1
             flavor2
         }
@@ -153,7 +153,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canCheckProductFlavorsAndAbort() {
         project = TestTools.getAndroidProject()
-        project.android.productFlavors{
+        project.android.productFlavors {
             flavor1
             flavor2
         }
@@ -181,7 +181,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canCheckNullProductFlavorsAndAbort() {
         project = TestTools.getAndroidProject()
-        project.android.productFlavors{
+        project.android.productFlavors {
             flavor1
             flavor2
         }
@@ -229,26 +229,6 @@ class GenymotionPluginExtensionTest {
         assertEquals(["both", "default", "product1"], project.genymotion.getDevices("flavor1")*.name)
         assertEquals(["both", "default", "product2"], project.genymotion.getDevices("flavor2")*.name)
         assertEquals(["default"], project.genymotion.getDevices("toto")*.name)
-    }
-
-
-    private static Project getAndroidProject() {
-        Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
-
-        project.apply plugin: 'com.android.application'
-        project.apply plugin: 'genymotion'
-
-        project.android {
-            compileSdkVersion 21
-        }
-
-        TestTools.setDefaultGenymotionPath(project)
-
-        project.afterEvaluate {
-            println "TASKS AFTER "+project.tasks
-        }
-
-        return project
     }
 
     @After

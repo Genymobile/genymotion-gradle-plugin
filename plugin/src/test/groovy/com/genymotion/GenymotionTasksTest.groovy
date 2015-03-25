@@ -20,11 +20,13 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 
 import static org.junit.Assert.*
 
@@ -106,13 +108,14 @@ class GenymotionTasksTest {
 
         String goodPath = project.genymotion.config.genymotionPath
 
-        try{
+        try {
             project.genymotion.config.abortOnError = true
             project.genymotion.config.genymotionPath = "ssqfkjfksùfsdlkf"
             project.tasks.genymotionLaunch.exec()
             fail("Expected GMToolException to be thrown")
 
-        } catch (IOException e) { //TODO check how we can produce GMToolException instead of IOException with another command
+        } catch (IOException e) {
+            //TODO check how we can produce GMToolException instead of IOException with another command
             project.genymotion.config.genymotionPath = goodPath
 
             assertFalse(GMTool.isDeviceCreated(deviceToDelete))
@@ -123,8 +126,9 @@ class GenymotionTasksTest {
     boolean devicesAreStopped(def devices) {
         def stoppedDevices = GMTool.getRunningDevices(false, false, true)
         devices.each() {
-            if(!it.deleteWhenFinish && !stoppedDevices.contains(it.name))
+            if (!it.deleteWhenFinish && !stoppedDevices.contains(it.name)) {
                 return false
+            }
         }
     }
 

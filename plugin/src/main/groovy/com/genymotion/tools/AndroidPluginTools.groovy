@@ -34,10 +34,11 @@ class AndroidPluginTools {
     }
 
     public static String getFlavorAssembleDebugTaskName(String flavor = null) {
-        if(flavor == null)
+        if (flavor == null) {
             return ASSEMBLE_PREFIX + "Debug"
-        else
+        } else {
             return ASSEMBLE_PREFIX + flavor.capitalize() + "Debug"
+        }
     }
 
     public static String getFlavorFinishTask(String suffix) {
