@@ -35,7 +35,6 @@ genymotion.config{
 //    automaticLaunch = true    //enable or not the genymotion tasks injection
 //    processTimeout = 300000   //timeout for all the processes launched in command line
 //    verbose = true            //verbose mode
-//    persist = true            //persist the configurations on genymotion or reset them back after the task execution
 //    abortOnError = false      //abort the task execution if a GMTool error occurs
 }
 

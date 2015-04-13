@@ -143,7 +143,6 @@ class GenymotionTasksTest {
         assert f.exists(), "Config file does not exist to test login feature. Set the path to be able to run the test"
 
         project.genymotion.config.fromFile = path
-        project.genymotion.config.persist = true
 
         project.genymotion.processConfiguration()
 

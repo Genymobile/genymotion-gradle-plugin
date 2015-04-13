@@ -62,9 +62,6 @@ class GenymotionFinishTask extends DefaultTask {
                 if (project.genymotion.config.abortOnError) {
                     throw new GMToolException("GMTool command failed. " + e.getMessage())
                 }
-
-            } finally {
-                project.genymotion.endConfiguration()
             }
         }
     }

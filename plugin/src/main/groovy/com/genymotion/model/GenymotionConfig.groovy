@@ -59,7 +59,6 @@ class GenymotionConfig {
     boolean automaticLaunch = true                              //enable or not the genymotion tasks injection
     int processTimeout = 300000                                 //timeout for all the processes launched in command line
     boolean verbose = false                                     //verbose mode
-    boolean persist = true                                      //keep the genymotion config or reset it after execution
     boolean abortOnError = true                                 //abort the task execution if a GMTool error occurs
 
     protected String CONFIG_PREFIX = "genymotion."
@@ -83,7 +82,6 @@ class GenymotionConfig {
                                      "automaticLaunch"  : Boolean.class,
                                      "processTimeout"   : Integer.class,
                                      "verbose"          : Boolean.class,
-                                     "persist"          : Boolean.class,
                                      "abortOnError"     : Boolean.class]
 
     GenymotionConfig() {
