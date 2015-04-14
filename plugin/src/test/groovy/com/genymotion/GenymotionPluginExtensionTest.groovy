@@ -27,7 +27,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import static org.junit.Assert.assertEquals
 import static org.junit.Assert.fail
 
 class GenymotionPluginExtensionTest {
@@ -47,10 +46,10 @@ class GenymotionPluginExtensionTest {
         project.evaluate()
         project.genymotion.processConfiguration()
 
-        assertEquals("genymotion.username is not catched from local.properties", "user", project.genymotion.config.username)
-        assertEquals("genymotion.password is not catched from local.properties", "password", project.genymotion.config.password)
-        assertEquals("genymotion.statistics is not catched from local.properties", true, project.genymotion.config.statistics)
-        assertEquals("genymotion.proxyPort is not catched from local.properties", 100, project.genymotion.config.proxyPort)
+        assert project.genymotion.config.username == "user"
+        assert project.genymotion.config.password == "password"
+        assert project.genymotion.config.statistics == true
+        assert project.genymotion.config.proxyPort == 100
     }
 
     @Test
@@ -209,10 +208,10 @@ class GenymotionPluginExtensionTest {
         }
 
         //IMPORTANT: Tab needs to be in alphabetical order
-        assertEquals(["both", "default", "product1", "product2"], project.genymotion.getDevices()*.name)
-        assertEquals(["both", "default", "product1"], project.genymotion.getDevices("flavor1")*.name)
-        assertEquals(["both", "default", "product2"], project.genymotion.getDevices("flavor2")*.name)
-        assertEquals(["default"], project.genymotion.getDevices("toto")*.name)
+        assert project.genymotion.getDevices()*.name == ["both", "default", "product1", "product2"]
+        assert project.genymotion.getDevices("flavor1")*.name == ["both", "default", "product1"]
+        assert project.genymotion.getDevices("flavor2")*.name == ["both", "default", "product2"]
+        assert project.genymotion.getDevices("toto")*.name == ["default"]
     }
 
 

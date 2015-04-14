@@ -6,7 +6,7 @@ import com.genymotion.tools.GMTool
 import org.junit.BeforeClass
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static org.junit.Assert.fail
 
 class VDLaunchDslTest {
 
@@ -58,9 +58,9 @@ class VDLaunchDslTest {
     public void canUpdateWhenIsRunning() {
         String name = TestTools.createADevice()
         def device = GMTool.getDevice(name)
-        assertFalse(device.isRunning())
+        assert !device.isRunning()
         GMTool.startDevice(device)
-        assertTrue(device.isRunning())
+        assert device.isRunning()
     }
 
     @Test

@@ -30,8 +30,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import static org.junit.Assert.*
-
 class GenymotionGradlePluginTest {
 
     Project project
@@ -45,15 +43,15 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void canAddsTaskToProject() {
-        assertTrue(project.tasks.genymotionLaunch instanceof GenymotionLaunchTask)
-        assertTrue(project.tasks.genymotionFinish instanceof GenymotionFinishTask)
+        assert project.tasks.genymotionLaunch instanceof GenymotionLaunchTask
+        assert project.tasks.genymotionFinish instanceof GenymotionFinishTask
     }
 
     @Test
     public void canAddExtensionToProject() {
-        assertTrue(project.genymotion instanceof GenymotionPluginExtension)
-        assertTrue(project.genymotion.config instanceof GenymotionConfig)
-        assertTrue(project.genymotion.devices instanceof List)
+        assert project.genymotion instanceof GenymotionPluginExtension
+        assert project.genymotion.config instanceof GenymotionConfig
+        assert project.genymotion.devices instanceof List
     }
 
     @Test
@@ -85,7 +83,7 @@ class GenymotionGradlePluginTest {
     public void canAddNoDevice() {
 
         project.genymotion.devices {}
-        assertEquals(0, project.genymotion.devices.size())
+        assert project.genymotion.devices.size() == 0
     }
 
     @Test(expected = GMToolException.class)
@@ -136,8 +134,8 @@ class GenymotionGradlePluginTest {
         project.genymotion.devices {
             "$vdName" {}
         }
-        assertNull(project.genymotion.devices[0].template)
-        assertEquals(vdName, project.genymotion.devices[0].name)
+        assert project.genymotion.devices[0].template == null
+        assert project.genymotion.devices[0].name == vdName
 
         GMTool.deleteDevice(vdName)
     }
@@ -153,8 +151,8 @@ class GenymotionGradlePluginTest {
                 template templateName
             }
         }
-        assertEquals(templateName, project.genymotion.devices[0].template)
-        assertEquals(vdName, project.genymotion.devices[0].name)
+        assert project.genymotion.devices[0].template == templateName
+        assert project.genymotion.devices[0].name == vdName
 
         GMTool.deleteDevice(vdName)
     }
@@ -172,8 +170,8 @@ class GenymotionGradlePluginTest {
         }
         project.genymotion.checkParams()
 
-        assertFalse(project.genymotion.devices[0].templateExists)
-        assertEquals(vdName, project.genymotion.devices[0].name)
+        assert !project.genymotion.devices[0].templateExists
+        assert project.genymotion.devices[0].name == vdName
 
         GMTool.deleteDevice(vdName)
     }
@@ -189,10 +187,10 @@ class GenymotionGradlePluginTest {
 
         project.genymotion.checkParams()
 
-        assertNotNull("No device found", project.genymotion.devices[0])
-        assertNotNull("Device not filled", project.genymotion.devices[0].name)
-        assertTrue("Device not created", project.genymotion.devices[0].create)
-        assertNull(project.genymotion.devices[0].deleteWhenFinish)
+        assert project.genymotion.devices[0] != null
+        assert project.genymotion.devices[0].name != null
+        assert project.genymotion.devices[0].create
+        assert project.genymotion.devices[0].deleteWhenFinish == null
     }
 
     @Test
@@ -205,7 +203,7 @@ class GenymotionGradlePluginTest {
             }
         }
 
-        assertFalse(project.genymotion.devices[0].start)
+        assert !project.genymotion.devices[0].start
     }
 
     @Test
@@ -233,20 +231,20 @@ class GenymotionGradlePluginTest {
             }
         }
 
-        assertNotNull(project.genymotion.devices[0])
-        assertEquals(project.genymotion.devices[0].name, vdName)
+        assert project.genymotion.devices[0] != null
+        assert project.genymotion.devices[0].name == vdName
 
         project.genymotion.devices[0].create()
         project.genymotion.devices[0].checkAndEdit()
 
         GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
-        assertEquals(densityValue, device.density)
-        assertEquals(intValue, device.width)
-        assertEquals(intValue, device.height)
-        assertFalse(device.virtualKeyboard)
-        assertFalse(device.navbarVisible)
-        assertEquals(1, device.nbCpu)
-        assertEquals(2048, device.ram)
+        assert densityValue == device.density
+        assert intValue == device.width
+        assert intValue == device.height
+        assert !device.virtualKeyboard
+        assert !device.navbarVisible
+        assert 1 == device.nbCpu
+        assert 2048 == device.ram
 
         GMTool.deleteDevice(vdName)
     }
@@ -330,7 +328,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assertFalse("The device still exists", GMTool.isDeviceCreated(vdName, true))
+        assert !GMTool.isDeviceCreated(vdName, true)
     }
 
     @Test
@@ -345,7 +343,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assertTrue("The device has been deleted, should still be listed", GMTool.isDeviceCreated(vdName, true))
+        assert GMTool.isDeviceCreated(vdName, true)
     }
 
 
@@ -367,7 +365,7 @@ class GenymotionGradlePluginTest {
                 installed = true
             }
         }
-        assertTrue("Install failed", installed)
+        assert installed
     }
 
     @Test
@@ -389,7 +387,7 @@ class GenymotionGradlePluginTest {
                 installed++
             }
         }
-        assertEquals("All apps are not found", listOfApps.size(), installed)
+        assert listOfApps.size() == installed
     }
 
 
@@ -411,7 +409,7 @@ class GenymotionGradlePluginTest {
                 pushed = true
             }
         }
-        assertTrue("Push failed", pushed)
+        assert pushed
     }
 
     @Test
@@ -433,7 +431,7 @@ class GenymotionGradlePluginTest {
                 pushed = true
             }
         }
-        assertFalse("Push happened but should not happen", pushed)
+        assert !pushed
 
         project.tasks.genymotionFinish.exec()
 
@@ -443,7 +441,7 @@ class GenymotionGradlePluginTest {
                 pushed = true
             }
         }
-        assertTrue("Push failed", pushed)
+        assert pushed
     }
 
     @Test
@@ -465,7 +463,7 @@ class GenymotionGradlePluginTest {
                 pushed++
             }
         }
-        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
+        assert listOfFiles.size() == pushed
     }
 
     @Test
@@ -488,7 +486,7 @@ class GenymotionGradlePluginTest {
                 pushed++
             }
         }
-        assertEquals("Pushed files, it should not happen", 0, pushed)
+        assert pushed == 0
 
         project.tasks.genymotionFinish.exec()
 
@@ -498,7 +496,7 @@ class GenymotionGradlePluginTest {
                 pushed++
             }
         }
-        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
+        assert listOfFiles.size() == pushed
     }
 
     @Test
@@ -521,7 +519,7 @@ class GenymotionGradlePluginTest {
                 pushed = true
             }
         }
-        assertTrue("Push failed", pushed)
+        assert pushed
     }
 
     @Test
@@ -545,7 +543,7 @@ class GenymotionGradlePluginTest {
                 pushed = true
             }
         }
-        assertFalse("Pushed done. Should not happen", pushed)
+        assert !pushed
 
         project.tasks.genymotionFinish.exec()
 
@@ -555,7 +553,7 @@ class GenymotionGradlePluginTest {
                 pushed = true
             }
         }
-        assertTrue("Push failed", pushed)
+        assert pushed
     }
 
     @Test
@@ -577,7 +575,7 @@ class GenymotionGradlePluginTest {
                 pushed++
             }
         }
-        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
+        assert pushed == listOfFiles.size()
     }
 
     @Test
@@ -601,7 +599,7 @@ class GenymotionGradlePluginTest {
                 pushed++
             }
         }
-        assertEquals("Pushed done. Should not happen", 0, pushed)
+        assert pushed == 0
 
         project.tasks.genymotionFinish.exec()
 
@@ -611,7 +609,7 @@ class GenymotionGradlePluginTest {
                 pushed++
             }
         }
-        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
+        assert pushed == listOfFiles.size()
 
     }
 
@@ -630,7 +628,7 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assertTrue("Pulled file not found", file.exists())
+        assert file.exists()
     }
 
     @Test
@@ -649,12 +647,12 @@ class GenymotionGradlePluginTest {
         project.tasks.genymotionLaunch.exec()
 
         File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assertFalse("Pulled file found. Should not happen", file.exists())
+        assert !file.exists()
 
         project.tasks.genymotionFinish.exec()
 
         file = new File(TestTools.PULLED_PATH + "build.prop")
-        assertTrue("Pulled file not found", file.exists())
+        assert file.exists()
     }
 
     @Test
@@ -681,7 +679,7 @@ class GenymotionGradlePluginTest {
 
         listOfFiles.each { key, value ->
             File file = new File(value)
-            assertTrue("Pulled file not found", file.exists())
+            assert file.exists()
         }
     }
 
@@ -703,14 +701,14 @@ class GenymotionGradlePluginTest {
 
         listOfFiles.each { key, value ->
             File file = new File(value)
-            assertFalse("Pulled file found. Should not happen", file.exists())
+            assert !file.exists()
         }
 
         project.tasks.genymotionFinish.exec()
 
         listOfFiles.each { key, value ->
             File file = new File(value)
-            assertTrue("Pulled file not found", file.exists())
+            assert file.exists()
         }
     }
 
@@ -732,7 +730,7 @@ class GenymotionGradlePluginTest {
                 flashed = true
             }
         }
-        assertTrue("Flash failed", flashed)
+        assert flashed
 
     }
 
@@ -741,7 +739,7 @@ class GenymotionGradlePluginTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
         project.genymotion.devices {
@@ -757,7 +755,7 @@ class GenymotionGradlePluginTest {
                 flashed++
             }
         }
-        assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
+        assert flashed == listOfFiles.size()
     }
 
 

@@ -26,9 +26,6 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-
 class ToolsTest {
 
     @BeforeClass
@@ -44,48 +41,48 @@ class ToolsTest {
 
         def list = ["ok", "nok", "sorry"]
         def result = Tools.getStringTable(list)
-        assertEquals(list, result)
+        assert result == list
 
         def single = "ok"
         result = Tools.getStringTable(single)
-        assertEquals([single], result)
+        assert result == [single]
 
         def map = ["ok": "er", "nok": "er", "sorry": "er"]
         result = Tools.getStringTable(map)
-        assertEquals(list, result)
+        assert result == list
 
         result = Tools.getStringTable(null)
-        assertEquals([], result)
+        assert result == []
     }
 
     @Test
     public void canCheckFileExists() {
 
         def list = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
-        assertTrue(Tools.checkFilesExist(list))
+        assert Tools.checkFilesExist(list)
 
         def single = "res/test/test.txt"
-        assertTrue(Tools.checkFilesExist(list))
+        assert Tools.checkFilesExist(single)
 
         def map = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
                    "res/test/test.zip": "/sdcard/Downloads/", "res/test/test2.zip": "/sdcard/Downloads/"]
-        assertTrue(Tools.checkFilesExist(list))
+        assert Tools.checkFilesExist(map)
 
-        assertTrue(Tools.checkFilesExist(null))
+        assert Tools.checkFilesExist(null)
     }
 
     @Test
     public void canCheckFileDoesNotExist() {
 
         def list = ["res/test/test.txt", "NOPE", "res/test/test.zip", "res/test/test2.zip"]
-        assertEquals("NOPE", Tools.checkFilesExist(list))
+        assert Tools.checkFilesExist(list) == "NOPE"
 
         def single = "NOPE"
-        assertEquals("NOPE", Tools.checkFilesExist(list))
+        assert Tools.checkFilesExist(single) == "NOPE"
 
         def map = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
                    "res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
-        assertEquals("NOPE", Tools.checkFilesExist(list))
+        assert Tools.checkFilesExist(map) == "NOPE"
     }
 
     @After

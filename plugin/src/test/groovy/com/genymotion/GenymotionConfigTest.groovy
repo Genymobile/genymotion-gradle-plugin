@@ -26,8 +26,6 @@ import org.gradle.api.Project
 import org.junit.After
 import org.junit.Test
 
-import static org.junit.Assert.*
-
 class GenymotionConfigTest {
 
     private static final String BASE_GET_OS_NAME = Tools.getOSName()
@@ -39,7 +37,7 @@ class GenymotionConfigTest {
     public void isEmptyWhenEmpty() {
         GenymotionConfig config = new GenymotionConfig()
 
-        assertTrue("Config should be empty", config.isEmpty())
+        assert config.isEmpty()
     }
 
     @Test
@@ -47,7 +45,7 @@ class GenymotionConfigTest {
         GenymotionConfig config = new GenymotionConfig()
         config.genymotionPath = "something/without/slash"
 
-        assertEquals(File.separator, config.genymotionPath.getAt(config.genymotionPath.size() - 1))
+        assert File.separator == config.genymotionPath.getAt(config.genymotionPath.size() - 1)
     }
 
     @Test
@@ -75,7 +73,8 @@ class GenymotionConfigTest {
     private testEmptyFromValue(String valueName, def value) {
         GenymotionConfig config = new GenymotionConfig()
         config.setProperty(valueName, value)
-        assertFalse("Should not be empty, $valueName not tested", config.isEmpty())
+
+        assert !config.isEmpty()
     }
 
     @Test
