@@ -541,34 +541,7 @@ class GMToolTest {
     public void canHidePassword() {
         def command = ["ok", "nok", "--password=toto", "password=tutu", "--password=", "password="]
         def result = GMTool.cleanCommand(command)
-        assert result == ["ok", "nok", "--password=*****", "password=*****", "--password=", "password="]
-    }
-
-    @Test
-    public void canLoginAuto() {
-        String username = "testU"
-        String password = "testP"
-
-        GMTool.GENYMOTION_CONFIG.username = username
-        GMTool.GENYMOTION_CONFIG.password = password
-        GMTool.GENYMOTION_CONFIG.persist = true
-
-        def (u, p) = GMTool.checkLogin(null, null)
-        assertEquals([u, p], [null, null])
-
-        GMTool.GENYMOTION_CONFIG.persist = false
-
-        (u, p) = GMTool.checkLogin(null, null)
-        assertEquals([u, p], [username, password])
-
-        GMTool.GENYMOTION_CONFIG.username = ""
-        GMTool.GENYMOTION_CONFIG.password = ""
-
-        (u, p) = GMTool.checkLogin(username, password)
-        assertEquals([u, p], [username, password])
-
-        (u, p) = GMTool.checkLogin(null, null)
-        assertEquals([u, p], [null, null])
+        assert result == ["ok", "nok", "--password=toto", "password=*****", "--password=", "password="]
     }
 
 

@@ -176,7 +176,7 @@ class TestTools {
             GMTool.setConfig(config, true)
 
             if (config.license && registerLicense) {
-                GMTool.setLicense(config.license, null, null, true)
+                GMTool.setLicense(config.license, true)
             }
         }
     }

@@ -206,32 +206,11 @@ class GenymotionPluginExtension {
 
         if (!config.isEmpty()) {
 
-            if (config.persist) {
-                GMTool.setConfig(config, config.verbose)
-
-            } else {
-                //we store the current configuration
-                this.currentConfiguration = GMTool.getConfig(config.verbose)
-
-                //we don't change the login info during configuration
-                String username = config.username
-                String password = config.password
-                config.username = null
-                config.password = null
-                GMTool.setConfig(config, config.verbose)
-                config.username = username
-                config.password = password
-            }
+            GMTool.setConfig(config, config.verbose)
 
             if (config.license) {
                 GMTool.setLicense(config.license)
             }
-        }
-    }
-
-    def endConfiguration() {
-        if (!config.persist && this.currentConfiguration) {
-            GMTool.setConfig(this.currentConfiguration, this.genymotionConfig.verbose)
         }
     }
 }

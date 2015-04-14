@@ -73,8 +73,6 @@ class GMTool {
     private static final String VERIFY        = "verify"
     private static final String VALIDITY      = "validity"
     //options
-    private static final String OPT_USERNAME             = "--username="
-    private static final String OPT_PASSWORD             = "--password="
     private static final String OPT_RUNNING              = "--running"
     private static final String OPT_OFF                  = "--off"
     private static final String OPT_FULL                 = "--full"
@@ -227,8 +225,6 @@ class GMTool {
                          String proxyPassword = null, String virtualDevicePath = null, String androidSdkPath = null,
                          def useCustomSdk = null, String screenCapturePath = null, boolean verbose = false) {
 
-        (username, password) = checkLogin(username, password)
-
         def command = [GENYTOOL, CONFIG]
 
         if (username != null && password != null) {
@@ -283,17 +279,8 @@ class GMTool {
     LICENSE
      */
 
-    static def setLicense(String license, String username = null, String password = null, boolean verbose = false) {
+    static def setLicense(String license, boolean verbose = false) {
         def command = [GENYTOOL, LICENSE, REGISTER, license]
-
-        (username, password) = checkLogin(username, password)
-
-        if (username) {
-            command.push(OPT_USERNAME + username)
-        }
-        if (password) {
-            command.push(OPT_PASSWORD + password)
-        }
 
         return cmd(command, verbose)
     }
@@ -412,16 +399,14 @@ class GMTool {
         return alreadyExists
     }
 
-    static def getTemplatesNames(boolean verbose = false, String username = null, String password = null) {
+    static def getTemplatesNames(boolean verbose = false) {
 
         def templates = []
 
         def template = null
 
-        (username, password) = checkLogin(username, password)
-
         def exitCode = noNull {
-            return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_USERNAME + username, OPT_PASSWORD + password], verbose) { line, count ->
+            return cmd([GENYTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
 
                 //if empty line and template filled
                 if (!line && template) {
@@ -451,16 +436,14 @@ class GMTool {
         }
     }
 
-    static def getTemplates(boolean verbose = false, String username = null, String password = null) {
+    static def getTemplates(boolean verbose = false) {
 
         def templates = []
 
         def template = new GenymotionTemplate()
 
-        (username, password) = checkLogin(username, password)
-
         int exitCode = noNull {
-            return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_FULL, OPT_USERNAME + username, OPT_PASSWORD + password], verbose) { line, count ->
+            return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_FULL], verbose) { line, count ->
 
                 //if empty line and the template is filled
                 if (!line && template.name) {
@@ -532,13 +515,13 @@ class GMTool {
         }
     }
 
-    static boolean templateExists(String template, boolean verbose = false, String username = null, String password = null) {
+    static boolean templateExists(String template, boolean verbose = false) {
 
         if (!template?.trim()) {
             return false
         }
 
-        def templates = getTemplatesNames(verbose, username, password)
+        def templates = getTemplatesNames(verbose)
         if (templates instanceof ArrayList) {
             templates?.contains(template)
         } else {
@@ -546,24 +529,21 @@ class GMTool {
         }
     }
 
-    static def createDevice(GenymotionVDLaunch device, String username = null, String password = null) {
-        return createDevice(device.template, device.name, username, password)
+    static def createDevice(GenymotionVDLaunch device) {
+        return createDevice(device.template, device.name)
     }
 
-    static def createDevice(GenymotionTemplate template, String username = null, String password = null) {
-        return createDevice(template.name, template.name, username, password)
+    static def createDevice(GenymotionTemplate template) {
+        return createDevice(template.name, template.name)
     }
 
     static def createDevice(def template, def deviceName, def density = "", def width = "", def height = "",
-                            def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
-                            String username = null, String password = null) {
-
-        (username, password) = checkLogin(username, password)
+                            def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "") {
 
         def exitValue = noNull() {
             cmd([GENYTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
-                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_USERNAME + username, OPT_PASSWORD + password])
+                 OPT_NBCPU + nbcpu, OPT_RAM + ram])
         }
 
         if (exitValue == RETURN_NO_ERROR) {
@@ -970,18 +950,16 @@ class GMTool {
     }
 
     /**
-     * Remove password from the command line. Usefull before displaying it.
+     * Remove password from the command line. Useful before displaying it.
      *
      * @param list the command line
      *
-     * @return the same list, without the content of --password or -p options
+     * @return the same list, without the content of password options
      */
     static def cleanCommand(def list) {
         def output = []
         for (String entry in list) {
-            if (entry.contains(OPT_PASSWORD) && entry.split("=").size() > 1) {
-                output << OPT_PASSWORD + "*****"
-            } else if (entry.contains(OPT_PASSWORD_CONFIG) && entry.split("=").size() > 1) {
+            if (entry.startsWith(OPT_PASSWORD_CONFIG) && entry.split("=").size() > 1) {
                 output << OPT_PASSWORD_CONFIG + "*****"
             } else {
                 output << entry
@@ -1041,26 +1019,4 @@ class GMTool {
 
         return exit
     }
-
-    /**
-     * Check the general configuration and set the username and password if needed
-     *
-     * @param username the username sent to the caller
-     * @param password the password sent to the caller
-     *
-     * @return username & password resulted for the check
-     */
-    static def checkLogin(String username, String password) {
-
-        if ((username && password) || GENYMOTION_CONFIG.persist) {
-            return [username, password]
-        }
-
-        if (GENYMOTION_CONFIG.username && GENYMOTION_CONFIG.password) {
-            return [GENYMOTION_CONFIG.username, GENYMOTION_CONFIG.password]
-        }
-
-        return [null, null]
-    }
-
 }

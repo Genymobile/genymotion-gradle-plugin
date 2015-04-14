@@ -113,7 +113,6 @@ class GenymotionConfigTest {
         assert true             == project.genymotion.config.automaticLaunch
         assert 500000           == project.genymotion.config.processTimeout
         assert true             == project.genymotion.config.verbose
-        assert true             == project.genymotion.config.persist
         assert false            == project.genymotion.config.abortOnError
         //@formatter:on
 
