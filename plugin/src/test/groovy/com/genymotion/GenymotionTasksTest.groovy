@@ -28,7 +28,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static org.junit.Assert.fail
 
 class GenymotionTasksTest {
 
@@ -56,20 +56,20 @@ class GenymotionTasksTest {
         GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
 
         //we test the VDLaunch
-        assertEquals(true, project.genymotion.devices[0].start)
-        assertEquals(deleteWhenFinish, project.genymotion.devices[0].deleteWhenFinish)
+        assert project.genymotion.devices[0].start
+        assert project.genymotion.devices[0].deleteWhenFinish == deleteWhenFinish
 
         //we test the created VD
-        assertEquals(density, device.density)
-        assertEquals(width, device.width)
-        assertEquals(height, device.height)
-        assertEquals(false, device.virtualKeyboard)
-        assertEquals(false, device.navbarVisible)
-        assertEquals(nbCpu, device.nbCpu)
-        assertEquals(ram, device.ram)
+        assert device.density == density
+        assert device.width == width
+        assert device.height == height
+        assert !device.virtualKeyboard
+        assert !device.navbarVisible
+        assert device.nbCpu == nbCpu
+        assert device.ram == ram
 
         //we test if the device is running
-        assertEquals(GenymotionVirtualDevice.STATE_ON, device.state)
+        assert device.state == GenymotionVirtualDevice.STATE_ON
 
         GMTool.stopDevice(vdName)
         GMTool.deleteDevice(vdName)
@@ -84,7 +84,7 @@ class GenymotionTasksTest {
 
         project.tasks.genymotionFinish.exec()
 
-        assertFalse(GMTool.isDeviceCreated(vdName))
+        assert !GMTool.isDeviceCreated(vdName)
     }
 
     @Test
@@ -118,8 +118,8 @@ class GenymotionTasksTest {
             //TODO check how we can produce GMToolException instead of IOException with another command
             project.genymotion.config.genymotionPath = goodPath
 
-            assertFalse(GMTool.isDeviceCreated(deviceToDelete))
-            assertTrue(devicesAreStopped(project.genymotion.devices))
+            assert !GMTool.isDeviceCreated(deviceToDelete)
+            assert devicesAreStopped(project.genymotion.devices)
         }
     }
 

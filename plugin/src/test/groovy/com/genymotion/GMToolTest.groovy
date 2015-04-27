@@ -28,7 +28,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static org.junit.Assert.fail
 
 class GMToolTest {
 
@@ -50,7 +50,7 @@ class GMToolTest {
     @Test
     public void isConfigOK() {
         def exitCode = GMTool.usage()
-        assertTrue("Genymotion not accessible, check the GENYMOTION_PATH variable", exitCode == GMTool.RETURN_NO_ERROR)
+        assert exitCode == GMTool.RETURN_NO_ERROR
     }
 
 
@@ -64,8 +64,7 @@ class GMToolTest {
             GMTool.usage()
             fail("FileNotFoundException expected")
         } catch (Exception e) {
-            assertEquals(GMTool.GENYMOTION_PATH_ERROR_MESSAGE +
-                    " Current value: " + GMTool.GENYMOTION_CONFIG.genymotionPath, e.message)
+            assert "$GMTool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $GMTool.GENYMOTION_CONFIG.genymotionPath" == e.message
         }
     }
 
@@ -74,8 +73,8 @@ class GMToolTest {
     public void isTemplatesAvailable() {
 
         def templates = GMTool.getTemplates(true)
-        assertTrue("No template found", templates.size() > 0)
-        assertTrue("Empty template", (templates[0].name?.trim()) as boolean)
+        assert templates.size() > 0
+        assert templates[0].name?.trim()
     }
 
     @Test
@@ -86,7 +85,7 @@ class GMToolTest {
         def devices = GMTool.getRunningDevices(true, false, true)
 
         println "devices " + devices
-        assertTrue("Error, device not running", devices.contains(name))
+        assert devices.contains(name)
 
         GMTool.stopDevice(name)
 
@@ -103,7 +102,7 @@ class GMToolTest {
         }
         def devices = GMTool.getStoppedDevices(true, false, true)
 
-        assertTrue("Error, device not stopped", devices.contains(name))
+        assert devices.contains(name)
 
         GMTool.deleteDevice(name)
     }
@@ -123,7 +122,7 @@ class GMToolTest {
                     return
                 }
             }
-            assertTrue("${key} not found. Test failed", exists)
+            assert exists
 
         }
         TestTools.deleteAllDevices()
@@ -138,8 +137,8 @@ class GMToolTest {
         device.fillFromDetails(true)
 
 
-        assertNotNull(device.androidVersion)
-        assertNotNull(device.state)
+        assert device.androidVersion != null
+        assert device.state != null
 
         GMTool.deleteDevice(name)
     }
@@ -170,12 +169,12 @@ class GMToolTest {
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
         newDevice.fillFromDetails()
 
-        assertEquals(device.androidVersion, newDevice.androidVersion)
-        assertEquals(device.dpi, newDevice.dpi)
-        assertEquals(device.height, newDevice.height)
-        assertEquals(device.width, newDevice.width)
-        assertEquals(device.navbarVisible, newDevice.navbarVisible)
-        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
+        assert device.androidVersion == newDevice.androidVersion
+        assert device.dpi == newDevice.dpi
+        assert device.height == newDevice.height
+        assert device.width == newDevice.width
+        assert device.navbarVisible == newDevice.navbarVisible
+        assert device.virtualKeyboard == newDevice.virtualKeyboard
 
         GMTool.deleteDevice(name)
         GMTool.deleteDevice(newName)
@@ -203,13 +202,13 @@ class GMToolTest {
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
         newDevice.fillFromDetails()
 
-        assertEquals(device.androidVersion, newDevice.androidVersion)
-        assertEquals(device.density, newDevice.density)
-        assertEquals(device.dpi, newDevice.dpi)
-        assertEquals(device.height, newDevice.height)
-        assertEquals(device.width, newDevice.width)
-        assertEquals(device.navbarVisible, newDevice.navbarVisible)
-        assertEquals(device.virtualKeyboard, newDevice.virtualKeyboard)
+        assert device.androidVersion == newDevice.androidVersion
+        assert device.density == newDevice.density
+        assert device.dpi == newDevice.dpi
+        assert device.height == newDevice.height
+        assert device.width == newDevice.width
+        assert device.navbarVisible == newDevice.navbarVisible
+        assert device.virtualKeyboard == newDevice.virtualKeyboard
 
         GMTool.deleteDevice(name)
     }
@@ -221,7 +220,7 @@ class GMToolTest {
 
         def exitCode = GMTool.startDevice(name)
 
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
     }
 
     @Test(expected = GMToolException.class)
@@ -241,8 +240,8 @@ class GMToolTest {
             GMTool.stopDevice(name)
         }
 
-        assertTrue("Start failed", exitCode == 0)
-        assertFalse("Stop failed", GMTool.isDeviceRunning(name))
+        assert exitCode == 0
+        assert !GMTool.isDeviceRunning(name)
     }
 
 
@@ -258,7 +257,7 @@ class GMToolTest {
         GMTool.stopAllDevices()
 
         def runningDevices = GMTool.getRunningDevices(true, false, true)
-        assertEquals([], runningDevices)
+        assert runningDevices == []
 
     }
 
@@ -363,7 +362,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
 
@@ -375,7 +374,7 @@ class GMToolTest {
                 installed++
             }
         }
-        assertEquals("No app was found", listOfApps.size(), installed)
+        assert installed == listOfApps.size()
     }
 
 
@@ -385,7 +384,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         GMTool.pushToDevice(name, "res/test/test.txt", true)
         boolean pushed = false
@@ -394,7 +393,7 @@ class GMToolTest {
                 pushed = true
             }
         }
-        assertTrue("Push failed", pushed)
+        assert pushed
 
     }
 
@@ -404,7 +403,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
         GMTool.pushToDevice(name, listOfFiles, true)
@@ -415,7 +414,7 @@ class GMToolTest {
                 pushed++
             }
         }
-        assertEquals("Some pushed files are not found", listOfFiles.size(), pushed)
+        assert pushed == listOfFiles.size()
 
     }
 
@@ -425,7 +424,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         def destination = "/sdcard/"
         GMTool.pushToDevice(name, ["res/test/test.txt": destination], true)
@@ -435,7 +434,7 @@ class GMToolTest {
                 pushed = true
             }
         }
-        assertTrue("Push failed", pushed)
+        assert pushed
     }
 
     @Test
@@ -444,7 +443,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
@@ -456,7 +455,7 @@ class GMToolTest {
                 pushed++
             }
         }
-        assertEquals("One or all pushed files are missing", listOfFiles.size(), pushed)
+        assert pushed == listOfFiles.size()
     }
 
 
@@ -466,14 +465,14 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
         GMTool.pullFromDevice(name, "/system/build.prop", TestTools.PULLED_PATH, true)
         File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assertTrue("Pulled file not found", file.exists())
+        assert file.exists()
     }
 
     @Test
@@ -482,7 +481,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         //removing the pulled files
         TestTools.recreatePulledDirectory()
@@ -491,10 +490,10 @@ class GMToolTest {
         GMTool.pullFromDevice(name, listOfFiles, true)
 
         File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assertTrue("build.propfile not found", file.exists())
+        assert file.exists()
 
         file = new File(TestTools.PULLED_PATH + "GestureBuilder.apk")
-        assertTrue("GestureBuilder.apk not found", file.exists())
+        assert file.exists()
     }
 
 
@@ -504,7 +503,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         GMTool.flashDevice(name, "res/test/test.zip", true)
         boolean flashed = false
@@ -513,7 +512,7 @@ class GMToolTest {
                 flashed = true
             }
         }
-        assertTrue("Flash failed", flashed)
+        assert flashed
 
     }
 
@@ -523,7 +522,7 @@ class GMToolTest {
         String name = TestTools.createADevice()
 
         def exitCode = GMTool.startDevice(name, true)
-        assertTrue("Start failed", exitCode == 0)
+        assert exitCode == 0
 
         def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
         GMTool.flashDevice(name, listOfFiles, true)
@@ -534,7 +533,7 @@ class GMToolTest {
                 flashed++
             }
         }
-        assertEquals("All flashed files are not found", listOfFiles.size(), flashed)
+        assert flashed == listOfFiles.size()
     }
 
     @Test
