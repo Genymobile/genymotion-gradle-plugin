@@ -56,6 +56,8 @@ class GenymotionConfigTest {
          "password",
          "storeCredentials",
          "license",
+         "licenseServer",
+         "licenseServerAddress",
          "proxy",
          "proxyAddress",
          "proxyPort",
@@ -96,6 +98,8 @@ class GenymotionConfigTest {
         assert "testName"       == project.genymotion.config.username
         assert "testPWD"        == project.genymotion.config.password
         assert true             == project.genymotion.config.storeCredentials
+        assert true             == project.genymotion.config.licenseServer
+        assert "licenseServ"    == project.genymotion.config.licenseServerAddress
         assert "testLicense"    == project.genymotion.config.license
         assert false            == project.genymotion.config.proxy
         assert "testAddress"    == project.genymotion.config.proxyAddress

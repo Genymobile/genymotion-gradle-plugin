@@ -42,7 +42,9 @@ class GenymotionConfig {
     def username                //set the login
     def password                //set the password
     def storeCredentials        //keep the configured account logged in genymotion
-    def license                 //set license
+    def licenseServer           //enable license server
+    def licenseServerAddress    //set the license server address
+    def license                 //set alphanumeric license
     def proxy                   //enables the proxy
     def proxyAddress            //set the proxy address
     def proxyPort               //set the proxy port
@@ -62,27 +64,29 @@ class GenymotionConfig {
     boolean abortOnError = true                                 //abort the task execution if a GMTool error occurs
 
     protected String CONFIG_PREFIX = "genymotion."
-    private Map CONFIG_PROPERTIES = ["genymotionPath"   : String.class,
-                                     "statistics"       : Boolean.class,
-                                     "username"         : String.class,
-                                     "password"         : String.class,
-                                     "storeCredentials" : Boolean.class,
-                                     "license"          : String.class,
-                                     "proxy"            : Boolean.class,
-                                     "proxyAddress"     : String.class,
-                                     "proxyPort"        : Integer.class,
-                                     "proxyAuth"        : Boolean.class,
-                                     "proxyUsername"    : String.class,
-                                     "proxyPassword"    : String.class,
-                                     "virtualDevicePath": String.class,
-                                     "androidSdkPath"   : String.class,
-                                     "useCustomSdk"     : Boolean.class,
-                                     "screenCapturePath": String.class,
-                                     "taskLaunch"       : String.class,
-                                     "automaticLaunch"  : Boolean.class,
-                                     "processTimeout"   : Integer.class,
-                                     "verbose"          : Boolean.class,
-                                     "abortOnError"     : Boolean.class]
+    private Map CONFIG_PROPERTIES = ["genymotionPath"      : String.class,
+                                     "statistics"          : Boolean.class,
+                                     "username"            : String.class,
+                                     "password"            : String.class,
+                                     "storeCredentials"    : Boolean.class,
+                                     "licenseServer"       : Boolean.class,
+                                     "licenseServerAddress": String.class,
+                                     "license"             : String.class,
+                                     "proxy"               : Boolean.class,
+                                     "proxyAddress"        : String.class,
+                                     "proxyPort"           : Integer.class,
+                                     "proxyAuth"           : Boolean.class,
+                                     "proxyUsername"       : String.class,
+                                     "proxyPassword"       : String.class,
+                                     "virtualDevicePath"   : String.class,
+                                     "androidSdkPath"      : String.class,
+                                     "useCustomSdk"        : Boolean.class,
+                                     "screenCapturePath"   : String.class,
+                                     "taskLaunch"          : String.class,
+                                     "automaticLaunch"     : Boolean.class,
+                                     "processTimeout"      : Integer.class,
+                                     "verbose"             : Boolean.class,
+                                     "abortOnError"        : Boolean.class]
 
     GenymotionConfig() {
         genymotionPath = getDefaultGenymotionPath()
@@ -94,6 +98,8 @@ class GenymotionConfig {
                 password == null &&
                 storeCredentials == null &&
                 license == null &&
+                licenseServer == null &&
+                licenseServerAddress == null &&
                 proxy == null &&
                 proxyAddress == null &&
                 proxyPort == null &&

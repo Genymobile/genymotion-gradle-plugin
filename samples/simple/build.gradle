@@ -18,6 +18,8 @@ genymotion.config{
 //    username                  //set the login
 //    password                  //set the password
 //    storeCredentials          //keep the configured account logged in genymotion
+//    licenseServer             //enable license server
+//    licenseServerAddress      //set the license server address
 //    license                   //set license
 //    proxy                     //enable proxy
 //    proxyAddress              //set l'adresse du proxy a ADRESS

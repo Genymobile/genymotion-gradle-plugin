@@ -77,31 +77,33 @@ class GMTool {
     private static final String VERIFY        = "verify"
     private static final String VALIDITY      = "validity"
     //options
-    private static final String OPT_RUNNING              = "--running"
-    private static final String OPT_OFF                  = "--off"
-    private static final String OPT_FULL                 = "--full"
-    private static final String OPT_DENSITY              = '--density='
-    private static final String OPT_WIDTH                = '--width='
-    private static final String OPT_HEIGHT               = '--height='
-    private static final String OPT_VIRTUAL_KEYBOARD     = '--virtualkeyboard='
-    private static final String OPT_NAVBAR               = '--navbar='
-    private static final String OPT_NBCPU                = '--nbcpu='
-    private static final String OPT_RAM                  = "--ram="
-    private static final String OPT_NAME                 = "-n="
-    private static final String OPT_STATISTICS           = "statistics="
-    private static final String OPT_USERNAME_CONFIG      = "username="
-    private static final String OPT_PASSWORD_CONFIG      = "password="
-    private static final String OPT_STORE_CREDENTIALS    = "store_credentials="
-    private static final String OPT_PROXY                = "proxy="
-    private static final String OPT_PROXY_ADDRESS        = "proxy_address="
-    private static final String OPT_PROXY_PORT           = "proxy_port="
-    private static final String OPT_PROXY_AUTH           = "proxy_auth="
-    private static final String OPT_PROXY_USERNAME       = "proxy_username="
-    private static final String OPT_PROXY_PASSWORD       = "proxy_password="
-    private static final String OPT_VIRTUAL_DEVICE_PATH  = "virtual_device_path="
-    private static final String OPT_SDK_PATH             = "sdk_path="
-    private static final String OPT_USE_CUSTOM_SDK       = "use_custom_sdk="
-    private static final String OPT_SCREEN_CAPTURE_PATH  = "screen_capture_path="
+    private static final String OPT_RUNNING                 = "--running"
+    private static final String OPT_OFF                     = "--off"
+    private static final String OPT_FULL                    = "--full"
+    private static final String OPT_DENSITY                 = '--density='
+    private static final String OPT_WIDTH                   = '--width='
+    private static final String OPT_HEIGHT                  = '--height='
+    private static final String OPT_VIRTUAL_KEYBOARD        = '--virtualkeyboard='
+    private static final String OPT_NAVBAR                  = '--navbar='
+    private static final String OPT_NBCPU                   = '--nbcpu='
+    private static final String OPT_RAM                     = "--ram="
+    private static final String OPT_NAME                    = "-n="
+    private static final String OPT_STATISTICS              = "statistics="
+    private static final String OPT_USERNAME_CONFIG         = "username="
+    private static final String OPT_PASSWORD_CONFIG         = "password="
+    private static final String OPT_STORE_CREDENTIALS       = "store_credentials="
+    private static final String OPT_LICENSE_SERVER          = "license_server="
+    private static final String OPT_LICENSE_SERVER_ADDRESS  = "license_server_address="
+    private static final String OPT_PROXY                   = "proxy="
+    private static final String OPT_PROXY_ADDRESS           = "proxy_address="
+    private static final String OPT_PROXY_PORT              = "proxy_port="
+    private static final String OPT_PROXY_AUTH              = "proxy_auth="
+    private static final String OPT_PROXY_USERNAME          = "proxy_username="
+    private static final String OPT_PROXY_PASSWORD          = "proxy_password="
+    private static final String OPT_VIRTUAL_DEVICE_PATH     = "virtual_device_path="
+    private static final String OPT_SDK_PATH                = "sdk_path="
+    private static final String OPT_USE_CUSTOM_SDK          = "use_custom_sdk="
+    private static final String OPT_SCREEN_CAPTURE_PATH     = "screen_capture_path="
 
 
     //code returned by gmtool or command line
@@ -178,6 +180,12 @@ class GMTool {
                     case "store_credentials":
                         config.storeCredentials = info[1].trim().toBoolean()
                         break
+                    case "license_server":
+                        config.licenseServer = info[1].trim().toBoolean()
+                        break
+                    case "license_server_address":
+                        config.licenseServerAddress = info[1].trim()
+                        break
                     case "proxy":
                         config.proxy = info[1].trim().toBoolean()
                         break
@@ -219,17 +227,19 @@ class GMTool {
         if (!config) {
             return false
         }
-        return setConfig(config.statistics, config.username, config.password, config.storeCredentials, config.proxy,
-                config.proxyAddress, config.proxyPort, config.proxyAuth, config.proxyUsername, config.proxyPassword,
-                config.virtualDevicePath, config.androidSdkPath, config.useCustomSdk, config.screenCapturePath, verbose)
+        return setConfig(config.statistics, config.username, config.password, config.storeCredentials,
+                config.licenseServer, config.licenseServerAddress, config.proxy, config.proxyAddress, config.proxyPort,
+                config.proxyAuth, config.proxyUsername, config.proxyPassword, config.virtualDevicePath,
+                config.androidSdkPath, config.useCustomSdk, config.screenCapturePath, verbose)
     }
 
 
     static def setConfig(def statistics = null, String username = null, String password = null,
-                         def storeCredentials = null, def proxy = null, String proxyAddress = null,
-                         def proxyPort = null, def proxyAuth = null, String proxyUsername = null,
-                         String proxyPassword = null, String virtualDevicePath = null, String androidSdkPath = null,
-                         def useCustomSdk = null, String screenCapturePath = null, boolean verbose = false) {
+                         def storeCredentials = null, def licenseServer = null, String licenseServerAddress = null,
+                         def proxy = null, String proxyAddress = null, def proxyPort = null, def proxyAuth = null,
+                         String proxyUsername = null, String proxyPassword = null, String virtualDevicePath = null,
+                         String androidSdkPath = null, def useCustomSdk = null, String screenCapturePath = null,
+                         boolean verbose = false) {
 
         def command = [GMTOOL, CONFIG]
 
@@ -245,6 +255,12 @@ class GMTool {
         }
         if (storeCredentials != null) {
             command.push(OPT_STORE_CREDENTIALS + storeCredentials)
+        }
+        if (licenseServer != null) {
+            command.push(OPT_LICENSE_SERVER + licenseServer)
+        }
+        if (licenseServerAddress != null) {
+            command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
         }
         if (proxy != null) {
             command.push(OPT_PROXY + proxy)
