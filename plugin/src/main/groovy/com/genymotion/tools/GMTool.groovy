@@ -219,10 +219,10 @@ class GMTool {
                         config.storeCredentials = isOn(value)
                         break
                     case "license_server":
-                        config.licenseServer = info[1].trim().toBoolean()
+                        config.licenseServer = isOn(value)
                         break
                     case "license_server_address":
-                        config.licenseServerAddress = info[1].trim()
+                        config.licenseServerAddress = value
                         break
                     case "proxy":
                         config.proxy = isOn(value)
