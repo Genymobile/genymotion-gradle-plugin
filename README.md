@@ -1,29 +1,64 @@
-Gradle Plugin for Genymotion
-========================
+#Gradle Plugin for Genymotion
 
-Gradle Plugin Documentation
-------------------
-To learn how to use the Gradle plugin for Genymotion, on production, read the official documentation.
+##Gradle Plugin Documentation
 
-Link coming soon...
+Here is a short description on how to use the Gradle plugin for Genymotion into your `build.gradle`.
 
-Downloading the plugin
-------------------
+###Including the plugin
+
+To use our plugin, you need first to reference our plugin’s repository. Here is what your `build.gradle` should look like:
+
+```gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.genymotion:plugin:1.0'
+    }
+}
+```
+
+Then, apply the plugin. Insert this line into your build.gradle:
+
+```gradle
+apply plugin: "genymotion"
+```
+
+###Using the plugin
+When this is done you can access to the Genymotion’s Gradle features. You can open a `genymotion` section and start defining your devices like this:
+
+```gradle
+genymotion {
+    devices {
+        nexus5 {
+            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+        }
+    }
+}
+```
+
+This simple example will create and launch a Nexus 5 running KitKat right before the connectedAndroidTest task.
+But this plugin can do a lot more, read [the full documentation](https://www.genymotion.com/#!/developers/gradle-plugin) for an exhaustive explanation.
+
+
+##Downloading the plugin's source code
+
 To download the plugin, run:
 
 ```sh
 git clone https://github.com/Genymobile/genymotion-gradle-plugin.git
 ```
 
-Project description
-------------------
+##Project description
+
 The `plugin` folder contains the Gradle plugin.
 
 The `samples` folder contains the example project using the Gradle plugin.
 
 
-Compiling the plugin
-------------------
+##Compiling the plugin
+
 
 To compile the plugin, go to the root project folder and run the following command:
 
@@ -51,8 +86,8 @@ For more information on how to use the plugin, please refer to the official docu
 Coming soon...
 
 
-Give a try
-------------------
+##Give a try
+
 Execute the sample "simple" using this command:
 
 ```sh
@@ -63,8 +98,8 @@ This starts a virtual device on your computer.
 
 
 
-Contributing
-------------------
+##Contributing
+
 The Gradle Plugin for Genymotion is an open source project under GPL v3 license.
 
 Pull requests are strongly encouraged.
