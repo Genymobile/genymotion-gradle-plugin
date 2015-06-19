@@ -568,18 +568,18 @@ class GMToolTest {
 
     @Test
     public void canFormatCommand() {
-        def command = [GMTool.GENYTOOL, "nok"]
+        def command = [GMTool.GMTOOL, "nok"]
 
         GMTool.GENYMOTION_CONFIG.verbose = false
         def result = GMTool.formatAndLogCommand(command)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GENYTOOL, GMTool.SOURCE_GRADLE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
 
         result = GMTool.formatAndLogCommand(command, true)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GENYTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
 
         GMTool.GENYMOTION_CONFIG.verbose = true
         result = GMTool.formatAndLogCommand(command, false)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GENYTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
     }
 
 
