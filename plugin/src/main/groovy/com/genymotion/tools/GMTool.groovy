@@ -32,8 +32,10 @@ class GMTool {
     public static GenymotionConfig GENYMOTION_CONFIG = null
 
     //@formatter:off
-    private static final String GENYTOOL = "gmtool"
-    private static final String VERBOSE  = "--verbose"
+    private static final String GENYTOOL      = "gmtool"
+    private static final String VERBOSE       = "--verbose"
+    private static final String SOURCE        = "--source"
+    private static final String SOURCE_GRADLE = SOURCE + "=gradle"
 
     //root actions
     private static final String LOGZIP        = "logzip"
@@ -905,25 +907,8 @@ class GMTool {
             return
         }
 
-        def toExec = command
+        def toExec = formatAndLogCommand(command, verbose, addPath)
 
-        //we eventually insert the genymotion binary path
-        if (GENYMOTION_CONFIG.genymotionPath != null && addPath) {
-            if (toExec instanceof String) {
-                toExec = GENYMOTION_CONFIG.genymotionPath + toExec
-            } else {
-                toExec = command.clone()
-                toExec[0] = GENYMOTION_CONFIG.genymotionPath + toExec[0]
-            }
-        }
-
-        if (verbose || GENYMOTION_CONFIG.verbose) {
-            if (toExec[0]?.contains(GENYTOOL)) {
-                toExec.addAll(1, [VERBOSE])
-            }
-
-            Log.debug(cleanCommand(toExec))
-        }
         try {
             Process p = toExec.execute()
             StringBuffer error = new StringBuffer()
@@ -943,6 +928,7 @@ class GMTool {
             }
 
             return handleExitValue(p.exitValue(), error)
+
         } catch (IOException e) {
             if (GENYMOTION_CONFIG.abortOnError) {
                 throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
@@ -953,6 +939,42 @@ class GMTool {
                         " Genymotion Gradle plugin won't work.")
             }
         }
+    }
+
+    /**
+     * Format and log a command line before being executed:
+     * - Add the gmtool path if needed
+     * - And handle the verbose and log it if needed
+     * - Add the source tag to a gmtool command
+     *
+     * @param command the command to execute
+     * @param verbose the explicite verbosity
+     * @return returns the command to execute
+     */
+    static def formatAndLogCommand(command, boolean verbose=false, boolean addPath = true) {
+        def toExec = command
+
+        //we eventually insert the genymotion binary path
+        if (GENYMOTION_CONFIG.genymotionPath != null && addPath) {
+            if (toExec instanceof String) {
+                toExec = GENYMOTION_CONFIG.genymotionPath + toExec
+            } else {
+                toExec = command.clone()
+                toExec[0] = GENYMOTION_CONFIG.genymotionPath + toExec[0]
+            }
+        }
+
+        if (toExec[0]?.contains(GENYTOOL)) {
+
+            if (verbose || GENYMOTION_CONFIG.verbose) {
+                toExec.addAll(1, [VERBOSE])
+                Log.debug(cleanCommand(toExec))
+            }
+
+            toExec.addAll(1, [SOURCE_GRADLE])
+        }
+
+        return toExec
     }
 
     /**
@@ -967,6 +989,8 @@ class GMTool {
         for (String entry in list) {
             if (entry.startsWith(OPT_PASSWORD_CONFIG) && entry.split("=").size() > 1) {
                 output << OPT_PASSWORD_CONFIG + "*****"
+            } else if (entry.startsWith(SOURCE)) {
+                //no op avoid  printing the source tag
             } else {
                 output << entry
             }
