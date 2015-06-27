@@ -25,6 +25,8 @@ import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import org.codehaus.groovy.runtime.NullObject
 
+import java.util.concurrent.TimeoutException
+
 class GMTool {
 
     public static GenymotionConfig GENYMOTION_CONFIG = null
@@ -116,6 +118,8 @@ class GMTool {
     public static final int RETURN_VM_NOT_STOPPED          = 12
     public static final int RETURN_LICENSE_REQUIRED        = 13
     public static final int RETURN_COMMAND_NOT_FOUND_UNIX  = 127
+    public static final int RETURN_SIGTERM                 = 143
+
     //@formatter:on
 
     static String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the Genymotion path " +
@@ -877,9 +881,10 @@ class GMTool {
      *
      * @param command the command line to execute. It can be a String or a table
      * @param verbose true if you want to print each line returned by the prompt
+     * @param addPath true if you want to add the Genymotion path at the begining of the command
      */
-    static def cmd(def command, boolean verbose = false) {
-        cmd(command, verbose, null)
+    static def cmd(def command, boolean verbose = false, boolean addPath = true) {
+        cmd(command, verbose, addPath, null)
     }
 
     /**
@@ -891,9 +896,10 @@ class GMTool {
      *
      * @param command the command line to execute. It can be a String or a table
      * @param verbose true if you want to print each line returned by the prompt
+     * @param addPath true if you want to add the Genymotion path at the begining of the command
      * @param c the closure to implement after the call
      */
-    static def cmd(def command, boolean verbose = false, Closure c) {
+    static def cmd(def command, boolean verbose = false, boolean addPath = true, Closure c) {
 
         if (GENYMOTION_CONFIG == null) {
             return
@@ -902,7 +908,7 @@ class GMTool {
         def toExec = command
 
         //we eventually insert the genymotion binary path
-        if (GENYMOTION_CONFIG.genymotionPath != null) {
+        if (GENYMOTION_CONFIG.genymotionPath != null && addPath) {
             if (toExec instanceof String) {
                 toExec = GENYMOTION_CONFIG.genymotionPath + toExec
             } else {
@@ -990,7 +996,15 @@ class GMTool {
                         " Current value: \"" + GENYMOTION_CONFIG.genymotionPath + "\"" +
                         " Genymotion Gradle plugin cannot work.")
             }
-
+        } else if (exitValue == RETURN_SIGTERM) {
+            String message = "Your command exceeds the current $GENYMOTION_CONFIG.processTimeout ms timeout. To solve " +
+                    "this problem, try to increase this parameter by setting the genymotion.config.processTimeout " +
+                    "value in your build.gradle"
+            if (GENYMOTION_CONFIG.abortOnError) {
+                throw new TimeoutException(message)
+            } else {
+                Log.warn("Timeout occured. $message")
+            }
         } else {
             if (GENYMOTION_CONFIG.abortOnError) {
                 throw new GMToolException("GMTool command failed. Error code: $exitValue." + error.toString())
