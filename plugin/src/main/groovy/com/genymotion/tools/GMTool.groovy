@@ -32,8 +32,10 @@ class GMTool {
     public static GenymotionConfig GENYMOTION_CONFIG = null
 
     //@formatter:off
-    private static final String GENYTOOL = "gmtool"
-    private static final String VERBOSE  = "--verbose"
+    private static final String GMTOOL        = "gmtool"
+    private static final String VERBOSE       = "--verbose"
+    private static final String SOURCE        = "--source"
+    private static final String SOURCE_GRADLE = SOURCE + "=gradle"
 
     //root actions
     private static final String LOGZIP        = "logzip"
@@ -127,7 +129,7 @@ class GMTool {
 
 
     static def usage() {
-        return cmd([GENYTOOL, HELP])
+        return cmd([GMTOOL, HELP])
     }
 
     /*
@@ -135,16 +137,16 @@ class GMTool {
      */
 
     static def resetConfig() {
-        return cmd([GENYTOOL, CONFIG, RESET])
+        return cmd([GMTOOL, CONFIG, RESET])
     }
 
     static def clearCache() {
-        return cmd([GENYTOOL, CONFIG, CLEARCACHE])
+        return cmd([GMTOOL, CONFIG, CLEARCACHE])
     }
 
     static def logzip(String path = "", String vdName = "") {
 
-        def command = [GENYTOOL, LOGZIP]
+        def command = [GMTOOL, LOGZIP]
 
         if (vdName?.trim()) {
             command.push(OPT_NAME + vdName)
@@ -154,14 +156,14 @@ class GMTool {
             command.push(path)
         }
 
-        return cmd([GENYTOOL, LOGZIP])
+        return cmd([GMTOOL, LOGZIP])
     }
 
     static def getConfig(boolean verbose = false) {
 
         GenymotionConfig config = new GenymotionConfig()
 
-        def exitCode = cmd([GENYTOOL, CONFIG, PRINT], verbose) { line, count ->
+        def exitCode = cmd([GMTOOL, CONFIG, PRINT], verbose) { line, count ->
 
             String[] info = line.split("=")
             if (info.length > 1 && info[1].trim()) {
@@ -229,7 +231,7 @@ class GMTool {
                          String proxyPassword = null, String virtualDevicePath = null, String androidSdkPath = null,
                          def useCustomSdk = null, String screenCapturePath = null, boolean verbose = false) {
 
-        def command = [GENYTOOL, CONFIG]
+        def command = [GMTOOL, CONFIG]
 
         if (username != null && password != null) {
             command.push(OPT_USERNAME_CONFIG + username)
@@ -284,7 +286,7 @@ class GMTool {
      */
 
     static def setLicense(String license, boolean verbose = false) {
-        def command = [GENYTOOL, LICENSE, REGISTER, license]
+        def command = [GMTOOL, LICENSE, REGISTER, license]
 
         return cmd(command, verbose)
     }
@@ -297,7 +299,7 @@ class GMTool {
 
         def devices = []
 
-        cmd([GENYTOOL, ADMIN, LIST], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, LIST], verbose) { line, count ->
             def device = parseListLine(count, line, nameOnly)
             if (device) {
                 devices.add(device)
@@ -317,7 +319,7 @@ class GMTool {
 
         def devices = []
 
-        cmd([GENYTOOL, ADMIN, LIST, OPT_RUNNING], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, LIST, OPT_RUNNING], verbose) { line, count ->
             def device = parseListLine(count, line, nameOnly)
             if (device) {
                 devices.add(device)
@@ -337,7 +339,7 @@ class GMTool {
 
         def devices = []
 
-        cmd([GENYTOOL, ADMIN, LIST, OPT_OFF], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, LIST, OPT_OFF], verbose) { line, count ->
             def device = parseListLine(count, line, nameOnly)
             if (device) {
                 devices.add(device)
@@ -410,7 +412,7 @@ class GMTool {
         def template = null
 
         def exitCode = noNull {
-            return cmd([GENYTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
+            return cmd([GMTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
 
                 //if empty line and template filled
                 if (!line && template) {
@@ -447,7 +449,7 @@ class GMTool {
         def template = new GenymotionTemplate()
 
         int exitCode = noNull {
-            return cmd([GENYTOOL, ADMIN, TEMPLATES, OPT_FULL], verbose) { line, count ->
+            return cmd([GMTOOL, ADMIN, TEMPLATES, OPT_FULL], verbose) { line, count ->
 
                 //if empty line and the template is filled
                 if (!line && template.name) {
@@ -545,7 +547,7 @@ class GMTool {
                             def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "") {
 
         def exitValue = noNull() {
-            cmd([GENYTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
+            cmd([GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
                  OPT_NBCPU + nbcpu, OPT_RAM + ram])
         }
@@ -565,7 +567,7 @@ class GMTool {
                           def navbarVisible = "", def nbcpu = "", def ram = "") {
 
         return noNull() {
-            return cmd([GENYTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
+            return cmd([GMTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                         OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
                         OPT_NBCPU + nbcpu, OPT_RAM + ram])
         }
@@ -576,7 +578,7 @@ class GMTool {
     }
 
     static def deleteDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, DELETE, deviceName], verbose)
+        return cmd([GMTOOL, ADMIN, DELETE, deviceName], verbose)
     }
 
     static def cloneDevice(GenymotionVirtualDevice device, def name, boolean verbose = false) {
@@ -584,7 +586,7 @@ class GMTool {
     }
 
     static def cloneDevice(def deviceName, def newName, boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, CLONE, deviceName, newName], verbose)
+        return cmd([GMTOOL, ADMIN, CLONE, deviceName, newName], verbose)
     }
 
     static def getDevice(String name, boolean verbose = false) {
@@ -603,7 +605,7 @@ class GMTool {
             return null
         }
 
-        cmd([GENYTOOL, ADMIN, DETAILS, device.name], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, DETAILS, device.name], verbose) { line, count ->
 
             String[] info = line.split("\\:")
             switch (info[0].trim()) {
@@ -665,7 +667,7 @@ class GMTool {
     }
 
     static def startDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, START, deviceName], verbose)
+        return cmd([GMTOOL, ADMIN, START, deviceName], verbose)
     }
 
     static def restartDevice(GenymotionVirtualDevice device, boolean verbose = false) {
@@ -673,7 +675,7 @@ class GMTool {
     }
 
     static def restartDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, RESTART, deviceName], verbose)
+        return cmd([GMTOOL, ADMIN, RESTART, deviceName], verbose)
     }
 
     static def stopDevice(GenymotionVirtualDevice device, boolean verbose = false) {
@@ -681,11 +683,11 @@ class GMTool {
     }
 
     static def stopDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, STOP, deviceName], verbose)
+        return cmd([GMTOOL, ADMIN, STOP, deviceName], verbose)
     }
 
     static def stopAllDevices(boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, STOPALL], verbose)
+        return cmd([GMTOOL, ADMIN, STOPALL], verbose)
     }
 
     static def resetDevice(GenymotionVirtualDevice device, boolean verbose = false) {
@@ -693,7 +695,7 @@ class GMTool {
     }
 
     static def resetDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, ADMIN, START, FACTORY_RESET, deviceName], verbose)
+        return cmd([GMTOOL, ADMIN, START, FACTORY_RESET, deviceName], verbose)
     }
 
     static def startAutoDevice(def template, def deviceName, boolean verbose = false) {
@@ -734,7 +736,7 @@ class GMTool {
 
         files.each() {
 
-            def command = [GENYTOOL, DEVICE, OPT_NAME + deviceName, PUSH]
+            def command = [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH]
             if (files instanceof Map) {
                 command.push(it.key)
                 command.push(it.value)
@@ -771,7 +773,7 @@ class GMTool {
 
         files.each() {
 
-            def command = [GENYTOOL, DEVICE, OPT_NAME + deviceName, PULL]
+            def command = [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL]
             if (files instanceof Map) {
                 command.push(it.key)
                 command.push(it.value)
@@ -797,13 +799,13 @@ class GMTool {
         }
 
         if (apks instanceof String) {
-            cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apks], verbose)
+            cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apks], verbose)
 
         } else if (apks instanceof ArrayList) {
 
             def exitValues = []
             apks.each() {
-                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, it], verbose)
+                int exitValue = cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, it], verbose)
                 exitValues.add(exitValue)
             }
             return exitValues
@@ -823,12 +825,12 @@ class GMTool {
         }
 
         if (zips instanceof String) {
-            return cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zips], verbose)
+            return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zips], verbose)
 
         } else if (zips instanceof ArrayList) {
             def exitValues = []
             zips.each() {
-                int exitValue = cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, FLASH, it], verbose)
+                int exitValue = cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, it], verbose)
                 exitValues.add(exitValue)
             }
             return exitValues
@@ -841,7 +843,7 @@ class GMTool {
     }
 
     static def adbDisconnectDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, ADBDISCONNECT], verbose)
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, ADBDISCONNECT], verbose)
     }
 
     static def adbConnectDevice(GenymotionVirtualDevice device, boolean verbose = false) {
@@ -849,7 +851,7 @@ class GMTool {
     }
 
     static def adbConnectDevice(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, ADBCONNECT], verbose)
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, ADBCONNECT], verbose)
     }
 
     static def logcatClear(GenymotionVirtualDevice device, boolean verbose = false) {
@@ -857,7 +859,7 @@ class GMTool {
     }
 
     static def logcatClear(def deviceName, boolean verbose = false) {
-        return cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_CLEAR], verbose)
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_CLEAR], verbose)
     }
 
     static def logcatDump(GenymotionVirtualDevice device, path, boolean verbose = false) {
@@ -865,7 +867,7 @@ class GMTool {
     }
 
     static def logcatDump(def deviceName, def path, boolean verbose = false) {
-        return cmd([GENYTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_DUMP, path], verbose)
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_DUMP, path], verbose)
     }
 
     /*
@@ -905,25 +907,8 @@ class GMTool {
             return
         }
 
-        def toExec = command
+        def toExec = formatAndLogCommand(command, verbose, addPath)
 
-        //we eventually insert the genymotion binary path
-        if (GENYMOTION_CONFIG.genymotionPath != null && addPath) {
-            if (toExec instanceof String) {
-                toExec = GENYMOTION_CONFIG.genymotionPath + toExec
-            } else {
-                toExec = command.clone()
-                toExec[0] = GENYMOTION_CONFIG.genymotionPath + toExec[0]
-            }
-        }
-
-        if (verbose || GENYMOTION_CONFIG.verbose) {
-            if (toExec[0]?.contains(GENYTOOL)) {
-                toExec.addAll(1, [VERBOSE])
-            }
-
-            Log.debug(cleanCommand(toExec))
-        }
         try {
             Process p = toExec.execute()
             StringBuffer error = new StringBuffer()
@@ -943,6 +928,7 @@ class GMTool {
             }
 
             return handleExitValue(p.exitValue(), error)
+
         } catch (IOException e) {
             if (GENYMOTION_CONFIG.abortOnError) {
                 throw new FileNotFoundException(GENYMOTION_PATH_ERROR_MESSAGE +
@@ -953,6 +939,42 @@ class GMTool {
                         " Genymotion Gradle plugin won't work.")
             }
         }
+    }
+
+    /**
+     * Format and log a command line before being executed:
+     * - Add the gmtool path if needed
+     * - And handle the verbose and log it if needed
+     * - Add the source tag to a gmtool command
+     *
+     * @param command the command to execute
+     * @param verbose the explicite verbosity
+     * @return returns the command to execute
+     */
+    static def formatAndLogCommand(command, boolean verbose=false, boolean addPath = true) {
+        def toExec = command
+
+        //we eventually insert the genymotion binary path
+        if (GENYMOTION_CONFIG.genymotionPath != null && addPath) {
+            if (toExec instanceof String) {
+                toExec = GENYMOTION_CONFIG.genymotionPath + toExec
+            } else {
+                toExec = command.clone()
+                toExec[0] = GENYMOTION_CONFIG.genymotionPath + toExec[0]
+            }
+        }
+
+        if (toExec[0]?.contains(GMTOOL)) {
+
+            if (verbose || GENYMOTION_CONFIG.verbose) {
+                toExec.addAll(1, [VERBOSE])
+                Log.debug(cleanCommand(toExec))
+            }
+
+            toExec.addAll(1, [SOURCE_GRADLE])
+        }
+
+        return toExec
     }
 
     /**
@@ -967,6 +989,8 @@ class GMTool {
         for (String entry in list) {
             if (entry.startsWith(OPT_PASSWORD_CONFIG) && entry.split("=").size() > 1) {
                 output << OPT_PASSWORD_CONFIG + "*****"
+            } else if (entry.startsWith(SOURCE)) {
+                //no op avoid  printing the source tag
             } else {
                 output << entry
             }

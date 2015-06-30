@@ -559,6 +559,30 @@ class GMToolTest {
         GMTool.cmd("sleep 1", true, false)
     }
 
+    @Test
+    public void canHideSourceTag() {
+        def command = ["ok", "nok", "--source=toto"]
+        def result = GMTool.cleanCommand(command)
+        assert result == ["ok", "nok"]
+    }
+
+    @Test
+    public void canFormatCommand() {
+        def command = [GMTool.GMTOOL, "nok"]
+
+        GMTool.GENYMOTION_CONFIG.verbose = false
+        def result = GMTool.formatAndLogCommand(command)
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
+
+        result = GMTool.formatAndLogCommand(command, true)
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+
+        GMTool.GENYMOTION_CONFIG.verbose = true
+        result = GMTool.formatAndLogCommand(command, false)
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+    }
+
+
     @After
     public void finishTest() {
         if (genymotionPath != null) {
