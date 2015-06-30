@@ -28,6 +28,8 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
+import java.util.concurrent.TimeoutException
+
 import static org.junit.Assert.fail
 
 class GMToolTest {
@@ -543,6 +545,19 @@ class GMToolTest {
         assert result == ["ok", "nok", "--password=toto", "password=*****", "--password=", "password="]
     }
 
+    @Test(expected = TimeoutException)
+    public void throwWhenProcessIsTooLong() {
+        project.genymotion.config.processTimeout = 100
+        project.genymotion.config.abortOnError = true
+        GMTool.cmd("sleep 1", true, false)
+    }
+
+    @Test
+    public void doNotThrowWhenProcessIsTooLong() {
+        project.genymotion.config.processTimeout = 100
+        project.genymotion.config.abortOnError = false
+        GMTool.cmd("sleep 1", true, false)
+    }
 
     @After
     public void finishTest() {
