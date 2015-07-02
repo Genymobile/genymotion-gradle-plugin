@@ -54,6 +54,8 @@ class GenymotionConfig {
     def useCustomSdk            //enables the use of the Android sdk given by androidSdkPath
     def screenCapturePath       //set le dossier de stockage des screenshots
 
+    String version = "1.0"      //contains the gmtool value
+
     //task configs
     def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on our launch task
     boolean automaticLaunch = true                              //enable or not the genymotion tasks injection

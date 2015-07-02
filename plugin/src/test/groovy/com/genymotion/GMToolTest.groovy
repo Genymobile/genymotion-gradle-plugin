@@ -582,6 +582,21 @@ class GMToolTest {
         assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
     }
 
+    @Test
+    public void canGetVersion() {
+
+        GMTool.metaClass.static.cmd = { def command, boolean verbose = false, boolean addPath = true, Closure c ->
+            """
+            Version  : 2.4.5
+            Revision : 20150629-a7e4623
+            """.eachLine { line, count ->
+                c(line, count)
+            }
+        }
+
+        assert GMTool.getVersion() == "2.4.5"
+    }
+
 
     @After
     public void finishTest() {

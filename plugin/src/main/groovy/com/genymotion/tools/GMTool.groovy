@@ -40,6 +40,7 @@ class GMTool {
     //root actions
     private static final String LOGZIP        = "logzip"
     private static final String HELP          = "help"
+    private static final String VERSION       = "version"
     //admin actions
     private static final String ADMIN         = "admin"
     private static final String LIST          = "list"
@@ -126,10 +127,31 @@ class GMTool {
 
     static String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the Genymotion path " +
             "with the genymotion.config.genymotionPath parameter."
+    static String GENYMOTION_VERSION_ERROR_MESSAGE = "Current gmtool version is not compatible with %s. " +
+            "Please update Genymotion following this link: $GENYMOTION_DOWNLOAD_URL"
+    static String GENYMOTION_DOWNLOAD_URL = "https://www.genymotion.com/#!/download"
 
 
     static def usage() {
         return cmd([GMTOOL, HELP])
+    }
+
+    static String getVersion() {
+
+        String version = null
+
+        cmd([GMTOOL, VERSION]) { line, count ->
+            String[] info = line.split(":")
+            if (info.length > 1 && info[1].trim()) {
+
+                switch (info[0].trim()) {
+                    case "Version":
+                        version = info[1].trim()
+                }
+            }
+        }
+
+        return version
     }
 
     /*
@@ -159,9 +181,11 @@ class GMTool {
         return cmd([GMTOOL, LOGZIP])
     }
 
-    static def getConfig(boolean verbose = false) {
+    static def getConfig(boolean verbose = false, GenymotionConfig config = null) {
 
-        GenymotionConfig config = new GenymotionConfig()
+        if(config == null) {
+            config = new GenymotionConfig()
+        }
 
         def exitCode = cmd([GMTOOL, CONFIG, PRINT], verbose) { line, count ->
 
@@ -208,11 +232,26 @@ class GMTool {
                 }
             }
         }
+
+        if (exitCode != RETURN_NO_ERROR) {
+            return exitCode
+        }
+
+        config.version = getVersion()
+
         if (exitCode == RETURN_NO_ERROR) {
             return config
         }
 
         return exitCode
+    }
+
+    static def throwIfNotCompatible(String feature, String featureLabel, Closure c) {
+        if (isCompatibleWith(feature)) {
+            c()
+        } else {
+            throw new GMToolException(String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
+        }
     }
 
     static def setConfig(GenymotionConfig config, boolean verbose = false) {
@@ -975,6 +1014,16 @@ class GMTool {
         }
 
         return toExec
+    }
+
+    /**
+     * Get the compatibility between the current gmtool binary and a gradle plugin feature
+     * @param feature
+     *
+     * @return true if the plugin is compatible with it and false otherwise
+     */
+    static boolean isCompatibleWith(String feature) {
+        return GENYMOTION_CONFIG.version >= feature
     }
 
     /**
