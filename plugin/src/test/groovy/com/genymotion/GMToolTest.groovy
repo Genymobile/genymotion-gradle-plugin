@@ -597,6 +597,29 @@ class GMToolTest {
         assert GMTool.getVersion() == "2.4.5"
     }
 
+    @Test
+    public void canCheckCompatibility() {
+
+        project.genymotion.config.version = "2.4.5"
+        assert !GMTool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+
+        project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
+        assert GMTool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+    }
+
+    @Test
+    public void canCheckSourceCompatibility() {
+
+        project.genymotion.config.verbose = false
+
+        project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
+        assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "--source=gradle", "version"]
+
+
+        project.genymotion.config.version = "2.4.5"
+        assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
+    }
+
 
     @After
     public void finishTest() {

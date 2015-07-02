@@ -104,6 +104,11 @@ class GMTool {
     private static final String OPT_USE_CUSTOM_SDK       = "use_custom_sdk="
     private static final String OPT_SCREEN_CAPTURE_PATH  = "screen_capture_path="
 
+    //Minimum gmtool version for each feature after first release
+    /**
+    * Adding --source to gmtool commands
+     */
+    public static final String FEATURE_SOURCE_PARAM             = "2.5.1"
 
     //code returned by gmtool or command line
     public static final int RETURN_NO_ERROR                = 0
@@ -1010,7 +1015,9 @@ class GMTool {
                 Log.debug(cleanCommand(toExec))
             }
 
-            toExec.addAll(1, [SOURCE_GRADLE])
+            if (isCompatibleWith(FEATURE_SOURCE_PARAM)) {
+                toExec.addAll(1, [SOURCE_GRADLE])
+            }
         }
 
         return toExec
