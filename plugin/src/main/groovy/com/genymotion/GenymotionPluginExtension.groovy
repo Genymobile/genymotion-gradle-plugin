@@ -201,6 +201,8 @@ class GenymotionPluginExtension {
      */
 
     def processConfiguration() {
+        project.genymotion.config.version = GMTool.getVersion()
+
         GenymotionConfig config = project.genymotion.config
         config.applyConfigFromFile(project)
 

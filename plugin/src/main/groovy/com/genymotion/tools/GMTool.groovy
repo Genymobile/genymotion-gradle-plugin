@@ -1014,13 +1014,13 @@ class GMTool {
 
         if (toExec[0]?.contains(GMTOOL)) {
 
+            if (isCompatibleWith(FEATURE_SOURCE_PARAM)) {
+                toExec.addAll(1, [SOURCE_GRADLE])
+            }
+
             if (verbose || GENYMOTION_CONFIG.verbose) {
                 toExec.addAll(1, [VERBOSE])
                 Log.debug(cleanCommand(toExec))
-            }
-
-            if (isCompatibleWith(FEATURE_SOURCE_PARAM)) {
-                toExec.addAll(1, [SOURCE_GRADLE])
             }
         }
 
