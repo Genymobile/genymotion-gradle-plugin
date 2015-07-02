@@ -114,6 +114,10 @@ class GMTool {
     * Adding --source to gmtool commands
      */
     public static final String FEATURE_SOURCE_PARAM             = "2.5.1"
+    /**
+    * Adding license_server & license_server_address config options
+     */
+    public static final String FEATURE_ONSITE_LICENSE_CONFIG    = "2.5.1"
 
     //code returned by gmtool or command line
     public static final int RETURN_NO_ERROR                = 0
@@ -132,7 +136,6 @@ class GMTool {
     public static final int RETURN_LICENSE_REQUIRED        = 13
     public static final int RETURN_COMMAND_NOT_FOUND_UNIX  = 127
     public static final int RETURN_SIGTERM                 = 143
-
     //@formatter:on
 
     static String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the Genymotion path " +
@@ -314,10 +317,14 @@ class GMTool {
             command.push(OPT_STORE_CREDENTIALS + storeCredentials)
         }
         if (licenseServer != null) {
-            command.push(OPT_LICENSE_SERVER + licenseServer)
+            throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER") {
+                command.push(OPT_LICENSE_SERVER + licenseServer)
+            }
         }
         if (licenseServerAddress != null) {
-            command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
+            throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER_ADDRESS") {
+                command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
+            }
         }
         if (proxy != null) {
             command.push(OPT_PROXY + proxy)

@@ -49,7 +49,6 @@ class GMToolTest extends CleanMetaTest {
         project = TestTools.init()
     }
 
-
     @Test
     public void isConfigOK() {
         def exitCode = GMTool.usage()
@@ -646,6 +645,32 @@ class GMToolTest extends CleanMetaTest {
 
         project.genymotion.config.version = "2.4.5"
         assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
+    }
+
+    @Test(expected = GMToolException)
+    public void canCheckLicenseServerCompatibility() {
+
+        GenymotionConfig config = new GenymotionConfig()
+        config.licenseServer = true
+
+        project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
+        GMTool.setConfig(config) //should pass
+
+        project.genymotion.config.version = "2.4.5"
+        GMTool.setConfig(config) //should throw exception
+    }
+
+    @Test(expected = GMToolException)
+    public void canCheckLicenseServerAddressCompatibility() {
+
+        GenymotionConfig config = new GenymotionConfig()
+        config.licenseServerAddress = "test"
+
+        project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
+        GMTool.setConfig(config) //should pass
+
+        project.genymotion.config.version = "2.4.5"
+        GMTool.setConfig(config) //should throw exception
     }
 
 
