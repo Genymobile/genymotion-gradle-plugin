@@ -30,12 +30,11 @@ import org.junit.Test
 
 import java.util.concurrent.TimeoutException
 
-import static org.junit.Assert.fail
-
-class GMToolTest {
+class GMToolTest extends CleanMetaTest {
 
     Project project
     def genymotionPath = null
+
 
     @BeforeClass
     public static void setUpClass() {
@@ -623,6 +622,8 @@ class GMToolTest {
 
     @After
     public void finishTest() {
+        cleanMetaClass()
+
         if (genymotionPath != null) {
             project.genymotion.config.genymotionPath = genymotionPath
         }
