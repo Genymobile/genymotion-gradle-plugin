@@ -23,13 +23,10 @@ import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.model.VDLaunchDslFactory
 import com.genymotion.tasks.GenymotionFinishTask
-import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tasks.GenymotionSingleLaunchTask
 import com.genymotion.tools.GMTool
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.internal.reflect.Instantiator
 
 import javax.inject.Inject
@@ -55,10 +52,6 @@ class GenymotionGradlePlugin implements Plugin<Project> {
         project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch)
         project.genymotion.extensions.create('config', GenymotionConfig)
 
-        project.task(TASK_LAUNCH, type: GenymotionLaunchTask) {
-            description 'Starting task for Genymotion plugin'
-            group PLUGIN_GROUP
-        }
         project.task(TASK_FINISH, type: GenymotionFinishTask) {
             description 'Finishing task for Genymotion plugin'
             group PLUGIN_GROUP
@@ -73,7 +66,6 @@ class GenymotionGradlePlugin implements Plugin<Project> {
             project.genymotion.checkParams()
             project.genymotion.injectTasks()
 
-
             project.genymotion.getDevices().each {
                 def task = project.task(TASK_LAUNCH + it.name.capitalize(), type: GenymotionSingleLaunchTask) {
                     description 'Starting task for device ' + it.name
@@ -81,7 +73,11 @@ class GenymotionGradlePlugin implements Plugin<Project> {
                 }
 
                 task.device = it
+            }
 
+            project.task(TASK_LAUNCH, dependsOn: project.tasks.withType(GenymotionSingleLaunchTask)) {
+                description 'Starting task for Genymotion plugin'
+                group PLUGIN_GROUP
             }
         }
     }
