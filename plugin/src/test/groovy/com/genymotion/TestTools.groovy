@@ -45,7 +45,7 @@ class TestTools {
 
         setDefaultGenymotionPath(project)
 
-        GMTool.getConfig(true, project.genymotion.config)
+        GMTool.getConfig(project.genymotion.config, true)
         project.genymotion.config.verbose = true
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 

@@ -186,7 +186,11 @@ class GMTool {
         return cmd([GMTOOL, LOGZIP])
     }
 
-    static def getConfig(boolean verbose = false, GenymotionConfig config = null) {
+    static def getConfig(boolean verbose = false) {
+        getConfig(null, verbose)
+    }
+
+    static def getConfig(GenymotionConfig config, boolean verbose = false) {
 
         if(config == null) {
             config = new GenymotionConfig()
