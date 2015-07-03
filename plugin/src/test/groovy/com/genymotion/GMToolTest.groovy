@@ -574,11 +574,11 @@ class GMToolTest extends CleanMetaTest {
         assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
 
         result = GMTool.formatAndLogCommand(command, true)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
 
         GMTool.GENYMOTION_CONFIG.verbose = true
         result = GMTool.formatAndLogCommand(command, false)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
     }
 
     @Test
