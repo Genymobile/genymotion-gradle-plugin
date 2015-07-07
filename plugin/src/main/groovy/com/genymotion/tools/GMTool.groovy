@@ -1008,7 +1008,7 @@ class GMTool {
      * @param verbose the explicite verbosity
      * @return returns the command to execute
      */
-    static def formatAndLogCommand(command, boolean verbose=false, boolean addPath = true) {
+    static def formatAndLogCommand(command, boolean verbose = false, boolean addPath = true) {
         def toExec = command
 
         //we eventually insert the genymotion binary path

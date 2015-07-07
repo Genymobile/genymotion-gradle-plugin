@@ -31,6 +31,7 @@ class GenymotionConfig {
     static final String DEFAULT_GENYMOTION_PATH_WINDOWS = "C:\\Program Files\\Genymobile\\Genymotion\\"
     static final String DEFAULT_GENYMOTION_PATH_LINUX = ""
     static final String DEFAULT_GENYMOTION_PATH = ""
+    static final String VERSION_NOT_SET = "1.0"
 
     //plugin config
     def genymotionPath = ""     //set the Genymotion path to PATH
@@ -55,7 +56,7 @@ class GenymotionConfig {
     def useCustomSdk            //enables the use of the Android sdk given by androidSdkPath
     def screenCapturePath       //set le dossier de stockage des screenshots
 
-    String version = "1.0"      //contains the gmtool value
+    String version = VERSION_NOT_SET      //contains the gmtool version
 
     //task configs
     def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on our launch task
