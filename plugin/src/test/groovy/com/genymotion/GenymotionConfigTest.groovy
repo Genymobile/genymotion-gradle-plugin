@@ -26,9 +26,7 @@ import org.gradle.api.Project
 import org.junit.After
 import org.junit.Test
 
-class GenymotionConfigTest {
-
-    private static final String BASE_GET_OS_NAME = Tools.getOSName()
+class GenymotionConfigTest extends CleanMetaTest {
 
     Project project
     boolean changedUser = false
@@ -159,7 +157,7 @@ class GenymotionConfigTest {
 
     @After
     public void finishTest() {
-        Tools.metaClass.static.getOSName = { return BASE_GET_OS_NAME }
+        cleanMetaClass()
 
         if (changedUser) {
             TestTools.setDefaultUser(true)
