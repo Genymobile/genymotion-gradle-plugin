@@ -104,6 +104,9 @@ class GMTool {
     private static final String OPT_USE_CUSTOM_SDK       = "use_custom_sdk="
     private static final String OPT_SCREEN_CAPTURE_PATH  = "screen_capture_path="
 
+    public static final String OPTION_ON                = "on"
+    public static final String OPTION_OFF               = "off"
+
     //Minimum gmtool version for each feature after first release
     /**
     * Adding --source to gmtool commands
@@ -192,51 +195,53 @@ class GMTool {
 
     static def getConfig(GenymotionConfig config, boolean verbose = false) {
 
-        if(config == null) {
+        if (config == null) {
             config = new GenymotionConfig()
         }
 
         def exitCode = cmd([GMTOOL, CONFIG, PRINT], verbose) { line, count ->
 
             String[] info = line.split("=")
+
             if (info.length > 1 && info[1].trim()) {
+                String value = info[1].trim()
 
                 switch (info[0].trim()) {
                     case "statistics":
-                        config.statistics = info[1].trim().toBoolean()
+                        config.statistics = isOn(value)
                         break
                     case "username":
-                        config.username = info[1].trim()
+                        config.username = value
                         break
                     case "store_credentials":
-                        config.storeCredentials = info[1].trim().toBoolean()
+                        config.storeCredentials = isOn(value)
                         break
                     case "proxy":
-                        config.proxy = info[1].trim().toBoolean()
+                        config.proxy = isOn(value)
                         break
                     case "proxy_address":
-                        config.proxyAddress = info[1].trim()
+                        config.proxyAddress = value
                         break
                     case "proxy_port":
                         config.proxyPort = info[1].toInteger()
                         break
                     case "proxy_auth":
-                        config.proxyAuth = info[1].trim().toBoolean()
+                        config.proxyAuth = isOn(value)
                         break
                     case "proxy_username":
-                        config.proxyUsername = info[1].trim()
+                        config.proxyUsername = value
                         break
                     case "virtual_device_path":
-                        config.virtualDevicePath = info[1].trim()
+                        config.virtualDevicePath = value
                         break
                     case "sdk_path":
-                        config.androidSdkPath = info[1].trim()
+                        config.androidSdkPath = value
                         break
                     case "use_custom_sdk":
-                        config.useCustomSdk = info[1].trim().toBoolean()
+                        config.useCustomSdk = isOn(value)
                         break
                     case "screen_capture_path":
-                        config.screenCapturePath = info[1].trim()
+                        config.screenCapturePath = value
                         break
                 }
             }
@@ -253,6 +258,10 @@ class GMTool {
         }
 
         return exitCode
+    }
+
+    static boolean isOn(String value) {
+        return value == OPTION_ON || value.toBoolean()
     }
 
     static def throwIfNotCompatible(String feature, String featureLabel, Closure c) {
