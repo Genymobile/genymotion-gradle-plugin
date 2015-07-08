@@ -19,9 +19,11 @@
 
 package com.genymotion
 
+import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Tools
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
@@ -545,17 +547,44 @@ class GMToolTest extends CleanMetaTest {
     }
 
     @Test(expected = TimeoutException)
-    public void throwWhenProcessIsTooLong() {
+    public void throwWhenProcessIsTooLongOnUnix() {
+        if(Tools.getOSName().toLowerCase().contains("windows"))
+            throw new TimeoutException() //we avoid the test on windows
+
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
         GMTool.cmd("sleep 1", true, false)
     }
 
+    @Test(expected = GMToolException)
+    public void throwWhenProcessIsTooLongOnWindows() {
+        if(!Tools.getOSName().toLowerCase().contains("windows"))
+            throw new GMToolException() //we pass the test only on windows
+
+        project.genymotion.config.processTimeout = 100
+        project.genymotion.config.abortOnError = true
+        //XXX: gmtool admin list is supposed to take more than 1 millisecond
+        GMTool.cmd([GMTool.GMTOOL, "admin", "list"], true)
+    }
+
     @Test
-    public void doNotThrowWhenProcessIsTooLong() {
+    public void doNotThrowWhenProcessIsTooLongOnUnix() {
+        if(Tools.getOSName().toLowerCase().contains("windows"))
+            return //we avoid the test on windows
+
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
         GMTool.cmd("sleep 1", true, false)
+    }
+
+    @Test
+    public void doNotThrowWhenProcessIsTooLongOnWindows() {
+        if(!Tools.getOSName().toLowerCase().contains("windows"))
+            return //we pass the test only on windows
+
+        project.genymotion.config.processTimeout = 100
+        project.genymotion.config.abortOnError = false
+        GMTool.cmd([GMTool.GMTOOL, "admin", "list"], true)
     }
 
     @Test
@@ -622,6 +651,7 @@ class GMToolTest extends CleanMetaTest {
 
     @After
     public void finishTest() {
+        project.genymotion.config.processTimeout = 300000
         cleanMetaClass()
 
         if (genymotionPath != null) {
