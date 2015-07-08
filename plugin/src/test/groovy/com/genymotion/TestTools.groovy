@@ -45,10 +45,10 @@ class TestTools {
 
         setDefaultGenymotionPath(project)
 
+        GMTool.getConfig(project.genymotion.config, true)
         project.genymotion.config.verbose = true
         GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
-        GMTool.getConfig(true)
 
         project
     }
@@ -173,6 +173,7 @@ class TestTools {
         }
 
         if (config.username && config.password) {
+            config.storeCredentials = true
             GMTool.setConfig(config, true)
 
             if (config.license && registerLicense) {

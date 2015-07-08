@@ -20,6 +20,7 @@
 package com.genymotion.model
 
 import com.genymotion.tools.AndroidPluginTools
+import com.genymotion.tools.GMTool
 import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
 import org.gradle.api.Project
@@ -30,6 +31,7 @@ class GenymotionConfig {
     static final String DEFAULT_GENYMOTION_PATH_WINDOWS = "C:\\Program Files\\Genymobile\\Genymotion\\"
     static final String DEFAULT_GENYMOTION_PATH_LINUX = ""
     static final String DEFAULT_GENYMOTION_PATH = ""
+    static final String VERSION_NOT_SET = "1.0"
 
     //plugin config
     def genymotionPath = ""     //set the Genymotion path to PATH
@@ -55,6 +57,8 @@ class GenymotionConfig {
     def androidSdkPath          //set the Android SDK folder
     def useCustomSdk            //enables the use of the Android sdk given by androidSdkPath
     def screenCapturePath       //set le dossier de stockage des screenshots
+
+    String version = VERSION_NOT_SET      //contains the gmtool version
 
     //task configs
     def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on our launch task
@@ -146,7 +150,7 @@ class GenymotionConfig {
 
                     if (val != null) {
                         if (value == Boolean.class) {
-                            val = val.toBoolean()
+                            val = GMTool.isOn(val)
                         }
 
                         this.setProperty(key, val.asType(value))

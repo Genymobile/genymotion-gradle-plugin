@@ -40,6 +40,7 @@ class GMTool {
     //root actions
     private static final String LOGZIP        = "logzip"
     private static final String HELP          = "help"
+    private static final String VERSION       = "version"
     //admin actions
     private static final String ADMIN         = "admin"
     private static final String LIST          = "list"
@@ -105,6 +106,14 @@ class GMTool {
     private static final String OPT_USE_CUSTOM_SDK          = "use_custom_sdk="
     private static final String OPT_SCREEN_CAPTURE_PATH     = "screen_capture_path="
 
+    public static final String OPTION_ON                = "on"
+    public static final String OPTION_OFF               = "off"
+
+    //Minimum gmtool version for each feature after first release
+    /**
+    * Adding --source to gmtool commands
+     */
+    public static final String FEATURE_SOURCE_PARAM             = "2.5.1"
 
     //code returned by gmtool or command line
     public static final int RETURN_NO_ERROR                = 0
@@ -128,10 +137,31 @@ class GMTool {
 
     static String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the Genymotion path " +
             "with the genymotion.config.genymotionPath parameter."
+    static String GENYMOTION_VERSION_ERROR_MESSAGE = "Current gmtool version is not compatible with %s. " +
+            "Please update Genymotion following this link: $GENYMOTION_DOWNLOAD_URL"
+    static String GENYMOTION_DOWNLOAD_URL = "https://www.genymotion.com/#!/download"
 
 
     static def usage() {
         return cmd([GMTOOL, HELP])
+    }
+
+    static String getVersion() {
+
+        String version = null
+
+        cmd([GMTOOL, VERSION]) { line, count ->
+            String[] info = line.split(":")
+            if (info.length > 1 && info[1].trim()) {
+
+                switch (info[0].trim()) {
+                    case "Version":
+                        version = info[1].trim()
+                }
+            }
+        }
+
+        return version
     }
 
     /*
@@ -162,23 +192,31 @@ class GMTool {
     }
 
     static def getConfig(boolean verbose = false) {
+        getConfig(null, verbose)
+    }
 
-        GenymotionConfig config = new GenymotionConfig()
+    static def getConfig(GenymotionConfig config, boolean verbose = false) {
+
+        if (config == null) {
+            config = new GenymotionConfig()
+        }
 
         def exitCode = cmd([GMTOOL, CONFIG, PRINT], verbose) { line, count ->
 
             String[] info = line.split("=")
+
             if (info.length > 1 && info[1].trim()) {
+                String value = info[1].trim()
 
                 switch (info[0].trim()) {
                     case "statistics":
-                        config.statistics = info[1].trim().toBoolean()
+                        config.statistics = isOn(value)
                         break
                     case "username":
-                        config.username = info[1].trim()
+                        config.username = value
                         break
                     case "store_credentials":
-                        config.storeCredentials = info[1].trim().toBoolean()
+                        config.storeCredentials = isOn(value)
                         break
                     case "license_server":
                         config.licenseServer = info[1].trim().toBoolean()
@@ -187,40 +225,59 @@ class GMTool {
                         config.licenseServerAddress = info[1].trim()
                         break
                     case "proxy":
-                        config.proxy = info[1].trim().toBoolean()
+                        config.proxy = isOn(value)
                         break
                     case "proxy_address":
-                        config.proxyAddress = info[1].trim()
+                        config.proxyAddress = value
                         break
                     case "proxy_port":
                         config.proxyPort = info[1].toInteger()
                         break
                     case "proxy_auth":
-                        config.proxyAuth = info[1].trim().toBoolean()
+                        config.proxyAuth = isOn(value)
                         break
                     case "proxy_username":
-                        config.proxyUsername = info[1].trim()
+                        config.proxyUsername = value
                         break
                     case "virtual_device_path":
-                        config.virtualDevicePath = info[1].trim()
+                        config.virtualDevicePath = value
                         break
                     case "sdk_path":
-                        config.androidSdkPath = info[1].trim()
+                        config.androidSdkPath = value
                         break
                     case "use_custom_sdk":
-                        config.useCustomSdk = info[1].trim().toBoolean()
+                        config.useCustomSdk = isOn(value)
                         break
                     case "screen_capture_path":
-                        config.screenCapturePath = info[1].trim()
+                        config.screenCapturePath = value
                         break
                 }
             }
         }
+
+        if (exitCode != RETURN_NO_ERROR) {
+            return exitCode
+        }
+
+        config.version = getVersion()
+
         if (exitCode == RETURN_NO_ERROR) {
             return config
         }
 
         return exitCode
+    }
+
+    static boolean isOn(String value) {
+        return value == OPTION_ON || value.toBoolean()
+    }
+
+    static def throwIfNotCompatible(String feature, String featureLabel, Closure c) {
+        if (isCompatibleWith(feature)) {
+            c()
+        } else {
+            throw new GMToolException(String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
+        }
     }
 
     static def setConfig(GenymotionConfig config, boolean verbose = false) {
@@ -967,7 +1024,7 @@ class GMTool {
      * @param verbose the explicite verbosity
      * @return returns the command to execute
      */
-    static def formatAndLogCommand(command, boolean verbose=false, boolean addPath = true) {
+    static def formatAndLogCommand(command, boolean verbose = false, boolean addPath = true) {
         def toExec = command
 
         //we eventually insert the genymotion binary path
@@ -982,15 +1039,27 @@ class GMTool {
 
         if (toExec[0]?.contains(GMTOOL)) {
 
+            if (isCompatibleWith(FEATURE_SOURCE_PARAM)) {
+                toExec.addAll(1, [SOURCE_GRADLE])
+            }
+
             if (verbose || GENYMOTION_CONFIG.verbose) {
                 toExec.addAll(1, [VERBOSE])
                 Log.debug(cleanCommand(toExec))
             }
-
-            toExec.addAll(1, [SOURCE_GRADLE])
         }
 
         return toExec
+    }
+
+    /**
+     * Get the compatibility between the current gmtool binary and a gradle plugin feature
+     * @param feature
+     *
+     * @return true if the plugin is compatible with it and false otherwise
+     */
+    static boolean isCompatibleWith(String feature) {
+        return GENYMOTION_CONFIG.version >= feature
     }
 
     /**

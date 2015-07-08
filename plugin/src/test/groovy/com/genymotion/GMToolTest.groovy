@@ -19,9 +19,11 @@
 
 package com.genymotion
 
+import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Tools
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
@@ -30,12 +32,11 @@ import org.junit.Test
 
 import java.util.concurrent.TimeoutException
 
-import static org.junit.Assert.fail
-
-class GMToolTest {
+class GMToolTest extends CleanMetaTest {
 
     Project project
     def genymotionPath = null
+
 
     @BeforeClass
     public static void setUpClass() {
@@ -546,17 +547,44 @@ class GMToolTest {
     }
 
     @Test(expected = TimeoutException)
-    public void throwWhenProcessIsTooLong() {
+    public void throwWhenProcessIsTooLongOnUnix() {
+        if(Tools.getOSName().toLowerCase().contains("windows"))
+            throw new TimeoutException() //we avoid the test on windows
+
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
         GMTool.cmd("sleep 1", true, false)
     }
 
+    @Test(expected = GMToolException)
+    public void throwWhenProcessIsTooLongOnWindows() {
+        if(!Tools.getOSName().toLowerCase().contains("windows"))
+            throw new GMToolException() //we pass the test only on windows
+
+        project.genymotion.config.processTimeout = 100
+        project.genymotion.config.abortOnError = true
+        //XXX: gmtool admin list is supposed to take more than 1 millisecond
+        GMTool.cmd([GMTool.GMTOOL, "admin", "list"], true)
+    }
+
     @Test
-    public void doNotThrowWhenProcessIsTooLong() {
+    public void doNotThrowWhenProcessIsTooLongOnUnix() {
+        if(Tools.getOSName().toLowerCase().contains("windows"))
+            return //we avoid the test on windows
+
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
         GMTool.cmd("sleep 1", true, false)
+    }
+
+    @Test
+    public void doNotThrowWhenProcessIsTooLongOnWindows() {
+        if(!Tools.getOSName().toLowerCase().contains("windows"))
+            return //we pass the test only on windows
+
+        project.genymotion.config.processTimeout = 100
+        project.genymotion.config.abortOnError = false
+        GMTool.cmd([GMTool.GMTOOL, "admin", "list"], true)
     }
 
     @Test
@@ -575,16 +603,57 @@ class GMToolTest {
         assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
 
         result = GMTool.formatAndLogCommand(command, true)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
 
         GMTool.GENYMOTION_CONFIG.verbose = true
         result = GMTool.formatAndLogCommand(command, false)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, GMTool.VERBOSE, "nok"]
+        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
+    }
+
+    @Test
+    public void canGetVersion() {
+
+        GMTool.metaClass.static.cmd = { def command, boolean verbose = false, boolean addPath = true, Closure c ->
+            """
+            Version  : 2.4.5
+            Revision : 20150629-a7e4623
+            """.eachLine { line, count ->
+                c(line, count)
+            }
+        }
+
+        assert GMTool.getVersion() == "2.4.5"
+    }
+
+    @Test
+    public void canCheckCompatibility() {
+
+        project.genymotion.config.version = "2.4.5"
+        assert !GMTool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+
+        project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
+        assert GMTool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+    }
+
+    @Test
+    public void canCheckSourceCompatibility() {
+
+        project.genymotion.config.verbose = false
+
+        project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
+        assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "--source=gradle", "version"]
+
+
+        project.genymotion.config.version = "2.4.5"
+        assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
     }
 
 
     @After
     public void finishTest() {
+        project.genymotion.config.processTimeout = 300000
+        cleanMetaClass()
+
         if (genymotionPath != null) {
             project.genymotion.config.genymotionPath = genymotionPath
         }

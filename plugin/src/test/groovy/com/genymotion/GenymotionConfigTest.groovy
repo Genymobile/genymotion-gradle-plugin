@@ -26,9 +26,7 @@ import org.gradle.api.Project
 import org.junit.After
 import org.junit.Test
 
-class GenymotionConfigTest {
-
-    private static final String BASE_GET_OS_NAME = Tools.getOSName()
+class GenymotionConfigTest extends CleanMetaTest {
 
     Project project
     boolean changedUser = false
@@ -127,6 +125,32 @@ class GenymotionConfigTest {
     }
 
     @Test
+    public void canGetConfigFromGMTool() {
+        project = TestTools.init()
+        GenymotionConfig config = new GenymotionConfig()
+        config.fromFile = "res/test/config.properties"
+        config.applyConfigFromFile(project)
+
+        changedUser = true
+        GMTool.setConfig(config, true)
+        GMTool.getConfig(project.genymotion.config, true)
+
+        //@formatter:off
+        assert false                                        == project.genymotion.config.statistics
+        assert "testName"                                   == project.genymotion.config.username
+        assert true                                         == project.genymotion.config.storeCredentials
+        assert false                                        == project.genymotion.config.proxy
+        assert "testAddress"                                == project.genymotion.config.proxyAddress
+        assert false                                        == project.genymotion.config.proxy
+        assert 12345                                        == project.genymotion.config.proxyPort
+        assert true                                         == project.genymotion.config.proxyAuth
+        assert "testUsername"                               == project.genymotion.config.proxyUsername
+        assert true                                         == project.genymotion.config.useCustomSdk
+        //@formatter:on
+    }
+
+
+    @Test
     public void canAutoConfigGenymotionPath() {
         //we emulate a mac
         Tools.metaClass.static.getOSName = { return 'mac' }
@@ -163,11 +187,13 @@ class GenymotionConfigTest {
 
     @After
     public void finishTest() {
-        Tools.metaClass.static.getOSName = { return BASE_GET_OS_NAME }
+        cleanMetaClass()
 
         if (changedUser) {
             TestTools.setDefaultUser(true)
             changedUser = false
         }
+
+        GMTool.resetConfig()
     }
 }

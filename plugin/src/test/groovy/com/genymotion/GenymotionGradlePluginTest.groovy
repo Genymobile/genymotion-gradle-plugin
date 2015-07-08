@@ -65,6 +65,12 @@ class GenymotionGradlePluginTest {
         project.genymotion.config.genymotionPath = previousPath
     }
 
+
+    @Test
+    public void isGenymotionConfigBootstraped() {
+        assert project.genymotion.config.version != "1.0"
+    }
+
     @Test
     public void canFixGenymotionPath() {
 
