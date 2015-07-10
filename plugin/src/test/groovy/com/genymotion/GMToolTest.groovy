@@ -547,8 +547,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test(expected = TimeoutException)
     public void throwWhenProcessIsTooLongOnUnix() {
-        if(Tools.getOSName().toLowerCase().contains("windows"))
+        if (Tools.getOSName().toLowerCase().contains("windows")) {
             throw new TimeoutException() //we avoid the test on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
@@ -557,8 +558,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test(expected = GMToolException)
     public void throwWhenProcessIsTooLongOnWindows() {
-        if(!Tools.getOSName().toLowerCase().contains("windows"))
+        if (!Tools.getOSName().toLowerCase().contains("windows")) {
             throw new GMToolException() //we pass the test only on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
@@ -568,8 +570,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnUnix() {
-        if(Tools.getOSName().toLowerCase().contains("windows"))
+        if (Tools.getOSName().toLowerCase().contains("windows")) {
             return //we avoid the test on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
@@ -578,8 +581,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnWindows() {
-        if(!Tools.getOSName().toLowerCase().contains("windows"))
+        if (!Tools.getOSName().toLowerCase().contains("windows")) {
             return //we pass the test only on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
