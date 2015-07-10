@@ -278,8 +278,10 @@ class GMTool {
     static def throwIfNotCompatible(String feature, String featureLabel, Closure c) {
         if (isCompatibleWith(feature)) {
             c()
-        } else {
+        } else if (GENYMOTION_CONFIG.abortOnError) {
             throw new GMToolException(String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
+        } else {
+            Log.warn("Genymotion warn: " + String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
         }
     }
 

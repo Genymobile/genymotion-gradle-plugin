@@ -41,12 +41,12 @@ class GMToolTest extends CleanMetaTest {
     @BeforeClass
     public static void setUpClass() {
         TestTools.init()
-        TestTools.setDefaultUser(true)
     }
 
     @Before
     public void setUp() {
         project = TestTools.init()
+        TestTools.setDefaultUser(true)
     }
 
     @Test

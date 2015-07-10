@@ -166,7 +166,10 @@ class TestTools {
     }
 
     static setDefaultUser(registerLicense = false) {
+        GMTool.resetConfig()
         GenymotionConfig config = getDefaultConfig()
+        config.version = GMTool.getVersion()
+        GMTool.GENYMOTION_CONFIG.version = config.version
 
         if (!config) {
             return
