@@ -41,14 +41,13 @@ class GMToolTest extends CleanMetaTest {
     @BeforeClass
     public static void setUpClass() {
         TestTools.init()
-        TestTools.setDefaultUser(true)
     }
 
     @Before
     public void setUp() {
         project = TestTools.init()
+        TestTools.setDefaultUser(true)
     }
-
 
     @Test
     public void isConfigOK() {
@@ -548,8 +547,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test(expected = TimeoutException)
     public void throwWhenProcessIsTooLongOnUnix() {
-        if(Tools.getOSName().toLowerCase().contains("windows"))
+        if (Tools.getOSName().toLowerCase().contains("windows")) {
             throw new TimeoutException() //we avoid the test on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
@@ -558,8 +558,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test(expected = GMToolException)
     public void throwWhenProcessIsTooLongOnWindows() {
-        if(!Tools.getOSName().toLowerCase().contains("windows"))
+        if (!Tools.getOSName().toLowerCase().contains("windows")) {
             throw new GMToolException() //we pass the test only on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
@@ -569,8 +570,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnUnix() {
-        if(Tools.getOSName().toLowerCase().contains("windows"))
+        if (Tools.getOSName().toLowerCase().contains("windows")) {
             return //we avoid the test on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
@@ -579,8 +581,9 @@ class GMToolTest extends CleanMetaTest {
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnWindows() {
-        if(!Tools.getOSName().toLowerCase().contains("windows"))
+        if (!Tools.getOSName().toLowerCase().contains("windows")) {
             return //we pass the test only on windows
+        }
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
@@ -646,6 +649,32 @@ class GMToolTest extends CleanMetaTest {
 
         project.genymotion.config.version = "2.4.5"
         assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
+    }
+
+    @Test(expected = GMToolException)
+    public void canCheckLicenseServerCompatibility() {
+
+        GenymotionConfig config = new GenymotionConfig()
+        config.licenseServer = true
+
+        project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
+        GMTool.setConfig(config) //should pass
+
+        project.genymotion.config.version = "2.4.5"
+        GMTool.setConfig(config) //should throw exception
+    }
+
+    @Test(expected = GMToolException)
+    public void canCheckLicenseServerAddressCompatibility() {
+
+        GenymotionConfig config = new GenymotionConfig()
+        config.licenseServerAddress = "test"
+
+        project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
+        GMTool.setConfig(config) //should pass
+
+        project.genymotion.config.version = "2.4.5"
+        GMTool.setConfig(config) //should throw exception
     }
 
 

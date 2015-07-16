@@ -114,6 +114,10 @@ class GMTool {
     * Adding --source to gmtool commands
      */
     public static final String FEATURE_SOURCE_PARAM             = "2.5.1"
+    /**
+    * Adding license_server & license_server_address config options
+     */
+    public static final String FEATURE_ONSITE_LICENSE_CONFIG    = "2.5.1"
 
     //code returned by gmtool or command line
     public static final int RETURN_NO_ERROR                = 0
@@ -132,7 +136,6 @@ class GMTool {
     public static final int RETURN_LICENSE_REQUIRED        = 13
     public static final int RETURN_COMMAND_NOT_FOUND_UNIX  = 127
     public static final int RETURN_SIGTERM                 = 143
-
     //@formatter:on
 
     static String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the Genymotion path " +
@@ -219,10 +222,10 @@ class GMTool {
                         config.storeCredentials = isOn(value)
                         break
                     case "license_server":
-                        config.licenseServer = info[1].trim().toBoolean()
+                        config.licenseServer = isOn(value)
                         break
                     case "license_server_address":
-                        config.licenseServerAddress = info[1].trim()
+                        config.licenseServerAddress = value
                         break
                     case "proxy":
                         config.proxy = isOn(value)
@@ -275,8 +278,10 @@ class GMTool {
     static def throwIfNotCompatible(String feature, String featureLabel, Closure c) {
         if (isCompatibleWith(feature)) {
             c()
-        } else {
+        } else if (GENYMOTION_CONFIG.abortOnError) {
             throw new GMToolException(String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
+        } else {
+            Log.warn("Genymotion warn: " + String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
         }
     }
 
@@ -314,10 +319,14 @@ class GMTool {
             command.push(OPT_STORE_CREDENTIALS + storeCredentials)
         }
         if (licenseServer != null) {
-            command.push(OPT_LICENSE_SERVER + licenseServer)
+            throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER") {
+                command.push(OPT_LICENSE_SERVER + licenseServer)
+            }
         }
         if (licenseServerAddress != null) {
-            command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
+            throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER_ADDRESS") {
+                command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
+            }
         }
         if (proxy != null) {
             command.push(OPT_PROXY + proxy)
