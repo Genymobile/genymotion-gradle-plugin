@@ -116,7 +116,7 @@ class GMTool {
     /**
     * Adding license_server & license_server_address config options
      */
-    public static final String FEATURE_ONSITE_LICENSE_CONFIG    = "2.5.1"
+    public static final String FEATURE_ONSITE_LICENSE_CONFIG    = "2.6"
 
     //code returned by gmtool or command line
     public static final int RETURN_NO_ERROR                = 0
