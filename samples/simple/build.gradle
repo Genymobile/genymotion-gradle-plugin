@@ -17,7 +17,6 @@ genymotion.config{
 //    statistics                //enable stats
 //    username                  //set the login
 //    password                  //set the password
-//    storeCredentials          //keep the configured account logged in genymotion
 //    licenseServer             //enable license server
 //    licenseServerAddress      //set the license server address
 //    license                   //set license

@@ -52,7 +52,6 @@ class GenymotionConfigTest extends CleanMetaTest {
         ["statistics",
          "username",
          "password",
-         "storeCredentials",
          "license",
          "licenseServer",
          "licenseServerAddress",
@@ -95,7 +94,6 @@ class GenymotionConfigTest extends CleanMetaTest {
         assert false            == project.genymotion.config.statistics
         assert "testName"       == project.genymotion.config.username
         assert "testPWD"        == project.genymotion.config.password
-        assert true             == project.genymotion.config.storeCredentials
         assert true             == project.genymotion.config.licenseServer
         assert "licenseServ"    == project.genymotion.config.licenseServerAddress
         assert "testLicense"    == project.genymotion.config.license
@@ -138,7 +136,6 @@ class GenymotionConfigTest extends CleanMetaTest {
         //@formatter:off
         assert false                                        == project.genymotion.config.statistics
         assert "testName"                                   == project.genymotion.config.username
-        assert true                                         == project.genymotion.config.storeCredentials
         assert false                                        == project.genymotion.config.proxy
         assert "testAddress"                                == project.genymotion.config.proxyAddress
         assert false                                        == project.genymotion.config.proxy

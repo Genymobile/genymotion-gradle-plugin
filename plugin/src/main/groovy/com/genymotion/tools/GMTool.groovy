@@ -92,7 +92,6 @@ class GMTool {
     private static final String OPT_STATISTICS              = "statistics="
     private static final String OPT_USERNAME_CONFIG         = "username="
     private static final String OPT_PASSWORD_CONFIG         = "password="
-    private static final String OPT_STORE_CREDENTIALS       = "store_credentials="
     private static final String OPT_LICENSE_SERVER          = "license_server="
     private static final String OPT_LICENSE_SERVER_ADDRESS  = "license_server_address="
     private static final String OPT_PROXY                   = "proxy="
@@ -218,9 +217,6 @@ class GMTool {
                     case "username":
                         config.username = value
                         break
-                    case "store_credentials":
-                        config.storeCredentials = isOn(value)
-                        break
                     case "license_server":
                         config.licenseServer = isOn(value)
                         break
@@ -289,16 +285,16 @@ class GMTool {
         if (!config) {
             return false
         }
-        return setConfig(config.statistics, config.username, config.password, config.storeCredentials,
-                config.licenseServer, config.licenseServerAddress, config.proxy, config.proxyAddress, config.proxyPort,
-                config.proxyAuth, config.proxyUsername, config.proxyPassword, config.virtualDevicePath,
-                config.androidSdkPath, config.useCustomSdk, config.screenCapturePath, verbose)
+        return setConfig(config.statistics, config.username, config.password, config.licenseServer,
+                config.licenseServerAddress, config.proxy, config.proxyAddress, config.proxyPort, config.proxyAuth,
+                config.proxyUsername, config.proxyPassword, config.virtualDevicePath, config.androidSdkPath,
+                config.useCustomSdk, config.screenCapturePath, verbose)
     }
 
 
     static def setConfig(def statistics = null, String username = null, String password = null,
-                         def storeCredentials = null, def licenseServer = null, String licenseServerAddress = null,
-                         def proxy = null, String proxyAddress = null, def proxyPort = null, def proxyAuth = null,
+                         def licenseServer = null, String licenseServerAddress = null, def proxy = null,
+                         String proxyAddress = null, def proxyPort = null, def proxyAuth = null,
                          String proxyUsername = null, String proxyPassword = null, String virtualDevicePath = null,
                          String androidSdkPath = null, def useCustomSdk = null, String screenCapturePath = null,
                          boolean verbose = false) {
@@ -314,9 +310,6 @@ class GMTool {
 
         if (statistics != null) {
             command.push(OPT_STATISTICS + statistics)
-        }
-        if (storeCredentials != null) {
-            command.push(OPT_STORE_CREDENTIALS + storeCredentials)
         }
         if (licenseServer != null) {
             throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER") {

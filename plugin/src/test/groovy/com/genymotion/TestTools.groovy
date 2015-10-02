@@ -176,7 +176,6 @@ class TestTools {
         }
 
         if (config.username && config.password) {
-            config.storeCredentials = true
             GMTool.setConfig(config, true)
 
             if (config.license && registerLicense) {
