@@ -29,26 +29,23 @@ class Log {
         if (logger == null) {
             logger = LoggerFactory.getLogger("genymotion-logger")
         }
+        logger
     }
 
     public static synchronized def error(def message) {
-        checkLogger()
-        logger.error(normalizeMessage(message))
+        checkLogger().error(normalizeMessage(message))
     }
 
     public static synchronized def warn(def message) {
-        checkLogger()
-        logger.warn(normalizeMessage(message))
+        checkLogger().warn(normalizeMessage(message))
     }
 
     public static synchronized def info(def message) {
-        checkLogger()
-        logger.info(normalizeMessage(message))
+        checkLogger().info(normalizeMessage(message))
     }
 
     public static synchronized def debug(def message) {
-        checkLogger()
-        logger.debug(normalizeMessage(message))
+        checkLogger().debug(normalizeMessage(message))
     }
 
     private static String normalizeMessage(def message) {
