@@ -33,6 +33,10 @@ class GenymotionConfig {
     static final String DEFAULT_GENYMOTION_PATH = ""
     static final String VERSION_NOT_SET = "1.0"
 
+    static final String DEPRECATED_ERROR = "is deprecated and has no effect on Genymotion configuration. " +
+            "You should not use it anymore."
+    static final String STORE_CREDENTIALS_ERROR = "genymotion.config.storeCredentials " + DEPRECATED_ERROR
+
     //plugin config
     def genymotionPath = ""     //set the Genymotion path to PATH
 
@@ -198,7 +202,6 @@ class GenymotionConfig {
      */
     @Deprecated
     public void setStoreCredentials(def value) {
-        Log.warn("genymotion.config.storeCredentials is deprecated and has no effect on Genymotion configuration. " +
-                "You should not use it anymore.")
+        Log.warn(STORE_CREDENTIALS_ERROR)
     }
 }
