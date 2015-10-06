@@ -21,10 +21,19 @@ package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
+import org.answerit.mock.slf4j.LoggingLevel
+import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Test
+import org.slf4j.Logger
+
+import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
+import static org.hamcrest.CoreMatchers.allOf
+import static org.hamcrest.CoreMatchers.equalTo
+import static org.junit.Assert.assertThat
 
 class GenymotionConfigTest extends CleanMetaTest {
 
@@ -148,6 +157,20 @@ class GenymotionConfigTest extends CleanMetaTest {
 
 
     @Test
+    public void warnWhenUsingStoreCredentials() {
+
+        Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
+
+        GenymotionConfig config = new GenymotionConfig()
+        config.storeCredentials = true
+
+        assertThat(logger, hasEntriesCount(1, that(allOf(
+                haveMessage(equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR)),
+                haveLevel(LoggingLevel.WARN)
+        ))))
+    }
+
+    @Test
     public void canAutoConfigGenymotionPath() {
         //we emulate a mac
         Tools.metaClass.static.getOSName = { return 'mac' }
@@ -185,6 +208,7 @@ class GenymotionConfigTest extends CleanMetaTest {
     @After
     public void finishTest() {
         cleanMetaClass()
+        Log.clearLogger()
 
         if (changedUser) {
             TestTools.setDefaultUser(true)

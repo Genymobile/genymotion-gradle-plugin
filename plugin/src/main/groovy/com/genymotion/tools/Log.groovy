@@ -32,6 +32,10 @@ class Log {
         logger
     }
 
+    static synchronized clearLogger() {
+        logger = null
+    }
+
     public static synchronized def error(def message) {
         checkLogger().error(normalizeMessage(message))
     }
@@ -60,4 +64,6 @@ class Log {
             message.toString()
         }
     }
+
+
 }

@@ -25,10 +25,19 @@ import com.genymotion.tasks.GenymotionFinishTask
 import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Log
+import org.answerit.mock.slf4j.LoggingLevel
+import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.slf4j.Logger
+
+import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
+import static org.hamcrest.CoreMatchers.allOf
+import static org.hamcrest.CoreMatchers.equalTo
+import static org.junit.Assert.assertThat
 
 class GenymotionGradlePluginTest {
 
@@ -825,8 +834,43 @@ class GenymotionGradlePluginTest {
         project.evaluate()
     }
 
+    @Test
+    public void warnWhenUsingConfigStoreCredentials() {
+
+        Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
+
+        project.genymotion.config.storeCredentials = true
+        project.genymotion.config.verbose = false
+        project.evaluate()
+
+        assertThat(logger, hasEntriesCount(1, that(allOf(
+                haveMessage(equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR)),
+                haveLevel(LoggingLevel.WARN)
+        ))))
+
+    }
+
+    @Test
+    public void warnWhenUsingConfigStoreCredentialsWithVerbose() {
+
+        Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
+
+        project.genymotion.config.storeCredentials = true
+        project.genymotion.config.verbose = true
+        project.evaluate()
+
+        assertThat(logger, hasEntriesCount(1, that(allOf(
+                haveMessage(equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR)),
+                haveLevel(LoggingLevel.WARN)
+        ))))
+
+    }
+
+
     @After
     public void finishTest() {
+
+        Log.clearLogger()
         TestTools.cleanAfterTests()
     }
 }
