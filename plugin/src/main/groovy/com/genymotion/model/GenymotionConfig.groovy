@@ -196,7 +196,7 @@ class GenymotionConfig {
     }
 
     /**
-     * @deprecated storeCredentials property if now deprecated on GenymotionConfig and should not be used. We override
+     * @deprecated storeCredentials property is now deprecated on GenymotionConfig and should not be used. We override
      * its setter to display a warning.
      * @param value
      */
