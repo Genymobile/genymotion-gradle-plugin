@@ -38,6 +38,7 @@ import static org.junit.Assert.assertThat
 class GenymotionConfigTest extends CleanMetaTest {
 
     Project project
+    GMTool gmtool
     boolean changedUser = false
 
     @Test
@@ -87,9 +88,8 @@ class GenymotionConfigTest extends CleanMetaTest {
 
     @Test
     public void canConfigFromFile() {
-
-        project = TestTools.init()
-        GenymotionConfig config = GMTool.getConfig(true)
+        (project, gmtool) = TestTools.init()
+        GenymotionConfig config = gmtool.getConfig(true)
 
         project.genymotion.config.fromFile = "res/test/config.properties"
 
@@ -125,22 +125,22 @@ class GenymotionConfigTest extends CleanMetaTest {
         //@formatter:on
 
         //we set the last config back
-        GMTool.setConfig(config, true)
+        gmtool.setConfig(config, true)
 
         //we set the default config credentials
-        GMTool.setConfig(TestTools.getDefaultConfig(), true)
+        gmtool.setConfig(TestTools.getDefaultConfig(), true)
     }
 
     @Test
     public void canGetConfigFromGMTool() {
-        project = TestTools.init()
+        (project, gmtool) = TestTools.init()
         GenymotionConfig config = new GenymotionConfig()
         config.fromFile = "res/test/config.properties"
         config.applyConfigFromFile(project)
 
         changedUser = true
-        GMTool.setConfig(config, true)
-        GMTool.getConfig(project.genymotion.config, true)
+        gmtool.setConfig(config, true)
+        gmtool.getConfig(project.genymotion.config, true)
 
         //@formatter:off
         assert false                                        == project.genymotion.config.statistics
@@ -211,10 +211,12 @@ class GenymotionConfigTest extends CleanMetaTest {
         Log.clearLogger()
 
         if (changedUser) {
-            TestTools.setDefaultUser(true)
+            TestTools.setDefaultUser(true, gmtool)
             changedUser = false
         }
 
-        GMTool.resetConfig()
+        if (gmtool != null) {
+            gmtool.resetConfig()
+        }
     }
 }

@@ -33,16 +33,17 @@ import static org.junit.Assert.fail
 class GenymotionTasksTest {
 
     Project project
+    GMTool gmtool
 
     @BeforeClass
     public static void setUpClass() {
-        TestTools.init()
-        TestTools.setDefaultUser(true)
+        def (project, gmtool) = TestTools.init()
+        TestTools.setDefaultUser(true, gmtool)
     }
 
     @Before
     public void setUp() {
-        project = TestTools.init()
+        (project, gmtool) = TestTools.init()
     }
 
 
@@ -53,7 +54,7 @@ class GenymotionTasksTest {
 
         project.tasks.genymotionLaunch.exec()
 
-        GenymotionVirtualDevice device = GMTool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
 
         //we test the VDLaunch
         assert project.genymotion.devices[0].start
@@ -71,8 +72,8 @@ class GenymotionTasksTest {
         //we test if the device is running
         assert device.state == GenymotionVirtualDevice.STATE_ON
 
-        GMTool.stopDevice(vdName)
-        GMTool.deleteDevice(vdName)
+        gmtool.stopDevice(vdName)
+        gmtool.deleteDevice(vdName)
     }
 
     @Test
@@ -84,7 +85,7 @@ class GenymotionTasksTest {
 
         project.tasks.genymotionFinish.exec()
 
-        assert !GMTool.isDeviceCreated(vdName)
+        assert !gmtool.isDeviceCreated(vdName)
     }
 
     @Test
@@ -118,13 +119,13 @@ class GenymotionTasksTest {
             //TODO check how we can produce GMToolException instead of IOException with another command
             project.genymotion.config.genymotionPath = goodPath
 
-            assert !GMTool.isDeviceCreated(deviceToDelete)
+            assert !gmtool.isDeviceCreated(deviceToDelete)
             assert devicesAreStopped(project.genymotion.devices)
         }
     }
 
     boolean devicesAreStopped(def devices) {
-        def stoppedDevices = GMTool.getRunningDevices(false, false, true)
+        def stoppedDevices = gmtool.getRunningDevices(false, false, true)
         devices.each() {
             if (!it.deleteWhenFinish && !stoppedDevices.contains(it.name)) {
                 return false
@@ -146,7 +147,7 @@ class GenymotionTasksTest {
 
         project.genymotion.processConfiguration()
 
-        GenymotionConfig config = GMTool.getConfig(true)
+        GenymotionConfig config = gmtool.getConfig(true)
 
         assert project.genymotion.config.username == config.username
 
@@ -156,6 +157,6 @@ class GenymotionTasksTest {
 
     @After
     public void finishTest() {
-        TestTools.cleanAfterTests()
+        TestTools.cleanAfterTests(gmtool)
     }
 }

@@ -35,6 +35,8 @@ import java.util.concurrent.TimeoutException
 class GMToolTest extends CleanMetaTest {
 
     Project project
+    GMTool gmtool
+
     def genymotionPath = null
 
 
@@ -45,14 +47,14 @@ class GMToolTest extends CleanMetaTest {
 
     @Before
     public void setUp() {
-        project = TestTools.init()
-        TestTools.setDefaultUser(true)
+        (project, gmtool) = TestTools.init()
+        TestTools.setDefaultUser(true, gmtool)
     }
 
     @Test
     public void isConfigOK() {
-        def exitCode = GMTool.usage()
-        assert exitCode == GMTool.RETURN_NO_ERROR
+        def exitCode = gmtool.usage()
+        assert exitCode == gmtool.RETURN_NO_ERROR
     }
 
 
@@ -63,10 +65,10 @@ class GMToolTest extends CleanMetaTest {
         project.genymotion.config.abortOnError = true
 
         try {
-            GMTool.usage()
+            gmtool.usage()
             fail("FileNotFoundException expected")
         } catch (Exception e) {
-            assert "$GMTool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $GMTool.GENYMOTION_CONFIG.genymotionPath" == e.message
+            assert "$gmtool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $gmtool.genymotionConfig.genymotionPath" == e.message
         }
     }
 
@@ -74,47 +76,47 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void isTemplatesAvailable() {
 
-        def templates = GMTool.getTemplates(true)
+        def templates = gmtool.getTemplates(true)
         assert templates.size() > 0
         assert templates[0].name?.trim()
     }
 
     @Test
     public void canGetRunningDevices() {
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        GMTool.startDevice(name)
-        def devices = GMTool.getRunningDevices(true, false, true)
+        gmtool.startDevice(name)
+        def devices = gmtool.getRunningDevices(true, false, true)
 
         println "devices " + devices
         assert devices.contains(name)
 
-        GMTool.stopDevice(name)
+        gmtool.stopDevice(name)
 
-        GMTool.deleteDevice(name)
+        gmtool.deleteDevice(name)
     }
 
     @Test
     public void canGetStoppedDevices() {
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def runningDevices = GMTool.getRunningDevices(true, false, true)
+        def runningDevices = gmtool.getRunningDevices(true, false, true)
         if (runningDevices.contains(name)) {
-            GMTool.stopDevice(name)
+            gmtool.stopDevice(name)
         }
-        def devices = GMTool.getStoppedDevices(true, false, true)
+        def devices = gmtool.getStoppedDevices(true, false, true)
 
         assert devices.contains(name)
 
-        GMTool.deleteDevice(name)
+        gmtool.deleteDevice(name)
     }
 
 
     @Test
     public void canCreateDevice() {
-        TestTools.createAllDevices()
+        TestTools.createAllDevices(gmtool)
 
-        def devices = GMTool.getAllDevices(true)
+        def devices = gmtool.getAllDevices(true)
 
         TestTools.DEVICES.each() { key, value ->
             boolean exists = false
@@ -127,13 +129,13 @@ class GMToolTest extends CleanMetaTest {
             assert exists
 
         }
-        TestTools.deleteAllDevices()
+        TestTools.deleteAllDevices(gmtool)
     }
 
     @Test
     public void canDetailDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails(true)
@@ -142,31 +144,31 @@ class GMToolTest extends CleanMetaTest {
         assert device.androidVersion != null
         assert device.state != null
 
-        GMTool.deleteDevice(name)
+        gmtool.deleteDevice(name)
     }
 
     @Test
     public void canListDevices() {
 
-        TestTools.createAllDevices()
+        TestTools.createAllDevices(gmtool)
 
-        def devices = GMTool.getAllDevices()
+        def devices = gmtool.getAllDevices()
         assert devices.size() > 0
 
 
-        TestTools.deleteAllDevices()
+        TestTools.deleteAllDevices(gmtool)
     }
 
     @Test
     public void canCloneDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
 
         def newName = name + "-clone"
-        GMTool.cloneDevice(device, newName)
+        gmtool.cloneDevice(device, newName)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
         newDevice.fillFromDetails()
@@ -178,14 +180,14 @@ class GMToolTest extends CleanMetaTest {
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
 
-        GMTool.deleteDevice(name)
-        GMTool.deleteDevice(newName)
+        gmtool.deleteDevice(name)
+        gmtool.deleteDevice(newName)
     }
 
     @Test
     public void canEditDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -199,7 +201,7 @@ class GMToolTest extends CleanMetaTest {
         device.nbCpu = 2
         device.ram = 2048
 
-        GMTool.editDevice(device)
+        gmtool.editDevice(device)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
         newDevice.fillFromDetails()
@@ -212,53 +214,53 @@ class GMToolTest extends CleanMetaTest {
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
 
-        GMTool.deleteDevice(name)
+        gmtool.deleteDevice(name)
     }
 
     @Test
     public void canStartDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name)
+        def exitCode = gmtool.startDevice(name)
 
         assert exitCode == 0
     }
 
     @Test(expected = GMToolException.class)
     public void throwsWhenCommandError() {
-        GMTool.GENYMOTION_CONFIG.abortOnError = true
-        GMTool.getDevice("sqfqqfd", true)
+        gmtool.genymotionConfig.abortOnError = true
+        gmtool.getDevice("sqfqqfd", true)
     }
 
     @Test
     public void canStopDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name)
+        def exitCode = gmtool.startDevice(name)
 
         if (exitCode == 0) {
-            GMTool.stopDevice(name)
+            gmtool.stopDevice(name)
         }
 
         assert exitCode == 0
-        assert !GMTool.isDeviceRunning(name)
+        assert !gmtool.isDeviceRunning(name)
     }
 
 
     @Test
     public void canStopAllDevices() {
 
-        TestTools.createAllDevices()
+        TestTools.createAllDevices(gmtool)
 
         TestTools.DEVICES.each() {
-            GMTool.startDevice(it.key)
+            gmtool.startDevice(it.key)
         }
 
-        GMTool.stopAllDevices()
+        gmtool.stopAllDevices()
 
-        def runningDevices = GMTool.getRunningDevices(true, false, true)
+        def runningDevices = gmtool.getRunningDevices(true, false, true)
         assert runningDevices == []
 
     }
@@ -270,18 +272,18 @@ class GMToolTest extends CleanMetaTest {
 
     @Test
     public void canLogcatClear() {
-        String name = TestTools.createADevice()
-        def exitCode = GMTool.startDevice(name)
+        String name = TestTools.createADevice(gmtool)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
+        gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
         String path = TestTools.TEMP_PATH + "logcat.dump"
         File file = new File(path)
         file.delete()
 
-        GMTool.logcatDump(name, path, true)
+        gmtool.logcatDump(name, path, true)
 
         file = new File(path)
         assert file.exists()
@@ -293,11 +295,11 @@ class GMToolTest extends CleanMetaTest {
         assert gotIt
         file.delete()
 
-        exitCode = GMTool.logcatClear(name, true)
+        exitCode = gmtool.logcatClear(name, true)
         assert exitCode == 0
 
         gotIt = false
-        GMTool.logcatDump(name, path)
+        gmtool.logcatDump(name, path)
 
         file = new File(path)
         assert file.exists()
@@ -313,16 +315,16 @@ class GMToolTest extends CleanMetaTest {
 
     @Test
     public void canLogcatDump() {
-        String name = TestTools.createADevice()
-        def exitCode = GMTool.startDevice(name)
+        String name = TestTools.createADevice(gmtool)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        GMTool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
+        gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
 
         String path = TestTools.TEMP_PATH + "logcat.dump"
 
-        exitCode = GMTool.logcatDump(name, path, true)
+        exitCode = gmtool.logcatDump(name, path, true)
         assert exitCode == 0
 
         boolean gotIt = false
@@ -343,14 +345,14 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canInstallToDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
-        GMTool.installToDevice(name, "res/test/test.apk", true)
+        gmtool.installToDevice(name, "res/test/test.apk", true)
         boolean installed = false
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
             if (line.contains("com.genymotion.test")) {
                 installed = true
             }
@@ -361,17 +363,17 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canInstallListOfAppToDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
 
-        GMTool.installToDevice(name, listOfApps, true)
+        gmtool.installToDevice(name, listOfApps, true)
 
         int installed = 0
-        GMTool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
             if (line.contains("com.genymotion.test") || line.contains("com.genymotion.test2")) {
                 installed++
             }
@@ -383,14 +385,14 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canPushToDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
-        GMTool.pushToDevice(name, "res/test/test.txt", true)
+        gmtool.pushToDevice(name, "res/test/test.txt", true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -402,16 +404,16 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canPushListToDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
-        GMTool.pushToDevice(name, listOfFiles, true)
+        gmtool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
             if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
             }
@@ -423,15 +425,15 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canPushToDeviceWithDest() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         def destination = "/sdcard/"
-        GMTool.pushToDevice(name, ["res/test/test.txt": destination], true)
+        gmtool.pushToDevice(name, ["res/test/test.txt": destination], true)
         boolean pushed = false
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -442,17 +444,17 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canPushListToDeviceWithDest() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
-        GMTool.pushToDevice(name, listOfFiles, true)
+        gmtool.pushToDevice(name, listOfFiles, true)
 
         int pushed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
             if (line.contains("test.txt") || line.contains("test2.txt")) {
                 pushed++
             }
@@ -464,15 +466,15 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canPullFromDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
-        GMTool.pullFromDevice(name, "/system/build.prop", TestTools.PULLED_PATH, true)
+        gmtool.pullFromDevice(name, "/system/build.prop", TestTools.PULLED_PATH, true)
         File file = new File(TestTools.PULLED_PATH + "build.prop")
         assert file.exists()
     }
@@ -480,16 +482,16 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canPullListFromDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         //removing the pulled files
         TestTools.recreatePulledDirectory()
 
         def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH, "/data/app/GestureBuilder.apk": TestTools.PULLED_PATH]
-        GMTool.pullFromDevice(name, listOfFiles, true)
+        gmtool.pullFromDevice(name, listOfFiles, true)
 
         File file = new File(TestTools.PULLED_PATH + "build.prop")
         assert file.exists()
@@ -502,14 +504,14 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canFlashDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
-        GMTool.flashDevice(name, "res/test/test.zip", true)
+        gmtool.flashDevice(name, "res/test/test.zip", true)
         boolean flashed = false
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
             if (line.contains("touchdown")) {
                 flashed = true
             }
@@ -521,16 +523,16 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canFlashListToDevice() {
 
-        String name = TestTools.createADevice()
+        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = GMTool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
-        GMTool.flashDevice(name, listOfFiles, true)
+        gmtool.flashDevice(name, listOfFiles, true)
 
         int flashed = 0
-        GMTool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
             if (line.contains("touchdown") || line.contains("touchdown2")) {
                 flashed++
             }
@@ -541,7 +543,7 @@ class GMToolTest extends CleanMetaTest {
     @Test
     public void canHidePassword() {
         def command = ["ok", "nok", "--password=toto", "password=tutu", "--password=", "password="]
-        def result = GMTool.cleanCommand(command)
+        def result = gmtool.cleanCommand(command)
         assert result == ["ok", "nok", "--password=toto", "password=*****", "--password=", "password="]
     }
 
@@ -553,7 +555,7 @@ class GMToolTest extends CleanMetaTest {
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
-        GMTool.cmd("sleep 1", true, false)
+        gmtool.cmd("sleep 1", true, false)
     }
 
     @Test(expected = GMToolException)
@@ -565,7 +567,7 @@ class GMToolTest extends CleanMetaTest {
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = true
         //XXX: gmtool admin list is supposed to take more than 1 millisecond
-        GMTool.cmd([GMTool.GMTOOL, "admin", "list"], true)
+        gmtool.cmd([gmtool.GMTOOL, "admin", "list"], true)
     }
 
     @Test
@@ -576,7 +578,7 @@ class GMToolTest extends CleanMetaTest {
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
-        GMTool.cmd("sleep 1", true, false)
+        gmtool.cmd("sleep 1", true, false)
     }
 
     @Test
@@ -587,7 +589,7 @@ class GMToolTest extends CleanMetaTest {
 
         project.genymotion.config.processTimeout = 100
         project.genymotion.config.abortOnError = false
-        GMTool.cmd([GMTool.GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTool.GMTOOL, "admin", "list"], true)
     }
 
     @Test
@@ -601,22 +603,22 @@ class GMToolTest extends CleanMetaTest {
     public void canFormatCommand() {
         def command = [GMTool.GMTOOL, "nok"]
 
-        GMTool.GENYMOTION_CONFIG.verbose = false
-        def result = GMTool.formatAndLogCommand(command)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
+        gmtool.genymotionConfig.verbose = false
+        def result = gmtool.formatAndLogCommand(command)
+        assert result == [gmtool.genymotionConfig.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
 
-        result = GMTool.formatAndLogCommand(command, true)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
+        result = gmtool.formatAndLogCommand(command, true)
+        assert result == [gmtool.genymotionConfig.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
 
-        GMTool.GENYMOTION_CONFIG.verbose = true
-        result = GMTool.formatAndLogCommand(command, false)
-        assert result == [GMTool.GENYMOTION_CONFIG.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
+        gmtool.genymotionConfig.verbose = true
+        result = gmtool.formatAndLogCommand(command, false)
+        assert result == [gmtool.genymotionConfig.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
     }
 
     @Test
     public void canGetVersion() {
 
-        GMTool.metaClass.static.cmd = { def command, boolean verbose = false, boolean addPath = true, Closure c ->
+        gmtool.metaClass.cmd = { def command, boolean verbose = false, boolean addPath = true, Closure c ->
             """
             Version  : 2.4.5
             Revision : 20150629-a7e4623
@@ -624,18 +626,17 @@ class GMToolTest extends CleanMetaTest {
                 c(line, count)
             }
         }
-
-        assert GMTool.getVersion() == "2.4.5"
+        assert gmtool.getVersion() == "2.4.5"
     }
 
     @Test
     public void canCheckCompatibility() {
 
         project.genymotion.config.version = "2.4.5"
-        assert !GMTool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+        assert !gmtool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
 
         project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
-        assert GMTool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+        assert gmtool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
     }
 
     @Test
@@ -644,11 +645,11 @@ class GMToolTest extends CleanMetaTest {
         project.genymotion.config.verbose = false
 
         project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
-        assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "--source=gradle", "version"]
+        assert gmtool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "--source=gradle", "version"]
 
 
         project.genymotion.config.version = "2.4.5"
-        assert GMTool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
+        assert gmtool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
     }
 
     @Test(expected = GMToolException)
@@ -658,10 +659,10 @@ class GMToolTest extends CleanMetaTest {
         config.licenseServer = true
 
         project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
-        GMTool.setConfig(config) //should pass
+        gmtool.setConfig(config) //should pass
 
         project.genymotion.config.version = "2.4.5"
-        GMTool.setConfig(config) //should throw exception
+        gmtool.setConfig(config) //should throw exception
     }
 
     @Test(expected = GMToolException)
@@ -671,10 +672,10 @@ class GMToolTest extends CleanMetaTest {
         config.licenseServerAddress = "test"
 
         project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
-        GMTool.setConfig(config) //should pass
+        gmtool.setConfig(config) //should pass
 
         project.genymotion.config.version = "2.4.5"
-        GMTool.setConfig(config) //should throw exception
+        gmtool.setConfig(config) //should throw exception
     }
 
 
@@ -686,7 +687,7 @@ class GMToolTest extends CleanMetaTest {
         if (genymotionPath != null) {
             project.genymotion.config.genymotionPath = genymotionPath
         }
-        TestTools.cleanAfterTests()
+        TestTools.cleanAfterTests(gmtool)
     }
 
 }

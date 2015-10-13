@@ -20,6 +20,7 @@
 package com.genymotion
 
 import com.genymotion.tools.AndroidPluginTools
+import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -36,7 +37,7 @@ class GenymotionPluginExtensionTest {
     @Before
     public void setUp() {
         TestTools.init()
-        TestTools.setDefaultUser(true)
+        TestTools.setDefaultUser(true, GMTool.newInstance())
     }
 
     @Test
@@ -56,7 +57,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToCustomTask() {
 
-        project = TestTools.init()
+        (project) = TestTools.init()
 
         String taskName = "dummy"
         project.task(taskName) << {}
@@ -74,7 +75,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToCustomTasks() {
 
-        project = TestTools.init()
+        (project) = TestTools.init()
 
         def tasks = []
         3.times {
@@ -193,7 +194,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canGetGenymotionDevices() {
 
-        project = TestTools.init()
+        (project) = TestTools.init()
 
         project.genymotion.devices {
             "default" {}
@@ -218,6 +219,6 @@ class GenymotionPluginExtensionTest {
 
     @After
     public void finishTest() {
-        TestTools.cleanAfterTests()
+        TestTools.cleanAfterTests(GMTool.newInstance())
     }
 }

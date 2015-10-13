@@ -3,6 +3,7 @@ package com.genymotion
 import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tools.GMTool
+import org.gradle.api.Project
 import org.junit.BeforeClass
 import org.junit.Test
 
@@ -10,15 +11,18 @@ import static org.junit.Assert.fail
 
 class VDLaunchDslTest {
 
+    static GMTool gmtool
+
     @BeforeClass
     public static void setUpClass() {
-        TestTools.init()
-        TestTools.setDefaultUser(true)
+        Project project
+        (project, gmtool) = TestTools.init()
+        TestTools.setDefaultUser(true, gmtool)
     }
 
     @Test
     public void deleteWhenFinish() {
-        def project = TestTools.init()
+        def (project) = TestTools.init()
         project.genymotion.devices {
             "test-fdfdsfd" {
                 stopWhenFinish false
@@ -37,7 +41,7 @@ class VDLaunchDslTest {
 
     @Test
     public void setStopWhenFinish() {
-        def project = TestTools.init()
+        def (project) = TestTools.init()
         project.genymotion.devices {
             "test-fdfqd" {
                 deleteWhenFinish true
@@ -56,10 +60,10 @@ class VDLaunchDslTest {
 
     @Test
     public void canUpdateWhenIsRunning() {
-        String name = TestTools.createADevice()
-        def device = GMTool.getDevice(name)
+        String name = TestTools.createADevice(gmtool)
+        def device = gmtool.getDevice(name)
         assert !device.isRunning()
-        GMTool.startDevice(device)
+        gmtool.startDevice(device)
         assert device.isRunning()
     }
 
