@@ -44,8 +44,11 @@ class GenymotionVirtualDevice {
     String state
     String ip
 
+    protected GMTool gmtool
+
     GenymotionVirtualDevice(String name, boolean fill = false) {
         this.name = name;
+        gmtool = GMTool.newInstance()
 
         if (fill) {
             fillFromDetails()
@@ -98,27 +101,27 @@ class GenymotionVirtualDevice {
     }
 
     protected def start() {
-        GMTool.startDevice(this)
+        gmtool.startDevice(this)
     }
 
     protected def restart() {
-        GMTool.restartDevice(this)
+        gmtool.restartDevice(this)
     }
 
     protected def stop() {
-        GMTool.stopDevice(this)
+        gmtool.stopDevice(this)
     }
 
     protected def reset() {
-        GMTool.resetDevice(this)
+        gmtool.resetDevice(this)
     }
 
     protected def adbdisconnect() {
-        GMTool.adbDisconnectDevice(this)
+        gmtool.adbDisconnectDevice(this)
     }
 
     protected def adbconnect() {
-        GMTool.adbConnectDevice(this)
+        gmtool.adbConnectDevice(this)
     }
 
     String toString() {
@@ -131,11 +134,11 @@ class GenymotionVirtualDevice {
     }
 
     def fillFromDetails(boolean verbose = false) {
-        GMTool.getDevice(this, verbose)
+        gmtool.getDevice(this, verbose)
     }
 
     def update() {
-        GMTool.getDevice(this)
+        gmtool.getDevice(this)
     }
 
     boolean isRunning(update = true) {

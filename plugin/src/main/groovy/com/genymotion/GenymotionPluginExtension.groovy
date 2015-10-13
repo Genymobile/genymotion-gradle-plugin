@@ -44,6 +44,7 @@ class GenymotionPluginExtension {
     public GenymotionConfig currentConfiguration = null
 
     GenymotionPluginExtension(Project project, deviceLaunches) {
+
         this.project = project
         this.deviceLaunches = deviceLaunches
     }
@@ -76,7 +77,7 @@ class GenymotionPluginExtension {
         }
 
         //check gmtool path is found
-        GMTool.usage()
+        GMTool.newInstance().usage()
     }
 
     public void checkProductFlavors() {
@@ -201,17 +202,18 @@ class GenymotionPluginExtension {
      */
 
     def processConfiguration() {
-        project.genymotion.config.version = GMTool.getVersion()
+        GMTool gmtool = GMTool.newInstance()
+        project.genymotion.config.version = gmtool.getVersion()
 
         GenymotionConfig config = project.genymotion.config
         config.applyConfigFromFile(project)
 
         if (!config.isEmpty()) {
 
-            GMTool.setConfig(config, config.verbose)
+            gmtool.setConfig(config, config.verbose)
 
             if (config.license) {
-                GMTool.setLicense(config.license)
+                gmtool.setLicense(config.license)
             }
         }
     }
