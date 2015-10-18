@@ -27,6 +27,7 @@ import org.gradle.api.Task
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.experimental.categories.Category
 
 import static org.junit.Assert.fail
 
@@ -41,6 +42,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canConfigFromLocalProperties() {
 
         project = TestTools.getAndroidProject()
@@ -98,6 +100,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canInjectToDefaultAndroidTask() {
 
         project = TestTools.getAndroidProject()
@@ -113,6 +116,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canInjectToVariants() {
 
         project = TestTools.getAndroidProject()
@@ -137,6 +141,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canCheckProductFlavorsAndAbort() {
         project = TestTools.getAndroidProject()
         project.android.productFlavors {
@@ -165,6 +170,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canCheckNullProductFlavorsAndAbort() {
         project = TestTools.getAndroidProject()
         project.android.productFlavors {

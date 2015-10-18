@@ -32,6 +32,7 @@ import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.experimental.categories.Category
 import org.slf4j.Logger
 
 import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
@@ -814,7 +815,9 @@ class GenymotionGradlePluginTest {
     }
 
     @Test
+    @Category(Android)
     public void canAvoidAbortForFlavorConfig() {
+
         project = TestTools.getAndroidProject()
         project.android.productFlavors {
             flavor1
