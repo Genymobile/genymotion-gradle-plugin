@@ -31,3 +31,22 @@ uploadArchives {
         }
     }
 }
+
+/**
+ * JUnit does not allow to select the category to launch from the command line.
+ * The following declaration enables this feature by using 2 gradle properties: 'includeCat' and 'excludeCat'
+ * They can be set from command line using:
+ * gradle test -PincludeCat=com.genymotion.MyCategory -PexcludeCat=com.genymotion.MyCategory
+ */
+test {
+    useJUnit {
+        if (project.hasProperty("includeCat")) {
+            includeCategories includeCat
+            println "includeCat $includeCat"
+        }
+        if (project.hasProperty("excludeCat")) {
+            excludeCategories excludeCat
+            println "excludeCat $excludeCat"
+        }
+    }
+}
