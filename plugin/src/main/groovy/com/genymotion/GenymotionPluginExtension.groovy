@@ -132,12 +132,12 @@ class GenymotionPluginExtension {
                     injectTasksInto(it)
                 }
 
-            } else if (taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK) {
+            } else if (taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0) {
                 //if we detect the android plugin or the default android test task
-                if (AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null) {
+                if (AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0) != null) {
                     injectAndroidTasks()
                 } else {
-                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, " + LAUNCH_MANUALLY_MESSAGE)
+                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0 not found, " + LAUNCH_MANUALLY_MESSAGE)
                     return
                 }
 

@@ -106,7 +106,8 @@ class GenymotionPluginExtensionTest {
         project = TestTools.getAndroidProject()
         project.evaluate()
 
-        String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
+        String version = AndroidPluginTestTools.getPluginVersion();
+        String taskName = AndroidPluginTestTools.getDefaultTestTask(version)
 
         def task = project.tasks.getByName(taskName)
         def finishTask = project.tasks.getByName(GenymotionPluginExtension.getFinishTaskName(taskName))
@@ -120,23 +121,22 @@ class GenymotionPluginExtensionTest {
     public void canInjectToVariants() {
 
         project = TestTools.getAndroidProject()
+        project.genymotion.config.verbose = true
+
         project.android.productFlavors {
             flavor1
             flavor2
         }
         project.evaluate()
 
-        String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
+        project.android.testVariants.all { variant ->
 
-        project.android.productFlavors.all { flavor ->
-            String flavorTaskName = AndroidPluginTools.getFlavorTestTaskName(flavor.name)
-            def task = project.tasks.getByName(flavorTaskName)
+            Task connectedTask = variant.variantData.connectedTestTask
+            Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(connectedTask.name))
+            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(connectedTask.name))
 
-            Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavorTaskName))
-            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavorTaskName))
-
-            assert task.getTaskDependencies().getDependencies().contains(launchTask)
-            assert task.finalizedBy.getDependencies().contains(finishTask)
+            assert connectedTask.getTaskDependencies().getDependencies().contains(launchTask)
+            assert connectedTask.finalizedBy.getDependencies().contains(finishTask)
         }
     }
 
