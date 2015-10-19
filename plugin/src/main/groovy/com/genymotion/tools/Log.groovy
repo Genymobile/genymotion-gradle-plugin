@@ -64,6 +64,4 @@ class Log {
             message.toString()
         }
     }
-
-
 }
