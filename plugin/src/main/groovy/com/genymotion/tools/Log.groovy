@@ -29,7 +29,7 @@ class Log {
         if (logger == null) {
             logger = LoggerFactory.getLogger("genymotion-logger")
         }
-        logger
+        return logger
     }
 
     static synchronized clearLogger() {
