@@ -197,6 +197,7 @@ class TestTools {
     }
 
     static Project getAndroidProject() {
+
         Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
 
         project.apply plugin: 'com.android.application'
