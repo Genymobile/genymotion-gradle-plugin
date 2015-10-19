@@ -8,6 +8,7 @@ dependencies {
 apply plugin: 'maven'
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
