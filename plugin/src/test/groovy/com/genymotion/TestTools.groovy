@@ -204,6 +204,7 @@ class TestTools {
 
         project.android {
             compileSdkVersion 21
+            buildToolsVersion "21.1.2"
         }
         project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
 
