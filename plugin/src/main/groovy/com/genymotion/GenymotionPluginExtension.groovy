@@ -155,29 +155,31 @@ class GenymotionPluginExtension {
     }
 
     private void injectAndroidTasks() {
-        if (project.android.productFlavors.size() > 0) {
 
-            project.android.productFlavors.all { flavor ->
-                injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
-            }
-
-        } else {
-            injectTasksInto(AndroidPluginTools.DEFAULT_ANDROID_TASK)
+        project.android.testVariants.all { variant ->
+            String flavorName = variant.productFlavors[0]?.name
+            Task connectedTask = variant.variantData.connectedTestTask
+            injectTasksInto(connectedTask, flavorName)
         }
+
     }
 
     public void injectTasksInto(String taskName, String flavor = null) throws UnknownTaskException {
         def theTask = project.tasks.getByName(taskName)
+        injectTasksInto(theTask, flavor)
+    }
+
+    public void injectTasksInto(Task theTask, String flavor = null) throws UnknownTaskException {
         if (project.genymotion.config.verbose) {
-            Log.info("Adding genymotion dependency to " + taskName)
+            Log.info("Adding genymotion dependency to " + theTask.name)
         }
 
-        String launchName = getLaunchTaskName(taskName)
-        String finishName = getFinishTaskName(taskName)
+        String launchName = getLaunchTaskName(theTask.name)
+        String finishName = getFinishTaskName(theTask.name)
 
         if (flavor?.trim()) {
-            launchName = AndroidPluginTools.getFlavorLaunchTask(taskName)
-            finishName = AndroidPluginTools.getFlavorFinishTask(taskName)
+            launchName = AndroidPluginTools.getFlavorLaunchTask(theTask.name)
+            finishName = AndroidPluginTools.getFlavorFinishTask(theTask.name)
         }
 
         Task launchTask = project.tasks.create(launchName, GenymotionLaunchTask)
