@@ -33,6 +33,10 @@ class GenymotionConfig {
     static final String DEFAULT_GENYMOTION_PATH = ""
     static final String VERSION_NOT_SET = "1.0"
 
+    static final String DEPRECATED_ERROR = "is deprecated and has no effect on Genymotion configuration. " +
+            "You should not use it anymore."
+    static final String STORE_CREDENTIALS_ERROR = "genymotion.config.storeCredentials " + DEPRECATED_ERROR
+
     //plugin config
     def genymotionPath = ""     //set the Genymotion path to PATH
 
@@ -43,7 +47,6 @@ class GenymotionConfig {
     def statistics              //enable stats
     def username                //set the login
     def password                //set the password
-    def storeCredentials        //keep the configured account logged in genymotion
     def licenseServer           //enable license server
     def licenseServerAddress    //set the license server address
     def license                 //set alphanumeric license
@@ -57,6 +60,9 @@ class GenymotionConfig {
     def androidSdkPath          //set the Android SDK folder
     def useCustomSdk            //enables the use of the Android sdk given by androidSdkPath
     def screenCapturePath       //set le dossier de stockage des screenshots
+
+    @Deprecated
+    def storeCredentials        //DEPRECATED: keep the configured account logged in genymotion
 
     String version = VERSION_NOT_SET      //contains the gmtool version name
 
@@ -72,7 +78,6 @@ class GenymotionConfig {
                                      "statistics"          : Boolean.class,
                                      "username"            : String.class,
                                      "password"            : String.class,
-                                     "storeCredentials"    : Boolean.class,
                                      "licenseServer"       : Boolean.class,
                                      "licenseServerAddress": String.class,
                                      "license"             : String.class,
@@ -100,7 +105,6 @@ class GenymotionConfig {
         return (statistics == null &&
                 username == null &&
                 password == null &&
-                storeCredentials == null &&
                 license == null &&
                 licenseServer == null &&
                 licenseServerAddress == null &&
@@ -189,5 +193,15 @@ class GenymotionConfig {
         } else {
             return DEFAULT_GENYMOTION_PATH
         }
+    }
+
+    /**
+     * @deprecated storeCredentials property is now deprecated on GenymotionConfig and should not be used. We override
+     * its setter to display a warning.
+     * @param value
+     */
+    @Deprecated
+    public void setStoreCredentials(def value) {
+        Log.warn(STORE_CREDENTIALS_ERROR)
     }
 }
