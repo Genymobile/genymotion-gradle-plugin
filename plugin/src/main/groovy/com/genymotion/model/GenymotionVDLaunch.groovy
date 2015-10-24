@@ -19,7 +19,6 @@
 
 package com.genymotion.model
 
-import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
@@ -86,8 +85,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
     }
 
     public void checkNameAndTemplate(boolean abortOnError = true) {
-        deviceExists = GMTool.isDeviceCreated(name)
-        templateExists = GMTool.templateExists(template)
+        deviceExists = gmtool.isDeviceCreated(name)
+        templateExists = gmtool.templateExists(template)
 
         if (!deviceExists && !templateExists) {
             if (abortOnError) {
@@ -106,14 +105,14 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
 
 
     boolean checkAndEdit() {
-        if (!GMTool.isDeviceCreated(this.name)) {
+        if (!gmtool.isDeviceCreated(this.name)) {
             return false
         }
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
 
         if (isDifferentFrom(device)) {
-            return GMTool.editDevice(this)
+            return gmtool.editDevice(this)
         }
 
         return false
@@ -132,13 +131,13 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
 
     protected def start() {
         if (start) {
-            GMTool.startDevice(this)
+            gmtool.startDevice(this)
         }
     }
 
     protected def stop() {
         if (isRunning(true)) {
-            GMTool.stopDevice(this)
+            gmtool.stopDevice(this)
         }
     }
 
@@ -160,51 +159,51 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
         }
 
         if (template != null && template.toString().trim() && templateExists) {
-            GMTool.createDevice(this)
+            gmtool.createDevice(this)
         }
     }
 
     protected def delete() {
-        GMTool.deleteDevice(this)
+        gmtool.deleteDevice(this)
     }
 
     protected def flash() {
-        GMTool.flashDevice(this, flash)
+        gmtool.flashDevice(this, flash)
     }
 
     protected def install() {
-        GMTool.installToDevice(this, install)
+        gmtool.installToDevice(this, install)
     }
 
     protected def pushBefore() {
-        GMTool.pushToDevice(this, pushBefore)
+        gmtool.pushToDevice(this, pushBefore)
     }
 
     protected def pullBefore() {
-        GMTool.pullFromDevice(this, pullBefore)
+        gmtool.pullFromDevice(this, pullBefore)
     }
 
     protected def pushAfter() {
-        GMTool.pushToDevice(this, pushAfter)
+        gmtool.pushToDevice(this, pushAfter)
     }
 
     protected def pullAfter() {
-        GMTool.pullFromDevice(this, pullAfter)
+        gmtool.pullFromDevice(this, pullAfter)
     }
 
     protected def logcatClear() {
-        GMTool.logcatClear(this)
+        gmtool.logcatClear(this)
     }
 
     protected def logcatClearIfNeeded() {
         if (logcat?.trim() && clearLogAfterBoot) {
-            GMTool.logcatClear(this)
+            gmtool.logcatClear(this)
         }
     }
 
     protected def logcatDump() {
         if (logcat?.trim()) {
-            GMTool.logcatDump(this, logcat)
+            gmtool.logcatDump(this, logcat)
         }
     }
 }

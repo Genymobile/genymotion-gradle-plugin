@@ -20,12 +20,14 @@
 package com.genymotion
 
 import com.genymotion.tools.AndroidPluginTools
+import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.experimental.categories.Category
 
 import static org.junit.Assert.fail
 
@@ -36,10 +38,11 @@ class GenymotionPluginExtensionTest {
     @Before
     public void setUp() {
         TestTools.init()
-        TestTools.setDefaultUser(true)
+        TestTools.setDefaultUser(true, GMTool.newInstance())
     }
 
     @Test
+    @Category(Android)
     public void canConfigFromLocalProperties() {
 
         project = TestTools.getAndroidProject()
@@ -56,7 +59,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToCustomTask() {
 
-        project = TestTools.init()
+        (project) = TestTools.init()
 
         String taskName = "dummy"
         project.task(taskName) << {}
@@ -74,7 +77,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToCustomTasks() {
 
-        project = TestTools.init()
+        (project) = TestTools.init()
 
         def tasks = []
         3.times {
@@ -97,12 +100,14 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canInjectToDefaultAndroidTask() {
 
         project = TestTools.getAndroidProject()
         project.evaluate()
 
-        String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
+        String version = AndroidPluginTestTools.getPluginVersion();
+        String taskName = AndroidPluginTestTools.getDefaultTestTask(version)
 
         def task = project.tasks.getByName(taskName)
         def finishTask = project.tasks.getByName(GenymotionPluginExtension.getFinishTaskName(taskName))
@@ -112,30 +117,31 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canInjectToVariants() {
 
         project = TestTools.getAndroidProject()
+        project.genymotion.config.verbose = true
+
         project.android.productFlavors {
             flavor1
             flavor2
         }
         project.evaluate()
 
-        String taskName = AndroidPluginTools.DEFAULT_ANDROID_TASK
+        project.android.testVariants.all { variant ->
 
-        project.android.productFlavors.all { flavor ->
-            String flavorTaskName = AndroidPluginTools.getFlavorTestTaskName(flavor.name)
-            def task = project.tasks.getByName(flavorTaskName)
+            Task connectedTask = variant.variantData.connectedTestTask
+            Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(connectedTask.name))
+            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(connectedTask.name))
 
-            Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(flavorTaskName))
-            Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(flavorTaskName))
-
-            assert task.getTaskDependencies().getDependencies().contains(launchTask)
-            assert task.finalizedBy.getDependencies().contains(finishTask)
+            assert connectedTask.getTaskDependencies().getDependencies().contains(launchTask)
+            assert connectedTask.finalizedBy.getDependencies().contains(finishTask)
         }
     }
 
     @Test
+    @Category(Android)
     public void canCheckProductFlavorsAndAbort() {
         project = TestTools.getAndroidProject()
         project.android.productFlavors {
@@ -164,6 +170,7 @@ class GenymotionPluginExtensionTest {
     }
 
     @Test
+    @Category(Android)
     public void canCheckNullProductFlavorsAndAbort() {
         project = TestTools.getAndroidProject()
         project.android.productFlavors {
@@ -193,7 +200,7 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canGetGenymotionDevices() {
 
-        project = TestTools.init()
+        (project) = TestTools.init()
 
         project.genymotion.devices {
             "default" {}
@@ -218,6 +225,6 @@ class GenymotionPluginExtensionTest {
 
     @After
     public void finishTest() {
-        TestTools.cleanAfterTests()
+        TestTools.cleanAfterTests(GMTool.newInstance())
     }
 }

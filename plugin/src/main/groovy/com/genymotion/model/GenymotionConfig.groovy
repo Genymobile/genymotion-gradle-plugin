@@ -67,11 +67,12 @@ class GenymotionConfig {
     String version = VERSION_NOT_SET      //contains the gmtool version name
 
     //task configs
-    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK    //define the task that depends on our launch task
-    boolean automaticLaunch = true                              //enable or not the genymotion tasks injection
-    int processTimeout = 300000                                 //timeout in ms for processes launched in command line
-    boolean verbose = false                                     //verbose mode
-    boolean abortOnError = true                                 //abort the task execution if a GMTool error occurs
+    def taskLaunch = AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0    //define the task that depends on our launch task
+    boolean automaticLaunch = true                                  //enable or not the genymotion tasks injection
+    int processTimeout = 300000
+    //timeout in ms for processes launched in command line
+    boolean verbose = false                                         //verbose mode
+    boolean abortOnError = true                                     //abort the task execution if a GMTool error occurs
 
     protected String CONFIG_PREFIX = "genymotion."
     private Map CONFIG_PROPERTIES = ["genymotionPath"      : String.class,

@@ -8,13 +8,27 @@ dependencies {
 apply plugin: 'maven'
 
 repositories {
+    jcenter()
     mavenCentral()
+}
+
+/**
+ * The following declaration allows to define the Android Gradle plugin version used during the integration tests
+ * from outside the build.gradle, using the gradle property: 'androidPluginVersion'
+ * It can be set from command line using:
+ * gradle test -PandroidPluginVersion=1.3.1
+ *
+ * If not set, the value is '+', meaning we keep the latest version available on the repository (including beta).
+ */
+def androidVersion = "+"
+if (hasProperty("androidPluginVersion")) {
+    androidVersion = androidPluginVersion
 }
 
 dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.answer-it:mock-slf4j:1.0.0'
-    testCompile "com.android.tools.build:gradle:1.0.0"
+    testCompile "com.android.tools.build:gradle:$androidVersion"
 }
 
 group = 'com.genymotion'
@@ -28,6 +42,25 @@ uploadArchives {
             pom.artifactId = 'plugin'
             pom.groupId = project.group
             pom.version = project.version
+        }
+    }
+}
+
+/**
+ * JUnit does not allow to select the category to launch from the command line.
+ * The following declaration enables this feature by using 2 gradle properties: 'includeCat' and 'excludeCat'
+ * They can be set from command line using:
+ * gradle test -PincludeCat=com.genymotion.MyCategory -PexcludeCat=com.genymotion.MyCategory
+ */
+test {
+    useJUnit {
+        if (project.hasProperty("includeCat")) {
+            includeCategories includeCat
+            println "includeCat $includeCat"
+        }
+        if (project.hasProperty("excludeCat")) {
+            excludeCategories excludeCat
+            println "excludeCat $excludeCat"
         }
     }
 }

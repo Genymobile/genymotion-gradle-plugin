@@ -44,6 +44,7 @@ class GenymotionPluginExtension {
     public GenymotionConfig currentConfiguration = null
 
     GenymotionPluginExtension(Project project, deviceLaunches) {
+
         this.project = project
         this.deviceLaunches = deviceLaunches
     }
@@ -76,7 +77,7 @@ class GenymotionPluginExtension {
         }
 
         //check gmtool path is found
-        GMTool.usage()
+        GMTool.newInstance().usage()
     }
 
     public void checkProductFlavors() {
@@ -131,12 +132,12 @@ class GenymotionPluginExtension {
                     injectTasksInto(it)
                 }
 
-            } else if (taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK) {
+            } else if (taskLaunch == AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0) {
                 //if we detect the android plugin or the default android test task
-                if (AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK) != null) {
+                if (AndroidPluginTools.hasAndroidPlugin(project) || project.tasks.findByName(AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0) != null) {
                     injectAndroidTasks()
                 } else {
-                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK not found, " + LAUNCH_MANUALLY_MESSAGE)
+                    Log.info("$AndroidPluginTools.DEFAULT_ANDROID_TASK_1_0 not found, " + LAUNCH_MANUALLY_MESSAGE)
                     return
                 }
 
@@ -154,29 +155,31 @@ class GenymotionPluginExtension {
     }
 
     private void injectAndroidTasks() {
-        if (project.android.productFlavors.size() > 0) {
 
-            project.android.productFlavors.all { flavor ->
-                injectTasksInto(AndroidPluginTools.getFlavorTestTaskName(flavor.name), flavor.name)
-            }
-
-        } else {
-            injectTasksInto(AndroidPluginTools.DEFAULT_ANDROID_TASK)
+        project.android.testVariants.all { variant ->
+            String flavorName = variant.productFlavors[0]?.name
+            Task connectedTask = variant.variantData.connectedTestTask
+            injectTasksInto(connectedTask, flavorName)
         }
+
     }
 
     public void injectTasksInto(String taskName, String flavor = null) throws UnknownTaskException {
         def theTask = project.tasks.getByName(taskName)
+        injectTasksInto(theTask, flavor)
+    }
+
+    public void injectTasksInto(Task theTask, String flavor = null) throws UnknownTaskException {
         if (project.genymotion.config.verbose) {
-            Log.info("Adding genymotion dependency to " + taskName)
+            Log.info("Adding genymotion dependency to " + theTask.name)
         }
 
-        String launchName = getLaunchTaskName(taskName)
-        String finishName = getFinishTaskName(taskName)
+        String launchName = getLaunchTaskName(theTask.name)
+        String finishName = getFinishTaskName(theTask.name)
 
         if (flavor?.trim()) {
-            launchName = AndroidPluginTools.getFlavorLaunchTask(taskName)
-            finishName = AndroidPluginTools.getFlavorFinishTask(taskName)
+            launchName = AndroidPluginTools.getFlavorLaunchTask(theTask.name)
+            finishName = AndroidPluginTools.getFlavorFinishTask(theTask.name)
         }
 
         Task launchTask = project.tasks.create(launchName, GenymotionLaunchTask)
@@ -201,17 +204,18 @@ class GenymotionPluginExtension {
      */
 
     def processConfiguration() {
-        project.genymotion.config.version = GMTool.getVersion()
+        GMTool gmtool = GMTool.newInstance()
+        project.genymotion.config.version = gmtool.getVersion()
 
         GenymotionConfig config = project.genymotion.config
         config.applyConfigFromFile(project)
 
         if (!config.isEmpty()) {
 
-            GMTool.setConfig(config, config.verbose)
+            gmtool.setConfig(config, config.verbose)
 
             if (config.license) {
-                GMTool.setLicense(config.license)
+                gmtool.setLicense(config.license)
             }
         }
     }

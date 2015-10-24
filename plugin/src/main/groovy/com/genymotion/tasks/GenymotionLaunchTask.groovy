@@ -45,7 +45,8 @@ class GenymotionLaunchTask extends DefaultTask {
 
         def runningDevices = []
 
-        def virtualDevices = GMTool.getAllDevices(project.genymotion.config.verbose, false, false)
+        GMTool gmtool = GMTool.newInstance()
+        def virtualDevices = gmtool.getAllDevices(project.genymotion.config.verbose, false, false)
         virtualDevices.each {
             if (it.state == GenymotionVirtualDevice.STATE_ON) {
                 runningDevices.add(it.name)
@@ -60,7 +61,7 @@ class GenymotionLaunchTask extends DefaultTask {
 
         if (project.genymotion.config.verbose) {
             Log.debug("-- Running devices --")
-            GMTool.getRunningDevices(true)
+            gmtool.getRunningDevices(true)
         }
     }
 

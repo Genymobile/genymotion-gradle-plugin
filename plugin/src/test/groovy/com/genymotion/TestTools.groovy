@@ -42,15 +42,14 @@ class TestTools {
 
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
-
         setDefaultGenymotionPath(project)
 
-        GMTool.getConfig(project.genymotion.config, true)
+        GMTool.DEFAULT_CONFIG = project.genymotion.config
+        GMTool gmtool = GMTool.newInstance()
+        gmtool.getConfig(project.genymotion.config, true)
         project.genymotion.config.verbose = true
-        GMTool.GENYMOTION_CONFIG = project.genymotion.config
 
-
-        project
+        [project, gmtool]
     }
 
     private static void setDefaultGenymotionPath(Project project, String defaultPath = null) {
@@ -64,26 +63,26 @@ class TestTools {
         }
     }
 
-    static void deleteAllDevices() {
+    static void deleteAllDevices(GMTool gmtool) {
         DEVICES.each() { key, value ->
-            GMTool.deleteDevice(key)
+            gmtool.deleteDevice(key)
         }
     }
 
-    static void createAllDevices() {
+    static void createAllDevices(GMTool gmtool) {
         DEVICES.each() { key, value ->
-            GMTool.createDevice(value, key)
+            gmtool.createDevice(value, key)
         }
     }
 
-    static String createADevice() {
+    static String createADevice(GMTool gmtool) {
 
         Random rand = new Random()
         int index = rand.nextInt(DEVICES.size())
 
         String[] keys = DEVICES.keySet() as String[]
         String name = keys[index]
-        GMTool.createDevice(DEVICES[name], name)
+        gmtool.createDevice(DEVICES[name], name)
 
         name
     }
@@ -115,14 +114,14 @@ class TestTools {
     }
 
 
-    static void cleanAfterTests() {
+    static void cleanAfterTests(GMTool gmtool) {
 
         println "Cleaning after tests"
 
-        GMTool.getConfig(true)
+        gmtool.getConfig(true)
 
         try {
-            def devices = GMTool.getAllDevices(false, false, false)
+            def devices = gmtool.getAllDevices(false, false, false)
             def pattern = ~/^.+?\-junit$/
             println devices
 
@@ -130,9 +129,9 @@ class TestTools {
                 if (pattern.matcher(it.name).matches()) {
                     println "Removing $it.name"
                     if (it.isRunning()) {
-                        GMTool.stopDevice(it.name, true)
+                        gmtool.stopDevice(it.name, true)
                     }
-                    GMTool.deleteDevice(it.name, true)
+                    gmtool.deleteDevice(it.name, true)
                 }
             }
         } catch (Exception e) {
@@ -165,21 +164,21 @@ class TestTools {
         return null
     }
 
-    static setDefaultUser(registerLicense = false) {
-        GMTool.resetConfig()
+    static setDefaultUser(registerLicense = false, GMTool gmtool) {
+        gmtool.resetConfig()
         GenymotionConfig config = getDefaultConfig()
-        config.version = GMTool.getVersion()
-        GMTool.GENYMOTION_CONFIG.version = config.version
+        config.version = gmtool.getVersion()
+        gmtool.genymotionConfig.version = config.version
 
         if (!config) {
             return
         }
 
         if (config.username && config.password) {
-            GMTool.setConfig(config, true)
+            gmtool.setConfig(config, true)
 
             if (config.license && registerLicense) {
-                GMTool.setLicense(config.license, true)
+                gmtool.setLicense(config.license, true)
             }
         }
     }
@@ -198,6 +197,7 @@ class TestTools {
     }
 
     static Project getAndroidProject() {
+
         Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
 
         project.apply plugin: 'com.android.application'
@@ -205,6 +205,7 @@ class TestTools {
 
         project.android {
             compileSdkVersion 21
+            buildToolsVersion "21.1.2"
         }
         project.genymotion.config.genymotionPath = TestTools.getDefaultConfig().genymotionPath
 
