@@ -6,20 +6,15 @@ buildscript {
         classpath 'nu.studer:gradle-plugindev-plugin:1.0.3'
     }
 }
-apply plugin: 'nu.studer.plugindev'
-apply plugin: 'groovy'
-
-dependencies {
-    compile gradleApi()
-    compile localGroovy()
-}
-
-apply plugin: 'maven'
 
 repositories {
     jcenter()
     mavenCentral()
 }
+
+apply plugin: 'maven'
+apply plugin: 'groovy'
+apply plugin: 'nu.studer.plugindev'
 
 /**
  * The following declaration allows to define the Android Gradle plugin version used during the integration tests
@@ -35,6 +30,8 @@ if (hasProperty("androidPluginVersion")) {
 }
 
 dependencies {
+    compile gradleApi()
+    compile localGroovy()
     testCompile 'junit:junit:4.11'
     testCompile 'org.answer-it:mock-slf4j:1.0.0'
     testCompile "com.android.tools.build:gradle:$androidVersion"
