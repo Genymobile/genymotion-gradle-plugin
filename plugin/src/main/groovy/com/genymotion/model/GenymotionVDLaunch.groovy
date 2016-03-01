@@ -37,9 +37,9 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
     boolean start = true
     String template
     def pushBefore
-    def pullBefore
+    Map<String, String> pullBefore
     def pushAfter
-    def pullAfter
+    Map<String, String> pullAfter
     def install
     def flash
     String logcat
