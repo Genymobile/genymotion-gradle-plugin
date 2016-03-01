@@ -10,11 +10,13 @@ buildscript {
 repositories {
     jcenter()
     mavenCentral()
+
 }
 
-apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'nu.studer.plugindev'
+apply plugin: 'maven'
+apply plugin: 'idea'
 
 /**
  * The following declaration allows to define the Android Gradle plugin version used during the integration tests
