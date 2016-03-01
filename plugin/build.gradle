@@ -55,6 +55,16 @@ uploadArchives {
     }
 }
 
+sourceSets {
+    integrationTest {
+        groovy.srcDir file('src/test/groovy')
+        groovy.srcDir file('src/integTest/groovy')
+        resources.srcDir file('res')
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
 /**
  * JUnit does not allow to select the category to launch from the command line.
  * The following declaration enables this feature by using 2 gradle properties: 'includeCat' and 'excludeCat'
@@ -62,6 +72,7 @@ uploadArchives {
  * gradle test -PincludeCat=com.genymotion.MyCategory -PexcludeCat=com.genymotion.MyCategory
  */
 test {
+    exclude '**/*IntegTest.class'
     useJUnit {
         if (project.hasProperty("includeCat")) {
             includeCategories includeCat
@@ -72,6 +83,30 @@ test {
             println "excludeCat $excludeCat"
         }
     }
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+    }
+}
+
+task integrationTest(type: Test) {
+    include '**/*IntegTest.class'
+    reports.html.destination = file("$reports.html.destination/integration")
+    reports.junitXml.destination = file("$reports.junitXml.destination/integration")
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+idea.module {
+    sourceSets.integrationTest.allSource.srcDirs.each {
+        testSourceDirs += it
+    }
+
+    scopes.TEST.plus += [configurations.integrationTestCompile]
+    scopes.TEST.plus += [configurations.integrationTestRuntime]
 }
 
 plugindev {
