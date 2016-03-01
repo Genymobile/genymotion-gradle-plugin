@@ -766,7 +766,7 @@ class GMTool {
         }
 
         if (apks instanceof String) {
-            cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apks], verbose)
+            return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apks], verbose)
 
         } else if (apks instanceof ArrayList) {
 
