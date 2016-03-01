@@ -877,12 +877,7 @@ class GMTool {
         def toExec = formatAndLogCommand(command, verbose, addPath)
 
         try {
-            Process p = toExec.execute()
-            StringBuffer error = new StringBuffer()
-            StringBuffer out = new StringBuffer()
-            p.consumeProcessOutput(out, error)
-
-            p.waitForOrKill(genymotionConfig.processTimeout)
+            def (StringBuffer out, StringBuffer error, int exitValue) = executeCommand(toExec)
 
             if (verbose || genymotionConfig.verbose) {
                 Log.debug("out:" + out.toString())
@@ -894,7 +889,7 @@ class GMTool {
                 }
             }
 
-            return handleExitValue(p.exitValue(), error)
+            return handleExitValue(exitValue, error)
 
         } catch (IOException e) {
             if (genymotionConfig.abortOnError) {
@@ -906,6 +901,16 @@ class GMTool {
                         " Genymotion Gradle plugin won't work.")
             }
         }
+    }
+
+    def executeCommand(toExec) {
+        Process p = toExec.execute()
+        StringBuffer error = new StringBuffer()
+        StringBuffer out = new StringBuffer()
+        p.consumeProcessOutput(out, error)
+
+        p.waitForOrKill(genymotionConfig.processTimeout)
+        [out, error, p.exitValue()]
     }
 
     /**
