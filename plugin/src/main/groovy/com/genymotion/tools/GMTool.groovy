@@ -364,8 +364,7 @@ class GMTool {
         device
     }
 
-
-    def isDeviceCreated(String name, boolean verbose = false) {
+    boolean isDeviceCreated(String name, boolean verbose = false) {
 
         if (!name?.trim()) {
             return false
