@@ -44,6 +44,134 @@ class GMToolTest extends CleanMetaTest {
     public static void setUpClass() {
         TestTools.init()
     }
+    public static final String configPrintOutput = """\
+statistics=off
+username=testName
+password=******
+license_server=off
+license_server_address=https://test.com
+proxy=off
+proxy_address=testAddress
+proxy_port=12345
+proxy_auth=on
+proxy_username=testUsername
+proxy_password=******
+virtual_device_path=/simple/path/
+sdk_path=/adb/path/
+use_custom_sdk=off
+screen_capture_path=/capture/path/"""
+
+    public static final String templatesOutput = """\
+Name                  : Sony Xperia Z - 4.2.2 - API 17 - 1080x1920
+UUID                  : a4a62d7f-4293-4bdd-8e8d-8e25b80046f1
+Description           : Sony Xperia Z (5\", 1080x1920, XXHDPI) AOSP4.2.2 API 17
+Android Version       : 4.2.2
+API Level             : 17
+Genymotion Version    : 2.6.0
+Screen Width          : 1080
+Screen Height         : 1920
+Screen Density        : xxhdpi
+Screen DPI            : 480
+Nb CPU                : 1
+RAM                   : 2048
+Internal Storage      : 16384
+Telephony             : true
+Nav Bar Visible       : true
+Virtual Keyboard      : true
+
+Name                  : Sony Xperia Z - 4.3 - API 18 - 1080x1920
+UUID                  : 8a807602-5d00-407d-b7d8-87e1726aca8f
+Description           : Sony Xperia Z (5\", 1080x1920, XXHDPI) AOSP4.3 API 18
+Android Version       : 4.3
+API Level             : 18
+Genymotion Version    : 2.6.0
+Screen Width          : 1080
+Screen Height         : 1920
+Screen Density        : xxhdpi
+Screen DPI            : 480
+Nb CPU                : 1
+RAM                   : 2048
+Internal Storage      : 16384
+Telephony             : true
+Nav Bar Visible       : true
+Virtual Keyboard      : true"""
+
+    public static final String listOneRunningDeviceOutput = """\
+ State  |   IP Address    |                UUID                |      Name
+--------+-----------------+------------------------------------+---------------
+     On |  192.168.56.101 |01283849-3c02-4a38-831e-23e2b2d7adb2| randomDevice"""
+
+    public static final String listTwoStoppedDevicesOutput = """\
+ State  |   IP Address    |                UUID                |      Name
+--------+-----------------+------------------------------------+---------------
+    Off |         0.0.0.0 |d600d7e5-fce0-489e-8e18-3b14895eb25b| stoppedDevice1
+    Off |         0.0.0.0 |290ed5b4-8f6b-4a1e-9742-92d0420cdfc7| stoppedDevice2"""
+
+    public static final String listThreeDevicesOutput = """\
+ State  |   IP Address    |                UUID                |      Name
+--------+-----------------+------------------------------------+---------------
+    Off |         0.0.0.0 |d600d7e5-fce0-489e-8e18-3b14895eb25b| stoppedDevice1
+     On |  192.168.56.101 |01283849-3c02-4a38-831e-23e2b2d7adb2| randomDevice
+    Off |         0.0.0.0 |290ed5b4-8f6b-4a1e-9742-92d0420cdfc7| stoppedDevice2"""
+
+    public static final String deviceDetailOutput = """\
+Name                  : randomDevice
+UUID                  : 01283849-3c02-4a38-831e-23e2b2d7adb2
+Android Version       : 4.4.4
+API Level             : 19
+Genymotion Version    : 2.6.0
+Screen Width          : 1080
+Screen Height         : 1920
+Screen Density        : xxhdpi
+Screen DPI            : 480
+Nb CPU                : 4
+RAM                   : 2048
+Telephony             : true
+Nav Bar Visible       : true
+Virtual Keyboard      : true
+Path                  : /Users/eyal/.Genymobile/Genymotion/deployed/randomDevice
+State                 : On
+IP                    : 192.168.56.101"""
+
+    public static final String createDeviceOutput = """\
+Creating nexus4 from template Google Nexus 4 - 4.1.1 - API 16 - 768x1280...
+Downloading template...
+(147MB / 147MB)
+Download finished
+Template installed
+Creating virtual device...
+Virtual device created successfully"""
+
+    public static final String installOutput = """\
+Installing /Users/eyal/Downloads/devices-release-unaligned.apk on nexus7...
+File installed on nexus7"""
+
+    public static final String pushOutput = """\
+Pushing /Users/eyal/Downloads/devices-release-unaligned.apk to nexus7...
+File pushed to nexus7"""
+
+    public static final String versionOutput = """\
+Version  : 2.4.5
+Revision : 20150629-a7e4623
+"""
+    public static final String pullOutput = """\
+Pulling /system/build.prop from nexus4...
+File pulled from nexus4"""
+
+    public static final String flashOutput = """\
+Pushing gapps-kk-20140105-signed.zip to Google Nexus 5 - 4.4.4 - API 19 - 1080x1920...
+Checking application gapps-kk-20140105-signed.zip on virtual device Google Nexus 5 - 4.4.4 - API 19 - 1080x1920...
+Installing application gapps-kk-20140105-signed.zip on virtual device Google Nexus 5 - 4.4.4 - API 19 - 1080x1920...
+File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
+
+    public static final String factoryResetOutput = "Virtual device restored to factory state"
+
+    public static final String logcatClearOutput = "Cleaning logcat of nexus7"
+
+    public static final String deviceNamePlaceHolder = /{deviceName}/
+
+    public static final String logcatDumpOutput = "Writing logcat for nexus7 into /tmp/dump.log..."
+
 
     @Before
     public void setUp() {
