@@ -27,121 +27,17 @@ import org.codehaus.groovy.runtime.NullObject
 
 import java.util.concurrent.TimeoutException
 
+import static com.genymotion.tools.GMToolDsl.*
+
 class GMTool {
 
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
 
-    //@formatter:off
-    private static final String GMTOOL        = "gmtool"
-    private static final String VERBOSE       = "--verbose"
-    private static final String SOURCE        = "--source"
-    private static final String SOURCE_GRADLE = SOURCE + "=gradle"
-
-    //root actions
-    private static final String LOGZIP        = "logzip"
-    private static final String HELP          = "help"
-    private static final String VERSION       = "version"
-    //admin actions
-    private static final String ADMIN         = "admin"
-    private static final String LIST          = "list"
-    private static final String TEMPLATES     = "templates"
-    private static final String CREATE        = "create"
-    private static final String EDIT          = "edit"
-    private static final String DELETE        = "delete"
-    private static final String CLONE         = "clone"
-    private static final String DETAILS       = "details"
-    private static final String START         = "start"
-    private static final String RESTART       = "restart"
-    private static final String STOP          = "stop"
-    private static final String STOPALL       = "stopall"
-    private static final String FACTORY_RESET = "factoryreset"
-    //device actions
-    private static final String DEVICE        = "device"
-    private static final String PUSH          = "push"
-    private static final String PULL          = "pull"
-    private static final String INSTALL       = "install"
-    private static final String FLASH         = "flash"
-    private static final String LOGCAT_CLEAR  = "logcatclear"
-    private static final String LOGCAT_DUMP   = "logcatdump"
-    private static final String ADBDISCONNECT = "adbdisconnect"
-    private static final String ADBCONNECT    = "adbconnect"
-    //config actions
-    private static final String CONFIG        = "config"
-    private static final String PRINT         = "print"
-    private static final String RESET         = "reset"
-    private static final String CLEARCACHE    = "clearcache"
-    //license
-    private static final String LICENSE       = "license"
-    private static final String INFO          = "info"
-    private static final String REGISTER      = "register"
-    private static final String COUNT         = "count"
-    private static final String VERIFY        = "verify"
-    private static final String VALIDITY      = "validity"
-    //options
-    private static final String OPT_RUNNING                 = "--running"
-    private static final String OPT_OFF                     = "--off"
-    private static final String OPT_FULL                    = "--full"
-    private static final String OPT_DENSITY                 = '--density='
-    private static final String OPT_WIDTH                   = '--width='
-    private static final String OPT_HEIGHT                  = '--height='
-    private static final String OPT_VIRTUAL_KEYBOARD        = '--virtualkeyboard='
-    private static final String OPT_NAVBAR                  = '--navbar='
-    private static final String OPT_NBCPU                   = '--nbcpu='
-    private static final String OPT_RAM                     = "--ram="
-    private static final String OPT_NAME                    = "-n="
-    private static final String OPT_STATISTICS              = "statistics="
-    private static final String OPT_USERNAME_CONFIG         = "username="
-    private static final String OPT_PASSWORD_CONFIG         = "password="
-    private static final String OPT_LICENSE_SERVER          = "license_server="
-    private static final String OPT_LICENSE_SERVER_ADDRESS  = "license_server_address="
-    private static final String OPT_PROXY                   = "proxy="
-    private static final String OPT_PROXY_ADDRESS           = "proxy_address="
-    private static final String OPT_PROXY_PORT              = "proxy_port="
-    private static final String OPT_PROXY_AUTH              = "proxy_auth="
-    private static final String OPT_PROXY_USERNAME          = "proxy_username="
-    private static final String OPT_PROXY_PASSWORD          = "proxy_password="
-    private static final String OPT_VIRTUAL_DEVICE_PATH     = "virtual_device_path="
-    private static final String OPT_SDK_PATH                = "sdk_path="
-    private static final String OPT_USE_CUSTOM_SDK          = "use_custom_sdk="
-    private static final String OPT_SCREEN_CAPTURE_PATH     = "screen_capture_path="
-
-    public static final String OPTION_ON                = "on"
-    public static final String OPTION_OFF               = "off"
-
-    //Minimum gmtool version for each feature after first release
-    /**
-    * Adding --source to gmtool commands
-     */
-    public static final String FEATURE_SOURCE_PARAM             = "2.5.1"
-    /**
-    * Adding license_server & license_server_address config options
-     */
-    public static final String FEATURE_ONSITE_LICENSE_CONFIG    = "2.6"
-
-    //code returned by gmtool or command line
-    public static final int RETURN_NO_ERROR                = 0
-    public static final int RETURN_NO_SUCH_ACTION          = 1
-    public static final int RETURN_BAD_PARAM_VALUE         = 2
-    public static final int RETURN_COMMAND_FAILED          = 3
-    public static final int RETURN_VMENGINE_ERROR          = 4
-    public static final int RETURN_DEVICE_NOT_FOUND        = 5
-    public static final int RETURN_CANT_LOGIN              = 6
-    public static final int RETURN_CANT_REGISTER_LICENSE   = 7
-    public static final int RETURN_CANT_ACTIVATE_LICENSE   = 8
-    public static final int RETURN_NO_ACTIVATED_LICENSE    = 9
-    public static final int RETURN_INVALID_LICENSE         = 10
-    public static final int RETURN_MISSING_ARGUMENTS       = 11
-    public static final int RETURN_VM_NOT_STOPPED          = 12
-    public static final int RETURN_LICENSE_REQUIRED        = 13
-    public static final int RETURN_COMMAND_NOT_FOUND_UNIX  = 127
-    public static final int RETURN_SIGTERM                 = 143
-    //@formatter:on
-
-    static final String GENYMOTION_PATH_ERROR_MESSAGE = "gmtool command not found. You have to specify the " +
-            "Genymotion path with the genymotion.config.genymotionPath parameter."
-    static final String GENYMOTION_VERSION_ERROR_MESSAGE = "Current gmtool version is not compatible with %s. " +
-            "Please update Genymotion following this link: $GENYMOTION_DOWNLOAD_URL"
+    static final String GENYMOTION_PATH_ERROR_MESSAGE =
+            "gmtool command not found. You have to specify the Genymotion path with the genymotion.config.genymotionPath parameter."
+    static final String GENYMOTION_VERSION_ERROR_MESSAGE =
+            "Current gmtool version is not compatible with %s. Please update Genymotion following this link: $GENYMOTION_DOWNLOAD_URL"
     static final String GENYMOTION_DOWNLOAD_URL = "https://www.genymotion.com/#!/download"
 
 
@@ -1152,7 +1048,4 @@ class GMTool {
         return exit
     }
 
-    static boolean isOn(String value) {
-        return value == OPTION_ON || value.toBoolean()
-    }
 }

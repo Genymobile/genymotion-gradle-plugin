@@ -20,7 +20,7 @@
 package com.genymotion.model
 
 import com.genymotion.tools.AndroidPluginTools
-import com.genymotion.tools.GMTool
+import com.genymotion.tools.GMToolDsl
 import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
 import org.gradle.api.Project
@@ -155,7 +155,7 @@ class GenymotionConfig {
 
                     if (val != null) {
                         if (value == Boolean.class) {
-                            val = GMTool.isOn(val)
+                            val = GMToolDsl.isOn(val)
                         }
 
                         this.setProperty(key, val.asType(value))
