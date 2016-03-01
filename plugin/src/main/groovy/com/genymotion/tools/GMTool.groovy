@@ -865,7 +865,7 @@ class GMTool {
      *
      * @param command the command line to execute. It can be a String or a table
      * @param verbose true if you want to print each line returned by the prompt
-     * @param addPath true if you want to add the Genymotion path at the begining of the command
+     * @param addPath true if you want to add the Genymotion path at the beginning of the command
      * @param c the closure to implement after the call
      */
     def cmd(def command, boolean verbose = false, boolean addPath = true, Closure c) {
