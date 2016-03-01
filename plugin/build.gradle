@@ -37,6 +37,7 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.answer-it:mock-slf4j:1.0.0'
     testCompile "com.android.tools.build:gradle:$androidVersion"
+    testCompile 'org.mockito:mockito-core:2.0.42-beta'
 }
 
 group = 'com.genymotion'
