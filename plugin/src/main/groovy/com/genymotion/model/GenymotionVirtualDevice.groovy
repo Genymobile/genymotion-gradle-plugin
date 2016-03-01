@@ -55,8 +55,8 @@ class GenymotionVirtualDevice {
         }
     }
 
-    GenymotionVirtualDevice(
-            def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+    GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible,
+                            def nbCpu, def ram) {
         init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
     }
 
