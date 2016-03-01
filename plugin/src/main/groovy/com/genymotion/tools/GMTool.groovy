@@ -728,15 +728,15 @@ class GMTool {
         return exitValues
     }
 
-    def pullFromDevice(GenymotionVirtualDevice device, def files, boolean verbose = false) {
-        pullFromDevice(device.name, files, verbose)
-    }
-
     def pullFromDevice(String deviceName, String source, String destination, boolean verbose = false) {
         pullFromDevice(deviceName, [(source): destination], verbose)
     }
 
-    def pullFromDevice(def deviceName, def files, boolean verbose = false) {
+    def pullFromDevice(GenymotionVirtualDevice device, Map<String, String> files, boolean verbose = false) {
+        pullFromDevice(device.name, files, verbose)
+    }
+
+    def pullFromDevice(def deviceName, Map<String, String> files, boolean verbose = false) {
 
         if (!files) {
             return false
@@ -744,19 +744,9 @@ class GMTool {
 
         def exitValues = []
 
-        if (files instanceof String) {
-            files = [files]
-        }
-
         files.each() {
 
-            def command = [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL]
-            if (files instanceof Map) {
-                command.push(it.key)
-                command.push(it.value)
-            } else {
-                command.push(it)
-            }
+            def command = [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, it.key, it.value]
 
             int exitValue = cmd(command, verbose)
             exitValues.add(exitValue)
