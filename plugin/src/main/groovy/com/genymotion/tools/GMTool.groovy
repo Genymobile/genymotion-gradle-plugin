@@ -672,7 +672,7 @@ class GMTool {
     }
 
     def resetDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, START, FACTORY_RESET, deviceName], verbose)
+        return cmd([GMTOOL, ADMIN, FACTORY_RESET, deviceName], verbose)
     }
 
     def startAutoDevice(def template, def deviceName, boolean verbose = false) {
