@@ -22,7 +22,7 @@ package com.genymotion.tools
 class GMToolDsl {
 
     //@formatter:off
-    public static final String GMTOOL           = "gmtool"
+    public static final String GMTOOL        = "gmtool"
     public static final String VERBOSE       = "--verbose"
     public static final String SOURCE        = "--source"
     public static final String SOURCE_GRADLE = SOURCE + "=gradle"

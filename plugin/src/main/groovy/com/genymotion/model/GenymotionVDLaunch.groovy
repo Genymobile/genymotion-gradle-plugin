@@ -168,37 +168,37 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
     }
 
     protected def flash() {
-        if(flash) {
+        if (flash) {
             gmtool.flashDevice(this, flash)
         }
     }
 
     protected def install() {
-        if(install) {
+        if (install) {
             gmtool.installToDevice(this, install)
         }
     }
 
     protected def pushBefore() {
-        if(pushBefore) {
+        if (pushBefore) {
             gmtool.pushToDevice(this, pushBefore)
         }
     }
 
     protected def pullBefore() {
-        if(pullBefore) {
+        if (pullBefore) {
             gmtool.pullFromDevice(this, pullBefore)
         }
     }
 
     protected def pushAfter() {
-        if(pushAfter) {
+        if (pushAfter) {
             gmtool.pushToDevice(this, pushAfter)
         }
     }
 
     protected def pullAfter() {
-        if(pullAfter) {
+        if (pullAfter) {
             gmtool.pullFromDevice(this, pullAfter)
         }
     }

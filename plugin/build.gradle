@@ -10,7 +10,6 @@ buildscript {
 repositories {
     jcenter()
     mavenCentral()
-
 }
 
 apply plugin: 'groovy'
