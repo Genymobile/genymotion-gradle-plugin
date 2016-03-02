@@ -19,6 +19,7 @@
 
 package com.genymotion
 
+import com.genymotion.Android
 import com.genymotion.tools.AndroidPluginTools
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
@@ -31,21 +32,18 @@ import org.junit.experimental.categories.Category
 
 import static org.junit.Assert.fail
 
-class GenymotionPluginExtensionTest {
+class GenymotionPluginExtensionTest extends CleanMetaTest {
 
     Project project
-
-    @Before
-    public void setUp() {
-        TestTools.init()
-        TestTools.setDefaultUser(true, GMTool.newInstance())
-    }
+    GMTool gmtool
 
     @Test
     @Category(Android)
     public void canConfigFromLocalProperties() {
 
-        project = TestTools.getAndroidProject()
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         project.evaluate()
         project.genymotion.processConfiguration()
 
@@ -59,7 +57,8 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToCustomTask() {
 
-        (project) = TestTools.init()
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
         String taskName = "dummy"
         project.task(taskName) << {}
@@ -77,7 +76,8 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canInjectToCustomTasks() {
 
-        (project) = TestTools.init()
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
         def tasks = []
         3.times {
@@ -103,7 +103,9 @@ class GenymotionPluginExtensionTest {
     @Category(Android)
     public void canInjectToDefaultAndroidTask() {
 
-        project = TestTools.getAndroidProject()
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         project.evaluate()
 
         String version = AndroidPluginTestTools.getPluginVersion();
@@ -120,7 +122,9 @@ class GenymotionPluginExtensionTest {
     @Category(Android)
     public void canInjectToVariants() {
 
-        project = TestTools.getAndroidProject()
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         project.genymotion.config.verbose = true
 
         project.android.productFlavors {
@@ -143,7 +147,10 @@ class GenymotionPluginExtensionTest {
     @Test
     @Category(Android)
     public void canCheckProductFlavorsAndAbort() {
-        project = TestTools.getAndroidProject()
+
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         project.android.productFlavors {
             flavor1
             flavor2
@@ -172,7 +179,10 @@ class GenymotionPluginExtensionTest {
     @Test
     @Category(Android)
     public void canCheckNullProductFlavorsAndAbort() {
-        project = TestTools.getAndroidProject()
+
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         project.android.productFlavors {
             flavor1
             flavor2
@@ -200,7 +210,8 @@ class GenymotionPluginExtensionTest {
     @Test
     public void canGetGenymotionDevices() {
 
-        (project) = TestTools.init()
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
         project.genymotion.devices {
             "default" {}
@@ -225,6 +236,6 @@ class GenymotionPluginExtensionTest {
 
     @After
     public void finishTest() {
-        TestTools.cleanAfterTests(GMTool.newInstance())
+        cleanMetaClass()
     }
 }
