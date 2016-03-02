@@ -19,7 +19,9 @@
 
 package com.genymotion
 
+import com.genymotion.Android
 import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tasks.GenymotionFinishTask
 import com.genymotion.tasks.GenymotionLaunchTask
@@ -31,24 +33,29 @@ import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.experimental.categories.Category
+import org.junit.rules.ExpectedException
 import org.slf4j.Logger
 
 import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
 import static org.hamcrest.CoreMatchers.allOf
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
+import static org.mockito.Mockito.*
 
-class GenymotionGradlePluginTest {
+class GenymotionGradlePluginTest extends CleanMetaTest {
 
     Project project
     GMTool gmtool
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Before
     public void setUp() {
         (project, gmtool) = TestTools.init()
-        TestTools.setDefaultUser(true, gmtool)
     }
 
 
@@ -68,31 +75,19 @@ class GenymotionGradlePluginTest {
     @Test
     public void canConfigGenymotion() {
         String path = "TEST" + File.separator
-        String previousPath = project.genymotion.config.genymotionPath
         project.genymotion.config.genymotionPath = path
 
         assert path == project.genymotion.config.genymotionPath
-
-        project.genymotion.config.genymotionPath = previousPath
-    }
-
-
-    @Test
-    public void isGenymotionConfigBootstraped() {
-        assert project.genymotion.config.version != "1.0"
     }
 
     @Test
     public void canFixGenymotionPath() {
         (project, gmtool) = TestTools.init()
-        String defaultPath = project.genymotion.config.genymotionPath
 
         String path = "/path/to/test"
         project.genymotion.config.genymotionPath = path
 
         assert path + File.separator == project.genymotion.config.genymotionPath
-
-        TestTools.setDefaultGenymotionPath(project, defaultPath)
     }
 
     @Test
@@ -102,102 +97,164 @@ class GenymotionGradlePluginTest {
         assert project.genymotion.devices.size() == 0
     }
 
-    @Test(expected = GMToolException.class)
+    @Test
     public void throwsWhenAddDeviceWithoutNameAndTemplate() {
 
-        project.genymotion.devices {
-            "test" { pullAfter "buenos dias" }
-        }
-        project.genymotion.checkParams()
-    }
-
-    @Test(expected = GMToolException.class)
-    public void throwsWhenAddDeviceWithNameNotCreated() {
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
         project.genymotion.devices {
-            "DSFGTFSHgfgdfTFGQFQHG" {}
+            "test" { pullAfter "buenos dias":"dest/path" }
         }
+
+        expectedException.expect(GMToolException)
+        expectedException.expectMessage("On device \"test\", template: \"null\". " + GenymotionVDLaunch.INVALID_PARAMETER)
         project.genymotion.checkParams()
-    }
 
-    @Test(expected = GMToolException.class)
-    public void throwsWhenAddDeviceWithTemplateNotCreated() {
-
-        project.genymotion.devices {
-            "test" {
-                template "DSFGTFSHgfgdfTFGQFQHG"
-            }
-        }
-        project.genymotion.checkParams()
-    }
-
-    @Test(expected = GMToolException.class)
-    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated() {
-
-        project.genymotion.devices {
-            "DSFGTFSHTFGQFQHG" {
-                template "ferrfgfgdshghGFGDFGfgfd"
-            }
-        }
-        project.genymotion.checkParams()
     }
 
     @Test
-    public void canAddDeviceToLaunchByName() {
+    public void throwsWhenAddDeviceWithNameNotCreated() {
 
-        String vdName = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "sampleDevice"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(false)
 
         project.genymotion.devices {
             "$vdName" {}
         }
-        assert project.genymotion.devices[0].template == null
-        assert project.genymotion.devices[0].name == vdName
 
-        gmtool.deleteDevice(vdName)
+        expectedException.expect(GMToolException)
+        expectedException.expectMessage("On device \"$vdName\", template: \"null\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        project.genymotion.checkParams()
+
     }
 
     @Test
-    public void canAddDeviceToLaunchByNameWithTemplate() {
+    public void throwsWhenAddDeviceWithTemplateNotCreated() {
 
-        String vdName = TestTools.createADevice(gmtool)
-        String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "imnothere"
+        String templateName = "templatetahtdoesnotexists"
+
+        when(gmtool.templateExists(templateName)).thenReturn(false)
 
         project.genymotion.devices {
             "$vdName" {
                 template templateName
             }
         }
-        assert project.genymotion.devices[0].template == templateName
-        assert project.genymotion.devices[0].name == vdName
 
-        gmtool.deleteDevice(vdName)
+        expectedException.expect(GMToolException)
+        expectedException.expectMessage("On device \"$vdName\", template: \"$templateName\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        project.genymotion.checkParams()
     }
 
+    @Test
+    public void throwsWhenAddDeviceWithNameAndTemplateNotCreated() {
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "DSFGTFSHTFGQFQHG"
+        String templateName = "ferrfgfgdshghGFGDFGfgfd"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(false)
+        when(gmtool.templateExists(templateName)).thenReturn(false)
+
+        project.genymotion.devices {
+            "$vdName" {
+                template templateName
+            }
+        }
+
+        expectedException.expect(GMToolException)
+        expectedException.expectMessage("On device \"$vdName\", template: \"$templateName\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        project.genymotion.checkParams()
+    }
+
+    @Test
+    public void canAddDeviceToLaunchByName() {
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
+        project.genymotion.devices {
+            "$vdName" {}
+        }
+        assert project.genymotion.devices[0].template == null
+        assert project.genymotion.devices[0].name == vdName
+    }
+
+    @Test
+    public void canAddDeviceToLaunchByNameWithTemplate() {
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+        String deviceName = "testDevice"
+
+        when(gmtool.isDeviceCreated(deviceName)).thenReturn(true)
+        when(gmtool.templateExists(templateName)).thenReturn(true)
+
+        project.genymotion.devices {
+            "$deviceName" {
+                template templateName
+            }
+        }
+        assert project.genymotion.devices[0].template == templateName
+        assert project.genymotion.devices[0].name == deviceName
+    }
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated() {
 
-        String vdName = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String templateName = "templatedoesnotexists"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+        when(gmtool.templateExists(templateName)).thenReturn(false)
+
 
         project.genymotion.devices {
             "$vdName" {
-                template "frtfgfdgtgsgrGFGFDGFD"
+                template templateName
             }
         }
         project.genymotion.checkParams()
 
         assert !project.genymotion.devices[0].templateExists
         assert project.genymotion.devices[0].name == vdName
-
-        gmtool.deleteDevice(vdName)
     }
 
     @Test
     public void canAddDeviceToLaunchByTemplateWithNameNotCreated() {
 
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(false)
+        when(gmtool.templateExists(templateName)).thenReturn(true)
+
         project.genymotion.devices {
-            "dfsdgffgdgqsdg" {
-                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+            "$vdName" {
+                template templateName
             }
         }
 
@@ -212,9 +269,18 @@ class GenymotionGradlePluginTest {
     @Test
     public void canAvoidDeviceToBeLaunched() {
 
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(false)
+        when(gmtool.templateExists(templateName)).thenReturn(true)
+
         project.genymotion.devices {
-            "test" {
-                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+            "$vdName" {
+                template templateName
                 start false
             }
         }
@@ -225,18 +291,21 @@ class GenymotionGradlePluginTest {
     @Test
     public void canEditDeviceBeforeLaunch() {
 
-        String vdName = "OKOK-junit"
-        def devices = gmtool.getAllDevices(true, false, true)
-        if (devices.contains(vdName)) {
-            gmtool.deleteDevice(vdName)
-        }
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String templateName = "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+        when(gmtool.templateExists(templateName)).thenReturn(true)
 
         int intValue = 999
         String densityValue = "mdpi"
 
         project.genymotion.devices {
             "$vdName" {
-                template "Google Nexus 7 - 4.1.1 - API 16 - 800x1280"
+                template templateName
                 density densityValue
                 width intValue
                 height intValue
@@ -250,10 +319,7 @@ class GenymotionGradlePluginTest {
         assert project.genymotion.devices[0] != null
         assert project.genymotion.devices[0].name == vdName
 
-        project.genymotion.devices[0].create()
-        project.genymotion.devices[0].checkAndEdit()
-
-        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = project.genymotion.devices[0]
         assert densityValue == device.density
         assert intValue == device.width
         assert intValue == device.height
@@ -262,15 +328,24 @@ class GenymotionGradlePluginTest {
         assert 1 == device.nbCpu
         assert 2048 == device.ram
 
-        gmtool.deleteDevice(vdName)
+        device.create()
+        verify(gmtool).createDevice(device)
+
+        device.checkAndEdit()
+        verify(gmtool).editDevice(device)
     }
 
 
     @Test
     public void canLogcat() {
-        String vdName = TestTools.createADevice(gmtool)
 
-        String path = TestTools.TEMP_PATH + vdName + ".logcat"
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String path = "/tmp/${vdName}.logcat"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
             "$vdName" {
@@ -278,18 +353,24 @@ class GenymotionGradlePluginTest {
             }
         }
 
-        def (boolean clearedAfterBoot, boolean logcatDumped) = runAndCheckLogcat(path)
+        project.evaluate()
+        project.genymotion.devices[0].state = GenymotionVDLaunch.STATE_ON
 
-        assert clearedAfterBoot
-        assert logcatDumped
+        project.tasks.genymotionFinish.exec()
 
+        verify(gmtool).logcatDump(project.genymotion.devices[0], path)
     }
 
     @Test
-    public void canLogcatAndAvoidLogcatClearAfterBoot() {
-        String vdName = TestTools.createADevice(gmtool)
+    public void canLogcatAndAvoidClearLogcatAfterBoot() {
 
-        String path = TestTools.TEMP_PATH + vdName + ".logcat"
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String path = "/tmp/${vdName}.logcat"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
             "$vdName" {
@@ -298,480 +379,459 @@ class GenymotionGradlePluginTest {
             }
         }
 
-        def (boolean clearedAfterBoot, boolean logcatDumped) = runAndCheckLogcat(path)
-
-        assert !clearedAfterBoot
-        assert logcatDumped
-
-    }
-
-    public List runAndCheckLogcat(String path) {
         project.evaluate()
+        project.genymotion.devices[0].state = GenymotionVDLaunch.STATE_ON
+
         project.tasks.genymotionLaunch.exec()
-
-        //we add a line into logcat
-        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
-
         project.tasks.genymotionFinish.exec()
 
-        //we reach the file created
-        File file = new File(path)
+        verify(gmtool).logcatDump(project.genymotion.devices[0], path)
+        verify(gmtool, never()).logcatClear(project.genymotion.devices[0])
+    }
 
-        boolean clearedAfterBoot = true
-        boolean logcatDumped = false
+    @Test
+    public void canClearLogcatAfterBoot() {
 
-        file.eachLine {
-            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<")) {
-                clearedAfterBoot = false
-            }
-            if (it.contains(uniqueString)) {
-                logcatDumped = true
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String path = "/tmp/${vdName}.logcat"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
+        project.genymotion.devices {
+            "$vdName" {
+                logcat path
+                clearLogAfterBoot true
             }
         }
-        [clearedAfterBoot, logcatDumped]
+
+        project.evaluate()
+        project.genymotion.devices[0].state = GenymotionVDLaunch.STATE_ON
+
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).logcatClear(project.genymotion.devices[0])
+
+        project.tasks.genymotionFinish.exec()
+        verify(gmtool).logcatDump(project.genymotion.devices[0], path)
     }
 
     @Test
     public void canSetDeleteWhenFinish() {
-        String vdName = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
             "$vdName" {
                 deleteWhenFinish true
             }
         }
-        project.tasks.genymotionLaunch.exec()
-        project.tasks.genymotionFinish.exec()
+        GenymotionVDLaunch device = project.genymotion.devices[0]
 
-        assert !gmtool.isDeviceCreated(vdName, true)
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).startDevice(device)
+        device.state = GenymotionVDLaunch.STATE_ON
+
+        project.tasks.genymotionFinish.exec()
+        verify(gmtool).stopDevice(device)
+        verify(gmtool).deleteDevice(device)
     }
 
     @Test
     public void canAvoidDeleteWhenFinish() {
-        String vdName = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
             "$vdName" {
                 deleteWhenFinish false
             }
         }
-        project.tasks.genymotionLaunch.exec()
-        project.tasks.genymotionFinish.exec()
+        GenymotionVDLaunch device = project.genymotion.devices[0]
 
-        assert gmtool.isDeviceCreated(vdName, true)
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).startDevice(device)
+        device.state = GenymotionVDLaunch.STATE_ON
+
+        project.tasks.genymotionFinish.exec()
+        verify(gmtool).stopDevice(device)
+        verify(gmtool, never()).deleteDevice(device)
     }
 
 
     @Test
     public void canInstallToDevice() {
 
-        String vdName = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        String apkPath = "res/test/test.apk"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
             "$vdName" {
-                install "res/test/test.apk"
+                install apkPath
             }
         }
-        project.tasks.genymotionLaunch.exec()
 
-        boolean installed = false
-        gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
-            if (line.contains("com.genymotion.test")) {
-                installed = true
-            }
-        }
-        assert installed
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).installToDevice(project.genymotion.devices[0], apkPath)
     }
 
     @Test
     public void canInstallListOfAppToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 install listOfApps
             }
         }
-        project.tasks.genymotionLaunch.exec()
 
-        int installed = 0
-        gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
-            if (line.contains("com.genymotion.test") || line.contains("com.genymotion.test2")) {
-                installed++
-            }
-        }
-        assert listOfApps.size() == installed
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).installToDevice(project.genymotion.devices[0], listOfApps)
     }
 
 
     @Test
     public void canPushBeforeToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        def path = "res/test/test.txt"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
-            "$name" {
-                pushBefore "res/test/test.txt"
+            "$vdName" {
+                pushBefore path
             }
         }
         project.tasks.genymotionLaunch.exec()
-
-        boolean pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert pushed
+        verify(gmtool).pushToDevice(project.genymotion.devices[0], path)
     }
 
     @Test
     public void canPushAfterToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        def path = "res/test/test.txt"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
-            "$name" {
-                pushAfter "res/test/test.txt"
-                stopWhenFinish false
+            "$vdName" {
+                pushAfter path
             }
         }
-        project.tasks.genymotionLaunch.exec()
+        GenymotionVDLaunch device = project.genymotion.devices[0]
 
-        boolean pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert !pushed
+        project.tasks.genymotionLaunch.exec()
+        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool, never()).pushToDevice(device, path)
 
         project.tasks.genymotionFinish.exec()
-
-        pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert pushed
+        verify(gmtool).pushToDevice(device, path)
     }
 
     @Test
     public void canPushBeforeListToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pushBefore listOfFiles
             }
         }
-        project.tasks.genymotionLaunch.exec()
 
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert listOfFiles.size() == pushed
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).pushToDevice(project.genymotion.devices[0], listOfFiles)
     }
 
     @Test
     public void canPushAfterListToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
-        project.genymotion.devices {
-            "$name" {
-                pushAfter listOfFiles
-                stopWhenFinish false
-            }
-        }
-        project.tasks.genymotionLaunch.exec()
 
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
+        project.genymotion.devices {
+            "$vdName" {
+                pushAfter listOfFiles
             }
         }
-        assert pushed == 0
+        GenymotionVDLaunch device = project.genymotion.devices[0]
+
+        project.tasks.genymotionLaunch.exec()
+        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool, never()).pushToDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
-
-        pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert listOfFiles.size() == pushed
+        verify(gmtool).pushToDevice(device, listOfFiles)
     }
 
     @Test
     public void canPushBeforeToDeviceWithDest() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt": destination]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pushBefore listOfFiles
             }
         }
         project.tasks.genymotionLaunch.exec()
-
-        boolean pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert pushed
+        verify(gmtool).pushToDevice(project.genymotion.devices[0], listOfFiles)
     }
 
     @Test
     public void canPushAfterToDeviceWithDest() {
 
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt": destination]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pushAfter listOfFiles
                 stopWhenFinish false
             }
         }
-        project.tasks.genymotionLaunch.exec()
+        GenymotionVDLaunch device = project.genymotion.devices[0]
 
-        boolean pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert !pushed
+        project.tasks.genymotionLaunch.exec()
+        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool, never()).pushToDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
-
-        pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert pushed
+        verify(gmtool).pushToDevice(device, listOfFiles)
     }
 
     @Test
     public void canPushBeforeListToDeviceWithDest() {
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pushBefore listOfFiles
             }
         }
         project.tasks.genymotionLaunch.exec()
-
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert pushed == listOfFiles.size()
+        verify(gmtool).pushToDevice(project.genymotion.devices[0], listOfFiles)
     }
 
     @Test
     public void canPushAfterListToDeviceWithDest() {
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def destination = "/sdcard/"
         def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pushAfter listOfFiles
                 stopWhenFinish false
             }
         }
+        GenymotionVDLaunch device = project.genymotion.devices[0]
+
         project.tasks.genymotionLaunch.exec()
-
-
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert pushed == 0
+        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool, never()).pushToDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
-
-        pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert pushed == listOfFiles.size()
-
+        verify(gmtool).pushToDevice(device, listOfFiles)
     }
 
     @Test
     public void canPullBeforeFromDevice() {
-        String name = TestTools.createADevice(gmtool)
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
-        //removing the pulled files
-        TestTools.recreatePulledDirectory()
+        String vdName = "testDevice"
+        def destination = "/sdcard/"
+        def listOfFiles = ["/system/build.prop": destination, "res/test/test2.txt": destination]
 
-        project.genymotion.devices {
-            "$name" {
-                pullBefore "/system/build.prop": TestTools.PULLED_PATH
-            }
-        }
-        project.tasks.genymotionLaunch.exec()
-
-        File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assert file.exists()
-    }
-
-    @Test
-    public void canPullAfterFromDevice() {
-        String name = TestTools.createADevice(gmtool)
-
-        //removing the pulled files
-        TestTools.recreatePulledDirectory()
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
-            "$name" {
-                pullAfter "/system/build.prop": TestTools.PULLED_PATH
-                stopWhenFinish false
-            }
-        }
-        project.tasks.genymotionLaunch.exec()
-
-        File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assert !file.exists()
-
-        project.tasks.genymotionFinish.exec()
-
-        file = new File(TestTools.PULLED_PATH + "build.prop")
-        assert file.exists()
-    }
-
-    @Test
-    public void canPullBeforeListToDevice() {
-        String name = TestTools.createADevice(gmtool)
-
-        //removing the pulled files
-        TestTools.recreatePulledDirectory()
-
-        def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH + "build.prop", "/system/bin/adb": TestTools.PULLED_PATH + "adb"]
-        project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pullBefore listOfFiles
             }
         }
         project.tasks.genymotionLaunch.exec()
-
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-
-        listOfFiles.each { key, value ->
-            File file = new File(value)
-            assert file.exists()
-        }
+        verify(gmtool).pullFromDevice(project.genymotion.devices[0], listOfFiles)
     }
 
     @Test
-    public void canPullAfterListToDevice() {
-        String name = TestTools.createADevice(gmtool)
+    public void canPullAfterFromDevice() {
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
-        //removing the pulled files
-        TestTools.recreatePulledDirectory()
+        String vdName = "testDevice"
+        def listOfFiles = ["/system/build.prop": "/tmp/"]
 
-        def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH + "build.prop", "/system/bin/adb": TestTools.PULLED_PATH + "adb"]
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 pullAfter listOfFiles
                 stopWhenFinish false
             }
         }
-        project.tasks.genymotionLaunch.exec()
+        GenymotionVDLaunch device = project.genymotion.devices[0]
 
-        listOfFiles.each { key, value ->
-            File file = new File(value)
-            assert !file.exists()
-        }
+        project.tasks.genymotionLaunch.exec()
+        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool, never()).pullFromDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
+        verify(gmtool).pullFromDevice(device, listOfFiles)
+    }
 
-        listOfFiles.each { key, value ->
-            File file = new File(value)
-            assert file.exists()
+    @Test
+    public void canPullBeforeListToDevice() {
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        def listOfFiles = ["/system/build.prop": "/tmp/" + "build.prop", "/system/bin/adb": "/tmp/adb"]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
+        project.genymotion.devices {
+            "$vdName" {
+                pullBefore listOfFiles
+            }
         }
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).pullFromDevice(project.genymotion.devices[0], listOfFiles)
+    }
+
+    @Test
+    public void canPullAfterListToDevice() {
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        def listOfFiles = ["/system/build.prop": "/tmp/build.prop", "/system/bin/adb": "/tmp/adb"]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
+        project.genymotion.devices {
+            "$vdName" {
+                pullAfter listOfFiles
+                stopWhenFinish false
+            }
+        }
+        GenymotionVDLaunch device = project.genymotion.devices[0]
+
+        project.tasks.genymotionLaunch.exec()
+        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool, never()).pullFromDevice(device, listOfFiles)
+
+        project.tasks.genymotionFinish.exec()
+        verify(gmtool).pullFromDevice(device, listOfFiles)
     }
 
 
     @Test
     public void canFlashDevice() {
-        String name = TestTools.createADevice(gmtool)
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdName = "testDevice"
+        def path = "res/test/test.zip"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
         project.genymotion.devices {
-            "$name" {
-                flash "res/test/test.zip"
+            "$vdName" {
+                flash path
             }
         }
         project.tasks.genymotionLaunch.exec()
-
-        boolean flashed = false
-        gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
-            if (line.contains("touchdown")) {
-                flashed = true
-            }
-        }
-        assert flashed
-
+        verify(gmtool).flashDevice(project.genymotion.devices[0], path)
     }
 
     @Test
     public void canFlashListToDevice() {
-        String name = TestTools.createADevice(gmtool)
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
+        String vdName = "testDevice"
         def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
         project.genymotion.devices {
-            "$name" {
+            "$vdName" {
                 flash listOfFiles
             }
         }
-        project.tasks.genymotionLaunch.exec()
 
-        int flashed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
-            if (line.contains("touchdown") || line.contains("touchdown2")) {
-                flashed++
-            }
-        }
-        assert flashed == listOfFiles.size()
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).flashDevice(project.genymotion.devices[0], listOfFiles)
     }
 
 
@@ -802,9 +862,9 @@ class GenymotionGradlePluginTest {
             "random" {
                 template "wrong template"
                 pushBefore "wrong/path"
-                pullBefore "wrong/path"
+                pullBefore "wrong/path": "dest/path"
                 pushAfter "wrong/path"
-                pullAfter "wrong/path"
+                pullAfter "wrong/path": "dest/path"
                 flash "wrong/path"
                 install "wrong/path"
             }
@@ -818,7 +878,9 @@ class GenymotionGradlePluginTest {
     @Category(Android)
     public void canAvoidAbortForFlavorConfig() {
 
-        project = TestTools.getAndroidProject()
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         project.android.productFlavors {
             flavor1
             flavor2
@@ -840,6 +902,9 @@ class GenymotionGradlePluginTest {
     @Test
     public void warnWhenUsingConfigStoreCredentials() {
 
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
         Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
 
         project.genymotion.config.storeCredentials = true
@@ -855,6 +920,9 @@ class GenymotionGradlePluginTest {
 
     @Test
     public void warnWhenUsingConfigStoreCredentialsWithVerbose() {
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
 
         Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
 
@@ -872,8 +940,8 @@ class GenymotionGradlePluginTest {
 
     @After
     public void finishTest() {
-
         Log.clearLogger()
-        TestTools.cleanAfterTests(gmtool)
+        cleanMetaClass()
     }
+
 }
