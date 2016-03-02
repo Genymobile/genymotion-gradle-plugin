@@ -5,28 +5,29 @@ import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.fail
+import static org.mockito.Mockito.when
 
 class VDLaunchDslTest {
 
     static GMTool gmtool
 
-    @BeforeClass
-    public static void setUpClass() {
-        Project project
-        (project, gmtool) = TestTools.init()
-        TestTools.setDefaultUser(true, gmtool)
-    }
-
     @Test
     public void deleteWhenFinish() {
-        def (project) = TestTools.init()
+
+        def (Project project, GMTool gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdTemplate = "templateName"
+        when(gmtool.templateExists(vdTemplate)).thenReturn(true)
+
         project.genymotion.devices {
             "test-fdfdsfd" {
                 stopWhenFinish false
-                template TestTools.DEVICES."Nexus10-junit"
+                template vdTemplate
             }
         }
         project.genymotion.checkParams()
@@ -34,18 +35,24 @@ class VDLaunchDslTest {
         assert project.genymotion.devices != null
         assert project.genymotion.devices[0].stopWhenFinish == false
         assert project.genymotion.devices[0].deleteWhenFinish == null
-        assert TestTools.DEVICES."Nexus10-junit" == project.genymotion.devices[0].template
+        assert vdTemplate == project.genymotion.devices[0].template
         assert project.genymotion.devices[0].templateExists
         assert project.genymotion.devices[0].deviceExists == false
     }
 
     @Test
     public void setStopWhenFinish() {
-        def (project) = TestTools.init()
+
+        def (Project project, GMTool gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        String vdTemplate = "templateName"
+        when(gmtool.templateExists(vdTemplate)).thenReturn(true)
+
         project.genymotion.devices {
             "test-fdfqd" {
                 deleteWhenFinish true
-                template TestTools.DEVICES."Nexus10-junit"
+                template vdTemplate
             }
         }
         project.genymotion.checkParams()
@@ -53,18 +60,9 @@ class VDLaunchDslTest {
         assert project.genymotion.devices != null
         assert project.genymotion.devices[0].stopWhenFinish == null
         assert project.genymotion.devices[0].deleteWhenFinish == true
-        assert TestTools.DEVICES."Nexus10-junit" == project.genymotion.devices[0].template
+        assert vdTemplate == project.genymotion.devices[0].template
         assert project.genymotion.devices[0].templateExists
         assert project.genymotion.devices[0].deviceExists == false
-    }
-
-    @Test
-    public void canUpdateWhenIsRunning() {
-        String name = TestTools.createADevice(gmtool)
-        def device = gmtool.getDevice(name)
-        assert !device.isRunning()
-        gmtool.startDevice(device)
-        assert device.isRunning()
     }
 
     @Test
