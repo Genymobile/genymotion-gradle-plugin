@@ -19,7 +19,6 @@
 
 package com.genymotion
 
-import com.genymotion.Android
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
@@ -104,7 +103,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         project.genymotion.devices {
-            "test" { pullAfter "buenos dias":"dest/path" }
+            "test" { pullAfter "buenos dias": "dest/path" }
         }
 
         expectedException.expect(GMToolException)

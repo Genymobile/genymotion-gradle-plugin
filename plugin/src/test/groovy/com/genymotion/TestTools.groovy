@@ -19,16 +19,16 @@
 
 package com.genymotion
 
-import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
-import static org.mockito.Mockito.*
+import static org.mockito.Mockito.mock
 
 class TestTools {
 
-    public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+    public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas",
+                                                 "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
     static def init(def gmtool = mock(GMTool)) {
 

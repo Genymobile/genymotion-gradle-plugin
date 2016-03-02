@@ -19,14 +19,12 @@
 
 package com.genymotion
 
-import com.genymotion.Android
 import com.genymotion.tools.AndroidPluginTools
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.experimental.categories.Category
 
