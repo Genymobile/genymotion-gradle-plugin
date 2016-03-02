@@ -184,19 +184,19 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         GenymotionConfig config = gmtoolSpy.getConfig()
 
         //@formatter:off
-        assert false == config.statistics
-        assert "testName" == config.username
-        assert false == config.licenseServer
-        assert "https://test.com" == config.licenseServerAddress
-        assert false == config.proxy
-        assert "testAddress" == config.proxyAddress
-        assert 12345 == config.proxyPort
-        assert true == config.proxyAuth
-        assert "testUsername" == config.proxyUsername
-        assert "/simple/path/" == config.virtualDevicePath
-        assert "/adb/path/" == config.androidSdkPath
-        assert false == config.useCustomSdk
-        assert "/capture/path/" == config.screenCapturePath
+        assert false                == config.statistics
+        assert "testName"           == config.username
+        assert false                == config.licenseServer
+        assert "https://test.com"   == config.licenseServerAddress
+        assert false                == config.proxy
+        assert "testAddress"        == config.proxyAddress
+        assert 12345                == config.proxyPort
+        assert true                 == config.proxyAuth
+        assert "testUsername"       == config.proxyUsername
+        assert "/simple/path/"      == config.virtualDevicePath
+        assert "/adb/path/"         == config.androidSdkPath
+        assert false                == config.useCustomSdk
+        assert "/capture/path/"     == config.screenCapturePath
         //@formatter:on
 
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, CONFIG, PRINT])
@@ -348,16 +348,18 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         def devices = gmtoolSpy.getAllDevices(false, false, false)
 
-        assert devices.size() == 3
-        assert devices[0].name == "stoppedDevice1"
-        assert devices[0].ip == "0.0.0.0"
-        assert devices[0].state == "Off"
-        assert devices[1].name == "randomDevice"
-        assert devices[1].ip == "192.168.56.101"
-        assert devices[1].state == "On"
-        assert devices[2].name == "stoppedDevice2"
-        assert devices[2].ip == "0.0.0.0"
-        assert devices[2].state == "Off"
+        //@formatter:off
+        assert devices.size()       == 3
+        assert devices[0].name      == "stoppedDevice1"
+        assert devices[0].ip        == "0.0.0.0"
+        assert devices[0].state     == "Off"
+        assert devices[1].name      == "randomDevice"
+        assert devices[1].ip        == "192.168.56.101"
+        assert devices[1].state     == "On"
+        assert devices[2].name      == "stoppedDevice2"
+        assert devices[2].ip        == "0.0.0.0"
+        assert devices[2].state     == "Off"
+        //@formatter:on
 
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST])
     }

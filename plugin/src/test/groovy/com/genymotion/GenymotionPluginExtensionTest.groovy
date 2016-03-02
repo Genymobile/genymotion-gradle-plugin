@@ -47,11 +47,14 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         project.evaluate()
         project.genymotion.processConfiguration()
 
-        assert project.genymotion.config.username == "user"
-        assert project.genymotion.config.password == "password"
-        assert project.genymotion.config.statistics == true
-        assert project.genymotion.config.proxyPort == 100
-        assert project.genymotion.config.licenseServer == true
+        //@formatter:off
+        assert project.genymotion.config.username       == "user"
+        assert project.genymotion.config.password       == "password"
+        assert project.genymotion.config.statistics     == true
+        assert project.genymotion.config.proxyPort      == 100
+        assert project.genymotion.config.licenseServer  == true
+        //@formatter:on
+
     }
 
     @Test
