@@ -20,30 +20,26 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.GenymotionTemplate
+import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import com.genymotion.tools.Tools
-import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
-import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ExpectedException
 
 import java.util.concurrent.TimeoutException
 
+import static com.genymotion.tools.GMToolDsl.*
+import static org.mockito.Matchers.*
+import static org.mockito.Mockito.*
+
 class GMToolTest extends CleanMetaTest {
 
-    Project project
-    GMTool gmtool
-
-    def genymotionPath = null
-
-
-    @BeforeClass
-    public static void setUpClass() {
-        TestTools.init()
-    }
     public static final String configPrintOutput = """\
 statistics=off
 username=testName
@@ -172,191 +168,397 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     public static final String logcatDumpOutput = "Writing logcat for nexus7 into /tmp/dump.log..."
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none()
 
     @Before
     public void setUp() {
-        (project, gmtool) = TestTools.init()
-        TestTools.setDefaultUser(true, gmtool)
+        GMTool.DEFAULT_CONFIG = new GenymotionConfig()
     }
 
     @Test
-    public void isConfigOK() {
-        def exitCode = gmtool.usage()
-        assert exitCode == gmtool.RETURN_NO_ERROR
-    }
+    public void canGetConfigFromGMTool() {
 
+        GMTool gmtoolSpy = initSpyAndOutput(configPrintOutput)
+
+        GenymotionConfig config = gmtoolSpy.getConfig()
+
+        //@formatter:off
+        assert false == config.statistics
+        assert "testName" == config.username
+        assert false == config.licenseServer
+        assert "https://test.com" == config.licenseServerAddress
+        assert false == config.proxy
+        assert "testAddress" == config.proxyAddress
+        assert 12345 == config.proxyPort
+        assert true == config.proxyAuth
+        assert "testUsername" == config.proxyUsername
+        assert "/simple/path/" == config.virtualDevicePath
+        assert "/adb/path/" == config.androidSdkPath
+        assert false == config.useCustomSdk
+        assert "/capture/path/" == config.screenCapturePath
+        //@formatter:on
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, CONFIG, PRINT])
+    }
 
     @Test
     public void checkGMToolNotFoundError() {
-        this.genymotionPath = project.genymotion.config.genymotionPath
-        project.genymotion.config.genymotionPath = "nowhere"
-        project.genymotion.config.abortOnError = true
 
-        try {
-            gmtool.usage()
-            fail("FileNotFoundException expected")
-        } catch (Exception e) {
-            assert "$gmtool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $gmtool.genymotionConfig.genymotionPath" == e.message
-        }
+        GMTool gmtool = GMTool.newInstance()
+
+        gmtool.genymotionConfig.genymotionPath = "nowhere"
+        gmtool.genymotionConfig.abortOnError = true
+
+        expectedException.expect(FileNotFoundException)
+        expectedException.expectMessage("$GMTool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $gmtool.genymotionConfig.genymotionPath")
+
+        gmtool.usage()
     }
-
 
     @Test
     public void isTemplatesAvailable() {
 
-        def templates = gmtool.getTemplates(true)
-        assert templates.size() > 0
-        assert templates[0].name?.trim()
+        GMTool gmtoolSpy = initSpyAndOutput(templatesOutput)
+
+        def templates = gmtoolSpy.getTemplates()
+
+        assert templates.size() == 2
+        assert templates[0].name == "Sony Xperia Z - 4.2.2 - API 17 - 1080x1920"
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, TEMPLATES, OPT_FULL])
+    }
+
+    @Test
+    public void canGetRunningDevicesByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
+
+        def devices = gmtoolSpy.getRunningDevices(false, false, true)
+
+        assert devices.contains("randomDevice")
+        assert !devices.contains("stoppedDevice2")
+        assert !devices.contains("stoppedDevice1")
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
     }
 
     @Test
     public void canGetRunningDevices() {
-        String name = TestTools.createADevice(gmtool)
 
-        gmtool.startDevice(name)
-        def devices = gmtool.getRunningDevices(true, false, true)
+        GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
-        println "devices " + devices
-        assert devices.contains(name)
+        def devices = gmtoolSpy.getRunningDevices(false, false, false)
 
-        gmtool.stopDevice(name)
+        assert devices[0].name == "randomDevice"
+        assert devices[0].ip == "192.168.56.101"
+        assert devices[0].state == "On"
 
-        gmtool.deleteDevice(name)
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
+    }
+
+    @Test
+    public void canGetFilledRunningDevices() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(listOneRunningDeviceOutput), null, 0],
+                [new StringBuffer().append(deviceDetailOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        def devices = gmtoolSpy.getRunningDevices(false, true, false)
+
+        checkDetailedDeviceContent(devices[0])
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, devices[0].name])
+    }
+
+    @Test
+    public void canGetStoppedDevicesByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
+
+        def devices = gmtoolSpy.getStoppedDevices(false, false, true)
+
+        assert !devices.contains("randomDevice")
+        assert devices.contains("stoppedDevice2")
+        assert devices.contains("stoppedDevice1")
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_OFF])
     }
 
     @Test
     public void canGetStoppedDevices() {
-        String name = TestTools.createADevice(gmtool)
 
-        def runningDevices = gmtool.getRunningDevices(true, false, true)
-        if (runningDevices.contains(name)) {
-            gmtool.stopDevice(name)
-        }
-        def devices = gmtool.getStoppedDevices(true, false, true)
+        GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
-        assert devices.contains(name)
+        def devices = gmtoolSpy.getStoppedDevices(false, false, false)
 
-        gmtool.deleteDevice(name)
-    }
+        assert devices[0].name == "stoppedDevice1"
+        assert devices[0].ip == "0.0.0.0"
+        assert devices[0].state == "Off"
 
-
-    @Test
-    public void canCreateDevice() {
-        TestTools.createAllDevices(gmtool)
-
-        def devices = gmtool.getAllDevices(true)
-
-        TestTools.DEVICES.each() { key, value ->
-            boolean exists = false
-            devices.each() {
-                if (it.name == key) {
-                    exists = true
-                    return
-                }
-            }
-            assert exists
-
-        }
-        TestTools.deleteAllDevices(gmtool)
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_OFF])
     }
 
     @Test
-    public void canDetailDevice() {
+    public void canGetFilledStoppedDevices() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
 
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails(true)
+        doReturn(
+                [new StringBuffer().append(listTwoStoppedDevicesOutput), null, 0],
+                [new StringBuffer().append(deviceDetailOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
 
+        def devices = gmtoolSpy.getStoppedDevices(false, true, false)
 
-        assert device.androidVersion != null
-        assert device.state != null
+        assert devices.size() == 2
+        checkDetailedDeviceContent(devices[0])
+        checkDetailedDeviceContent(devices[1])
 
-        gmtool.deleteDevice(name)
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_OFF])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "stoppedDevice1"])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "stoppedDevice2"])
     }
 
     @Test
-    public void canListDevices() {
+    public void canGetAllDevicesByName() {
 
-        TestTools.createAllDevices(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
-        def devices = gmtool.getAllDevices()
-        assert devices.size() > 0
+        def devices = gmtoolSpy.getAllDevices(false, false, true)
 
+        assert devices.size() == 3
+        assert devices.containsAll(["randomDevice", "stoppedDevice1", "stoppedDevice2"])
 
-        TestTools.deleteAllDevices(gmtool)
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST])
+    }
+
+    @Test
+    public void canGetAllDevices() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
+
+        def devices = gmtoolSpy.getAllDevices(false, false, false)
+
+        assert devices.size() == 3
+        assert devices[0].name == "stoppedDevice1"
+        assert devices[0].ip == "0.0.0.0"
+        assert devices[0].state == "Off"
+        assert devices[1].name == "randomDevice"
+        assert devices[1].ip == "192.168.56.101"
+        assert devices[1].state == "On"
+        assert devices[2].name == "stoppedDevice2"
+        assert devices[2].ip == "0.0.0.0"
+        assert devices[2].state == "Off"
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST])
+    }
+
+    @Test
+    public void canGetAllDevicesFilled() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(listThreeDevicesOutput), null, 0],
+                [new StringBuffer().append(deviceDetailOutput), null, 0],
+                [new StringBuffer().append(deviceDetailOutput), null, 0],
+                [new StringBuffer().append(deviceDetailOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        def devices = gmtoolSpy.getAllDevices(false, true, false)
+
+        assert devices.size() == 3
+        checkDetailedDeviceContent(devices[0])
+        checkDetailedDeviceContent(devices[1])
+        checkDetailedDeviceContent(devices[2])
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "randomDevice"])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "stoppedDevice1"])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "stoppedDevice2"])
+    }
+
+    @Test
+    public void canCreateDeviceFromVDLaunch() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
+
+        GenymotionVDLaunch deviceToCreate = new GenymotionVDLaunch("device name")
+        deviceToCreate.template = "Genymotion Template"
+
+        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
+        assert deviceCreated.name == deviceToCreate.name
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, CREATE, deviceToCreate.template, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH,
+                 OPT_HEIGHT, OPT_VIRTUAL_KEYBOARD, OPT_NAVBAR, OPT_NBCPU, OPT_RAM])
+    }
+
+    @Test
+    public void canCreateDeviceFromTemplate() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
+
+        GenymotionTemplate deviceToCreate = new GenymotionTemplate(name: "Genymotion Template")
+
+        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
+
+        assert deviceCreated.name == deviceToCreate.name
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, CREATE, deviceToCreate.name, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH, OPT_HEIGHT,
+                 OPT_VIRTUAL_KEYBOARD, OPT_NAVBAR, OPT_NBCPU, OPT_RAM])
+    }
+
+    @Test
+    public void canCreateDeviceFromParams() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
+
+        String template = "A template"
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+        int nbcpu, int ram) = getDeviceParams()
+
+        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+                virtualKeyboard, navbarVisible, nbcpu, ram)
+
+        assert deviceCreated.name == deviceName
+        assert deviceCreated.density == density
+        assert deviceCreated.width == width
+        assert deviceCreated.height == height
+        assert deviceCreated.virtualKeyboard == virtualKeyboard
+        assert deviceCreated.navbarVisible == navbarVisible
+        assert deviceCreated.nbCpu == nbcpu
+        assert deviceCreated.ram == ram
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width, OPT_HEIGHT + height,
+                 OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible, OPT_NBCPU + nbcpu, OPT_RAM + ram])
+    }
+
+    @Test
+    public void canGetDetailedDeviceByName() {
+
+        def device = testGMToolByName method: "getDevice",
+                output: deviceDetailOutput,
+                expectedCommand: [GMTOOL, ADMIN, DETAILS, deviceNamePlaceHolder]
+
+        checkDetailedDeviceContent(device)
+    }
+
+    @Test
+    public void canGetDetailedDevice() {
+
+        def device = testGMTool method: "getDevice",
+                output: deviceDetailOutput,
+                expectedCommand: [GMTOOL, ADMIN, DETAILS, deviceNamePlaceHolder]
+
+        checkDetailedDeviceContent(device)
     }
 
     @Test
     public void canCloneDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput("")
 
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice deviceToClone = new GenymotionVirtualDevice(deviceName)
+        String cloneName = "cloneDevice"
 
-        def newName = name + "-clone"
-        gmtool.cloneDevice(device, newName)
+        int exitCode = gmtoolSpy.cloneDevice(deviceToClone, cloneName)
 
-        GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
-        newDevice.fillFromDetails()
+        assert exitCode == 0
 
-        assert device.androidVersion == newDevice.androidVersion
-        assert device.dpi == newDevice.dpi
-        assert device.height == newDevice.height
-        assert device.width == newDevice.width
-        assert device.navbarVisible == newDevice.navbarVisible
-        assert device.virtualKeyboard == newDevice.virtualKeyboard
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, CLONE, deviceName, cloneName])
+    }
 
-        gmtool.deleteDevice(name)
-        gmtool.deleteDevice(newName)
+    @Test
+    public void canCloneDeviceByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput("")
+
+        String deviceName = "myDevice"
+        String cloneName = "cloneDevice"
+
+        int exitCode = gmtoolSpy.cloneDevice(deviceName, cloneName)
+
+        assert exitCode == 0
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, CLONE, deviceName, cloneName])
     }
 
     @Test
     public void canEditDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput("")
 
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+        int nbcpu, int ram) = getDeviceParams()
 
-        device.navbarVisible = false
-        device.height = 600
-        device.width = 800
-        device.density = "hdpi"
-        device.dpi = 260
-        device.virtualKeyboard = false
-        device.nbCpu = 2
-        device.ram = 2048
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName, density, width, height,
+                virtualKeyboard, navbarVisible, nbcpu, ram)
 
-        gmtool.editDevice(device)
+        int exitCode = gmtoolSpy.editDevice(device)
 
-        GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
-        newDevice.fillFromDetails()
+        assert exitCode == 0
 
-        assert device.androidVersion == newDevice.androidVersion
-        assert device.density == newDevice.density
-        assert device.dpi == newDevice.dpi
-        assert device.height == newDevice.height
-        assert device.width == newDevice.width
-        assert device.navbarVisible == newDevice.navbarVisible
-        assert device.virtualKeyboard == newDevice.virtualKeyboard
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width, OPT_HEIGHT + height,
+                 OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible, OPT_NBCPU + nbcpu, OPT_RAM + ram])
+    }
 
-        gmtool.deleteDevice(name)
+    @Test
+    public void canEditDeviceByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput("")
+
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+        int nbcpu, int ram) = getDeviceParams()
+
+        int exitCode = gmtoolSpy.editDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
+
+        assert exitCode == 0
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width, OPT_HEIGHT + height,
+                 OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible, OPT_NBCPU + nbcpu, OPT_RAM + ram])
+    }
+
+    @Test
+    public void canStartDeviceByName() {
+
+        testGMToolByName method: "stopDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
     }
 
     @Test
     public void canStartDevice() {
 
-        String name = TestTools.createADevice(gmtool)
-
-        def exitCode = gmtool.startDevice(name)
-
-        assert exitCode == 0
+        testGMTool method: "startDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, START, deviceNamePlaceHolder]
     }
 
-    @Test(expected = GMToolException.class)
+    @Test
     public void throwsWhenCommandError() {
+
+        GMTool gmtool = GMTool.newInstance()
+
+        expectedException.expect(GMToolException)
+        expectedException.expectMessage("GMTool command failed.")
+
         gmtool.genymotionConfig.abortOnError = true
         gmtool.getDevice("sqfqqfd", true)
     }
@@ -364,312 +566,480 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     @Test
     public void canStopDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        testGMTool method: "stopDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
+    }
 
-        def exitCode = gmtool.startDevice(name)
+    @Test
+    public void canStopDeviceByName() {
 
-        if (exitCode == 0) {
-            gmtool.stopDevice(name)
-        }
-
-        assert exitCode == 0
-        assert !gmtool.isDeviceRunning(name)
+        testGMToolByName method: "stopDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
     }
 
 
     @Test
     public void canStopAllDevices() {
 
-        TestTools.createAllDevices(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput("")
 
-        TestTools.DEVICES.each() {
-            gmtool.startDevice(it.key)
-        }
+        int exitCode = gmtoolSpy.stopAllDevices()
 
-        gmtool.stopAllDevices()
-
-        def runningDevices = gmtool.getRunningDevices(true, false, true)
-        assert runningDevices == []
-
+        assert exitCode == 0
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, STOPALL])
     }
 
     @Test
     public void canResetDevice() {
-        //TODO
+
+        testGMTool method: "resetDevice",
+                output: factoryResetOutput,
+                expectedCommand: [GMTOOL, ADMIN, FACTORY_RESET, deviceNamePlaceHolder]
+    }
+
+    @Test
+    public void canResetDeviceByName() {
+
+        testGMToolByName method: "resetDevice",
+                output: factoryResetOutput,
+                expectedCommand: [GMTOOL, ADMIN, FACTORY_RESET, deviceNamePlaceHolder]
     }
 
     @Test
     public void canLogcatClear() {
-        String name = TestTools.createADevice(gmtool)
-        def exitCode = gmtool.startDevice(name)
-        assert exitCode == 0
 
-        boolean gotIt = false
-        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
-        String path = TestTools.TEMP_PATH + "logcat.dump"
-        File file = new File(path)
-        file.delete()
+        testGMTool method: "logcatClear",
+                output: logcatClearOutput,
+                expectedCommand: [GMTOOL, DEVICE, OPT_NAME + deviceNamePlaceHolder, LOGCAT_CLEAR]
+    }
 
-        gmtool.logcatDump(name, path, true)
+    @Test
+    public void canLogcatClearByName() {
 
-        file = new File(path)
-        assert file.exists()
-        file.eachLine {
-            if (it.contains(uniqueString)) {
-                gotIt = true
-            }
-        }
-        assert gotIt
-        file.delete()
-
-        exitCode = gmtool.logcatClear(name, true)
-        assert exitCode == 0
-
-        gotIt = false
-        gmtool.logcatDump(name, path)
-
-        file = new File(path)
-        assert file.exists()
-
-        file.eachLine {
-            if (it.contains(uniqueString)) {
-                gotIt = true
-            }
-        }
-
-        assert !gotIt
+        testGMToolByName method: "logcatClear",
+                output: logcatClearOutput,
+                expectedCommand: [GMTOOL, DEVICE, OPT_NAME + deviceNamePlaceHolder, LOGCAT_CLEAR]
     }
 
     @Test
     public void canLogcatDump() {
-        String name = TestTools.createADevice(gmtool)
-        def exitCode = gmtool.startDevice(name)
+
+        GMTool gmtoolSpy = initSpyAndOutput(logcatDumpOutput)
+
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String path = "random/path"
+
+        int exitCode = gmtoolSpy.logcatDump(device, path)
+
         assert exitCode == 0
-
-        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
-
-        String path = TestTools.TEMP_PATH + "logcat.dump"
-
-        exitCode = gmtool.logcatDump(name, path, true)
-        assert exitCode == 0
-
-        boolean gotIt = false
-
-        File file = new File(path)
-        assert file.exists()
-
-        file.eachLine {
-            if (it.contains(uniqueString)) {
-                gotIt = true
-            }
-        }
-
-        assert gotIt
-    }
-
-
-    @Test
-    public void canInstallToDevice() {
-
-        String name = TestTools.createADevice(gmtool)
-
-        def exitCode = gmtool.startDevice(name)
-        assert exitCode == 0
-
-        gmtool.installToDevice(name, "res/test/test.apk", true)
-        boolean installed = false
-        gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
-            if (line.contains("com.genymotion.test")) {
-                installed = true
-            }
-        }
-        assert installed
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_DUMP, path])
     }
 
     @Test
-    public void canInstallListOfAppToDevice() {
+    public void canLogcatDumpByName() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput(logcatDumpOutput)
 
-        def exitCode = gmtool.startDevice(name, true)
+        String deviceName = "myDevice"
+        String path = "random/path"
+
+        int exitCode = gmtoolSpy.logcatDump(deviceName, path)
+
         assert exitCode == 0
-
-        def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
-
-        gmtool.installToDevice(name, listOfApps, true)
-
-        int installed = 0
-        gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
-            if (line.contains("com.genymotion.test") || line.contains("com.genymotion.test2")) {
-                installed++
-            }
-        }
-        assert installed == listOfApps.size()
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_DUMP, path])
     }
 
+    @Test
+    public void canInstallAnApkToDevice() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(installOutput)
+
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String apkPath = "random/path"
+
+        int exitCode = gmtoolSpy.installToDevice(device, apkPath)
+
+        assert exitCode == 0
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath])
+    }
+
+    @Test
+    public void canInstallAnApkToDeviceByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(installOutput)
+
+        String deviceName = "myDevice"
+        String apkPath = "random/path"
+
+        int exitCode = gmtoolSpy.installToDevice(deviceName, apkPath)
+
+        assert exitCode == 0
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath])
+    }
+
+    @Test
+    public void canInstallSeveralApksToDevice() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(installOutput), null, 0],
+                [new StringBuffer().append(installOutput), null, 0],
+                [new StringBuffer().append(installOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String apkPath1 = "random/path1"
+        String apkPath2 = "random/path2"
+        String apkPath3 = "random/path3"
+
+        def exitCodes = gmtoolSpy.installToDevice(device, [apkPath1, apkPath2, apkPath3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath3])
+    }
+
+    @Test
+    public void canInstallSeveralApksToDeviceByName() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(installOutput), null, 0],
+                [new StringBuffer().append(installOutput), null, 0],
+                [new StringBuffer().append(installOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        String deviceName = "myDevice"
+        String apkPath1 = "random/path1"
+        String apkPath2 = "random/path2"
+        String apkPath3 = "random/path3"
+
+        def exitCodes = gmtoolSpy.installToDevice(deviceName, [apkPath1, apkPath2, apkPath3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apkPath3])
+    }
 
     @Test
     public void canPushToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput(pushOutput)
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String filePath = "random/path"
 
-        gmtool.pushToDevice(name, "res/test/test.txt", true)
-        boolean pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert pushed
+        def exitCode = gmtoolSpy.pushToDevice(device, filePath)
 
+        assert exitCode == [0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath])
+    }
+
+    @Test
+    public void canPushToDeviceByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(pushOutput)
+
+        String deviceName = "myDevice"
+        String filePath = "random/path"
+
+        def exitCode = gmtoolSpy.pushToDevice(deviceName, filePath)
+
+        assert exitCode == [0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath])
     }
 
     @Test
     public void canPushListToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        doReturn(
+                [new StringBuffer().append(pushOutput), null, 0],
+                [new StringBuffer().append(pushOutput), null, 0],
+                [new StringBuffer().append(pushOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
 
-        def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
-        gmtool.pushToDevice(name, listOfFiles, true)
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String  filePath1 = "random/path1"
+        String filePath2 = "random/path2"
+        String filePath3 = "random/path3"
 
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert pushed == listOfFiles.size()
+        def exitCodes = gmtoolSpy.pushToDevice(device, [filePath1, filePath2, filePath3])
 
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath3])
+    }
+
+    @Test
+    public void canPushListToDeviceByName() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(pushOutput), null, 0],
+                [new StringBuffer().append(pushOutput), null, 0],
+                [new StringBuffer().append(pushOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        String deviceName = "myDevice"
+        String  filePath1 = "random/path1"
+        String filePath2 = "random/path2"
+        String filePath3 = "random/path3"
+
+        def exitCodes = gmtoolSpy.pushToDevice(deviceName, [filePath1, filePath2, filePath3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath3])
     }
 
     @Test
     public void canPushToDeviceWithDest() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput(pushOutput)
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        String deviceName = "myDevice"
+        String filePath = "random/path"
+        String destination = "destination/path"
 
-        def destination = "/sdcard/"
-        gmtool.pushToDevice(name, ["res/test/test.txt": destination], true)
-        boolean pushed = false
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt")) {
-                pushed = true
-            }
-        }
-        assert pushed
+        def exitCode = gmtoolSpy.pushToDevice(deviceName, [(filePath): destination])
+
+        assert exitCode == [0]
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath, destination])
     }
 
     @Test
     public void canPushListToDeviceWithDest() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        doReturn(
+                [new StringBuffer().append(pushOutput), null, 0],
+                [new StringBuffer().append(pushOutput), null, 0],
+                [new StringBuffer().append(pushOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
 
-        def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
-        gmtool.pushToDevice(name, listOfFiles, true)
+        String deviceName = "myDevice"
+        String filePath1 = "random/path1"
+        String filePath2 = "random/path2"
+        String filePath3 = "random/path3"
+        String destination1 = "destination/path1"
+        String destination2 = "destination/path2"
+        String destination3 = "destination/path3"
 
-        int pushed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
-            if (line.contains("test.txt") || line.contains("test2.txt")) {
-                pushed++
-            }
-        }
-        assert pushed == listOfFiles.size()
+        def exitCodes = gmtoolSpy.pushToDevice(deviceName, [(filePath1): destination1, (filePath2): destination2,
+                                                            (filePath3): destination3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath1, destination1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath2, destination2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH, filePath3, destination3])
     }
-
 
     @Test
     public void canPullFromDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput(pullOutput)
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String filePath = "random/path"
+        String destPath = "dest/path"
 
-        //removing the pulled files
-        TestTools.recreatePulledDirectory()
+        def exitCode = gmtoolSpy.pullFromDevice(device, [(filePath): destPath])
 
-        gmtool.pullFromDevice(name, "/system/build.prop", TestTools.PULLED_PATH, true)
-        File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assert file.exists()
+        assert exitCode == [0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath, destPath])
+    }
+
+    @Test
+    public void canPullFromDeviceByName() {
+
+        GMTool gmtoolSpy = initSpyAndOutput(pullOutput)
+
+        String deviceName = "myDevice"
+        String filePath = "random/path"
+        String destPath = "dest/path"
+
+        def exitCode = gmtoolSpy.pullFromDevice(deviceName, filePath, destPath)
+
+        assert exitCode == [0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath, destPath])
     }
 
     @Test
     public void canPullListFromDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        doReturn(
+                [new StringBuffer().append(pullOutput), null, 0],
+                [new StringBuffer().append(pullOutput), null, 0],
+                [new StringBuffer().append(pullOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
 
-        //removing the pulled files
-        TestTools.recreatePulledDirectory()
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String  filePath1 = "random/path1"
+        String filePath2 = "random/path2"
+        String filePath3 = "random/path3"
+        String destPath1 = "dest/path1"
+        String destPath2 = "dest/path2"
+        String destPath3 = "dest/path3"
 
-        def listOfFiles = ["/system/build.prop": TestTools.PULLED_PATH, "/data/app/GestureBuilder.apk": TestTools.PULLED_PATH]
-        gmtool.pullFromDevice(name, listOfFiles, true)
 
-        File file = new File(TestTools.PULLED_PATH + "build.prop")
-        assert file.exists()
+        def exitCodes = gmtoolSpy.pullFromDevice(device, [(filePath1):destPath1, (filePath2):destPath2, (filePath3):destPath3])
 
-        file = new File(TestTools.PULLED_PATH + "GestureBuilder.apk")
-        assert file.exists()
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath1, destPath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath2, destPath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath3, destPath3])
     }
 
+    @Test
+    public void canPullListFromDeviceByName() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(pullOutput), null, 0],
+                [new StringBuffer().append(pullOutput), null, 0],
+                [new StringBuffer().append(pullOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        String deviceName = "myDevice"
+        String  filePath1 = "random/path1"
+        String filePath2 = "random/path2"
+        String filePath3 = "random/path3"
+        String destPath1 = "dest/path1"
+        String destPath2 = "dest/path2"
+        String destPath3 = "dest/path3"
+
+        def exitCodes = gmtoolSpy.pullFromDevice(deviceName, [(filePath1):destPath1, (filePath2):destPath2, (filePath3):destPath3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath1, destPath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath2, destPath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath3, destPath3])
+    }
 
     @Test
     public void canFlashDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtoolSpy = initSpyAndOutput(flashOutput)
 
-        def exitCode = gmtool.startDevice(name, true)
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String zipPath = "path/flash.zip"
+
+        def exitCode = gmtoolSpy.flashDevice(device, zipPath)
+
         assert exitCode == 0
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath])
+    }
 
-        gmtool.flashDevice(name, "res/test/test.zip", true)
-        boolean flashed = false
-        gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
-            if (line.contains("touchdown")) {
-                flashed = true
-            }
-        }
-        assert flashed
+    @Test
+    public void canFlashDeviceByName() {
 
+        GMTool gmtoolSpy = initSpyAndOutput(flashOutput)
+
+        String deviceName = "myDevice"
+        String zipPath = "path/flash.zip"
+
+        def exitCode = gmtoolSpy.flashDevice(deviceName, zipPath)
+
+        assert exitCode == 0
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath])
     }
 
     @Test
     public void canFlashListToDevice() {
 
-        String name = TestTools.createADevice(gmtool)
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
 
-        def exitCode = gmtool.startDevice(name, true)
-        assert exitCode == 0
+        doReturn(
+                [new StringBuffer().append(flashOutput), null, 0],
+                [new StringBuffer().append(flashOutput), null, 0],
+                [new StringBuffer().append(flashOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
 
-        def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
-        gmtool.flashDevice(name, listOfFiles, true)
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        String zipPath1 = "path/flash1.zip"
+        String zipPath2 = "path/flash2.zip"
+        String zipPath3 = "path/flash3.zip"
 
-        int flashed = 0
-        gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
-            if (line.contains("touchdown") || line.contains("touchdown2")) {
-                flashed++
-            }
-        }
-        assert flashed == listOfFiles.size()
+        def exitCodes = gmtoolSpy.flashDevice(device, [zipPath1, zipPath2, zipPath3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath3])
+    }
+
+    @Test
+    public void canFlashListToDeviceByName() {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(flashOutput), null, 0],
+                [new StringBuffer().append(flashOutput), null, 0],
+                [new StringBuffer().append(flashOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        String deviceName = "myDevice"
+        String zipPath1 = "path/flash1.zip"
+        String zipPath2 = "path/flash2.zip"
+        String zipPath3 = "path/flash3.zip"
+
+        def exitCodes = gmtoolSpy.flashDevice(deviceName, [zipPath1, zipPath2, zipPath3])
+
+        assert exitCodes == [0, 0, 0]
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath1])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath2])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zipPath3])
     }
 
     @Test
     public void canHidePassword() {
+
+        GMTool gmtool = GMTool.newInstance()
+
         def command = ["ok", "nok", "--password=toto", "password=tutu", "--password=", "password="]
         def result = gmtool.cleanCommand(command)
         assert result == ["ok", "nok", "--password=toto", "password=*****", "--password=", "password="]
@@ -677,51 +1047,64 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test(expected = TimeoutException)
     public void throwWhenProcessIsTooLongOnUnix() {
+
+        GMTool gmtool = GMTool.newInstance()
+
         if (Tools.getOSName().toLowerCase().contains("windows")) {
             throw new TimeoutException() //we avoid the test on windows
         }
 
-        project.genymotion.config.processTimeout = 100
-        project.genymotion.config.abortOnError = true
+        gmtool.genymotionConfig.processTimeout = 100
+        gmtool.genymotionConfig.abortOnError = true
         gmtool.cmd("sleep 1", true, false)
     }
 
     @Test(expected = GMToolException)
     public void throwWhenProcessIsTooLongOnWindows() {
+
+        GMTool gmtool = GMTool.newInstance()
+
         if (!Tools.getOSName().toLowerCase().contains("windows")) {
             throw new GMToolException() //we pass the test only on windows
         }
 
-        project.genymotion.config.processTimeout = 100
-        project.genymotion.config.abortOnError = true
+        gmtool.genymotionConfig.processTimeout = 100
+        gmtool.genymotionConfig.abortOnError = true
         //XXX: gmtool admin list is supposed to take more than 1 millisecond
-        gmtool.cmd([gmtool.GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"], true)
     }
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnUnix() {
+
+        GMTool gmtool = GMTool.newInstance()
+
         if (Tools.getOSName().toLowerCase().contains("windows")) {
             return //we avoid the test on windows
         }
 
-        project.genymotion.config.processTimeout = 100
-        project.genymotion.config.abortOnError = false
+        gmtool.genymotionConfig.processTimeout = 100
+        gmtool.genymotionConfig.abortOnError = false
         gmtool.cmd("sleep 1", true, false)
     }
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnWindows() {
+
+        GMTool gmtool = GMTool.newInstance()
+
         if (!Tools.getOSName().toLowerCase().contains("windows")) {
             return //we pass the test only on windows
         }
 
-        project.genymotion.config.processTimeout = 100
-        project.genymotion.config.abortOnError = false
-        gmtool.cmd([GMTool.GMTOOL, "admin", "list"], true)
+        gmtool.genymotionConfig.processTimeout = 100
+        gmtool.genymotionConfig.abortOnError = false
+        gmtool.cmd([GMTOOL, "admin", "list"], true)
     }
 
     @Test
     public void canHideSourceTag() {
+
         def command = ["ok", "nok", "--source=toto"]
         def result = GMTool.cleanCommand(command)
         assert result == ["ok", "nok"]
@@ -729,93 +1112,173 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canFormatCommand() {
-        def command = [GMTool.GMTOOL, "nok"]
 
+        GMTool gmtool = GMTool.newInstance()
+
+        def command = [GMTOOL, "nok"]
         gmtool.genymotionConfig.verbose = false
+        gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
+
         def result = gmtool.formatAndLogCommand(command)
-        assert result == [gmtool.genymotionConfig.genymotionPath + GMTool.GMTOOL, GMTool.SOURCE_GRADLE, "nok"]
+        assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, SOURCE_GRADLE, "nok"]
 
         result = gmtool.formatAndLogCommand(command, true)
-        assert result == [gmtool.genymotionConfig.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
+        assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
 
         gmtool.genymotionConfig.verbose = true
         result = gmtool.formatAndLogCommand(command, false)
-        assert result == [gmtool.genymotionConfig.genymotionPath + GMTool.GMTOOL, GMTool.VERBOSE, GMTool.SOURCE_GRADLE, "nok"]
+        assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
     }
 
     @Test
     public void canGetVersion() {
 
-        gmtool.metaClass.cmd = { def command, boolean verbose = false, boolean addPath = true, Closure c ->
-            """
-            Version  : 2.4.5
-            Revision : 20150629-a7e4623
-            """.eachLine { line, count ->
-                c(line, count)
-            }
-        }
-        assert gmtool.getVersion() == "2.4.5"
+        GMTool gmtoolSpy = initSpyAndOutput(versionOutput)
+
+        assert gmtoolSpy.getVersion() == "2.4.5"
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, VERSION])
     }
 
     @Test
     public void canCheckCompatibility() {
 
-        project.genymotion.config.version = "2.4.5"
-        assert !gmtool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+        GMTool gmtool = GMTool.newInstance()
 
-        project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
-        assert gmtool.isCompatibleWith(GMTool.FEATURE_SOURCE_PARAM)
+        gmtool.genymotionConfig.version = "2.4.5"
+        assert !gmtool.isCompatibleWith(FEATURE_SOURCE_PARAM)
+
+        gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
+        assert gmtool.isCompatibleWith(FEATURE_SOURCE_PARAM)
     }
 
     @Test
     public void canCheckSourceCompatibility() {
 
-        project.genymotion.config.verbose = false
+        GMTool gmtool = GMTool.newInstance()
 
-        project.genymotion.config.version = GMTool.FEATURE_SOURCE_PARAM
+        gmtool.genymotionConfig.verbose = false
+
+        gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
         assert gmtool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "--source=gradle", "version"]
 
 
-        project.genymotion.config.version = "2.4.5"
+        gmtool.genymotionConfig.version = "2.4.5"
         assert gmtool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
     }
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerCompatibility() {
 
+        GMTool gmtool = GMTool.newInstance()
+
         GenymotionConfig config = new GenymotionConfig()
         config.licenseServer = true
 
-        project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
+        gmtool.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
         gmtool.setConfig(config) //should pass
 
-        project.genymotion.config.version = "2.4.5"
+        gmtool.genymotionConfig.version = "2.4.5"
         gmtool.setConfig(config) //should throw exception
     }
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerAddressCompatibility() {
 
+        GMTool gmtool = GMTool.newInstance()
+
         GenymotionConfig config = new GenymotionConfig()
         config.licenseServerAddress = "test"
 
-        project.genymotion.config.version = GMTool.FEATURE_ONSITE_LICENSE_CONFIG
+        gmtool.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
         gmtool.setConfig(config) //should pass
 
-        project.genymotion.config.version = "2.4.5"
+        gmtool.genymotionConfig.version = "2.4.5"
         gmtool.setConfig(config) //should throw exception
     }
 
 
     @After
     public void finishTest() {
-        project.genymotion.config.processTimeout = 300000
         cleanMetaClass()
+    }
 
-        if (genymotionPath != null) {
-            project.genymotion.config.genymotionPath = genymotionPath
+
+    private static verifyGmtoolCmdWithClosure(GMTool gmtoolSpy, ArrayList<String> command) {
+        verify(gmtoolSpy).cmd(
+                eq(command),
+                anyBoolean(),
+                anyBoolean(),
+                any(Closure)
+        )
+    }
+
+    private static checkDetailedDeviceContent(GenymotionVirtualDevice device) {
+        assert device.name == "randomDevice"
+        assert device.ip == "192.168.56.101"
+        assert device.state == "On"
+        assert device.uuid == "01283849-3c02-4a38-831e-23e2b2d7adb2"
+        assert device.virtualKeyboard == true
+        assert device.dpi == 480
+        assert device.androidVersion == "4.4.4"
+    }
+
+    private def testGMTool(Map inputs /*String output, String method, ArrayList<String> expectedCommand*/) {
+
+        GMTool gmtoolSpy = initSpyAndOutput(inputs.output)
+
+        String deviceName = "myDevice"
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName)
+        def result = gmtoolSpy."${inputs.method}"(device)
+
+        verifyTest(result, inputs, deviceName, gmtoolSpy)
+
+        return result
+    }
+
+    private def testGMToolByName(Map inputs /*String output, String method, ArrayList<String> expectedCommand*/) {
+
+        GMTool gmtoolSpy = initSpyAndOutput(inputs.output)
+
+        String deviceName = "myDevice"
+        def result = gmtoolSpy."${inputs.method}"(deviceName)
+
+        verifyTest(result, inputs, deviceName, gmtoolSpy)
+
+        return result
+    }
+
+    private initSpyAndOutput(String output) {
+
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+
+        doReturn([new StringBuffer().append(output), null, 0]).when(gmtoolSpy).executeCommand(anyList())
+
+        gmtoolSpy
+    }
+
+    private verifyTest(def result, Map inputs, String deviceName, GMTool gmtoolSpy) {
+
+        //if the result is an int, we check it as an exit code
+        if(result instanceof Integer) {
+            assert result == 0
         }
-        TestTools.cleanAfterTests(gmtool)
+
+        ArrayList<String> command = inputs.expectedCommand*.replace(deviceNamePlaceHolder, deviceName)
+        verifyGmtoolCmdWithClosure(gmtoolSpy, command)
+    }
+
+    private getDeviceParams() {
+        String deviceName = "myDevice"
+        String density = "XXHDPI"
+        int width = 800
+        int height = 1280
+        boolean virtualKeyboard = true
+        boolean navbarVisible = false
+        int nbcpu = 2
+        int ram = 512
+        [deviceName, density, width, height, virtualKeyboard, navbarVisible, nbcpu, ram]
     }
 
 }
