@@ -54,10 +54,6 @@ class TestTools {
             buildToolsVersion "23.0.2"
         }
 
-        project.afterEvaluate {
-            println "TASKS AFTER " + project.tasks
-        }
-
         if (gmtool == null) {
             gmtool = mock(GMTool)
         }
