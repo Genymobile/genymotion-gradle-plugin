@@ -557,12 +557,20 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void throwsWhenCommandError() {
 
         GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+
+        int exitCode = 9999 // Random unknown exit code
+        String errorString = "This is a random error message"
+        doReturn([new StringBuffer(),
+                  new StringBuffer().append(errorString),
+                  exitCode])
+                .when(gmtoolSpy).executeCommand(anyList())
 
         expectedException.expect(GMToolException)
-        expectedException.expectMessage("GMTool command failed.")
+        expectedException.expectMessage("GMTool command failed. Error code: $exitCode." + errorString)
 
-        gmtool.genymotionConfig.abortOnError = true
-        gmtool.getDevice("sqfqqfd", true)
+        gmtoolSpy.genymotionConfig.abortOnError = true
+        gmtoolSpy.getDevice("sqfqqfd", true)
     }
 
     @Test
@@ -1172,31 +1180,31 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     @Test(expected = GMToolException)
     public void canCheckLicenseServerCompatibility() {
 
-        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = initSpyAndOutput()
 
         GenymotionConfig config = new GenymotionConfig()
         config.licenseServer = true
 
-        gmtool.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
-        gmtool.setConfig(config) //should pass
+        gmtoolSpy.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
+        gmtoolSpy.setConfig(config) //should pass
 
-        gmtool.genymotionConfig.version = "2.4.5"
-        gmtool.setConfig(config) //should throw exception
+        gmtoolSpy.genymotionConfig.version = "2.4.5"
+        gmtoolSpy.setConfig(config) //should throw exception
     }
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerAddressCompatibility() {
 
-        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = initSpyAndOutput()
 
         GenymotionConfig config = new GenymotionConfig()
         config.licenseServerAddress = "test"
 
-        gmtool.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
-        gmtool.setConfig(config) //should pass
+        gmtoolSpy.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
+        gmtoolSpy.setConfig(config) //should pass
 
-        gmtool.genymotionConfig.version = "2.4.5"
-        gmtool.setConfig(config) //should throw exception
+        gmtoolSpy.genymotionConfig.version = "2.4.5"
+        gmtoolSpy.setConfig(config) //should throw exception
     }
 
 
@@ -1250,7 +1258,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         return result
     }
 
-    private initSpyAndOutput(String output) {
+    private initSpyAndOutput(String output="") {
 
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
