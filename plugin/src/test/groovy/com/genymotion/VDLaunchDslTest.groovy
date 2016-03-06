@@ -4,12 +4,13 @@ import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
+import org.junit.After
 import org.junit.Test
 
 import static org.junit.Assert.fail
 import static org.mockito.Mockito.when
 
-class VDLaunchDslTest {
+class VDLaunchDslTest extends CleanMetaTest {
 
     static GMTool gmtool
 
@@ -137,4 +138,9 @@ class VDLaunchDslTest {
         assert vd.productFlavors == []
     }
 
+
+    @After
+    public void finishTest() {
+        cleanMetaClass()
+    }
 }
