@@ -20,80 +20,30 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
-import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.junit.After
-import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 
 import static org.junit.Assert.fail
 
-class GenymotionTasksTest {
+class GenymotionTasksTest extends CleanMetaTest {
 
     Project project
     GMTool gmtool
 
-    @BeforeClass
-    public static void setUpClass() {
-        def (project, gmtool) = TestTools.init()
-        TestTools.setDefaultUser(true, gmtool)
-    }
-
-    @Before
-    public void setUp() {
-        (project, gmtool) = TestTools.init()
-    }
-
-
     @Test
-    public void canLaunch() {
+    public void throwsWhenCommandErrorAndStopDevices() {
 
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.declareADetailedDevice(project)
+        GenymotionConfig config = new GenymotionConfig(abortOnError: true, genymotionPath: "wrong/path")
+        (project, gmtool) = TestTools.init(GMTool.newInstance(config))
 
-        project.tasks.genymotionLaunch.exec()
+        GMTool.metaClass.static.newInstance = {
+            gmtool
+        }
 
-        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
-
-        //we test the VDLaunch
-        assert project.genymotion.devices[0].start
-        assert project.genymotion.devices[0].deleteWhenFinish == deleteWhenFinish
-
-        //we test the created VD
-        assert device.density == density
-        assert device.width == width
-        assert device.height == height
-        assert !device.virtualKeyboard
-        assert !device.navbarVisible
-        assert device.nbCpu == nbCpu
-        assert device.ram == ram
-
-        //we test if the device is running
-        assert device.state == GenymotionVirtualDevice.STATE_ON
-
-        gmtool.stopDevice(vdName)
-        gmtool.deleteDevice(vdName)
-    }
-
-    @Test
-    public void canFinish() {
-
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = TestTools.declareADetailedDevice(project)
-
-        project.tasks.genymotionLaunch.exec()
-
-        project.tasks.genymotionFinish.exec()
-
-        assert !gmtool.isDeviceCreated(vdName)
-    }
-
-    @Test
-    public void throwsWhenCommandError() {
-
-        String deviceToStop = TestTools.getRandomName()
-        String deviceToDelete = TestTools.getRandomName()
-        String deviceToThrowError = TestTools.getRandomName()
+        String deviceToStop = "deviceToStop"
+        String deviceToDelete = "deviceToDelete"
 
         project.genymotion.devices {
             "$deviceToStop" {
@@ -107,56 +57,17 @@ class GenymotionTasksTest {
             }
         }
 
-        String goodPath = project.genymotion.config.genymotionPath
-
         try {
-            project.genymotion.config.abortOnError = true
-            project.genymotion.config.genymotionPath = "ssqfkjfksùfsdlkf"
             project.tasks.genymotionLaunch.exec()
             fail("Expected GMToolException to be thrown")
 
         } catch (IOException e) {
-            //TODO check how we can produce GMToolException instead of IOException with another command
-            project.genymotion.config.genymotionPath = goodPath
 
-            assert !gmtool.isDeviceCreated(deviceToDelete)
-            assert devicesAreStopped(project.genymotion.devices)
         }
     }
-
-    boolean devicesAreStopped(def devices) {
-        def stoppedDevices = gmtool.getRunningDevices(false, false, true)
-        devices.each() {
-            if (!it.deleteWhenFinish && !stoppedDevices.contains(it.name)) {
-                return false
-            }
-        }
-    }
-
-
-    @Test
-    public void canLoginAndRegister() {
-
-        //ENTER HERE the path to a properties file containing good credential (username, password & license)
-        String path = "res/test/default.properties"
-
-        File f = new File(path)
-        assert f.exists(), "Config file does not exist to test login feature. Set the path to be able to run the test"
-
-        project.genymotion.config.fromFile = path
-
-        project.genymotion.processConfiguration()
-
-        GenymotionConfig config = gmtool.getConfig(true)
-
-        assert project.genymotion.config.username == config.username
-
-        //TODO test license registration
-    }
-
 
     @After
     public void finishTest() {
-        TestTools.cleanAfterTests(gmtool)
+        cleanMetaClass()
     }
 }

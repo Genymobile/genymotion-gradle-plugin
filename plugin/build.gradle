@@ -123,9 +123,11 @@ plugindev {
     done() // do not omit this
 }
 
-bintray {
-    //Add these values to your ~/.gradle/gradle.properties file
-    user = "$BINTRAY_USER_GENY"
-    key = "$BINTRAY_API_KEY_GENY"
-    pkg.repo = 'Genymotion'
+if (project.hasProperty("BINTRAY_USER_GENY") && project.hasProperty("BINTRAY_API_KEY_GENY")) {
+    bintray {
+        //Add these values to your ~/.gradle/gradle.properties file
+        user = "$BINTRAY_USER_GENY"
+        key = "$BINTRAY_API_KEY_GENY"
+        pkg.repo = 'Genymotion'
+    }
 }

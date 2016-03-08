@@ -35,11 +35,11 @@ import static org.hamcrest.CoreMatchers.allOf
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
 
+
 class GenymotionConfigTest extends CleanMetaTest {
 
     Project project
     GMTool gmtool
-    boolean changedUser = false
 
     @Test
     public void isEmptyWhenEmpty() {
@@ -88,16 +88,13 @@ class GenymotionConfigTest extends CleanMetaTest {
 
     @Test
     public void canConfigFromFile() {
+
         (project, gmtool) = TestTools.init()
-        GenymotionConfig config = gmtool.getConfig(true)
-
-        project.genymotion.config.fromFile = "res/test/config.properties"
-
-        //we set the user as changed to set it again after the test
-        changedUser = true
 
         //we set the config file
-        project.genymotion.processConfiguration()
+        project.genymotion.config.fromFile = "res/test/config.properties"
+        //we launch the project's configuration process
+        project.genymotion.processConfiguration(gmtool)
 
         //@formatter:off
         assert false            == project.genymotion.config.statistics
@@ -123,38 +120,7 @@ class GenymotionConfigTest extends CleanMetaTest {
         assert true             == project.genymotion.config.verbose
         assert false            == project.genymotion.config.abortOnError
         //@formatter:on
-
-        //we set the last config back
-        gmtool.setConfig(config, true)
-
-        //we set the default config credentials
-        gmtool.setConfig(TestTools.getDefaultConfig(), true)
     }
-
-    @Test
-    public void canGetConfigFromGMTool() {
-        (project, gmtool) = TestTools.init()
-        GenymotionConfig config = new GenymotionConfig()
-        config.fromFile = "res/test/config.properties"
-        config.applyConfigFromFile(project)
-
-        changedUser = true
-        gmtool.setConfig(config, true)
-        gmtool.getConfig(project.genymotion.config, true)
-
-        //@formatter:off
-        assert false                                        == project.genymotion.config.statistics
-        assert "testName"                                   == project.genymotion.config.username
-        assert false                                        == project.genymotion.config.proxy
-        assert "testAddress"                                == project.genymotion.config.proxyAddress
-        assert false                                        == project.genymotion.config.proxy
-        assert 12345                                        == project.genymotion.config.proxyPort
-        assert true                                         == project.genymotion.config.proxyAuth
-        assert "testUsername"                               == project.genymotion.config.proxyUsername
-        assert true                                         == project.genymotion.config.useCustomSdk
-        //@formatter:on
-    }
-
 
     @Test
     public void warnWhenUsingStoreCredentials() {
@@ -209,14 +175,5 @@ class GenymotionConfigTest extends CleanMetaTest {
     public void finishTest() {
         cleanMetaClass()
         Log.clearLogger()
-
-        if (changedUser) {
-            TestTools.setDefaultUser(true, gmtool)
-            changedUser = false
-        }
-
-        if (gmtool != null) {
-            gmtool.resetConfig()
-        }
     }
 }
