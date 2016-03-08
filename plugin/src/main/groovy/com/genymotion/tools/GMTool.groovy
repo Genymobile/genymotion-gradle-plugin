@@ -910,7 +910,7 @@ class GMTool {
         p.consumeProcessOutput(out, error)
 
         p.waitForOrKill(genymotionConfig.processTimeout)
-        [out, error, p.exitValue()]
+        return [out, error, p.exitValue()]
     }
 
     /**
