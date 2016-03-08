@@ -19,25 +19,18 @@
 
 package com.genymotion
 
-import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.GMToolException
-import com.genymotion.tools.Tools
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
-
-import java.util.concurrent.TimeoutException
 
 class GMToolIntegTest {
 
     Project project
     GMTool gmtool
-
 
     @BeforeClass
     public static void setUpClass() {
@@ -55,7 +48,6 @@ class GMToolIntegTest {
         def exitCode = gmtool.usage()
         assert exitCode == com.genymotion.tools.GMToolDsl.RETURN_NO_ERROR
     }
-
 
     @Test
     public void isTemplatesAvailable() {

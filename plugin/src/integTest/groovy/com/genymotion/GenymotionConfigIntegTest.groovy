@@ -21,21 +21,9 @@ package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.Log
-import com.genymotion.tools.Tools
-import org.answerit.mock.slf4j.LoggingLevel
-import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
-import org.junit.Ignore
 import org.junit.Test
-import org.junit.experimental.categories.Category
-import org.slf4j.Logger
-
-import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
-import static org.hamcrest.CoreMatchers.allOf
-import static org.hamcrest.CoreMatchers.equalTo
-import static org.junit.Assert.assertThat
 
 class GenymotionConfigIntegTest {
 

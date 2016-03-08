@@ -1,14 +1,9 @@
 package com.genymotion
 
-import com.genymotion.model.GenymotionVDLaunch
-import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
-
-import static org.junit.Assert.fail
 
 class VDLaunchDslIntegTest {
 
