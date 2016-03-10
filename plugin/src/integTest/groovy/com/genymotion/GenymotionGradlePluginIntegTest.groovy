@@ -45,7 +45,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated() {
-
         String vdName = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
@@ -61,7 +60,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canEditDeviceBeforeLaunch() {
-
         String vdName = "OKOK-junit"
         def devices = gmtool.getAllDevices(true, false, true)
         if (devices.contains(vdName)) {
@@ -200,7 +198,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canInstallToDevice() {
-
         String vdName = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
@@ -221,7 +218,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushBeforeToDevice() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
@@ -242,7 +238,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushAfterToDevice() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
@@ -274,7 +269,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushBeforeToDeviceWithDest() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         def destination = "/sdcard/"
@@ -297,7 +291,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushAfterToDeviceWithDest() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         def destination = "/sdcard/"
@@ -389,12 +382,10 @@ class GenymotionGradlePluginIntegTest {
             }
         }
         assert flashed
-
     }
 
     @After
     public void finishTest() {
-
         Log.clearLogger()
         IntegrationTestTools.cleanAfterTests(gmtool)
     }
