@@ -328,7 +328,6 @@ class GMToolIntegTest {
             }
         }
         assert pushed
-
     }
 
     @Test
@@ -382,7 +381,6 @@ class GMToolIntegTest {
             }
         }
         assert flashed
-
     }
 
     @After
