@@ -92,7 +92,7 @@ class GenymotionConfigTest extends CleanMetaTest {
         (project, gmtool) = TestTools.init()
 
         //we set the config file
-        project.genymotion.config.fromFile = "res/test/config.properties"
+        project.genymotion.config.fromFile = "src/integTest/res/test/config.properties"
         //we launch the project's configuration process
         project.genymotion.processConfiguration(gmtool)
 

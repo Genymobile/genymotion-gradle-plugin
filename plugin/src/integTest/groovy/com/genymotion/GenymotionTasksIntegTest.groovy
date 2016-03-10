@@ -37,20 +37,20 @@ class GenymotionTasksIntegTest {
 
     @BeforeClass
     public static void setUpClass() {
-        def (project, gmtool) = IntegTestTools.init()
-        IntegTestTools.setDefaultUser(true, gmtool)
+        def (project, gmtool) = IntegrationTestTools.init()
+        IntegrationTestTools.setDefaultUser(true, gmtool)
     }
 
     @Before
     public void setUp() {
-        (project, gmtool) = IntegTestTools.init()
+        (project, gmtool) = IntegrationTestTools.init()
     }
 
 
     @Test
     public void canLaunch() {
 
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegTestTools.declareADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -79,7 +79,7 @@ class GenymotionTasksIntegTest {
     @Test
     public void canFinish() {
 
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegTestTools.declareADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -91,9 +91,9 @@ class GenymotionTasksIntegTest {
     @Test
     public void throwsWhenCommandError() {
 
-        String deviceToStop = IntegTestTools.getRandomName()
-        String deviceToDelete = IntegTestTools.getRandomName()
-        String deviceToThrowError = IntegTestTools.getRandomName()
+        String deviceToStop = IntegrationTestTools.getRandomName()
+        String deviceToDelete = IntegrationTestTools.getRandomName()
+        String deviceToThrowError = IntegrationTestTools.getRandomName()
 
         project.genymotion.devices {
             "$deviceToStop" {
@@ -138,7 +138,7 @@ class GenymotionTasksIntegTest {
     public void canLoginAndRegister() {
 
         //ENTER HERE the path to a properties file containing good credential (username, password & license)
-        String path = "res/test/default.properties"
+        String path = "src/integTest/res/test/default.properties"
 
         File f = new File(path)
         assert f.exists(), "Config file does not exist to test login feature. Set the path to be able to run the test"
@@ -157,6 +157,6 @@ class GenymotionTasksIntegTest {
 
     @After
     public void finishTest() {
-        IntegTestTools.cleanAfterTests(gmtool)
+        IntegrationTestTools.cleanAfterTests(gmtool)
     }
 }

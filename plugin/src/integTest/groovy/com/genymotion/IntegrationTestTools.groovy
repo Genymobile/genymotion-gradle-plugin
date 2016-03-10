@@ -24,7 +24,7 @@ import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
-class IntegTestTools {
+class IntegrationTestTools {
 
     public static
     final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
@@ -39,7 +39,6 @@ class IntegTestTools {
     ]
 
     static def init() {
-
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
         setDefaultGenymotionPath(project)
@@ -49,7 +48,7 @@ class IntegTestTools {
         gmtool.getConfig(project.genymotion.config, true)
         project.genymotion.config.verbose = true
 
-        [project, gmtool]
+        return [project, gmtool]
     }
 
     private static void setDefaultGenymotionPath(Project project, String defaultPath = null) {
@@ -153,7 +152,7 @@ class IntegTestTools {
         tempDir.mkdirs()
     }
 
-    static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties") {
+    static GenymotionConfig getDefaultConfig(String path = "src/integTest/res/test/default.properties") {
         GenymotionConfig config = new GenymotionConfig()
         config.fromFile = path
 
@@ -161,7 +160,7 @@ class IntegTestTools {
             return config
         }
 
-        return null
+        throw new FileNotFoundException("No default.properties file found, add one or supply needed properties via commandline arguments")
     }
 
     static setDefaultUser(registerLicense = false, GMTool gmtool) {
@@ -198,7 +197,7 @@ class IntegTestTools {
 
     static Project getAndroidProject() {
 
-        Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
+        Project project = ProjectBuilder.builder().withProjectDir(new File("src/integTest/res/test/android-app")).build();
 
         project.apply plugin: 'com.android.application'
         project.apply plugin: 'genymotion'
@@ -207,7 +206,7 @@ class IntegTestTools {
             compileSdkVersion 21
             buildToolsVersion "21.1.2"
         }
-        project.genymotion.config.genymotionPath = IntegTestTools.getDefaultConfig().genymotionPath
+        project.genymotion.config.genymotionPath = IntegrationTestTools.getDefaultConfig().genymotionPath
 
         project.afterEvaluate {
             println "TASKS AFTER " + project.tasks

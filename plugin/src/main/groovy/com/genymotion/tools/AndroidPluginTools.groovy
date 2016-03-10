@@ -27,7 +27,7 @@ class AndroidPluginTools {
     public static final DEFAULT_ANDROID_TASK_1_0 = "connectedAndroidTest"
     public static final DEFAULT_ANDROID_TASK_1_2 = "connectedAndroidTestDebug"
     public static final DEFAULT_ANDROID_TASK_1_3 = "connectedDebugAndroidTest"
-    public static final DEFAULT_PROPERTIES = "local.properties"
+    public static final LOCAL_PROPERTIES = "local.properties"
 
     public static String getFlavorFinishTask(String suffix) {
         GenymotionGradlePlugin.TASK_FINISH + suffix.capitalize()

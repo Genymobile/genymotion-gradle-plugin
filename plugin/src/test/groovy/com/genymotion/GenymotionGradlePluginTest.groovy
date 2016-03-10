@@ -57,7 +57,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         (project, gmtool) = TestTools.init()
     }
 
-
     @Test
     public void canAddsTaskToProject() {
         assert project.tasks.genymotionLaunch instanceof GenymotionLaunchTask
@@ -474,7 +473,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        String apkPath = "res/test/test.apk"
+        String apkPath = "src/integTest/res/test/test.apk"
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -495,7 +494,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def listOfApps = ["res/test/test.apk", "res/test/test2.apk"]
+        def listOfApps = ["src/integTest/res/test/test.apk", "src/integTest/res/test/test2.apk"]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -517,7 +516,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def path = "res/test/test.txt"
+        def path = "src/integTest/res/test/test.txt"
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -537,7 +536,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def path = "res/test/test.txt"
+        def path = "src/integTest/res/test/test.txt"
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -563,7 +562,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
+        def listOfFiles = ["src/integTest/res/test/test.txt", "src/integTest/res/test/test2.txt"]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -584,7 +583,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def listOfFiles = ["res/test/test.txt", "res/test/test2.txt"]
+        def listOfFiles = ["src/integTest/res/test/test.txt", "src/integTest/res/test/test2.txt"]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -611,7 +610,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
         String vdName = "testDevice"
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination]
+        def listOfFiles = ["src/integTest/res/test/test.txt": destination]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -632,7 +631,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
         String vdName = "testDevice"
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination]
+        def listOfFiles = ["src/integTest/res/test/test.txt": destination]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -659,7 +658,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
         String vdName = "testDevice"
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
+        def listOfFiles = ["src/integTest/res/test/test.txt": destination, "src/integTest/res/test/test2.txt": destination]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -679,7 +678,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
         String vdName = "testDevice"
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination, "res/test/test2.txt": destination]
+        def listOfFiles = ["src/integTest/res/test/test.txt": destination, "src/integTest/res/test/test2.txt": destination]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -706,7 +705,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
         String vdName = "testDevice"
         def destination = "/sdcard/"
-        def listOfFiles = ["/system/build.prop": destination, "res/test/test2.txt": destination]
+        def listOfFiles = ["/system/build.prop": destination, "src/integTest/res/test/test2.txt": destination]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -799,7 +798,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def path = "res/test/test.zip"
+        def path = "src/integTest/res/test/test.zip"
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 
@@ -819,7 +818,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String vdName = "testDevice"
-        def listOfFiles = ["res/test/test.zip", "res/test/test2.zip"]
+        def listOfFiles = ["src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
 
         when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
 

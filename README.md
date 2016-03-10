@@ -48,6 +48,7 @@ To download the plugin, run:
 
 ```sh
 git clone https://github.com/Genymobile/genymotion-gradle-plugin.git
+git submodule init && git submobule update
 ```
 
 ##Project description
@@ -55,6 +56,9 @@ git clone https://github.com/Genymobile/genymotion-gradle-plugin.git
 The `plugin` folder contains the Gradle plugin.
 
 The `samples` folder contains the example project using the Gradle plugin.
+There are two sample:
+* 'simple' that showcases how to use the gradle plugin on its own.
+* 'binocle' that showcases how to use the gradle plugin in the context of an Android app.
 
 
 ##Compiling the plugin

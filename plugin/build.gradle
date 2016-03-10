@@ -58,7 +58,7 @@ sourceSets {
     integrationTest {
         groovy.srcDir file('src/test/groovy')
         groovy.srcDir file('src/integTest/groovy')
-        resources.srcDir file('res')
+        resources.srcDir file('src/integTest/res')
         compileClasspath += sourceSets.main.output + configurations.testRuntime
         runtimeClasspath += output + compileClasspath
     }
@@ -95,6 +95,8 @@ task integrationTest(type: Test) {
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
+
+
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test

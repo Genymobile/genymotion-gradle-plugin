@@ -58,14 +58,14 @@ class ToolsTest {
     @Test
     public void canCheckFileExists() {
 
-        def list = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
+        def list = ["src/integTest/res/test/test.txt", "src/integTest/res/test/test2.txt", "src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
         assert Tools.checkFilesExist(list)
 
-        def single = "res/test/test.txt"
+        def single = "src/integTest/res/test/test.txt"
         assert Tools.checkFilesExist(single)
 
-        def map = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
-                   "res/test/test.zip": "/sdcard/Downloads/", "res/test/test2.zip": "/sdcard/Downloads/"]
+        def map = ["src/integTest/res/test/test.txt": "/sdcard/Downloads/", "src/integTest/res/test/test2.txt": "/sdcard/Downloads/",
+                   "src/integTest/res/test/test.zip": "/sdcard/Downloads/", "src/integTest/res/test/test2.zip": "/sdcard/Downloads/"]
         assert Tools.checkFilesExist(map)
 
         assert Tools.checkFilesExist(null)
@@ -74,14 +74,14 @@ class ToolsTest {
     @Test
     public void canCheckFileDoesNotExist() {
 
-        def list = ["res/test/test.txt", "NOPE", "res/test/test.zip", "res/test/test2.zip"]
+        def list = ["src/integTest/res/test/test.txt", "NOPE", "src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
         assert Tools.checkFilesExist(list) == "NOPE"
 
         def single = "NOPE"
         assert Tools.checkFilesExist(single) == "NOPE"
 
-        def map = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
-                   "res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
+        def map = ["src/integTest/res/test/test.txt": "/sdcard/Downloads/", "src/integTest/res/test/test2.txt": "/sdcard/Downloads/",
+                   "src/integTest/res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
         assert Tools.checkFilesExist(map) == "NOPE"
     }
 

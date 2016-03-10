@@ -44,7 +44,7 @@ class TestTools {
 
     static def getAndroidProject(def gmtool = null) {
 
-        Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
+        Project project = ProjectBuilder.builder().withProjectDir(new File("src/integTest/res/test/android-app")).build();
 
         project.apply plugin: 'com.android.application'
         project.apply plugin: 'genymotion'
