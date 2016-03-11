@@ -31,7 +31,6 @@ if (hasProperty("androidPluginVersion")) {
 }
 
 def loadPropertiesFromCommandLine() {
-    println 'loadPropertiesFromCommandLine'
     if (hasProperty('username') && hasProperty('password')
             && hasProperty('license') && hasProperty('genymotionpath')) {
         def user = username
@@ -132,8 +131,6 @@ task integrationTest(type: Test) {
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
-
-
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
