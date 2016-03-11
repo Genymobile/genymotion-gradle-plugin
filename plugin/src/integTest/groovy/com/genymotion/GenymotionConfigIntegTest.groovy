@@ -24,6 +24,7 @@ import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.AfterClass
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
@@ -33,7 +34,7 @@ class GenymotionConfigIntegTest {
     Project project
     GMTool gmtool
 
-    @BeforeClass
+    @Before
     public void init() {
         (project, gmtool) = IntegrationTestTools.init()
         GenymotionConfig config = new GenymotionConfig()
@@ -62,7 +63,7 @@ class GenymotionConfigIntegTest {
         assert true == config.useCustomSdk
     }
 
-    @AfterClass
+    @After
     public void finishTest() {
         IntegrationTestTools.setDefaultUser(true, gmtool)
     }
