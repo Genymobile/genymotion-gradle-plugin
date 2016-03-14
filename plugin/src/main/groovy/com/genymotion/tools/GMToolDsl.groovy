@@ -79,6 +79,8 @@ class GMToolDsl {
     public static final String OPT_NBCPU                   = '--nbcpu='
     public static final String OPT_RAM                     = "--ram="
     public static final String OPT_NAME                    = "-n="
+    public static final String OPT_NETWORK_MODE            = "--networking-mode="
+    public static final String OPT_BRIDGE_INTERFACE        = "--bridge-if="
     public static final String OPT_STATISTICS              = "statistics="
     public static final String OPT_USERNAME_CONFIG         = "username="
     public static final String OPT_PASSWORD_CONFIG         = "password="
