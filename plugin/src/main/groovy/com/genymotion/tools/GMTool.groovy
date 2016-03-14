@@ -23,6 +23,7 @@ import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
 import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.NetworkInfo
 import org.codehaus.groovy.runtime.NullObject
 
 import java.util.concurrent.TimeoutException
@@ -519,32 +520,38 @@ class GMTool {
     }
 
     def createDevice(def template, def deviceName, def density = "", def width = "", def height = "",
-                     def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "") {
-
+                     def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
+                     def networkMode = "", def bridgeInterface = "") {
         def exitValue = noNull() {
             cmd([GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
-                 OPT_NBCPU + nbcpu, OPT_RAM + ram])
+                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkMode, OPT_BRIDGE_INTERFACE + bridgeInterface])
         }
 
         if (exitValue == RETURN_NO_ERROR) {
-            return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible, nbcpu, ram)
+            NetworkInfo networkInfo = new NetworkInfo(networkMode, bridgeInterface);
+
+            return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible,
+                    nbcpu, ram, networkInfo)
         } else {
             return exitValue
         }
     }
 
     def editDevice(GenymotionVirtualDevice device) {
-        return editDevice(device.name, device.density, device.width, device.height, device.virtualKeyboard, device.navbarVisible, device.nbCpu, device.ram)
+        return editDevice(device.name, device.density, device.width, device.height, device.virtualKeyboard,
+                device.navbarVisible, device.nbCpu, device.ram, device.networkInfo.mode, device.networkInfo.bridgeInterface)
     }
 
     def editDevice(def deviceName, def density = "", def width = "", def height = "", def virtualKeyboard = "",
-                   def navbarVisible = "", def nbcpu = "", def ram = "") {
+                   def navbarVisible = "", def nbcpu = "", def ram = "", def networkMode = "nat",
+                   def bridgeInterface = "") {
 
         return noNull() {
             return cmd([GMTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                         OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
-                        OPT_NBCPU + nbcpu, OPT_RAM + ram])
+                        OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkMode,
+                        OPT_BRIDGE_INTERFACE + bridgeInterface])
         }
     }
 
@@ -632,6 +639,15 @@ class GMTool {
                 case "IP":
                     device.ip = info[1].trim()
                     break
+                case "Networking mode":
+                    String[] networkInfo = info[1].split(" ")
+                    device.networkMode = networkInfo[0].trim()
+
+                    if (networkInfo.size() == 2) {
+                        device.bridgeInterface = networkInfo[1].trim()
+                    } else {
+                        device.bridgeInterface = ""
+                    }
             }
         }
         device

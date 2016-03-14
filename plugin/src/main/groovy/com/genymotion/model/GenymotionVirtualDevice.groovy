@@ -23,7 +23,6 @@ import com.genymotion.tools.GMTool
 
 
 class GenymotionVirtualDevice {
-
     static final String STATE_ON = "On"
     static final String STATE_OFF = "Off"
 
@@ -43,6 +42,7 @@ class GenymotionVirtualDevice {
     String path
     String state
     String ip
+    NetworkInfo networkInfo
 
     protected GMTool gmtool
 
@@ -56,12 +56,12 @@ class GenymotionVirtualDevice {
     }
 
     GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible,
-                            def nbCpu, def ram) {
-        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
+                            def nbCpu, def ram, def networkInfo) {
+        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram, networkInfo)
     }
 
-    void init(
-            def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+    void init(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram,
+                def networkMode) {
         if (name?.trim()) {
             this.name = name
         }
@@ -86,10 +86,13 @@ class GenymotionVirtualDevice {
         if (ram) {
             this.ram = ram.toInteger()
         }
+        if (networkMode != null) {
+            this.networkInfo = networkMode
+        }
     }
 
-
-    GenymotionVirtualDevice(String name, int dpi, int width, int height, boolean virtualKeyboard, boolean navbarVisible, int nbCpu, int ram) {
+    GenymotionVirtualDevice(String name, int dpi, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+                            int nbCpu, int ram, NetworkInfo networkInfo) {
         this.name = name
         this.dpi = dpi
         this.width = width
@@ -98,6 +101,7 @@ class GenymotionVirtualDevice {
         this.navbarVisible = navbarVisible
         this.nbCpu = nbCpu
         this.ram = ram
+        this.networkInfo = networkInfo
     }
 
     protected def start() {
