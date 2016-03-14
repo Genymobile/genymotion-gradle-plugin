@@ -417,7 +417,38 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         String template = "A template"
         def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
-        int nbcpu, int ram, NetworkInfo networkInfo) = getDeviceParams()
+        int nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
+
+        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+                virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
+
+        assert deviceCreated.name == deviceName
+        assert deviceCreated.density == density
+        assert deviceCreated.width == width
+        assert deviceCreated.height == height
+        assert deviceCreated.virtualKeyboard == virtualKeyboard
+        assert deviceCreated.navbarVisible == navbarVisible
+        assert deviceCreated.nbCpu == nbcpu
+        assert deviceCreated.ram == ram
+        assert deviceCreated.networkInfo.mode == networkInfo.mode
+        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
+                 OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
+                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkInfo.mode,
+                 OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
+    }
+
+    @Test
+    public void canCreateDeviceWithInBridgeModeWithBridgeInterface() {
+        GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
+
+        String template = "A template"
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+        int nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createBridgeNetworkInfo("eth0")
 
         GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
@@ -492,7 +523,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         GMTool gmtoolSpy = initSpyAndOutput("")
 
         def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
-        int nbcpu, int ram, NetworkInfo networkInfo) = getDeviceParams()
+        int nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo)
@@ -512,7 +544,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         GMTool gmtoolSpy = initSpyAndOutput("")
 
         def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
-        int nbcpu, int ram, NetworkInfo networkInfo) = getDeviceParams()
+        int nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
         int exitCode = gmtoolSpy.editDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible,
                 nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
@@ -1249,8 +1282,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         boolean isNavBarVisible = false
         int nbCpu = 2
         int ram = 512
-        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo();
 
-        return [deviceName, density, width, height, virtualKeyboard, isNavBarVisible, nbCpu, ram, networkInfo]
+        return [deviceName, density, width, height, virtualKeyboard, isNavBarVisible, nbCpu, ram]
     }
 }
