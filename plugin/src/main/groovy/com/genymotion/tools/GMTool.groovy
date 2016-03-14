@@ -30,7 +30,6 @@ import java.util.concurrent.TimeoutException
 import static com.genymotion.tools.GMToolDsl.*
 
 class GMTool {
-
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
 
@@ -39,7 +38,6 @@ class GMTool {
     static final String GENYMOTION_VERSION_ERROR_MESSAGE =
             "Current gmtool version is not compatible with %s. Please update Genymotion following this link: $GENYMOTION_DOWNLOAD_URL"
     static final String GENYMOTION_DOWNLOAD_URL = "https://www.genymotion.com/#!/download"
-
 
     static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG) {
         GMTool gmtool = new GMTool()

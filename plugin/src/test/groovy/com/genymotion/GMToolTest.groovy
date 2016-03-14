@@ -35,7 +35,6 @@ import org.junit.rules.ExpectedException
 import java.util.concurrent.TimeoutException
 
 import static com.genymotion.tools.GMToolDsl.*
-import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 
 class GMToolTest extends CleanMetaTest {
@@ -178,7 +177,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetConfigFromGMTool() {
-
         GMTool gmtoolSpy = initSpyAndOutput(configPrintOutput)
 
         GenymotionConfig config = gmtoolSpy.getConfig()
@@ -204,7 +202,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void checkGMToolNotFoundError() {
-
         GMTool gmtool = GMTool.newInstance()
 
         gmtool.genymotionConfig.genymotionPath = "nowhere"
@@ -218,7 +215,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void isTemplatesAvailable() {
-
         GMTool gmtoolSpy = initSpyAndOutput(templatesOutput)
 
         def templates = gmtoolSpy.getTemplates()
@@ -231,7 +227,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetRunningDevicesByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
         def devices = gmtoolSpy.getRunningDevices(false, false, true)
@@ -245,7 +240,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetRunningDevices() {
-
         GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
         def devices = gmtoolSpy.getRunningDevices(false, false, false)
@@ -259,7 +253,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetFilledRunningDevices() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -279,7 +272,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetStoppedDevicesByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
         def devices = gmtoolSpy.getStoppedDevices(false, false, true)
@@ -293,7 +285,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetStoppedDevices() {
-
         GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
         def devices = gmtoolSpy.getStoppedDevices(false, false, false)
@@ -307,7 +298,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetFilledStoppedDevices() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -330,7 +320,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetAllDevicesByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
         def devices = gmtoolSpy.getAllDevices(false, false, true)
@@ -343,7 +332,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetAllDevices() {
-
         GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
         def devices = gmtoolSpy.getAllDevices(false, false, false)
@@ -366,7 +354,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetAllDevicesFilled() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -393,7 +380,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canCreateDeviceFromVDLaunch() {
-
         GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
 
         GenymotionVDLaunch deviceToCreate = new GenymotionVDLaunch("device name")
@@ -461,7 +447,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetDetailedDevice() {
-
         def device = testGMTool method: "getDevice",
                 output: deviceDetailOutput,
                 expectedCommand: [GMTOOL, ADMIN, DETAILS, deviceNamePlaceHolder]
@@ -471,7 +456,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canCloneDevice() {
-
         GMTool gmtoolSpy = initSpyAndOutput("")
 
         String deviceName = "myDevice"
@@ -487,7 +471,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canCloneDeviceByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput("")
 
         String deviceName = "myDevice"

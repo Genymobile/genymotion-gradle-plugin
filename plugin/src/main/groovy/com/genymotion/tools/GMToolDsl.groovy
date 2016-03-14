@@ -98,19 +98,16 @@ class GMToolDsl {
     public static final String OPTION_ON                = "on"
     public static final String OPTION_OFF               = "off"
 
-
     //Minimum gmtool version for each feature after first release
     /**
     * Adding --source to gmtool commands
      */
     public static final String FEATURE_SOURCE_PARAM             = "2.5.1"
 
-
     /**
     * Adding license_server & license_server_address config options
      */
     public static final String FEATURE_ONSITE_LICENSE_CONFIG    = "2.6"
-
 
     //code returned by gmtool or command line
     public static final int RETURN_NO_ERROR                = 0
