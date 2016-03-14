@@ -47,8 +47,7 @@ But this plugin can do a lot more, read [the full documentation](https://www.gen
 To download the plugin, run:
 
 ```sh
-git clone https://github.com/Genymobile/genymotion-gradle-plugin.git
-git submodule init && git submobule update
+git clone --recursive https://github.com/Genymobile/genymotion-gradle-plugin.git
 ```
 
 ##Project description
