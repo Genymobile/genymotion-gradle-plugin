@@ -23,7 +23,6 @@ import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
 import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
-import com.genymotion.model.GenymotionVirtualDevice.NetworkInfo
 import com.genymotion.model.NetworkInfo
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
@@ -126,7 +125,7 @@ RAM                   : 2048
 Telephony             : true
 Nav Bar Visible       : true
 Virtual Keyboard      : true
-Path                  : /Users/eyal/.Genymobile/Genymotion/deployed/randomDevice
+Path                  : /Users/anonymous/.Genymobile/Genymotion/deployed/randomDevice
 State                 : On
 IP                    : 192.168.56.101"""
 
@@ -140,11 +139,11 @@ Creating virtual device...
 Virtual device created successfully"""
 
     public static final String installOutput = """\
-Installing /Users/eyal/Downloads/devices-release-unaligned.apk on nexus7...
+Installing /Users/anonymous/Downloads/devices-release-unaligned.apk on nexus7...
 File installed on nexus7"""
 
     public static final String pushOutput = """\
-Pushing /Users/eyal/Downloads/devices-release-unaligned.apk to nexus7...
+Pushing /Users/anonymous/Downloads/devices-release-unaligned.apk to nexus7...
 File pushed to nexus7"""
 
     public static final String versionOutput = """\
@@ -210,7 +209,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         gmtool.genymotionConfig.abortOnError = true
 
         expectedException.expect(FileNotFoundException)
-        expectedException.expectMessage("$GMTool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $gmtool.genymotionConfig.genymotionPath")
+        String message = "$GMTool.GENYMOTION_PATH_ERROR_MESSAGE Current value: $gmtool.genymotionConfig.genymotionPath"
+        expectedException.expectMessage(message)
 
         gmtool.usage()
     }
@@ -392,7 +392,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, deviceToCreate.template, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH,
-                 OPT_HEIGHT, OPT_VIRTUAL_KEYBOARD, OPT_NAVBAR, OPT_NBCPU, OPT_RAM, OPT_NETWORK_MODE, OPT_BRIDGE_INTERFACE])
+                 OPT_HEIGHT, OPT_VIRTUAL_KEYBOARD, OPT_NAVBAR, OPT_NBCPU, OPT_RAM, OPT_NETWORK_MODE,
+                 OPT_BRIDGE_INTERFACE])
     }
 
     @Test
@@ -435,7 +436,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
-                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkInfo.mode, OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
+                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkInfo.mode,
+                 OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
     }
 
     @Test
@@ -532,7 +534,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canStartDevice() {
-
         testGMTool method: "startDevice",
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, START, deviceNamePlaceHolder]
@@ -540,7 +541,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void throwsWhenCommandError() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
 
@@ -560,7 +560,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canStopDevice() {
-
         testGMTool method: "stopDevice",
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
@@ -568,16 +567,13 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canStopDeviceByName() {
-
         testGMToolByName method: "stopDevice",
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
     }
 
-
     @Test
     public void canStopAllDevices() {
-
         GMTool gmtoolSpy = initSpyAndOutput("")
 
         int exitCode = gmtoolSpy.stopAllDevices()
@@ -588,7 +584,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canResetDevice() {
-
         testGMTool method: "resetDevice",
                 output: factoryResetOutput,
                 expectedCommand: [GMTOOL, ADMIN, FACTORY_RESET, deviceNamePlaceHolder]
@@ -596,7 +591,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canResetDeviceByName() {
-
         testGMToolByName method: "resetDevice",
                 output: factoryResetOutput,
                 expectedCommand: [GMTOOL, ADMIN, FACTORY_RESET, deviceNamePlaceHolder]
@@ -604,7 +598,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canLogcatClear() {
-
         testGMTool method: "logcatClear",
                 output: logcatClearOutput,
                 expectedCommand: [GMTOOL, DEVICE, OPT_NAME + deviceNamePlaceHolder, LOGCAT_CLEAR]
@@ -612,7 +605,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canLogcatClearByName() {
-
         testGMToolByName method: "logcatClear",
                 output: logcatClearOutput,
                 expectedCommand: [GMTOOL, DEVICE, OPT_NAME + deviceNamePlaceHolder, LOGCAT_CLEAR]
@@ -620,7 +612,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canLogcatDump() {
-
         GMTool gmtoolSpy = initSpyAndOutput(logcatDumpOutput)
 
         String deviceName = "myDevice"
@@ -635,7 +626,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canLogcatDumpByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(logcatDumpOutput)
 
         String deviceName = "myDevice"
@@ -649,7 +639,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canInstallAnApkToDevice() {
-
         GMTool gmtoolSpy = initSpyAndOutput(installOutput)
 
         String deviceName = "myDevice"
@@ -664,7 +653,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canInstallAnApkToDeviceByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(installOutput)
 
         String deviceName = "myDevice"
@@ -678,7 +666,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canInstallSeveralApksToDevice() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -705,7 +692,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canInstallSeveralApksToDeviceByName() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -731,7 +717,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPushToDevice() {
-
         GMTool gmtoolSpy = initSpyAndOutput(pushOutput)
 
         String deviceName = "myDevice"
@@ -746,7 +731,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPushToDeviceByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(pushOutput)
 
         String deviceName = "myDevice"
@@ -760,7 +744,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPushListToDevice() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -787,7 +770,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPushListToDeviceByName() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -813,7 +795,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPushToDeviceWithDest() {
-
         GMTool gmtoolSpy = initSpyAndOutput(pushOutput)
 
         String deviceName = "myDevice"
@@ -829,7 +810,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPushListToDeviceWithDest() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -859,7 +839,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPullFromDevice() {
-
         GMTool gmtoolSpy = initSpyAndOutput(pullOutput)
 
         String deviceName = "myDevice"
@@ -875,7 +854,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPullFromDeviceByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(pullOutput)
 
         String deviceName = "myDevice"
@@ -890,7 +868,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPullListFromDevice() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -911,7 +888,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         String destPath3 = "dest/path3"
 
 
-        def exitCodes = gmtoolSpy.pullFromDevice(device, [(filePath1):destPath1, (filePath2):destPath2, (filePath3):destPath3])
+        def exitCodes = gmtoolSpy.pullFromDevice(device, [(filePath1):destPath1, (filePath2):destPath2,
+                                                          (filePath3):destPath3])
 
         assert exitCodes == [0, 0, 0]
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath1, destPath1])
@@ -921,7 +899,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canPullListFromDeviceByName() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -940,7 +917,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         String destPath2 = "dest/path2"
         String destPath3 = "dest/path3"
 
-        def exitCodes = gmtoolSpy.pullFromDevice(deviceName, [(filePath1):destPath1, (filePath2):destPath2, (filePath3):destPath3])
+        def exitCodes = gmtoolSpy.pullFromDevice(deviceName, [(filePath1):destPath1, (filePath2):destPath2,
+                                                              (filePath3):destPath3])
 
         assert exitCodes == [0, 0, 0]
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, filePath1, destPath1])
@@ -950,7 +928,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canFlashDevice() {
-
         GMTool gmtoolSpy = initSpyAndOutput(flashOutput)
 
         String deviceName = "myDevice"
@@ -965,7 +942,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canFlashDeviceByName() {
-
         GMTool gmtoolSpy = initSpyAndOutput(flashOutput)
 
         String deviceName = "myDevice"
@@ -979,7 +955,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canFlashListToDevice() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -1006,7 +981,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canFlashListToDeviceByName() {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
@@ -1032,7 +1006,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canHidePassword() {
-
         GMTool gmtool = GMTool.newInstance()
 
         def command = ["ok", "nok", "--password=toto", "password=tutu", "--password=", "password="]
@@ -1153,13 +1126,15 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         GMTool gmtool = GMTool.newInstance()
 
         gmtool.genymotionConfig.verbose = false
-
         gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
-        assert gmtool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "--source=gradle", "version"]
+        def command = gmtool.formatAndLogCommand(["gmtool", "version"], false, false)
 
+        assert command == ["gmtool", "--source=gradle", "version"]
 
         gmtool.genymotionConfig.version = "2.4.5"
-        assert gmtool.formatAndLogCommand(["gmtool", "version"], false, false) == ["gmtool", "version"]
+        command = gmtool.formatAndLogCommand(["gmtool", "version"], false, false)
+
+        assert command == ["gmtool", "version"]
     }
 
     @Test(expected = GMToolException)
@@ -1271,12 +1246,11 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int width = 800
         int height = 1280
         boolean virtualKeyboard = true
-        boolean navbarVisible = false
-        int nbcpu = 2
+        boolean isNavBarVisible = false
+        int nbCpu = 2
         int ram = 512
-        NetworkInfo networkInfo = new NetworkInfo("nat", "")
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo();
 
-        return [deviceName, density, width, height, virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo]
+        return [deviceName, density, width, height, virtualKeyboard, isNavBarVisible, nbCpu, ram, networkInfo]
     }
-
 }
