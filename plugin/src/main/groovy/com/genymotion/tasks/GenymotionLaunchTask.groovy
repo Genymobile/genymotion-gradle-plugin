@@ -27,12 +27,10 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 class GenymotionLaunchTask extends DefaultTask {
-
     String flavor
 
     @TaskAction
     def exec() {
-
         if (project.genymotion.config.verbose) {
             Log.info("Starting devices")
         }

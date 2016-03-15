@@ -35,9 +35,11 @@ class GMTool {
     GenymotionConfig genymotionConfig = null
 
     static final String GENYMOTION_PATH_ERROR_MESSAGE =
-            "gmtool command not found. You have to specify the Genymotion path with the genymotion.config.genymotionPath parameter."
+            "gmtool command not found. You have to specify the Genymotion path with the " +
+                    "genymotion.config.genymotionPath parameter."
     static final String GENYMOTION_VERSION_ERROR_MESSAGE =
-            "Current gmtool version is not compatible with %s. Please update Genymotion following this link: $GENYMOTION_DOWNLOAD_URL"
+            "Current gmtool version is not compatible with %s. Please update Genymotion " +
+                    "following this link: $GENYMOTION_DOWNLOAD_URL"
     static final String GENYMOTION_DOWNLOAD_URL = "https://www.genymotion.com/#!/download"
 
     static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG) {
@@ -86,7 +88,6 @@ class GMTool {
     }
 
     def logzip(String path = "", String vdName = "") {
-
         def command = [GMTOOL, LOGZIP]
 
         if (vdName?.trim()) {
@@ -105,7 +106,6 @@ class GMTool {
     }
 
     def getConfig(GenymotionConfig config, boolean verbose = false) {
-
         if (config == null) {
             config = new GenymotionConfig()
         }
@@ -273,7 +273,6 @@ class GMTool {
      */
 
     def getAllDevices(boolean verbose = false, boolean fill = true, boolean nameOnly = false) {
-
         def devices = []
 
         cmd([GMTOOL, ADMIN, LIST], verbose) { line, count ->
@@ -293,7 +292,6 @@ class GMTool {
     }
 
     def getRunningDevices(boolean verbose = false, boolean fill = true, boolean nameOnly = false) {
-
         def devices = []
 
         cmd([GMTOOL, ADMIN, LIST, OPT_RUNNING], verbose) { line, count ->
@@ -313,7 +311,6 @@ class GMTool {
     }
 
     def getStoppedDevices(boolean verbose = false, boolean fill = true, boolean nameOnly = false) {
-
         def devices = []
 
         cmd([GMTOOL, ADMIN, LIST, OPT_OFF], verbose) { line, count ->
@@ -342,7 +339,6 @@ class GMTool {
     }
 
     private def parseListLine(int count, String line, boolean nameOnly) {
-
         //we skip the first 2 lines
         if (count < 2) {
             return
@@ -364,7 +360,6 @@ class GMTool {
     }
 
     boolean isDeviceCreated(String name, boolean verbose = false) {
-
         if (!name?.trim()) {
             return false
         }
@@ -382,7 +377,6 @@ class GMTool {
     }
 
     def getTemplatesNames(boolean verbose = false) {
-
         def templates = []
 
         def template = null
@@ -419,7 +413,6 @@ class GMTool {
     }
 
     def getTemplates(boolean verbose = false) {
-
         def templates = []
 
         def template = new GenymotionTemplate()
@@ -498,7 +491,6 @@ class GMTool {
     }
 
     boolean templateExists(String template, boolean verbose = false) {
-
         if (!template?.trim()) {
             return false
         }
@@ -525,7 +517,8 @@ class GMTool {
         def exitValue = noNull() {
             cmd([GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
-                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkMode, OPT_BRIDGE_INTERFACE + bridgeInterface])
+                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkMode,
+                 OPT_BRIDGE_INTERFACE + bridgeInterface])
         }
 
         if (exitValue == RETURN_NO_ERROR) {
@@ -572,7 +565,6 @@ class GMTool {
     }
 
     def getDevice(String name, boolean verbose = false) {
-
         if (name == null) {
             return null
         }
@@ -582,13 +574,11 @@ class GMTool {
     }
 
     def getDevice(def device, boolean verbose = false) {
-
         if (device == null) {
             return null
         }
 
         cmd([GMTOOL, ADMIN, DETAILS, device.name], verbose) { line, count ->
-
             String[] info = line.split("\\:")
             switch (info[0].trim()) {
                 case "Name":
@@ -714,7 +704,6 @@ class GMTool {
     }
 
     def pushToDevice(def deviceName, def files, boolean verbose = false) {
-
         if (!files) {
             return false
         }
@@ -751,7 +740,6 @@ class GMTool {
     }
 
     def pullFromDevice(def deviceName, Map<String, String> files, boolean verbose = false) {
-
         if (!files) {
             return false
         }
@@ -774,7 +762,6 @@ class GMTool {
     }
 
     def installToDevice(def deviceName, def apks, boolean verbose = false) {
-
         if (!apks) {
             return false
         }
@@ -800,7 +787,6 @@ class GMTool {
     }
 
     def flashDevice(def deviceName, def zips, boolean verbose = false) {
-
         if (!zips) {
             return false
         }
@@ -883,7 +869,6 @@ class GMTool {
      * @param c the closure to implement after the call
      */
     def cmd(def command, boolean verbose = false, boolean addPath = true, Closure c) {
-
         if (genymotionConfig == null) {
             return
         }
@@ -1055,5 +1040,4 @@ class GMTool {
 
         return exit
     }
-
 }

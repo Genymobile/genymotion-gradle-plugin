@@ -90,14 +90,12 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canAddNoDevice() {
-
         project.genymotion.devices {}
         assert project.genymotion.devices.size() == 0
     }
 
     @Test
     public void throwsWhenAddDeviceWithoutNameAndTemplate() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -113,7 +111,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void throwsWhenAddDeviceWithNameNotCreated() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -133,7 +130,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void throwsWhenAddDeviceWithTemplateNotCreated() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -155,7 +151,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void throwsWhenAddDeviceWithNameAndTemplateNotCreated() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -178,7 +173,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canAddDeviceToLaunchByName() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -195,7 +189,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplate() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -216,7 +209,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -240,7 +232,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canAddDeviceToLaunchByTemplateWithNameNotCreated() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -266,7 +257,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canAvoidDeviceToBeLaunched() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -288,7 +278,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canEditDeviceBeforeLaunch() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -333,10 +322,8 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         verify(gmtool).editDevice(device)
     }
 
-
     @Test
     public void canLogcat() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -361,7 +348,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canLogcatAndAvoidClearLogcatAfterBoot() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -389,7 +375,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canClearLogcatAfterBoot() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -465,10 +450,8 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         verify(gmtool, never()).deleteDevice(device)
     }
 
-
     @Test
     public void canInstallToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -489,7 +472,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canInstallListOfAppToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -508,10 +490,8 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         verify(gmtool).installToDevice(project.genymotion.devices[0], listOfApps)
     }
 
-
     @Test
     public void canPushBeforeToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -531,7 +511,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canPushAfterToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -557,7 +536,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canPushBeforeListToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -578,7 +556,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canPushAfterListToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -604,7 +581,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canPushBeforeToDeviceWithDest() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -625,7 +601,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canPushAfterToDeviceWithDest() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -765,7 +740,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canPullAfterListToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -790,10 +764,8 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         verify(gmtool).pullFromDevice(device, listOfFiles)
     }
 
-
     @Test
     public void canFlashDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -813,7 +785,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void canFlashListToDevice() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -831,7 +802,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         project.tasks.genymotionLaunch.exec()
         verify(gmtool).flashDevice(project.genymotion.devices[0], listOfFiles)
     }
-
 
     @Test
     public void canAvoidAbortForGenymotionPath() {
@@ -875,7 +845,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
     @Test
     @Category(Android)
     public void canAvoidAbortForFlavorConfig() {
-
         (project, gmtool) = TestTools.getAndroidProject()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -899,7 +868,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void warnWhenUsingConfigStoreCredentials() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -918,7 +886,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     @Test
     public void warnWhenUsingConfigStoreCredentialsWithVerbose() {
-
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
@@ -934,7 +901,6 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         ))))
 
     }
-
 
     @After
     public void finishTest() {
