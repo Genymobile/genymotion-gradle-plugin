@@ -20,6 +20,8 @@
 package com.genymotion.model
 
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.Log
+import sun.nio.ch.Net
 
 
 class GenymotionVirtualDevice {
@@ -48,7 +50,8 @@ class GenymotionVirtualDevice {
 
     GenymotionVirtualDevice(String name, boolean fill = false) {
         this.name = name;
-        gmtool = GMTool.newInstance()
+        this.gmtool = GMTool.newInstance()
+        this.networkInfo = NetworkInfo.createNatNetworkInfo()
 
         if (fill) {
             fillFromDetails()
@@ -61,7 +64,7 @@ class GenymotionVirtualDevice {
     }
 
     void init(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram,
-                def networkMode) {
+                def networkingInfo) {
         if (name?.trim()) {
             this.name = name
         }
@@ -86,8 +89,10 @@ class GenymotionVirtualDevice {
         if (ram) {
             this.ram = ram.toInteger()
         }
-        if (networkMode != null) {
-            this.networkInfo = networkMode
+        if (networkingInfo != null) {
+            this.networkInfo = networkingInfo
+        } else {
+            this.networkInfo = NetworkInfo.createNatNetworkInfo()
         }
     }
 
@@ -131,7 +136,6 @@ class GenymotionVirtualDevice {
     String toString() {
         "Device: $name\n"
     }
-
 
     boolean equals(GenymotionVirtualDevice other) {
         (this.name == other.name)

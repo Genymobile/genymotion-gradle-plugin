@@ -19,12 +19,14 @@
 
 package com.genymotion.model
 
+import com.genymotion.tools.Log
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class VDLaunchDsl extends GenymotionVDLaunch {
 
     List<String> productFlavors
+    List<String> networkingMode
 
     VDLaunchDsl(String name) {
         super(name)
@@ -66,7 +68,6 @@ class VDLaunchDsl extends GenymotionVDLaunch {
         productFlavors.addAll(flavors)
     }
 
-
     public void productFlavors(String flavor) {
         setProductFlavors(flavor)
     }
@@ -79,4 +80,53 @@ class VDLaunchDsl extends GenymotionVDLaunch {
         setProductFlavors(flavors)
     }
 
+    public void setNetworkingMode(String... networkingMode) {
+        if (networkingMode == null) {
+            networkInfo = NetworkInfo.createNatNetworkInfo()
+        }
+
+        if (NetworkInfo.isValid(networkingMode[0])) {
+            networkInfo = new NetworkInfo(networkingMode[0], networkingMode[1])
+        } else {
+            networkInfo = NetworkInfo.createNatNetworkInfo()
+        }
+    }
+
+    public void setNetworkingMode(String networkingMode) {
+        if (networkingMode == null) {
+            networkInfo = NetworkInfo.createNatNetworkInfo()
+            return
+        }
+
+        if (NetworkInfo.isValid(networkingMode)) {
+            networkInfo = new NetworkInfo(networkingMode, "")
+        } else {
+            networkInfo = NetworkInfo.createNatNetworkInfo()
+        }
+    }
+
+    public void setNetworkingMode(Collection<String> networkingMode) {
+        if (networkingMode == null) {
+            networkInfo = NetworkInfo.createNatNetworkInfo()
+            return
+        }
+
+        if (NetworkInfo.isValid(networkingMode.getAt(0))) {
+            networkInfo = new NetworkInfo(networkingMode.getAt(0), networkingMode.getAt(1))
+        } else {
+            networkInfo = NetworkInfo.createNatNetworkInfo()
+        }
+    }
+
+    public void networkingMode(String networkingMode) {
+        setNetworkingMode(networkingMode)
+    }
+
+    public void networkingMode(String... networkingMode) {
+        setNetworkingMode(networkingMode)
+    }
+
+    public void networkingMode(Collection<String> networkingMode) {
+        setNetworkingMode(networkingMode)
+    }
 }

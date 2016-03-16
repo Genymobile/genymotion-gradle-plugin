@@ -533,11 +533,12 @@ class GMTool {
 
     def editDevice(GenymotionVirtualDevice device) {
         return editDevice(device.name, device.density, device.width, device.height, device.virtualKeyboard,
-                device.navbarVisible, device.nbCpu, device.ram, device.networkInfo.mode, device.networkInfo.bridgeInterface)
+                device.navbarVisible, device.nbCpu, device.ram, device.networkInfo.mode,
+                device.networkInfo.bridgeInterface)
     }
 
     def editDevice(def deviceName, def density = "", def width = "", def height = "", def virtualKeyboard = "",
-                   def navbarVisible = "", def nbcpu = "", def ram = "", def networkMode = "nat",
+                   def navbarVisible = "", def nbcpu = "", def ram = "", def networkMode = "",
                    def bridgeInterface = "") {
 
         return noNull() {
@@ -630,14 +631,7 @@ class GMTool {
                     device.ip = info[1].trim()
                     break
                 case "Networking mode":
-                    String[] networkInfo = info[1].split(" ")
-                    device.networkMode = networkInfo[0].trim()
-
-                    if (networkInfo.size() == 2) {
-                        device.bridgeInterface = networkInfo[1].trim()
-                    } else {
-                        device.bridgeInterface = ""
-                    }
+                    device.networkInfo = NetworkInfo.fromGMtoolDeviceDetails(info[1].trim())
             }
         }
         device
