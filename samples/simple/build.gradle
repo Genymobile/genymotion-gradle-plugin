@@ -39,13 +39,19 @@ genymotion.config{
 //    abortOnError = false      //abort the task execution if a GMTool error occurs
 }
 
-
 genymotion {
     devices {
         nexus5 {
             template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+            density "ldpi"                                                   //change screen density
+            width 600                                                        //change screen with
+            height 800                                                       //change screen height
+            virtualKeyboard true                                             //display physical button or not
+            navbarVisible true                                               //display navbar or not
+            nbCpu 4                                                          //set number of CPUs
+            ram 1024
         }
-//        "my nexus 10" {
+//      "my nexus 10" {
 //            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
 //            productFlavors "flavor1"
 //        }
@@ -71,6 +77,7 @@ genymotion {
 //            navbarVisible true                                               //display navbar or not
 //            nbCpu 4                                                          //set number of CPUs
 //            ram 1024                                                         //set amount of RAM
+//            networkingMode "bridge", "eht0"                                  //set network configuration
 //        }
     }
 }
