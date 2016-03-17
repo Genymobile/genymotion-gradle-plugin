@@ -84,7 +84,7 @@ class VDLaunchDsl extends GenymotionVDLaunch {
             networkInfo = NetworkInfo.createNatNetworkInfo()
         }
 
-        if (NetworkInfo.isValid(networkingMode[0])) {
+        if (NetworkInfo.isNetworkModeValid(networkingMode[0])) {
             networkInfo = new NetworkInfo(networkingMode[0], networkingMode[1])
         } else {
             networkInfo = NetworkInfo.createNatNetworkInfo()
@@ -97,7 +97,7 @@ class VDLaunchDsl extends GenymotionVDLaunch {
             return
         }
 
-        if (NetworkInfo.isValid(networkingMode)) {
+        if (NetworkInfo.isNetworkModeValid(networkingMode)) {
             networkInfo = new NetworkInfo(networkingMode, "")
         } else {
             networkInfo = NetworkInfo.createNatNetworkInfo()
@@ -110,7 +110,7 @@ class VDLaunchDsl extends GenymotionVDLaunch {
             return
         }
 
-        if (NetworkInfo.isValid(networkingMode.getAt(0))) {
+        if (NetworkInfo.isNetworkModeValid(networkingMode.getAt(0))) {
             networkInfo = new NetworkInfo(networkingMode.getAt(0), networkingMode.getAt(1))
         } else {
             networkInfo = NetworkInfo.createNatNetworkInfo()

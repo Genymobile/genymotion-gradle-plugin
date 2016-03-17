@@ -24,7 +24,7 @@ class NetworkInfo {
         return new NetworkInfo(BRIDGE_MODE, networkInterface);
     }
 
-    static boolean isValid(String mode) {
+    static boolean isNetworkModeValid(String mode) {
         return mode == NAT_MODE || mode == BRIDGE_MODE
     }
 

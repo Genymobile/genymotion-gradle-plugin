@@ -1048,7 +1048,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test(expected = TimeoutException)
     public void throwWhenProcessIsTooLongOnUnix() {
-
         GMTool gmtool = GMTool.newInstance()
 
         if (Tools.getOSName().toLowerCase().contains("windows")) {
@@ -1062,7 +1061,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test(expected = GMToolException)
     public void throwWhenProcessIsTooLongOnWindows() {
-
         GMTool gmtool = GMTool.newInstance()
 
         if (!Tools.getOSName().toLowerCase().contains("windows")) {
@@ -1077,7 +1075,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnUnix() {
-
         GMTool gmtool = GMTool.newInstance()
 
         if (Tools.getOSName().toLowerCase().contains("windows")) {
@@ -1091,7 +1088,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void doNotThrowWhenProcessIsTooLongOnWindows() {
-
         GMTool gmtool = GMTool.newInstance()
 
         if (!Tools.getOSName().toLowerCase().contains("windows")) {
@@ -1113,7 +1109,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canFormatCommand() {
-
         GMTool gmtool = GMTool.newInstance()
 
         def command = [GMTOOL, "nok"]
@@ -1133,7 +1128,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetVersion() {
-
         GMTool gmtoolSpy = initSpyAndOutput(versionOutput)
 
         assert gmtoolSpy.getVersion() == "2.4.5"
@@ -1143,7 +1137,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canCheckCompatibility() {
-
         GMTool gmtool = GMTool.newInstance()
 
         gmtool.genymotionConfig.version = "2.4.5"
@@ -1155,7 +1148,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canCheckSourceCompatibility() {
-
         GMTool gmtool = GMTool.newInstance()
 
         gmtool.genymotionConfig.verbose = false
@@ -1172,7 +1164,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerCompatibility() {
-
         GMTool gmtoolSpy = initSpyAndOutput()
 
         GenymotionConfig config = new GenymotionConfig()
@@ -1187,7 +1178,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerAddressCompatibility() {
-
         GMTool gmtoolSpy = initSpyAndOutput()
 
         GenymotionConfig config = new GenymotionConfig()
@@ -1227,7 +1217,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     private def testGMTool(Map inputs /*String output, String method, ArrayList<String> expectedCommand*/) {
-
         GMTool gmtoolSpy = initSpyAndOutput(inputs.output)
 
         String deviceName = "myDevice"
@@ -1240,7 +1229,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     private def testGMToolByName(Map inputs /*String output, String method, ArrayList<String> expectedCommand*/) {
-
         GMTool gmtoolSpy = initSpyAndOutput(inputs.output)
 
         String deviceName = "myDevice"
@@ -1252,18 +1240,15 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     private initSpyAndOutput(String output="") {
-
         GMTool gmtool = GMTool.newInstance()
         GMTool gmtoolSpy = spy(gmtool)
 
-        //script the gmtoolSpy
         doReturn([new StringBuffer().append(output), null, 0]).when(gmtoolSpy).executeCommand(anyList())
 
         return gmtoolSpy
     }
 
     private verifyTest(def result, Map inputs, String deviceName, GMTool gmtoolSpy) {
-
         //if the result is an int, we check it as an exit code
         if(result instanceof Integer) {
             assert result == 0
