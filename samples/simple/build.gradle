@@ -49,7 +49,7 @@ genymotion {
             virtualKeyboard true                                             //display physical button or not
             navbarVisible true                                               //display navbar or not
             nbCpu 4                                                          //set number of CPUs
-            ram 1024
+            ram 1024                                                         //set amount of ram
         }
 //      "my nexus 10" {
 //            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"

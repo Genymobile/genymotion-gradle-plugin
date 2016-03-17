@@ -19,7 +19,6 @@
 
 package com.genymotion.model
 
-import com.genymotion.tools.Log
 import groovy.transform.CompileStatic
 
 @CompileStatic
