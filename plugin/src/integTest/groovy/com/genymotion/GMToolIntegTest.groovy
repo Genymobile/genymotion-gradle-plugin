@@ -20,6 +20,7 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.NetworkInfo
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.junit.After
@@ -136,7 +137,6 @@ class GMToolIntegTest {
 
     @Test
     public void canCloneDevice() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
@@ -154,6 +154,8 @@ class GMToolIntegTest {
         assert device.width == newDevice.width
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
+        assert device.networkInfo.mode.equals(newDevice.networkInfo.mode)
+        assert device.networkInfo.bridgeInterface.equals(newDevice.networkInfo.bridgeInterface)
 
         gmtool.deleteDevice(name)
         gmtool.deleteDevice(newName)
@@ -161,7 +163,6 @@ class GMToolIntegTest {
 
     @Test
     public void canEditDevice() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
@@ -175,6 +176,7 @@ class GMToolIntegTest {
         device.virtualKeyboard = false
         device.nbCpu = 2
         device.ram = 2048
+        device.networkInfo = NetworkInfo.createBridgeNetworkInfo("eth0")
 
         gmtool.editDevice(device)
 
@@ -188,13 +190,14 @@ class GMToolIntegTest {
         assert device.width == newDevice.width
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
+        assert device.networkInfo.mode.equals(NetworkInfo.BRIDGE_MODE)
+        assert device.networkInfo.bridgeInterface.equals("eth0")
 
         gmtool.deleteDevice(name)
     }
 
     @Test
     public void canStartDevice() {
-
         String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name)

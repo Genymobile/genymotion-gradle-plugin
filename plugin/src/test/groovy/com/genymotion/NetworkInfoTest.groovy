@@ -16,10 +16,10 @@ class NetworkInfoTest {
 
     @Test
     public void givenBridgeNetworkingDetailsThenAProperNetworkInfoIsCreated() {
-        String natNetworkDetails = "Bridged eth0"
+        String bridgeNetworkDetails = "Bridged eth0"
         String expectedInterface = "eth0"
 
-        NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(natNetworkDetails)
+        NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(bridgeNetworkDetails)
 
         assert networkInfo.mode.equals(NetworkInfo.BRIDGE_MODE)
         assert networkInfo.bridgeInterface.equals(expectedInterface)
@@ -27,11 +27,20 @@ class NetworkInfoTest {
 
     @Test
     public void givenNetworkDetailsWithWindowsStyleInterfaceThenAProperNetworkInfoIsCreated() {
-        String natNetworkDetails = "Bridged my network interface"
+        String bridgeNetworkDetails = "Bridged my network interface"
 
-        NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(natNetworkDetails)
+        NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(bridgeNetworkDetails)
 
         assert networkInfo.mode.equals(NetworkInfo.BRIDGE_MODE)
         assert networkInfo.bridgeInterface.equals("my network interface")
+    }
+
+    @Test
+    public void givenNetworkDetailsWithNoValidNetworkModeThenFallbackToNatNetworkInfo() {
+        String wrongNetworkDetails = "random stuff in there"
+
+        NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(wrongNetworkDetails)
+
+        assert networkInfo.mode.equals(NetworkInfo.NAT_MODE)
     }
 }
