@@ -1,6 +1,7 @@
 package com.genymotion
 
 import com.genymotion.model.NetworkInfo
+import com.genymotion.tools.GMToolDsl
 import org.junit.Test
 
 class NetworkInfoTest {
@@ -10,7 +11,7 @@ class NetworkInfoTest {
 
         NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(natNetworkDetails)
 
-        assert networkInfo.mode.equals(NetworkInfo.NAT_MODE)
+        assert networkInfo.mode.equals(GMToolDsl.NAT_MODE)
         assert networkInfo.bridgeInterface.equals("")
     }
 
@@ -21,7 +22,7 @@ class NetworkInfoTest {
 
         NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(bridgeNetworkDetails)
 
-        assert networkInfo.mode.equals(NetworkInfo.BRIDGE_MODE)
+        assert networkInfo.mode.equals(GMToolDsl.BRIDGE_MODE)
         assert networkInfo.bridgeInterface.equals(expectedInterface)
     }
 
@@ -31,7 +32,7 @@ class NetworkInfoTest {
 
         NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(bridgeNetworkDetails)
 
-        assert networkInfo.mode.equals(NetworkInfo.BRIDGE_MODE)
+        assert networkInfo.mode.equals(GMToolDsl.BRIDGE_MODE)
         assert networkInfo.bridgeInterface.equals("my network interface")
     }
 
@@ -41,6 +42,6 @@ class NetworkInfoTest {
 
         NetworkInfo networkInfo = NetworkInfo.fromGMtoolDeviceDetails(wrongNetworkDetails)
 
-        assert networkInfo.mode.equals(NetworkInfo.NAT_MODE)
+        assert networkInfo.mode.equals(GMToolDsl.NAT_MODE)
     }
 }

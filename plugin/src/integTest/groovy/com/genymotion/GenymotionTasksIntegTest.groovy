@@ -31,7 +31,6 @@ import org.junit.Test
 import static org.junit.Assert.fail
 
 class GenymotionTasksIntegTest {
-
     Project project
     GMTool gmtool
 
@@ -46,11 +45,10 @@ class GenymotionTasksIntegTest {
         (project, gmtool) = IntegrationTestTools.init()
     }
 
-
     @Test
     public void canLaunch() {
-
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram,
+            boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -90,7 +88,6 @@ class GenymotionTasksIntegTest {
 
     @Test
     public void throwsWhenCommandError() {
-
         String deviceToStop = IntegrationTestTools.getRandomName()
         String deviceToDelete = IntegrationTestTools.getRandomName()
         String deviceToThrowError = IntegrationTestTools.getRandomName()
@@ -133,10 +130,8 @@ class GenymotionTasksIntegTest {
         }
     }
 
-
     @Test
     public void canLoginAndRegister() {
-
         //ENTER HERE the path to a properties file containing good credential (username, password & license)
         String path = "src/integTest/res/test/default.properties"
 
@@ -153,7 +148,6 @@ class GenymotionTasksIntegTest {
 
         //TODO test license registration
     }
-
 
     @After
     public void finishTest() {

@@ -25,9 +25,8 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
 class IntegrationTestTools {
-
-    public static
-    final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+    public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas",
+                                                 "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
     public static String TEMP_PATH = "temp" + File.separator
     public static String PULLED_PATH = TEMP_PATH + "pulled" + File.separator
@@ -75,7 +74,6 @@ class IntegrationTestTools {
     }
 
     static String createADevice(GMTool gmtool) {
-
         Random rand = new Random()
         int index = rand.nextInt(DEVICES.size())
 
@@ -83,7 +81,7 @@ class IntegrationTestTools {
         String name = keys[index]
         gmtool.createDevice(DEVICES[name], name)
 
-        name
+        return name
     }
 
     static def declareADetailedDevice(Project project, boolean stop = true) {
@@ -109,12 +107,11 @@ class IntegrationTestTools {
                 stopWhenFinish stop
             }
         }
-        [vdName, densityName, widthInt, heightInt, nbCpuInt, ramInt, delete]
+
+        return [vdName, densityName, widthInt, heightInt, nbCpuInt, ramInt, delete]
     }
 
-
     static void cleanAfterTests(GMTool gmtool) {
-
         println "Cleaning after tests"
 
         gmtool.getConfig(true)
@@ -160,10 +157,11 @@ class IntegrationTestTools {
             return config
         }
 
-        throw new FileNotFoundException("No default.properties file found, add one or supply needed properties via commandline arguments")
+        def error = "No default.properties file found, add one or supply needed properties via commandline arguments"
+        throw new FileNotFoundException(error)
     }
 
-    static setDefaultUser(registerLicense = false, GMTool gmtool) {
+    static void setDefaultUser(registerLicense = false, GMTool gmtool) {
         gmtool.resetConfig()
         GenymotionConfig config = getDefaultConfig()
         config.version = gmtool.getVersion()
@@ -190,14 +188,16 @@ class IntegrationTestTools {
             name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
         }
         if (extension) {
-            name += extension
+            return name += extension
         }
-        name
+
+        return name
     }
 
     static Project getAndroidProject() {
-
-        Project project = ProjectBuilder.builder().withProjectDir(new File("src/integTest/res/test/android-app")).build();
+        Project project = ProjectBuilder.builder()
+                                        .withProjectDir(new File("src/integTest/res/test/android-app"))
+                                        .build();
 
         project.apply plugin: 'com.android.application'
         project.apply plugin: 'genymotion'

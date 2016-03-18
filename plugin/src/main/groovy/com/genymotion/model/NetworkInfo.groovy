@@ -1,9 +1,8 @@
 package com.genymotion.model
 
-class NetworkInfo {
-    public static final String NAT_MODE = "nat"
-    public static final String BRIDGE_MODE = "bridge"
+import com.genymotion.tools.GMToolDsl
 
+class NetworkInfo {
     private static final String EMPTY_INTERFACE = ""
     private static final String NETWORK_DETAILS_SEPARATOR = " "
     private static final String NETWORK_DETAILS_BRIDGE = "Bridged"
@@ -17,15 +16,15 @@ class NetworkInfo {
     }
 
     static NetworkInfo createNatNetworkInfo() {
-        return new NetworkInfo(NAT_MODE, EMPTY_INTERFACE);
+        return new NetworkInfo(GMToolDsl.NAT_MODE, EMPTY_INTERFACE);
     }
 
     static NetworkInfo createBridgeNetworkInfo(String networkInterface) {
-        return new NetworkInfo(BRIDGE_MODE, networkInterface);
+        return new NetworkInfo(GMToolDsl.BRIDGE_MODE, networkInterface);
     }
 
     static boolean isNetworkModeValid(String mode) {
-        return mode == NAT_MODE || mode == BRIDGE_MODE
+        return mode == GMToolDsl.NAT_MODE || mode == GMToolDsl.BRIDGE_MODE
     }
 
     static NetworkInfo fromGMtoolDeviceDetails(String deviceNetworkDetails) {
@@ -44,9 +43,9 @@ class NetworkInfo {
 
     private static String getNetworkModeFromDetails(String details) {
         if (details.equals(NETWORK_DETAILS_BRIDGE)) {
-            return BRIDGE_MODE
+            return GMToolDsl.BRIDGE_MODE
         } else {
-            return NAT_MODE
+            return GMToolDsl.NAT_MODE
         }
     }
 }

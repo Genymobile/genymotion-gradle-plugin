@@ -100,6 +100,12 @@ class GMToolDsl {
     public static final String OPTION_ON                = "on"
     public static final String OPTION_OFF               = "off"
 
+    /**
+     * valid input for --network-mode
+     */
+    public static final String NAT_MODE                 = "nat"
+    public static final String BRIDGE_MODE              = "bridge"
+
     //Minimum gmtool version for each feature after first release
     /**
     * Adding --source to gmtool commands

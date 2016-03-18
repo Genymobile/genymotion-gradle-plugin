@@ -22,6 +22,7 @@ package com.genymotion
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.model.NetworkInfo
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.GMToolDsl
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
@@ -190,7 +191,7 @@ class GMToolIntegTest {
         assert device.width == newDevice.width
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
-        assert device.networkInfo.mode.equals(NetworkInfo.BRIDGE_MODE)
+        assert device.networkInfo.mode.equals(GMToolDsl.BRIDGE_MODE)
         assert device.networkInfo.bridgeInterface.equals("eth0")
 
         gmtool.deleteDevice(name)
