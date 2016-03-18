@@ -630,7 +630,7 @@ class GMTool {
                 case "IP":
                     device.ip = info[1].trim()
                     break
-                case "Networking mode":
+                case "Network mode":
                     device.networkInfo = NetworkInfo.fromGMtoolDeviceDetails(info[1].trim())
             }
         }
