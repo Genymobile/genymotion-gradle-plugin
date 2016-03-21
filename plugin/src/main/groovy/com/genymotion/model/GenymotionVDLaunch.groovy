@@ -26,7 +26,6 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class GenymotionVDLaunch extends GenymotionVirtualDevice {
-
     public static final String INVALID_PARAMETER = "You need to specify an already created device name " +
             "or a valid template to declare a device"
 
@@ -60,7 +59,8 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
         def file
 
         if ((file = Tools.checkFilesExist(pushBefore)) != true) {
-            handlePathError("The file $file on pushBefore instruction for the device $name was not found.", abortOnError)
+            handlePathError("The file $file on pushBefore instruction for the device $name was not found.",
+                    abortOnError)
         }
 
         if ((file = Tools.checkFilesExist(pushAfter)) != true) {
@@ -103,7 +103,6 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
         }
     }
 
-
     boolean checkAndEdit() {
         if (!gmtool.isDeviceCreated(this.name)) {
             return false
@@ -118,15 +117,17 @@ class GenymotionVDLaunch extends GenymotionVirtualDevice {
         return false
     }
 
+    //TODO: this could go into GenymotionVirtualDevice (override equals())
     public boolean isDifferentFrom(GenymotionVirtualDevice device) {
-
         return this.density != device.density ||
                 this.width != device.width ||
                 this.height != device.height ||
                 this.virtualKeyboard != device.virtualKeyboard ||
                 this.navbarVisible != device.navbarVisible ||
                 this.nbCpu != device.nbCpu ||
-                this.ram != device.ram
+                this.ram != device.ram ||
+                this.networkInfo.mode != device.networkInfo.mode ||
+                this.networkInfo.bridgeInterface != device.networkInfo.bridgeInterface
     }
 
     protected def start() {

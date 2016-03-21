@@ -20,10 +20,11 @@
 package com.genymotion.model
 
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.Log
+import sun.nio.ch.Net
 
 
 class GenymotionVirtualDevice {
-
     static final String STATE_ON = "On"
     static final String STATE_OFF = "Off"
 
@@ -43,12 +44,14 @@ class GenymotionVirtualDevice {
     String path
     String state
     String ip
+    NetworkInfo networkInfo
 
     protected GMTool gmtool
 
     GenymotionVirtualDevice(String name, boolean fill = false) {
         this.name = name;
-        gmtool = GMTool.newInstance()
+        this.gmtool = GMTool.newInstance()
+        this.networkInfo = NetworkInfo.createNatNetworkInfo()
 
         if (fill) {
             fillFromDetails()
@@ -56,12 +59,12 @@ class GenymotionVirtualDevice {
     }
 
     GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible,
-                            def nbCpu, def ram) {
-        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram)
+                            def nbCpu, def ram, def networkInfo) {
+        init(name, density, width, height, virtualKeyboard, navbarVisible, nbCpu, ram, networkInfo)
     }
 
-    void init(
-            def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram) {
+    void init(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible, def nbCpu, def ram,
+                def networkingInfo) {
         if (name?.trim()) {
             this.name = name
         }
@@ -86,10 +89,15 @@ class GenymotionVirtualDevice {
         if (ram) {
             this.ram = ram.toInteger()
         }
+        if (networkingInfo != null) {
+            this.networkInfo = networkingInfo
+        } else {
+            this.networkInfo = NetworkInfo.createNatNetworkInfo()
+        }
     }
 
-
-    GenymotionVirtualDevice(String name, int dpi, int width, int height, boolean virtualKeyboard, boolean navbarVisible, int nbCpu, int ram) {
+    GenymotionVirtualDevice(String name, int dpi, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+                            int nbCpu, int ram, NetworkInfo networkInfo) {
         this.name = name
         this.dpi = dpi
         this.width = width
@@ -98,6 +106,7 @@ class GenymotionVirtualDevice {
         this.navbarVisible = navbarVisible
         this.nbCpu = nbCpu
         this.ram = ram
+        this.networkInfo = networkInfo
     }
 
     protected def start() {
@@ -127,7 +136,6 @@ class GenymotionVirtualDevice {
     String toString() {
         "Device: $name\n"
     }
-
 
     boolean equals(GenymotionVirtualDevice other) {
         (this.name == other.name)
