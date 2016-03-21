@@ -25,7 +25,6 @@ import groovy.transform.CompileStatic
 class VDLaunchDsl extends GenymotionVDLaunch {
 
     List<String> productFlavors
-    List<String> networkingMode
 
     VDLaunchDsl(String name) {
         super(name)
@@ -79,7 +78,7 @@ class VDLaunchDsl extends GenymotionVDLaunch {
         setProductFlavors(flavors)
     }
 
-    public void setNetworkingMode(String... networkingMode) {
+    public void setNetworkMode(String... networkingMode) {
         if (networkingMode == null) {
             networkInfo = NetworkInfo.createNatNetworkInfo()
         }
@@ -91,7 +90,7 @@ class VDLaunchDsl extends GenymotionVDLaunch {
         }
     }
 
-    public void setNetworkingMode(String networkingMode) {
+    public void setNetworkMode(String networkingMode) {
         if (networkingMode == null) {
             networkInfo = NetworkInfo.createNatNetworkInfo()
             return
@@ -104,28 +103,11 @@ class VDLaunchDsl extends GenymotionVDLaunch {
         }
     }
 
-    public void setNetworkingMode(Collection<String> networkingMode) {
-        if (networkingMode == null) {
-            networkInfo = NetworkInfo.createNatNetworkInfo()
-            return
-        }
-
-        if (NetworkInfo.isNetworkModeValid(networkingMode.getAt(0))) {
-            networkInfo = new NetworkInfo(networkingMode.getAt(0), networkingMode.getAt(1))
-        } else {
-            networkInfo = NetworkInfo.createNatNetworkInfo()
-        }
+    public void networkMode(String networkingMode) {
+        setNetworkMode(networkingMode)
     }
 
-    public void networkingMode(String networkingMode) {
-        setNetworkingMode(networkingMode)
-    }
-
-    public void networkingMode(String... networkingMode) {
-        setNetworkingMode(networkingMode)
-    }
-
-    public void networkingMode(Collection<String> networkingMode) {
-        setNetworkingMode(networkingMode)
+    public void networkMode(String... networkingMode) {
+        setNetworkMode(networkingMode)
     }
 }
