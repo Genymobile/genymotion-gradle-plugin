@@ -17,18 +17,20 @@ if platform.system() == "Windows":
 else:
     GRADLEW = 'gradlew'
 
+GRADLE_PATH = path.join(PROJECT_DIR, GRADLEW)
+
 def main():
     gradle_versions = sorted(ANDROID_TO_GRADLE.keys()) # we want to finish with 2.2
     try:
         for gradle_version in gradle_versions:
             # Set the current project to the good Gradle version
-            cmd = [PROJECT_DIR + path.sep + GRADLEW, 'wrapper', '--gradle-version', gradle_version]
+            cmd = [GRADLE_PATH, 'wrapper', '--gradle-version', gradle_version]
             print(cmd)
             check_call(cmd)
 
             for android_version in ANDROID_TO_GRADLE[gradle_version]:
                 # Launch the Genymotion Gradle plugin tests using the current Android Gradle plugin version
-                cmd = [PROJECT_DIR + path.sep + GRADLEW, ':plugin:test', '--stacktrace', '-PincludeCat=com.genymotion.Android',
+                cmd = [GRADLE_PATH, ':plugin:test', '--stacktrace', '-PincludeCat=com.genymotion.Android',
                        '-PandroidPluginVersion=' + android_version]
                 print(cmd)
                 check_call(cmd)
