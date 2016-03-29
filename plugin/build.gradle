@@ -44,7 +44,7 @@ def loadPropertiesFromCommandLine() {
         properties.setProperty('genymotion.username', user)
         properties.setProperty('genymotion.password', password)
         properties.setProperty('genymotion.license', license)
-        properties.setProperty('genymotion.path', path)
+        properties.setProperty('genymotion.genymotionPath', path)
 
         def writer = new FileWriter(file('src/integTest/res/test/default.properties'))
         try {
