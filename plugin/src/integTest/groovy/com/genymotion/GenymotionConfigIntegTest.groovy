@@ -33,11 +33,12 @@ class GenymotionConfigIntegTest {
 
     Project project
     GMTool gmtool
+    GenymotionConfig config
 
     @Before
     public void init() {
         (project, gmtool) = IntegrationTestTools.init()
-        GenymotionConfig config = new GenymotionConfig()
+        config = new GenymotionConfig()
         config.fromFile = TEST_CONFIG_FILE
         config.applyConfigFromFile(project)
     }

@@ -82,7 +82,7 @@ class GenymotionTasksIntegTest {
 
         project.genymotion.devices {
             "$vdName" {
-                networkingMode "bridge"
+                networkMode "bridge"
             }
         }
 
