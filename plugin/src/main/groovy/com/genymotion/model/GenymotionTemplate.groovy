@@ -20,7 +20,6 @@
 package com.genymotion.model
 
 class GenymotionTemplate {
-
     String name
     String uuid
     String description
@@ -36,5 +35,4 @@ class GenymotionTemplate {
     boolean telephony = true
     boolean virtualKeyboard = true
     boolean navbarVisible = true
-
 }

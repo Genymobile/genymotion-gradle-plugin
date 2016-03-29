@@ -19,35 +19,30 @@
 
 package com.genymotion
 
-import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.NetworkInfo
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.GMToolException
-import com.genymotion.tools.Tools
+import com.genymotion.tools.GMToolDsl
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
-
-import java.util.concurrent.TimeoutException
 
 class GMToolIntegTest {
 
     Project project
     GMTool gmtool
 
-
     @BeforeClass
     public static void setUpClass() {
-        IntegTestTools.init()
+        IntegrationTestTools.init()
     }
 
     @Before
     public void setUp() {
-        (project, gmtool) = IntegTestTools.init()
-        IntegTestTools.setDefaultUser(true, gmtool)
+        (project, gmtool) = IntegrationTestTools.init()
+        IntegrationTestTools.setDefaultUser(true, gmtool)
     }
 
     @Test
@@ -55,7 +50,6 @@ class GMToolIntegTest {
         def exitCode = gmtool.usage()
         assert exitCode == com.genymotion.tools.GMToolDsl.RETURN_NO_ERROR
     }
-
 
     @Test
     public void isTemplatesAvailable() {
@@ -67,7 +61,7 @@ class GMToolIntegTest {
 
     @Test
     public void canGetRunningDevices() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         gmtool.startDevice(name)
         def devices = gmtool.getRunningDevices(true, false, true)
@@ -81,7 +75,7 @@ class GMToolIntegTest {
 
     @Test
     public void canGetStoppedDevices() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def runningDevices = gmtool.getRunningDevices(true, false, true)
         if (runningDevices.contains(name)) {
@@ -97,11 +91,11 @@ class GMToolIntegTest {
 
     @Test
     public void canCreateDevice() {
-        IntegTestTools.createAllDevices(gmtool)
+        IntegrationTestTools.createAllDevices(gmtool)
 
         def devices = gmtool.getAllDevices(true)
 
-        IntegTestTools.DEVICES.each() { key, value ->
+        IntegrationTestTools.DEVICES.each() { key, value ->
             boolean exists = false
             devices.each() {
                 if (it.name == key) {
@@ -112,13 +106,13 @@ class GMToolIntegTest {
             assert exists
 
         }
-        IntegTestTools.deleteAllDevices(gmtool)
+        IntegrationTestTools.deleteAllDevices(gmtool)
     }
 
     @Test
     public void canDetailDevice() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails(true)
@@ -133,19 +127,18 @@ class GMToolIntegTest {
     @Test
     public void canListDevices() {
 
-        IntegTestTools.createAllDevices(gmtool)
+        IntegrationTestTools.createAllDevices(gmtool)
 
         def devices = gmtool.getAllDevices()
         assert devices.size() > 0
 
 
-        IntegTestTools.deleteAllDevices(gmtool)
+        IntegrationTestTools.deleteAllDevices(gmtool)
     }
 
     @Test
     public void canCloneDevice() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -162,6 +155,8 @@ class GMToolIntegTest {
         assert device.width == newDevice.width
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
+        assert device.networkInfo.mode.equals(newDevice.networkInfo.mode)
+        assert device.networkInfo.bridgeInterface.equals(newDevice.networkInfo.bridgeInterface)
 
         gmtool.deleteDevice(name)
         gmtool.deleteDevice(newName)
@@ -169,8 +164,7 @@ class GMToolIntegTest {
 
     @Test
     public void canEditDevice() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
         device.fillFromDetails()
@@ -183,6 +177,7 @@ class GMToolIntegTest {
         device.virtualKeyboard = false
         device.nbCpu = 2
         device.ram = 2048
+        device.networkInfo = NetworkInfo.createBridgeNetworkInfo("eth0")
 
         gmtool.editDevice(device)
 
@@ -196,14 +191,15 @@ class GMToolIntegTest {
         assert device.width == newDevice.width
         assert device.navbarVisible == newDevice.navbarVisible
         assert device.virtualKeyboard == newDevice.virtualKeyboard
+        assert device.networkInfo.mode.equals(GMToolDsl.BRIDGE_MODE)
+        assert device.networkInfo.bridgeInterface.equals("eth0")
 
         gmtool.deleteDevice(name)
     }
 
     @Test
     public void canStartDevice() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name)
 
@@ -213,7 +209,7 @@ class GMToolIntegTest {
     @Test
     public void canStopDevice() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name)
 
@@ -232,14 +228,14 @@ class GMToolIntegTest {
 
     @Test
     public void canLogcatClear() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
         def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
         gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
-        String path = IntegTestTools.TEMP_PATH + "logcat.dump"
+        String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
         File file = new File(path)
         file.delete()
 
@@ -275,14 +271,14 @@ class GMToolIntegTest {
 
     @Test
     public void canLogcatDump() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
         def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
         gmtool.cmd(["tools/adb", "shell", "log $uniqueString"], true)
 
-        String path = IntegTestTools.TEMP_PATH + "logcat.dump"
+        String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
 
         exitCode = gmtool.logcatDump(name, path, true)
         assert exitCode == 0
@@ -305,12 +301,12 @@ class GMToolIntegTest {
     @Test
     public void canInstallToDevice() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
-        gmtool.installToDevice(name, "res/test/test.apk", true)
+        gmtool.installToDevice(name, "src/integTest/res/test/test.apk", true)
         boolean installed = false
         gmtool.cmd(["tools/adb", "shell", "pm list packages"], true) { line, count ->
             if (line.contains("com.genymotion.test")) {
@@ -323,12 +319,12 @@ class GMToolIntegTest {
     @Test
     public void canPushToDevice() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
-        gmtool.pushToDevice(name, "res/test/test.txt", true)
+        gmtool.pushToDevice(name, "src/integTest/res/test/test.txt", true)
         boolean pushed = false
         gmtool.cmd(["tools/adb", "shell", "ls /sdcard/Download/"], true) { line, count ->
             if (line.contains("test.txt")) {
@@ -336,19 +332,18 @@ class GMToolIntegTest {
             }
         }
         assert pushed
-
     }
 
     @Test
     public void canPushToDeviceWithDest() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         def destination = "/sdcard/"
-        gmtool.pushToDevice(name, ["res/test/test.txt": destination], true)
+        gmtool.pushToDevice(name, ["src/integTest/res/test/test.txt": destination], true)
         boolean pushed = false
         gmtool.cmd(["tools/adb", "shell", "ls", destination], true) { line, count ->
             if (line.contains("test.txt")) {
@@ -361,28 +356,28 @@ class GMToolIntegTest {
     @Test
     public void canPullFromDevice() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
         //removing the pulled files
-        IntegTestTools.recreatePulledDirectory()
+        IntegrationTestTools.recreatePulledDirectory()
 
-        gmtool.pullFromDevice(name, "/system/build.prop", IntegTestTools.PULLED_PATH, true)
-        File file = new File(IntegTestTools.PULLED_PATH + "build.prop")
+        gmtool.pullFromDevice(name, "/system/build.prop", IntegrationTestTools.PULLED_PATH, true)
+        File file = new File(IntegrationTestTools.PULLED_PATH + "build.prop")
         assert file.exists()
     }
 
     @Test
     public void canFlashDevice() {
 
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def exitCode = gmtool.startDevice(name, true)
         assert exitCode == 0
 
-        gmtool.flashDevice(name, "res/test/test.zip", true)
+        gmtool.flashDevice(name, "src/integTest/res/test/test.zip", true)
         boolean flashed = false
         gmtool.cmd(["tools/adb", "shell", "ls /system"], true) { line, count ->
             if (line.contains("touchdown")) {
@@ -390,12 +385,10 @@ class GMToolIntegTest {
             }
         }
         assert flashed
-
     }
 
     @After
     public void finishTest() {
-        IntegTestTools.cleanAfterTests(gmtool)
+        IntegrationTestTools.cleanAfterTests(gmtool)
     }
-
 }

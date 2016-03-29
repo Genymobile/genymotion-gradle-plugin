@@ -19,27 +19,13 @@
 
 package com.genymotion
 
-import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
-import com.genymotion.tasks.GenymotionFinishTask
-import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.GMToolException
 import com.genymotion.tools.Log
-import org.answerit.mock.slf4j.LoggingLevel
-import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
-import org.junit.experimental.categories.Category
-import org.slf4j.Logger
-
-import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
-import static org.hamcrest.CoreMatchers.allOf
-import static org.hamcrest.CoreMatchers.equalTo
-import static org.junit.Assert.assertThat
 
 class GenymotionGradlePluginIntegTest {
 
@@ -48,8 +34,8 @@ class GenymotionGradlePluginIntegTest {
 
     @Before
     public void setUp() {
-        (project, gmtool) = IntegTestTools.init()
-        IntegTestTools.setDefaultUser(true, gmtool)
+        (project, gmtool) = IntegrationTestTools.init()
+        IntegrationTestTools.setDefaultUser(true, gmtool)
     }
 
     @Test
@@ -59,8 +45,7 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canAddDeviceToLaunchByNameWithTemplateNotCreated() {
-
-        String vdName = IntegTestTools.createADevice(gmtool)
+        String vdName = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$vdName" {
@@ -75,7 +60,6 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canEditDeviceBeforeLaunch() {
-
         String vdName = "OKOK-junit"
         def devices = gmtool.getAllDevices(true, false, true)
         if (devices.contains(vdName)) {
@@ -117,9 +101,9 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canLogcat() {
-        String vdName = IntegTestTools.createADevice(gmtool)
+        String vdName = IntegrationTestTools.createADevice(gmtool)
 
-        String path = IntegTestTools.TEMP_PATH + vdName + ".logcat"
+        String path = IntegrationTestTools.TEMP_PATH + vdName + ".logcat"
 
         project.genymotion.devices {
             "$vdName" {
@@ -136,9 +120,9 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canLogcatAndAvoidLogcatClearAfterBoot() {
-        String vdName = IntegTestTools.createADevice(gmtool)
+        String vdName = IntegrationTestTools.createADevice(gmtool)
 
-        String path = IntegTestTools.TEMP_PATH + vdName + ".logcat"
+        String path = IntegrationTestTools.TEMP_PATH + vdName + ".logcat"
 
         project.genymotion.devices {
             "$vdName" {
@@ -183,7 +167,7 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canSetDeleteWhenFinish() {
-        String vdName = IntegTestTools.createADevice(gmtool)
+        String vdName = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$vdName" {
@@ -198,7 +182,7 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canAvoidDeleteWhenFinish() {
-        String vdName = IntegTestTools.createADevice(gmtool)
+        String vdName = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$vdName" {
@@ -214,12 +198,11 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canInstallToDevice() {
-
-        String vdName = IntegTestTools.createADevice(gmtool)
+        String vdName = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$vdName" {
-                install "res/test/test.apk"
+                install "src/integTest/res/test/test.apk"
             }
         }
         project.tasks.genymotionLaunch.exec()
@@ -235,12 +218,11 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushBeforeToDevice() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$name" {
-                pushBefore "res/test/test.txt"
+                pushBefore "src/integTest/res/test/test.txt"
             }
         }
         project.tasks.genymotionLaunch.exec()
@@ -256,12 +238,11 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushAfterToDevice() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$name" {
-                pushAfter "res/test/test.txt"
+                pushAfter "src/integTest/res/test/test.txt"
                 stopWhenFinish false
             }
         }
@@ -288,11 +269,10 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushBeforeToDeviceWithDest() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination]
+        def listOfFiles = ["src/integTest/res/test/test.txt": destination]
         project.genymotion.devices {
             "$name" {
                 pushBefore listOfFiles
@@ -311,11 +291,10 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPushAfterToDeviceWithDest() {
-
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         def destination = "/sdcard/"
-        def listOfFiles = ["res/test/test.txt": destination]
+        def listOfFiles = ["src/integTest/res/test/test.txt": destination]
         project.genymotion.devices {
             "$name" {
                 pushAfter listOfFiles
@@ -345,53 +324,53 @@ class GenymotionGradlePluginIntegTest {
 
     @Test
     public void canPullBeforeFromDevice() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         //removing the pulled files
-        IntegTestTools.recreatePulledDirectory()
+        IntegrationTestTools.recreatePulledDirectory()
 
         project.genymotion.devices {
             "$name" {
-                pullBefore "/system/build.prop": IntegTestTools.PULLED_PATH
+                pullBefore "/system/build.prop": IntegrationTestTools.PULLED_PATH
             }
         }
         project.tasks.genymotionLaunch.exec()
 
-        File file = new File(IntegTestTools.PULLED_PATH + "build.prop")
+        File file = new File(IntegrationTestTools.PULLED_PATH + "build.prop")
         assert file.exists()
     }
 
     @Test
     public void canPullAfterFromDevice() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         //removing the pulled files
-        IntegTestTools.recreatePulledDirectory()
+        IntegrationTestTools.recreatePulledDirectory()
 
         project.genymotion.devices {
             "$name" {
-                pullAfter "/system/build.prop": IntegTestTools.PULLED_PATH
+                pullAfter "/system/build.prop": IntegrationTestTools.PULLED_PATH
                 stopWhenFinish false
             }
         }
         project.tasks.genymotionLaunch.exec()
 
-        File file = new File(IntegTestTools.PULLED_PATH + "build.prop")
+        File file = new File(IntegrationTestTools.PULLED_PATH + "build.prop")
         assert !file.exists()
 
         project.tasks.genymotionFinish.exec()
 
-        file = new File(IntegTestTools.PULLED_PATH + "build.prop")
+        file = new File(IntegrationTestTools.PULLED_PATH + "build.prop")
         assert file.exists()
     }
 
     @Test
     public void canFlashDevice() {
-        String name = IntegTestTools.createADevice(gmtool)
+        String name = IntegrationTestTools.createADevice(gmtool)
 
         project.genymotion.devices {
             "$name" {
-                flash "res/test/test.zip"
+                flash "src/integTest/res/test/test.zip"
             }
         }
         project.tasks.genymotionLaunch.exec()
@@ -403,13 +382,11 @@ class GenymotionGradlePluginIntegTest {
             }
         }
         assert flashed
-
     }
 
     @After
     public void finishTest() {
-
         Log.clearLogger()
-        IntegTestTools.cleanAfterTests(gmtool)
+        IntegrationTestTools.cleanAfterTests(gmtool)
     }
 }

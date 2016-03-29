@@ -30,6 +30,42 @@ if (hasProperty("androidPluginVersion")) {
     androidVersion = androidPluginVersion
 }
 
+def loadPropertiesFromCommandLine() {
+    if (hasProperty('username') && hasProperty('password')
+            && hasProperty('license') && hasProperty('genymotionpath')) {
+        def user = username
+        def password = password
+        def license = license
+        def path = genymotionpath
+
+        println "Properties found"
+
+        def properties = new Properties()
+        properties.setProperty('genymotion.username', user)
+        properties.setProperty('genymotion.password', password)
+        properties.setProperty('genymotion.license', license)
+        properties.setProperty('genymotion.path', path)
+
+        def writer = new FileWriter(file('src/integTest/res/test/default.properties'))
+        try {
+            properties.store(writer, null)
+            writer.flush()
+        } finally {
+            writer.close()
+        }
+    }
+}
+
+/**
+ * In order to run the integration tests require a valid username, password, license and path.
+ * Those values are read from a default.properties files under src/integTest/res/test
+ *
+ * They can be provided via the command line (useful for the CI).
+ * If they are found, a default.properties files is created with them inside.
+ * If there is already an existing default.properties file, its content will be overridden.
+ */
+loadPropertiesFromCommandLine()
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
@@ -58,7 +94,7 @@ sourceSets {
     integrationTest {
         groovy.srcDir file('src/test/groovy')
         groovy.srcDir file('src/integTest/groovy')
-        resources.srcDir file('res')
+        resources.srcDir file('src/integTest/res')
         compileClasspath += sourceSets.main.output + configurations.testRuntime
         runtimeClasspath += output + compileClasspath
     }

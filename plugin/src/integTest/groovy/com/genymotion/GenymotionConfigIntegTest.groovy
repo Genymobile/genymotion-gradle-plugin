@@ -21,62 +21,51 @@ package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.Log
-import com.genymotion.tools.Tools
-import org.answerit.mock.slf4j.LoggingLevel
-import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
-import org.junit.Ignore
+import org.junit.AfterClass
+import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
-import org.junit.experimental.categories.Category
-import org.slf4j.Logger
-
-import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
-import static org.hamcrest.CoreMatchers.allOf
-import static org.hamcrest.CoreMatchers.equalTo
-import static org.junit.Assert.assertThat
 
 class GenymotionConfigIntegTest {
+    private static final String TEST_CONFIG_FILE = "src/integTest/res/test/config.properties"
 
     Project project
     GMTool gmtool
-    boolean changedUser = false
+    GenymotionConfig config
 
+    @Before
+    public void init() {
+        (project, gmtool) = IntegrationTestTools.init()
+        config = new GenymotionConfig()
+        config.fromFile = TEST_CONFIG_FILE
+        config.applyConfigFromFile(project)
+    }
 
     @Test
     public void canGetConfigFromGMTool() {
-        (project, gmtool) = IntegTestTools.init()
-        GenymotionConfig config = new GenymotionConfig()
-        config.fromFile = "res/test/config.properties"
-        config.applyConfigFromFile(project)
-
-        changedUser = true
         gmtool.setConfig(config, true)
+
         gmtool.getConfig(project.genymotion.config, true)
 
-        //@formatter:off
-        assert false                                        == project.genymotion.config.statistics
-        assert "testName"                                   == project.genymotion.config.username
-        assert false                                        == project.genymotion.config.proxy
-        assert "testAddress"                                == project.genymotion.config.proxyAddress
-        assert false                                        == project.genymotion.config.proxy
-        assert 12345                                        == project.genymotion.config.proxyPort
-        assert true                                         == project.genymotion.config.proxyAuth
-        assert "testUsername"                               == project.genymotion.config.proxyUsername
-        assert true                                         == project.genymotion.config.useCustomSdk
-        //@formatter:on
+        assertConfiguration(project.genymotion.config)
+    }
+
+    private void assertConfiguration(GenymotionConfig config) {
+        assert false == config.statistics
+        assert "testName" == config.username
+        assert false == config.proxy
+        assert "testAddress" == config.proxyAddress
+        assert false == config.proxy
+        assert 12345 == config.proxyPort
+        assert true == config.proxyAuth
+        assert "testUsername" == config.proxyUsername
+        assert true == config.useCustomSdk
     }
 
     @After
     public void finishTest() {
-        if (changedUser) {
-            IntegTestTools.setDefaultUser(true, gmtool)
-            changedUser = false
-        }
-
-        if (gmtool != null) {
-            gmtool.resetConfig()
-        }
+        IntegrationTestTools.setDefaultUser(true, gmtool)
     }
 }

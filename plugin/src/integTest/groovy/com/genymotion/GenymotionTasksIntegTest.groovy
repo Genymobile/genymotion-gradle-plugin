@@ -22,36 +22,34 @@ package com.genymotion
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.GMToolDsl
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.fail
 
 class GenymotionTasksIntegTest {
-
     Project project
     GMTool gmtool
 
     @BeforeClass
     public static void setUpClass() {
-        def (project, gmtool) = IntegTestTools.init()
-        IntegTestTools.setDefaultUser(true, gmtool)
+        def (project, gmtool) = IntegrationTestTools.init()
+        IntegrationTestTools.setDefaultUser(true, gmtool)
     }
 
     @Before
     public void setUp() {
-        (project, gmtool) = IntegTestTools.init()
+        (project, gmtool) = IntegrationTestTools.init()
     }
-
 
     @Test
     public void canLaunch() {
-
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegTestTools.declareADetailedDevice(project)
+        def (String vdName, String density, int width, int height, int nbCpu, int ram,
+            boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -78,9 +76,44 @@ class GenymotionTasksIntegTest {
     }
 
     @Test
-    public void canFinish() {
+    public void canLaunchInBridgeMode() {
+        def (String vdName, String density, int width, int height, int nbCpu, int ram,
+        boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
 
-        def (String vdName, String density, int width, int height, int nbCpu, int ram, boolean deleteWhenFinish) = IntegTestTools.declareADetailedDevice(project)
+        project.genymotion.devices {
+            "$vdName" {
+                networkMode "bridge"
+            }
+        }
+
+        project.tasks.genymotionLaunch.exec()
+
+        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
+
+        //we test the VDLaunch
+        assert project.genymotion.devices[0].start
+        assert project.genymotion.devices[0].deleteWhenFinish == deleteWhenFinish
+
+        //we test the created VD
+        assert device.density == density
+        assert device.width == width
+        assert device.height == height
+        assert !device.virtualKeyboard
+        assert !device.navbarVisible
+        assert device.nbCpu == nbCpu
+        assert device.networkInfo.mode == GMToolDsl.BRIDGE_MODE
+
+        //we test if the device is running
+        assert device.state == GenymotionVirtualDevice.STATE_ON
+
+        gmtool.stopDevice(vdName)
+        gmtool.deleteDevice(vdName)
+    }
+
+    @Test
+    public void canFinish() {
+        def (String vdName, String density, int width, int height, int nbCpu, int ram,
+            boolean deleteWhenFinish) = IntegrationTestTools.declareADetailedDevice(project)
 
         project.tasks.genymotionLaunch.exec()
 
@@ -91,10 +124,9 @@ class GenymotionTasksIntegTest {
 
     @Test
     public void throwsWhenCommandError() {
-
-        String deviceToStop = IntegTestTools.getRandomName()
-        String deviceToDelete = IntegTestTools.getRandomName()
-        String deviceToThrowError = IntegTestTools.getRandomName()
+        String deviceToStop = IntegrationTestTools.getRandomName()
+        String deviceToDelete = IntegrationTestTools.getRandomName()
+        String deviceToThrowError = IntegrationTestTools.getRandomName()
 
         project.genymotion.devices {
             "$deviceToStop" {
@@ -134,12 +166,10 @@ class GenymotionTasksIntegTest {
         }
     }
 
-
     @Test
     public void canLoginAndRegister() {
-
         //ENTER HERE the path to a properties file containing good credential (username, password & license)
-        String path = "res/test/default.properties"
+        String path = "src/integTest/res/test/default.properties"
 
         File f = new File(path)
         assert f.exists(), "Config file does not exist to test login feature. Set the path to be able to run the test"
@@ -155,9 +185,8 @@ class GenymotionTasksIntegTest {
         //TODO test license registration
     }
 
-
     @After
     public void finishTest() {
-        IntegTestTools.cleanAfterTests(gmtool)
+        IntegrationTestTools.cleanAfterTests(gmtool)
     }
 }

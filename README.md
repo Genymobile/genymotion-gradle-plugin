@@ -47,7 +47,7 @@ But this plugin can do a lot more, read [the full documentation](https://www.gen
 To download the plugin, run:
 
 ```sh
-git clone https://github.com/Genymobile/genymotion-gradle-plugin.git
+git clone --recursive https://github.com/Genymobile/genymotion-gradle-plugin.git
 ```
 
 ##Project description
@@ -55,6 +55,9 @@ git clone https://github.com/Genymobile/genymotion-gradle-plugin.git
 The `plugin` folder contains the Gradle plugin.
 
 The `samples` folder contains the example project using the Gradle plugin.
+There are two samples:
+* 'simple' that showcases how to use the gradle plugin on its own.
+* 'binocle' that showcases how to use the gradle plugin in the context of an Android app.
 
 
 ##Compiling the plugin
@@ -119,11 +122,20 @@ As some tests are using the Android Gradle plugin, you need to have the Android 
 This project contains also integration tests.
 Before running these tests you need gmtool, the command line tool for Genymotion. Embedded into the Genymotion app bundle.
 
-You also need to fill a few files like follows:
+The integration test relies on a default.properties file where all needed properties can be read.
+This can be addressed in two ways. Or you create such file (ideal when working locally) or you inject all the needed properties
+via command line argument (ideal for CI):
 
+Method 1:
 1. Copy the `plugin/res/test/default.properties.TEMPLATE` file and name it `default.properties`
 2. Fill the new file with your information (genymotion username, password, license) and the path to your local Genymotion installation (genymotionPath).
 3. Also, in the file `plugin/res/test/android-app/local.properties` precise the `sdk.dir` field with your Android SDK path 
+
+Method 2:
+Add the following command line arguments when running the tests:
+```sh
+./gradlew <taskName> -Pusername=<username> -Ppassword=<password> -Plicense=<license> -PgenymotionPath=<path-to-genymotion>
+```
 
 Then launch the integration tests with this command:
 ```sh

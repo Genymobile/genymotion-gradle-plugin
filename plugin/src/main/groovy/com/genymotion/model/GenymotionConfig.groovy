@@ -130,28 +130,28 @@ class GenymotionConfig {
      * @return returns true if the object has been field from a file or false otherwise
      */
     def applyConfigFromFile(Project project) {
-        def Properties props = new Properties()
-        def propFile
+        def Properties properties = new Properties()
+        def propertyFile
 
         if (fromFile == null && project != null) {
-            fromFile = AndroidPluginTools.DEFAULT_PROPERTIES
-            propFile = new File(project.rootDir, fromFile)
+            fromFile = AndroidPluginTools.LOCAL_PROPERTIES
+            propertyFile = new File(project.rootDir, fromFile)
         } else if (fromFile != null) {
-            propFile = new File(fromFile)
+            propertyFile = new File(fromFile)
         } else {
             return false
         }
 
-        if (propFile.canRead()) {
+        if (propertyFile.canRead()) {
             try {
-                props.load(new FileInputStream(propFile))
+                properties.load(new FileInputStream(propertyFile))
 
                 //Reflection could be another solution to fill the object but I prefer to avoid it.
                 //This method allows a better control on the data changed and avoid side loading non-allowed values
 
                 //we iterate on the properties list to fill the config object
                 CONFIG_PROPERTIES.each { key, value ->
-                    def val = props.getProperty(CONFIG_PREFIX + key)
+                    def val = properties.getProperty(CONFIG_PREFIX + key)
 
                     if (val != null) {
                         if (value == Boolean.class) {

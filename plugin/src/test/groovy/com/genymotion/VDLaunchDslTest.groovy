@@ -67,17 +67,17 @@ class VDLaunchDslTest extends CleanMetaTest {
     @Test
     public void canCheckPaths() {
         def vd = new GenymotionVDLaunch("device_name")
-        vd.pushBefore = ["res/test/test.txt", "res/test/test2.txt", "res/test/test.zip", "res/test/test2.zip"]
-        vd.pushAfter = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
-                        "res/test/test.zip": "/sdcard/Downloads/", "res/test/test2.zip": "/sdcard/Downloads/"]
-        vd.install = "res/test/test.txt"
-        vd.flash = "res/test/test.txt"
+        vd.pushBefore = ["src/integTest/res/test/test.txt", "src/integTest/res/test/test2.txt", "src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
+        vd.pushAfter = ["src/integTest/res/test/test.txt": "/sdcard/Downloads/", "src/integTest/res/test/test2.txt": "/sdcard/Downloads/",
+                        "src/integTest/res/test/test.zip": "/sdcard/Downloads/", "src/integTest/res/test/test2.zip": "/sdcard/Downloads/"]
+        vd.install = "src/integTest/res/test/test.txt"
+        vd.flash = "src/integTest/res/test/test.txt"
 
         vd.checkPaths() //throws exception if problem
 
 
         vd = new GenymotionVDLaunch("device_name")
-        vd.pushBefore = ["res/test/test.txt", "NOPE", "res/test/test.zip", "res/test/test2.zip"]
+        vd.pushBefore = ["src/integTest/res/test/test.txt", "NOPE", "src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
         try {
             vd.checkPaths()
             fail("Expected NotFoundException to be thrown")
@@ -88,8 +88,8 @@ class VDLaunchDslTest extends CleanMetaTest {
 
 
         vd = new GenymotionVDLaunch("device_name")
-        vd.pushAfter = ["res/test/test.txt": "/sdcard/Downloads/", "res/test/test2.txt": "/sdcard/Downloads/",
-                        "res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
+        vd.pushAfter = ["src/integTest/res/test/test.txt": "/sdcard/Downloads/", "src/integTest/res/test/test2.txt": "/sdcard/Downloads/",
+                        "src/integTest/res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
         try {
             vd.checkPaths()
             fail("Expected NotFoundException to be thrown")

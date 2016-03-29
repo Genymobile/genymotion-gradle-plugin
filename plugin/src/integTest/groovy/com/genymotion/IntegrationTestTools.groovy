@@ -24,10 +24,9 @@ import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
-class IntegTestTools {
-
-    public static
-    final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas", "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
+class IntegrationTestTools {
+    public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas",
+                                                 "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 
     public static String TEMP_PATH = "temp" + File.separator
     public static String PULLED_PATH = TEMP_PATH + "pulled" + File.separator
@@ -39,7 +38,6 @@ class IntegTestTools {
     ]
 
     static def init() {
-
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
         setDefaultGenymotionPath(project)
@@ -49,7 +47,7 @@ class IntegTestTools {
         gmtool.getConfig(project.genymotion.config, true)
         project.genymotion.config.verbose = true
 
-        [project, gmtool]
+        return [project, gmtool]
     }
 
     private static void setDefaultGenymotionPath(Project project, String defaultPath = null) {
@@ -76,7 +74,6 @@ class IntegTestTools {
     }
 
     static String createADevice(GMTool gmtool) {
-
         Random rand = new Random()
         int index = rand.nextInt(DEVICES.size())
 
@@ -84,7 +81,7 @@ class IntegTestTools {
         String name = keys[index]
         gmtool.createDevice(DEVICES[name], name)
 
-        name
+        return name
     }
 
     static def declareADetailedDevice(Project project, boolean stop = true) {
@@ -110,12 +107,11 @@ class IntegTestTools {
                 stopWhenFinish stop
             }
         }
-        [vdName, densityName, widthInt, heightInt, nbCpuInt, ramInt, delete]
+
+        return [vdName, densityName, widthInt, heightInt, nbCpuInt, ramInt, delete]
     }
 
-
     static void cleanAfterTests(GMTool gmtool) {
-
         println "Cleaning after tests"
 
         gmtool.getConfig(true)
@@ -153,7 +149,7 @@ class IntegTestTools {
         tempDir.mkdirs()
     }
 
-    static GenymotionConfig getDefaultConfig(String path = "res/test/default.properties") {
+    static GenymotionConfig getDefaultConfig(String path = "src/integTest/res/test/default.properties") {
         GenymotionConfig config = new GenymotionConfig()
         config.fromFile = path
 
@@ -161,10 +157,11 @@ class IntegTestTools {
             return config
         }
 
-        return null
+        def error = "No default.properties file found, add one or supply needed properties via commandline arguments"
+        throw new FileNotFoundException(error)
     }
 
-    static setDefaultUser(registerLicense = false, GMTool gmtool) {
+    static void setDefaultUser(registerLicense = false, GMTool gmtool) {
         gmtool.resetConfig()
         GenymotionConfig config = getDefaultConfig()
         config.version = gmtool.getVersion()
@@ -191,14 +188,16 @@ class IntegTestTools {
             name += RANDOM_NAMES[r.nextInt(RANDOM_NAMES.size())]
         }
         if (extension) {
-            name += extension
+            return name += extension
         }
-        name
+
+        return name
     }
 
     static Project getAndroidProject() {
-
-        Project project = ProjectBuilder.builder().withProjectDir(new File("res/test/android-app")).build();
+        Project project = ProjectBuilder.builder()
+                                        .withProjectDir(new File("src/integTest/res/test/android-app"))
+                                        .build();
 
         project.apply plugin: 'com.android.application'
         project.apply plugin: 'genymotion'
@@ -207,7 +206,7 @@ class IntegTestTools {
             compileSdkVersion 21
             buildToolsVersion "21.1.2"
         }
-        project.genymotion.config.genymotionPath = IntegTestTools.getDefaultConfig().genymotionPath
+        project.genymotion.config.genymotionPath = IntegrationTestTools.getDefaultConfig().genymotionPath
 
         project.afterEvaluate {
             println "TASKS AFTER " + project.tasks
