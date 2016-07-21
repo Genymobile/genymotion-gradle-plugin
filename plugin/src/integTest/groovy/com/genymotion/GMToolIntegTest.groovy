@@ -27,9 +27,12 @@ import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 class GMToolIntegTest {
+
+    @Rule public RetryRule retryRule = new RetryRule(3)
 
     Project project
     GMTool gmtool
