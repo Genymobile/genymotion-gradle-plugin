@@ -23,12 +23,8 @@ import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Rule
 
 class IntegrationTestTools {
-
-    @Rule public RetryRule retryRule = new RetryRule(3)
-
     public static final String[] RANDOM_NAMES = ["Sam", "Julien", "Dan", "Pascal", "Guillaume", "Damien", "Thomas",
                                                  "Sylvain", "Philippe", "Cedric", "Charly", "Morgan", "Bruno"]
 

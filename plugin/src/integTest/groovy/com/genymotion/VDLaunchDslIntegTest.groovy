@@ -8,7 +8,7 @@ import org.junit.Test
 
 class VDLaunchDslIntegTest {
 
-    @Rule public RetryRule retryRule = new RetryRule(3)
+    @Rule public RetryRule retryRule = new RetryRule()
 
     static GMTool gmtool
 

@@ -6,10 +6,20 @@ import org.junit.runners.model.Statement
 
 class RetryRule implements TestRule {
 
+    private static String MAX_RETRIES_SYSTEM_PROPERTY = "maxRetries"
+    private static String DEFAULT_MAX_RETRIES = "3"
+
     private int maxRetryCount
 
+    public RetryRule() {
+        this(System.getProperty(MAX_RETRIES_SYSTEM_PROPERTY, DEFAULT_MAX_RETRIES).toInteger())
+    }
     public RetryRule(int maxRetryCount) {
+        if (maxRetryCount < 1) {
+            maxRetryCount = 1
+        }
         this.maxRetryCount = maxRetryCount
+
     }
 
     public Statement apply(Statement base, Description description) {

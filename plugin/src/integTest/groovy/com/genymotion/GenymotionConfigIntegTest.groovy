@@ -32,7 +32,7 @@ import org.junit.Test
 class GenymotionConfigIntegTest {
     private static final String TEST_CONFIG_FILE = "src/integTest/res/test/config.properties"
 
-    @Rule public RetryRule retryRule = new RetryRule(3)
+    @Rule public RetryRule retryRule = new RetryRule()
 
     Project project
     GMTool gmtool

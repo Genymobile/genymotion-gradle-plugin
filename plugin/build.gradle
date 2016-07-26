@@ -30,6 +30,17 @@ if (hasProperty("androidPluginVersion")) {
     androidVersion = androidPluginVersion
 }
 
+/**
+ * The following declaration  allows to define the maximum number of retries to do on flaky tests
+ * This can be overridden by the command line using the gradle property: "maxRetries"
+ * Setting it to 0 or 1 disables the auto Retries
+ * You can for example set it to 4 with the command: gradle test -PmaxRetries=4
+ */
+def maxRetriesCount = 3
+if (hasProperty("maxRetries")) {
+    maxRetriesCount = maxRetries
+}
+
 def loadPropertiesFromCommandLine() {
     if (hasProperty('username') && hasProperty('password')
             && hasProperty('license') && hasProperty('genymotionpath')) {
@@ -131,6 +142,9 @@ task integrationTest(type: Test) {
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
+
+// We inject the maxRetries system property on the Test tasks
+tasks.withType(Test) { systemProperty 'maxRetries', maxRetriesCount }
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test

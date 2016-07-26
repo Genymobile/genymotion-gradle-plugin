@@ -32,7 +32,7 @@ import org.junit.Test
 
 class GMToolIntegTest {
 
-    @Rule public RetryRule retryRule = new RetryRule(3)
+    @Rule public RetryRule retryRule = new RetryRule()
 
     Project project
     GMTool gmtool

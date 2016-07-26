@@ -34,7 +34,7 @@ import static org.junit.Assert.fail
 
 class GenymotionTasksIntegTest {
 
-    @Rule public RetryRule retryRule = new RetryRule(3)
+    @Rule public RetryRule retryRule = new RetryRule()
 
     Project project
     GMTool gmtool
