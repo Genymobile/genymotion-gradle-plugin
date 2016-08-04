@@ -2,6 +2,7 @@
 
 from os import path
 import platform
+import re
 from subprocess import check_call, call
 
 PROJECT_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -20,8 +21,11 @@ else:
 
 GRADLE_PATH = path.join(PROJECT_DIR, GRADLEW)
 
+
 def main():
-    gradle_versions = sorted(ANDROID_TO_GRADLE.keys()) # we want to finish with 2.2
+    # We want to finish with 2.2 as it does not handle the --gradle-version option on the wrapper command which is
+    # mandatory to switch the gradle version of the project
+    gradle_versions = sorted(ANDROID_TO_GRADLE.keys(), key=explicit_version, reverse=True)
     try:
         for gradle_version in gradle_versions:
             # Set the current project to the good Gradle version
@@ -41,6 +45,23 @@ def main():
         print(cmd)
         call(cmd)
 
+
+def explicit_version(version):
+    x = 0
+    y = 0
+    z = 0
+
+    m = re.search("(\d+)\.(\d+)\.(\d+)", version)
+    if m:
+        x = int(m.group(1))
+        y = int(m.group(2))
+        z = int(m.group(3))
+    else:
+        m = re.search("(\d+)\.(\d+)", version)
+        x = int(m.group(1))
+        y = int(m.group(2))
+
+    return "%03d.%03d.%03d"%(x,y,z)
 
 if __name__ == "__main__":
     main()
