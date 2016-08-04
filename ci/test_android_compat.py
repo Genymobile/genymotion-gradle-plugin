@@ -9,7 +9,8 @@ PROJECT_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 """This is a map of Gradle versions (keys) linked to Android Gradle plugin versions (list of values)"""
 ANDROID_TO_GRADLE = {
     "2.2": ["1.3.1", "1.3.0", "1.2.3", "1.2.2", "1.2.1", "1.2.0", "1.1.3", "1.1.2", "1.1.1", "1.1.0", "1.0.0"],
-    "2.10": ["+", "1.5.0"],
+    "2.10": ["2.1.2", "2.1.0", "2.0.0", "1.5.0"],
+    "2.14.1": ["+"],
 }
 
 if platform.system() == "Windows":
