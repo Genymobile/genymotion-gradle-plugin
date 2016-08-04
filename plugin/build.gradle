@@ -23,7 +23,7 @@ apply plugin: 'idea'
  * It can be set from command line using:
  * gradle test -PandroidPluginVersion=1.3.1
  *
- * If not set, the value is '+', meaning we keep the latest version available on the repository (including beta).
+ * If not set, the value is '+', meaning we keep the latest version available on the repository (including beta & alpha)
  */
 def androidVersion = "+"
 if (hasProperty("androidPluginVersion")) {
