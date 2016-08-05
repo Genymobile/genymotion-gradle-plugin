@@ -3,9 +3,12 @@ package com.genymotion
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 class VDLaunchDslIntegTest {
+
+    @Rule public RetryRule retryRule = new RetryRule()
 
     static GMTool gmtool
 

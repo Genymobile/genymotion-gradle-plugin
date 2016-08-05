@@ -26,10 +26,13 @@ import org.junit.After
 import org.junit.AfterClass
 import org.junit.Before
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 class GenymotionConfigIntegTest {
     private static final String TEST_CONFIG_FILE = "src/integTest/res/test/config.properties"
+
+    @Rule public RetryRule retryRule = new RetryRule()
 
     Project project
     GMTool gmtool

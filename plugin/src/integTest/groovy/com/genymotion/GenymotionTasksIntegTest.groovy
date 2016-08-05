@@ -27,11 +27,15 @@ import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 import static org.junit.Assert.fail
 
 class GenymotionTasksIntegTest {
+
+    @Rule public RetryRule retryRule = new RetryRule()
+
     Project project
     GMTool gmtool
 
