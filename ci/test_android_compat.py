@@ -47,21 +47,21 @@ def main():
 
 
 def explicit_version(version):
-    x = 0
-    y = 0
-    z = 0
+    major = 0
+    minor = 0
+    patch = 0
 
     m = re.search("(\d+)\.(\d+)\.(\d+)", version)
     if m:
-        x = int(m.group(1))
-        y = int(m.group(2))
-        z = int(m.group(3))
+        major = int(m.group(1))
+        minor = int(m.group(2))
+        patch = int(m.group(3))
     else:
         m = re.search("(\d+)\.(\d+)", version)
-        x = int(m.group(1))
-        y = int(m.group(2))
+        major = int(m.group(1))
+        minor = int(m.group(2))
 
-    return "%03d.%03d.%03d"%(x,y,z)
+    return "%03d.%03d.%03d" % (major, minor, patch)
 
 if __name__ == "__main__":
     main()
