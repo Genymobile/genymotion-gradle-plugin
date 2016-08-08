@@ -2,6 +2,7 @@
 
 from os import path
 import platform
+import re
 from subprocess import check_call, call
 
 PROJECT_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -9,7 +10,8 @@ PROJECT_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 """This is a map of Gradle versions (keys) linked to Android Gradle plugin versions (list of values)"""
 ANDROID_TO_GRADLE = {
     "2.2": ["1.3.1", "1.3.0", "1.2.3", "1.2.2", "1.2.1", "1.2.0", "1.1.3", "1.1.2", "1.1.1", "1.1.0", "1.0.0"],
-    "2.10": ["+", "1.5.0"],
+    "2.10": ["2.1.2", "2.1.0", "2.0.0", "1.5.0"],
+    "2.14.1": ["+"],
 }
 
 if platform.system() == "Windows":
@@ -19,8 +21,11 @@ else:
 
 GRADLE_PATH = path.join(PROJECT_DIR, GRADLEW)
 
+
 def main():
-    gradle_versions = sorted(ANDROID_TO_GRADLE.keys()) # we want to finish with 2.2
+    # We want to finish with 2.2 as it does not handle the --gradle-version option on the wrapper command which is
+    # mandatory to switch the gradle version of the project
+    gradle_versions = sorted(ANDROID_TO_GRADLE.keys(), key=explicit_version, reverse=True)
     try:
         for gradle_version in gradle_versions:
             # Set the current project to the good Gradle version
@@ -40,6 +45,23 @@ def main():
         print(cmd)
         call(cmd)
 
+
+def explicit_version(version):
+    major = 0
+    minor = 0
+    patch = 0
+
+    m = re.search("(\d+)\.(\d+)\.(\d+)", version)
+    if m:
+        major = int(m.group(1))
+        minor = int(m.group(2))
+        patch = int(m.group(3))
+    else:
+        m = re.search("(\d+)\.(\d+)", version)
+        major = int(m.group(1))
+        minor = int(m.group(2))
+
+    return "%03d.%03d.%03d" % (major, minor, patch)
 
 if __name__ == "__main__":
     main()
