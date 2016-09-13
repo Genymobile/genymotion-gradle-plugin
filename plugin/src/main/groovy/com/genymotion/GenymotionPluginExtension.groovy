@@ -19,6 +19,7 @@
 
 package com.genymotion
 
+import com.genymotion.model.CloudVDLaunchDsl
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tasks.GenymotionFinishTask
@@ -39,14 +40,16 @@ class GenymotionPluginExtension {
 
     final Project project
     private final NamedDomainObjectContainer<VDLaunchDsl> deviceLaunches
+    private final NamedDomainObjectContainer<CloudVDLaunchDsl> cloudDeviceLaunches
 
     def genymotionConfig = new GenymotionConfig()
     public GenymotionConfig currentConfiguration = null
 
-    GenymotionPluginExtension(Project project, deviceLaunches) {
+    GenymotionPluginExtension(Project project, deviceLaunches, cloudDeviceLaunches) {
 
         this.project = project
         this.deviceLaunches = deviceLaunches
+        this.cloudDeviceLaunches = cloudDeviceLaunches
     }
 
     def devices(Closure closure) {
@@ -67,12 +70,33 @@ class GenymotionPluginExtension {
         return devices
     }
 
+    def cloudDevices(Closure closure) {
+        cloudDeviceLaunches.configure(closure)
+    }
+
+    def getCloudDevices(String flavor = null) {
+        if (flavor == null) {
+            return cloudDeviceLaunches.toList()
+        }
+
+        def devices = []
+        cloudDeviceLaunches.each {
+            if (it.hasFlavor(flavor)) {
+                devices.add(it)
+            }
+        }
+        return devices
+    }
+
     def checkParams() {
 
         //Check if the flavors entered exist
         checkProductFlavors()
 
         deviceLaunches.each {
+            it.checkParams(project.genymotion.config.abortOnError)
+        }
+        cloudDeviceLaunches.each {
             it.checkParams(project.genymotion.config.abortOnError)
         }
 
@@ -87,7 +111,12 @@ class GenymotionPluginExtension {
 
         def androidFlavors = project.android.productFlavors*.name
 
-        deviceLaunches.each {
+        checkDeviceLaunchFlavors(deviceLaunches, androidFlavors)
+        checkDeviceLaunchFlavors(cloudDeviceLaunches, androidFlavors)
+    }
+
+    private void checkDeviceLaunchFlavors(def launches, def androidFlavors) {
+        launches.each {
             for (String flavor in it.productFlavors) {
 
                 if (flavor == null) {
