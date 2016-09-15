@@ -57,7 +57,7 @@ class GenymotionTasksIntegTest {
 
         project.tasks.genymotionLaunch.exec()
 
-        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = gmtool.getDevice(vdName)
 
         //we test the VDLaunch
         assert project.genymotion.devices[0].start
@@ -92,7 +92,7 @@ class GenymotionTasksIntegTest {
 
         project.tasks.genymotionLaunch.exec()
 
-        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = gmtool.getDevice(vdName)
 
         //we test the VDLaunch
         assert project.genymotion.devices[0].start
@@ -162,7 +162,7 @@ class GenymotionTasksIntegTest {
     }
 
     boolean devicesAreStopped(def devices) {
-        def stoppedDevices = gmtool.getRunningDevices(false, false, true)
+        def stoppedDevices = gmtool.getRunningDevices(false, true)
         devices.each() {
             if (!it.deleteWhenFinish && !stoppedDevices.contains(it.name)) {
                 return false
@@ -182,7 +182,7 @@ class GenymotionTasksIntegTest {
 
         project.genymotion.processConfiguration()
 
-        GenymotionConfig config = gmtool.getConfig(true)
+        GenymotionConfig config = gmtool.getConfig()
 
         assert project.genymotion.config.username == config.username
 

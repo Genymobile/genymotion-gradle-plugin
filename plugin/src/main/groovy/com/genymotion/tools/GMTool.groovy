@@ -101,16 +101,16 @@ class GMTool {
         return cmd([GMTOOL, LOGZIP])
     }
 
-    def getConfig(boolean verbose = false) {
-        getConfig(null, verbose)
+    def getConfig() {
+        getConfig(null)
     }
 
-    def getConfig(GenymotionConfig config, boolean verbose = false) {
+    def getConfig(GenymotionConfig config) {
         if (config == null) {
             config = new GenymotionConfig()
         }
 
-        def exitCode = cmd([GMTOOL, CONFIG, PRINT], verbose) { line, count ->
+        def exitCode = cmd([GMTOOL, CONFIG, PRINT]) { line, count ->
 
             String[] info = line.split("=")
 
@@ -184,14 +184,14 @@ class GMTool {
         }
     }
 
-    def setConfig(GenymotionConfig config, boolean verbose = false) {
+    def setConfig(GenymotionConfig config) {
         if (!config) {
             return false
         }
         return setConfig(config.statistics, config.username, config.password, config.licenseServer,
                 config.licenseServerAddress, config.proxy, config.proxyAddress, config.proxyPort, config.proxyAuth,
                 config.proxyUsername, config.proxyPassword, config.virtualDevicePath, config.androidSdkPath,
-                config.useCustomSdk, config.screenCapturePath, verbose)
+                config.useCustomSdk, config.screenCapturePath, config.verbose)
     }
 
 
@@ -254,7 +254,7 @@ class GMTool {
             command.push(OPT_SCREEN_CAPTURE_PATH + screenCapturePath)
         }
 
-        return cmd(command, verbose) { line, count ->
+        return cmd(command) { line, count ->
         }
     }
 
@@ -262,20 +262,20 @@ class GMTool {
     LICENSE
      */
 
-    def setLicense(String license, boolean verbose = false) {
+    def setLicense(String license) {
         def command = [GMTOOL, LICENSE, REGISTER, license]
 
-        return cmd(command, verbose)
+        return cmd(command)
     }
 
     /*
     ADMIN
      */
 
-    def getAllDevices(boolean verbose = false, boolean fill = true, boolean nameOnly = false) {
+    def getAllDevices(boolean fill = true, boolean nameOnly = false) {
         def devices = []
 
-        cmd([GMTOOL, ADMIN, LIST], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, LIST]) { line, count ->
             def device = parseListLine(count, line, nameOnly)
             if (device) {
                 devices.add(device)
@@ -291,10 +291,10 @@ class GMTool {
         devices
     }
 
-    def getRunningDevices(boolean verbose = false, boolean fill = true, boolean nameOnly = false) {
+    def getRunningDevices(boolean fill = true, boolean nameOnly = false) {
         def devices = []
 
-        cmd([GMTOOL, ADMIN, LIST, OPT_RUNNING], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, LIST, OPT_RUNNING]) { line, count ->
             def device = parseListLine(count, line, nameOnly)
             if (device) {
                 devices.add(device)
@@ -310,10 +310,10 @@ class GMTool {
         devices
     }
 
-    def getStoppedDevices(boolean verbose = false, boolean fill = true, boolean nameOnly = false) {
+    def getStoppedDevices(boolean fill = true, boolean nameOnly = false) {
         def devices = []
 
-        cmd([GMTOOL, ADMIN, LIST, OPT_OFF], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, LIST, OPT_OFF]) { line, count ->
             def device = parseListLine(count, line, nameOnly)
             if (device) {
                 devices.add(device)
@@ -329,12 +329,12 @@ class GMTool {
         devices
     }
 
-    boolean isDeviceRunning(def device, boolean verbose = false) {
-        isDeviceRunning(device.name, verbose)
+    boolean isDeviceRunning(def device) {
+        isDeviceRunning(device.name)
     }
 
-    boolean isDeviceRunning(String name, boolean verbose = false) {
-        def devices = getRunningDevices(verbose, false, true)
+    boolean isDeviceRunning(String name) {
+        def devices = getRunningDevices(false, true)
         return devices?.contains(name)
     }
 
@@ -359,14 +359,14 @@ class GMTool {
         device
     }
 
-    boolean isDeviceCreated(String name, boolean verbose = false) {
+    boolean isDeviceCreated(String name) {
         if (!name?.trim()) {
             return false
         }
 
         boolean alreadyExists = false
 
-        def devices = getAllDevices(verbose, false)
+        def devices = getAllDevices(false)
 
         devices.each() {
             if (it.name.equals(name)) {
@@ -376,13 +376,13 @@ class GMTool {
         return alreadyExists
     }
 
-    def getTemplatesNames(boolean verbose = false) {
+    def getTemplatesNames() {
         def templates = []
 
         def template = null
 
         def exitCode = noNull {
-            return cmd([GMTOOL, ADMIN, TEMPLATES], verbose) { line, count ->
+            return cmd([GMTOOL, ADMIN, TEMPLATES]) { line, count ->
 
                 //if empty line and template filled
                 if (!line && template) {
@@ -412,13 +412,13 @@ class GMTool {
         }
     }
 
-    def getTemplates(boolean verbose = false) {
+    def getTemplates() {
         def templates = []
 
         def template = new GenymotionTemplate()
 
         int exitCode = noNull {
-            return cmd([GMTOOL, ADMIN, TEMPLATES, OPT_FULL], verbose) { line, count ->
+            return cmd([GMTOOL, ADMIN, TEMPLATES, OPT_FULL]) { line, count ->
 
                 //if empty line and the template is filled
                 if (!line && template.name) {
@@ -490,12 +490,12 @@ class GMTool {
         }
     }
 
-    boolean templateExists(String template, boolean verbose = false) {
+    boolean templateExists(String template) {
         if (!template?.trim()) {
             return false
         }
 
-        def templates = getTemplatesNames(verbose)
+        def templates = getTemplatesNames()
         if (templates instanceof ArrayList) {
             templates?.contains(template)
         } else {
@@ -549,37 +549,37 @@ class GMTool {
         }
     }
 
-    def deleteDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return deleteDevice(device.name, verbose)
+    def deleteDevice(GenymotionVirtualDevice device) {
+        return deleteDevice(device.name)
     }
 
-    def deleteDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, DELETE, deviceName], verbose)
+    def deleteDevice(def deviceName) {
+        return cmd([GMTOOL, ADMIN, DELETE, deviceName])
     }
 
-    def cloneDevice(GenymotionVirtualDevice device, def name, boolean verbose = false) {
-        return cloneDevice(device.name, name, verbose)
+    def cloneDevice(GenymotionVirtualDevice device, def name) {
+        return cloneDevice(device.name, name)
     }
 
-    def cloneDevice(def deviceName, def newName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, CLONE, deviceName, newName], verbose)
+    def cloneDevice(def deviceName, def newName) {
+        return cmd([GMTOOL, ADMIN, CLONE, deviceName, newName])
     }
 
-    def getDevice(String name, boolean verbose = false) {
+    def getDevice(String name) {
         if (name == null) {
             return null
         }
 
         def device = new GenymotionVirtualDevice(name)
-        return getDevice(device, verbose)
+        return updateDevice(device)
     }
 
-    def getDevice(def device, boolean verbose = false) {
+    def updateDevice(def device) {
         if (device == null) {
             return null
         }
 
-        cmd([GMTOOL, ADMIN, DETAILS, device.name], verbose) { line, count ->
+        cmd([GMTOOL, ADMIN, DETAILS, device.name]) { line, count ->
             String[] info = line.split("\\:")
             switch (info[0].trim()) {
                 case "Name":
@@ -637,44 +637,44 @@ class GMTool {
         device
     }
 
-    def startDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return startDevice(device.name, verbose)
+    def startDevice(GenymotionVirtualDevice device) {
+        return startDevice(device.name)
     }
 
-    def startDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, START, deviceName], verbose)
+    def startDevice(def deviceName) {
+        return cmd([GMTOOL, ADMIN, START, deviceName])
     }
 
-    def restartDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return restartDevice(device.name, verbose)
+    def restartDevice(GenymotionVirtualDevice device) {
+        return restartDevice(device.name)
     }
 
-    def restartDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, RESTART, deviceName], verbose)
+    def restartDevice(def deviceName) {
+        return cmd([GMTOOL, ADMIN, RESTART, deviceName])
     }
 
-    def stopDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return stopDevice(device.name, verbose)
+    def stopDevice(GenymotionVirtualDevice device) {
+        return stopDevice(device.name)
     }
 
-    def stopDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, STOP, deviceName], verbose)
+    def stopDevice(def deviceName) {
+        return cmd([GMTOOL, ADMIN, STOP, deviceName])
     }
 
-    def stopAllDevices(boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, STOPALL], verbose)
+    def stopAllDevices() {
+        return cmd([GMTOOL, ADMIN, STOPALL])
     }
 
-    def resetDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return resetDevice(device.name, verbose)
+    def resetDevice(GenymotionVirtualDevice device) {
+        return resetDevice(device.name)
     }
 
-    def resetDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, ADMIN, FACTORY_RESET, deviceName], verbose)
+    def resetDevice(def deviceName) {
+        return cmd([GMTOOL, ADMIN, FACTORY_RESET, deviceName])
     }
 
-    def startAutoDevice(def template, def deviceName, boolean verbose = false) {
-        def device = createDevice(template, deviceName, verbose)
+    def startAutoDevice(def template, def deviceName) {
+        def device = createDevice(template, deviceName)
 
         if (!device instanceof GenymotionVirtualDevice) {
             return device
@@ -693,11 +693,11 @@ class GMTool {
     Device
      */
 
-    def pushToDevice(GenymotionVirtualDevice device, def files, boolean verbose = false) {
-        pushToDevice(device.name, files, verbose)
+    def pushToDevice(GenymotionVirtualDevice device, def files) {
+        pushToDevice(device.name, files)
     }
 
-    def pushToDevice(def deviceName, def files, boolean verbose = false) {
+    def pushToDevice(def deviceName, def files) {
         if (!files) {
             return false
         }
@@ -718,22 +718,22 @@ class GMTool {
                 command.push(it)
             }
 
-            int exitValue = cmd(command, verbose)
+            int exitValue = cmd(command)
             exitValues.add(exitValue)
         }
 
         return exitValues
     }
 
-    def pullFromDevice(String deviceName, String source, String destination, boolean verbose = false) {
-        pullFromDevice(deviceName, [(source): destination], verbose)
+    def pullFromDevice(String deviceName, String source, String destination) {
+        pullFromDevice(deviceName, [(source): destination])
     }
 
-    def pullFromDevice(GenymotionVirtualDevice device, Map<String, String> files, boolean verbose = false) {
-        pullFromDevice(device.name, files, verbose)
+    def pullFromDevice(GenymotionVirtualDevice device, Map<String, String> files) {
+        pullFromDevice(device.name, files)
     }
 
-    def pullFromDevice(def deviceName, Map<String, String> files, boolean verbose = false) {
+    def pullFromDevice(def deviceName, Map<String, String> files) {
         if (!files) {
             return false
         }
@@ -744,30 +744,30 @@ class GMTool {
 
             def command = [GMTOOL, DEVICE, OPT_NAME + deviceName, PULL, it.key, it.value]
 
-            int exitValue = cmd(command, verbose)
+            int exitValue = cmd(command)
             exitValues.add(exitValue)
         }
 
         return exitValues
     }
 
-    def installToDevice(GenymotionVirtualDevice device, def apks, boolean verbose = false) {
-        installToDevice(device.name, apks, verbose)
+    def installToDevice(GenymotionVirtualDevice device, def apks) {
+        installToDevice(device.name, apks)
     }
 
-    def installToDevice(def deviceName, def apks, boolean verbose = false) {
+    def installToDevice(def deviceName, def apks) {
         if (!apks) {
             return false
         }
 
         if (apks instanceof String) {
-            return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apks], verbose)
+            return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, apks])
 
         } else if (apks instanceof ArrayList) {
 
             def exitValues = []
             apks.each() {
-                int exitValue = cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, it], verbose)
+                int exitValue = cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, INSTALL, it])
                 exitValues.add(exitValue)
             }
             return exitValues
@@ -776,22 +776,22 @@ class GMTool {
         return false
     }
 
-    def flashDevice(GenymotionVirtualDevice device, def zips, boolean verbose = false) {
-        return flashDevice(device.name, zips, verbose)
+    def flashDevice(GenymotionVirtualDevice device, def zips) {
+        return flashDevice(device.name, zips)
     }
 
-    def flashDevice(def deviceName, def zips, boolean verbose = false) {
+    def flashDevice(def deviceName, def zips) {
         if (!zips) {
             return false
         }
 
         if (zips instanceof String) {
-            return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zips], verbose)
+            return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, zips])
 
         } else if (zips instanceof ArrayList) {
             def exitValues = []
             zips.each() {
-                int exitValue = cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, it], verbose)
+                int exitValue = cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, FLASH, it])
                 exitValues.add(exitValue)
             }
             return exitValues
@@ -799,36 +799,36 @@ class GMTool {
         return false
     }
 
-    def adbDisconnectDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return adbDisconnectDevice(device.name, verbose)
+    def adbDisconnectDevice(GenymotionVirtualDevice device) {
+        return adbDisconnectDevice(device.name)
     }
 
-    def adbDisconnectDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, ADBDISCONNECT], verbose)
+    def adbDisconnectDevice(def deviceName) {
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, ADBDISCONNECT])
     }
 
-    def adbConnectDevice(GenymotionVirtualDevice device, boolean verbose = false) {
-        return adbConnectDevice(device.name, verbose)
+    def adbConnectDevice(GenymotionVirtualDevice device) {
+        return adbConnectDevice(device.name)
     }
 
-    def adbConnectDevice(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, ADBCONNECT], verbose)
+    def adbConnectDevice(def deviceName) {
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, ADBCONNECT])
     }
 
-    def logcatClear(GenymotionVirtualDevice device, boolean verbose = false) {
-        return logcatClear(device.name, verbose)
+    def logcatClear(GenymotionVirtualDevice device) {
+        return logcatClear(device.name)
     }
 
-    def logcatClear(def deviceName, boolean verbose = false) {
-        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_CLEAR], verbose)
+    def logcatClear(def deviceName) {
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_CLEAR])
     }
 
-    def logcatDump(GenymotionVirtualDevice device, path, boolean verbose = false) {
-        return logcatDump(device.name, path, verbose)
+    def logcatDump(GenymotionVirtualDevice device, path) {
+        return logcatDump(device.name, path)
     }
 
-    def logcatDump(def deviceName, def path, boolean verbose = false) {
-        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_DUMP, path], verbose)
+    def logcatDump(def deviceName, def path) {
+        return cmd([GMTOOL, DEVICE, OPT_NAME + deviceName, LOGCAT_DUMP, path])
     }
 
     /*
@@ -843,11 +843,10 @@ class GMTool {
      * - <b>count</b> (index of the line)
      *
      * @param command the command line to execute. It can be a String or a table
-     * @param verbose true if you want to print each line returned by the prompt
      * @param addPath true if you want to add the Genymotion path at the begining of the command
      */
-    def cmd(def command, boolean verbose = false, boolean addPath = true) {
-        cmd(command, verbose, addPath, null)
+    def cmd(def command, boolean addPath = true) {
+        cmd(command, addPath, null)
     }
 
     /**
@@ -858,21 +857,20 @@ class GMTool {
      * - <b>count</b> (index of the line)
      *
      * @param command the command line to execute. It can be a String or a table
-     * @param verbose true if you want to print each line returned by the prompt
      * @param addPath true if you want to add the Genymotion path at the beginning of the command
      * @param c the closure to implement after the call
      */
-    def cmd(def command, boolean verbose = false, boolean addPath = true, Closure c) {
+    def cmd(def command, boolean addPath = true, Closure c) {
         if (genymotionConfig == null) {
             return
         }
 
-        def toExec = formatAndLogCommand(command, verbose, addPath)
+        def toExec = formatAndLogCommand(command, addPath)
 
         try {
             def (StringBuffer out, StringBuffer error, int exitValue) = executeCommand(toExec)
 
-            if (verbose || genymotionConfig.verbose) {
+            if (genymotionConfig.verbose) {
                 Log.debug("out:" + out.toString())
             }
 
@@ -913,10 +911,9 @@ class GMTool {
      * - Add the source tag to a gmtool command
      *
      * @param command the command to execute
-     * @param verbose the explicite verbosity
      * @return returns the command to execute
      */
-    def formatAndLogCommand(command, boolean verbose = false, boolean addPath = true) {
+    def formatAndLogCommand(command, boolean addPath = true) {
         def toExec = command
 
         //we eventually insert the genymotion binary path
@@ -935,7 +932,7 @@ class GMTool {
                 toExec.addAll(1, [SOURCE_GRADLE])
             }
 
-            if (verbose || genymotionConfig.verbose) {
+            if (genymotionConfig.verbose) {
                 toExec.addAll(1, [VERBOSE])
                 Log.debug(cleanCommand(toExec))
             }

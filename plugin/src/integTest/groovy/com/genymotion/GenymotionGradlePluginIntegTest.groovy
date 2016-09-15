@@ -64,7 +64,7 @@ class GenymotionGradlePluginIntegTest {
     @Test
     public void canEditDeviceBeforeLaunch() {
         String vdName = "OKOK-junit"
-        def devices = gmtool.getAllDevices(true, false, true)
+        def devices = gmtool.getAllDevices(false, true)
         if (devices.contains(vdName)) {
             gmtool.deleteDevice(vdName)
         }
@@ -91,7 +91,7 @@ class GenymotionGradlePluginIntegTest {
         project.genymotion.devices[0].create()
         project.genymotion.devices[0].checkAndEdit()
 
-        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = gmtool.getDevice(vdName)
         assert densityValue == device.density
         assert intValue == device.width
         assert intValue == device.height
@@ -182,7 +182,7 @@ class GenymotionGradlePluginIntegTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assert !gmtool.isDeviceCreated(vdName, true)
+        assert !gmtool.isDeviceCreated(vdName)
     }
 
     @Test
@@ -197,7 +197,7 @@ class GenymotionGradlePluginIntegTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assert gmtool.isDeviceCreated(vdName, true)
+        assert gmtool.isDeviceCreated(vdName)
     }
 
 

@@ -141,12 +141,12 @@ class GenymotionVirtualDevice {
         (this.name == other.name)
     }
 
-    def fillFromDetails(boolean verbose = false) {
-        gmtool.getDevice(this, verbose)
+    def fillFromDetails() {
+        gmtool.updateDevice(this)
     }
 
     def update() {
-        gmtool.getDevice(this)
+        gmtool.updateDevice(this)
     }
 
     boolean isRunning(update = true) {
