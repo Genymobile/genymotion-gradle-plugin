@@ -843,10 +843,9 @@ class GMTool {
      * - <b>count</b> (index of the line)
      *
      * @param command the command line to execute. It can be a String or a table
-     * @param addPath true if you want to add the Genymotion path at the begining of the command
      */
-    def cmd(def command, boolean addPath = true) {
-        cmd(command, addPath, null)
+    def cmd(def command) {
+        cmd(command, null)
     }
 
     /**
@@ -857,15 +856,14 @@ class GMTool {
      * - <b>count</b> (index of the line)
      *
      * @param command the command line to execute. It can be a String or a table
-     * @param addPath true if you want to add the Genymotion path at the beginning of the command
      * @param c the closure to implement after the call
      */
-    def cmd(def command, boolean addPath = true, Closure c) {
+    def cmd(def command, Closure c) {
         if (genymotionConfig == null) {
             return
         }
 
-        def toExec = formatAndLogCommand(command, addPath)
+        def toExec = formatAndLogCommand(command)
 
         try {
             def (StringBuffer out, StringBuffer error, int exitValue) = executeCommand(toExec)
@@ -913,16 +911,16 @@ class GMTool {
      * @param command the command to execute
      * @return returns the command to execute
      */
-    def formatAndLogCommand(command, boolean addPath = true) {
+    def formatAndLogCommand(command) {
         def toExec = command
 
-        //we eventually insert the genymotion binary path
-        if (genymotionConfig.genymotionPath != null && addPath) {
+        // insert the genymotion binary path
+        if (genymotionConfig.genymotionPath != null) {
             if (toExec instanceof String) {
-                toExec = genymotionConfig.genymotionPath + toExec
+                toExec = prependGenymotionPath(toExec)
             } else {
                 toExec = command.clone()
-                toExec[0] = genymotionConfig.genymotionPath + toExec[0]
+                toExec[0] = prependGenymotionPath(toExec[0])
             }
         }
 
@@ -939,6 +937,21 @@ class GMTool {
         }
 
         return toExec
+    }
+
+    /**
+     * If binary is gmtool or one of the tools we ship in tools/, prepend genymotionPath
+     *
+     * FIXME: This should not be needed. GMTool.cmd should only be used to run gmtool, not other binaries
+     * @param binary to run
+     * @return binary to run, potentially with full path
+     */
+    private String prependGenymotionPath(String binary) {
+        if (binary == GMTOOL || binary.startsWith("tools/")) {
+            return genymotionConfig.genymotionPath + binary
+        } else {
+            return binary
+        }
     }
 
     /**

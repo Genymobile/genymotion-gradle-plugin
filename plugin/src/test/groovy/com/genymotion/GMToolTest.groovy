@@ -1056,7 +1056,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = true
-        gmtool.cmd("sleep 1", false)
+        gmtool.cmd(["sleep", "1"])
     }
 
     @Test(expected = GMToolException)
@@ -1070,7 +1070,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = true
         //XXX: gmtool admin list is supposed to take more than 1 millisecond
-        gmtool.cmd([GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"])
     }
 
     @Test
@@ -1083,7 +1083,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = false
-        gmtool.cmd("sleep 1", false)
+        gmtool.cmd(["sleep", "1"])
     }
 
     @Test
@@ -1096,7 +1096,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = false
-        gmtool.cmd([GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"])
     }
 
     @Test
@@ -1149,14 +1149,15 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.verbose = false
         gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
-        def command = gmtool.formatAndLogCommand(["gmtool", "version"], false)
+        def command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
-        assert command == ["gmtool", "--source=gradle", "version"]
+        def gmtoolFilePath = gmtool.genymotionConfig.genymotionPath + GMTOOL
+        assert command == [gmtoolFilePath, "--source=gradle", "version"]
 
         gmtool.genymotionConfig.version = "2.4.5"
-        command = gmtool.formatAndLogCommand(["gmtool", "version"], false)
+        command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
-        assert command == ["gmtool", "version"]
+        assert command == [gmtoolFilePath, "version"]
     }
 
     @Test(expected = GMToolException)
@@ -1197,7 +1198,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     private static verifyGmtoolCmdWithClosure(GMTool gmtoolSpy, ArrayList<String> command) {
         verify(gmtoolSpy).cmd(
                 eq(command),
-                anyBoolean(),
                 any(Closure)
         )
     }

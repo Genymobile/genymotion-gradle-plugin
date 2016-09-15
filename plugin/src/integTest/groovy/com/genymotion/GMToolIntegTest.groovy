@@ -239,7 +239,7 @@ class GMToolIntegTest {
 
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"], true)
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
         String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
         File file = new File(path)
         file.delete()
@@ -283,7 +283,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"], true)
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
 
         String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
 
@@ -361,7 +361,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
