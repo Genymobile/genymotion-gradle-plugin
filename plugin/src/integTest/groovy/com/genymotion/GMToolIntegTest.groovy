@@ -118,7 +118,7 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        device.update()
 
 
         assert device.androidVersion != null
@@ -144,13 +144,13 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        device.update()
 
         def newName = name + "-clone"
         gmtool.cloneDevice(device, newName)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
-        newDevice.fillFromDetails()
+        newDevice.update()
 
         assert device.androidVersion == newDevice.androidVersion
         assert device.dpi == newDevice.dpi
@@ -170,7 +170,7 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        device.update()
 
         device.navbarVisible = false
         device.height = 600
@@ -185,7 +185,7 @@ class GMToolIntegTest {
         gmtool.editDevice(device)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
-        newDevice.fillFromDetails()
+        newDevice.update()
 
         assert device.androidVersion == newDevice.androidVersion
         assert device.density == newDevice.density

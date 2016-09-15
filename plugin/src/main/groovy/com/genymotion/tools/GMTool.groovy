@@ -284,7 +284,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.fillFromDetails()
+                it.update()
             }
         }
 
@@ -303,7 +303,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.fillFromDetails()
+                it.update()
             }
         }
 
@@ -322,7 +322,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.fillFromDetails()
+                it.update()
             }
         }
 

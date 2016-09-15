@@ -54,7 +54,7 @@ class GenymotionVirtualDevice {
         this.networkInfo = NetworkInfo.createNatNetworkInfo()
 
         if (fill) {
-            fillFromDetails()
+            update()
         }
     }
 
@@ -139,10 +139,6 @@ class GenymotionVirtualDevice {
 
     boolean equals(GenymotionVirtualDevice other) {
         (this.name == other.name)
-    }
-
-    def fillFromDetails() {
-        gmtool.updateDevice(this)
     }
 
     def update() {
