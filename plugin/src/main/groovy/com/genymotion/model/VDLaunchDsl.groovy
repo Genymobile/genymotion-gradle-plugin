@@ -153,33 +153,6 @@ abstract class VDLaunchDsl extends GenymotionVirtualDevice {
         }
     }
 
-    boolean checkAndEdit() {
-        if (!gmtool.isDeviceCreated(this.name)) {
-            return false
-        }
-
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
-
-        if (isDifferentFrom(device)) {
-            return gmtool.editDevice(this)
-        }
-
-        return false
-    }
-
-    //TODO: this could go into GenymotionVirtualDevice (override equals())
-    public boolean isDifferentFrom(GenymotionVirtualDevice device) {
-        return this.density != device.density ||
-                this.width != device.width ||
-                this.height != device.height ||
-                this.virtualKeyboard != device.virtualKeyboard ||
-                this.navbarVisible != device.navbarVisible ||
-                this.nbCpu != device.nbCpu ||
-                this.ram != device.ram ||
-                this.networkInfo.mode != device.networkInfo.mode ||
-                this.networkInfo.bridgeInterface != device.networkInfo.bridgeInterface
-    }
-
     protected def flash() {
         if (flash) {
             gmtool.flashDevice(this, flash)
