@@ -19,6 +19,7 @@
 
 package com.genymotion
 
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
 import com.genymotion.model.GenymotionVDLaunch
@@ -1121,6 +1122,23 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         gmtool.genymotionConfig.verbose = true
         result = gmtool.formatAndLogCommand(command)
         assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
+    }
+
+    @Test
+    public void canFormatCloudCommands() {
+        GMTool gmtool = GMTool.newInstance()
+        def gmtoolFilePath = gmtool.genymotionConfig.genymotionPath + GMTOOL
+        gmtool.deviceLocation = DeviceLocation.CLOUD
+
+        def result = gmtool.formatAndLogCommand([GMTOOL, ADMIN, CREATE, "tmpl", "name"])
+        assert result == [gmtoolFilePath, OPT_CLOUD, ADMIN, CREATE, "tmpl", "name"]
+
+        result = gmtool.formatAndLogCommand([GMTOOL, DEVICE, "foo"])
+        assert result == [gmtoolFilePath, OPT_CLOUD, DEVICE, "foo"]
+
+        // actions from other groups, like config, should not be affected
+        result = gmtool.formatAndLogCommand([GMTOOL, CONFIG, VERSION])
+        assert result == [gmtoolFilePath, CONFIG, VERSION]
     }
 
     @Test
