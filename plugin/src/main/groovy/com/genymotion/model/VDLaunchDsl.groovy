@@ -19,12 +19,34 @@
 
 package com.genymotion.model
 
+import com.genymotion.tools.GMToolException
+import com.genymotion.tools.Log
+import com.genymotion.tools.Tools
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class VDLaunchDsl extends GenymotionVDLaunch {
+abstract class VDLaunchDsl extends GenymotionVirtualDevice {
+
+    public static final String INVALID_PARAMETER = "You need to specify an already created device name " +
+            "or a valid template to declare a device"
 
     List<String> productFlavors
+
+    DeviceLocation deviceLocation
+
+    protected def templateExists = null
+    protected def deviceExists = null
+    protected boolean create = false
+
+    String template
+    def pushBefore
+    Map<String, String> pullBefore
+    def pushAfter
+    Map<String, String> pullAfter
+    def install
+    def flash
+    String logcat
+    boolean clearLogAfterBoot = true
 
     VDLaunchDsl(String name) {
         super(name)
@@ -78,36 +100,135 @@ class VDLaunchDsl extends GenymotionVDLaunch {
         setProductFlavors(flavors)
     }
 
-    public void setNetworkMode(String... networkingMode) {
-        if (networkingMode == null) {
-            networkInfo = NetworkInfo.createNatNetworkInfo()
+    public void checkParams(boolean abortOnError = true) {
+        checkNameAndTemplate(abortOnError)
+        checkPaths(abortOnError)
+    }
+
+    def checkPaths(boolean abortOnError = true) {
+        def file
+
+        if ((file = Tools.checkFilesExist(pushBefore)) != true) {
+            handlePathError("The file $file on pushBefore instruction for the device $name was not found.",
+                    abortOnError)
         }
 
-        if (NetworkInfo.isNetworkModeValid(networkingMode[0])) {
-            networkInfo = new NetworkInfo(networkingMode[0], networkingMode[1])
+        if ((file = Tools.checkFilesExist(pushAfter)) != true) {
+            handlePathError("The file $file on pushAfter instruction for the device $name was not found.", abortOnError)
+        }
+
+        if ((file = Tools.checkFilesExist(flash)) != true) {
+            handlePathError("The file $file on flash instruction for the device $name was not found.", abortOnError)
+        }
+
+        if ((file = Tools.checkFilesExist(install)) != true) {
+            handlePathError("The file $file on install instruction for the device $name was not found.", abortOnError)
+        }
+    }
+
+    private def handlePathError(String message, boolean abortOnError = true) {
+        if (abortOnError) {
+            throw new FileNotFoundException(message)
         } else {
-            networkInfo = NetworkInfo.createNatNetworkInfo()
+            Log.warn(message)
         }
     }
 
-    public void setNetworkMode(String networkingMode) {
-        if (networkingMode == null) {
-            networkInfo = NetworkInfo.createNatNetworkInfo()
-            return
-        }
+    public void checkNameAndTemplate(boolean abortOnError = true) {
+        deviceExists = gmtool.isDeviceCreated(name)
+        templateExists = gmtool.templateExists(template)
 
-        if (NetworkInfo.isNetworkModeValid(networkingMode)) {
-            networkInfo = new NetworkInfo(networkingMode, "")
-        } else {
-            networkInfo = NetworkInfo.createNatNetworkInfo()
+        if (!deviceExists && !templateExists) {
+            if (abortOnError) {
+                throw new GMToolException("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
+            } else {
+                Log.warn("On device \"$name\", template: \"$template\". " + INVALID_PARAMETER)
+            }
+
+        } else if (deviceExists && template != null) {
+            Log.info(name + " already exists. A new device won't be created before launch and template is ignored")
+
+        } else if (templateExists) {
+            create = true
         }
     }
 
-    public void networkMode(String networkingMode) {
-        setNetworkMode(networkingMode)
+    boolean checkAndEdit() {
+        if (!gmtool.isDeviceCreated(this.name)) {
+            return false
+        }
+
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
+
+        if (isDifferentFrom(device)) {
+            return gmtool.editDevice(this)
+        }
+
+        return false
     }
 
-    public void networkMode(String... networkingMode) {
-        setNetworkMode(networkingMode)
+    //TODO: this could go into GenymotionVirtualDevice (override equals())
+    public boolean isDifferentFrom(GenymotionVirtualDevice device) {
+        return this.density != device.density ||
+                this.width != device.width ||
+                this.height != device.height ||
+                this.virtualKeyboard != device.virtualKeyboard ||
+                this.navbarVisible != device.navbarVisible ||
+                this.nbCpu != device.nbCpu ||
+                this.ram != device.ram ||
+                this.networkInfo.mode != device.networkInfo.mode ||
+                this.networkInfo.bridgeInterface != device.networkInfo.bridgeInterface
+    }
+
+    protected def flash() {
+        if (flash) {
+            gmtool.flashDevice(this, flash)
+        }
+    }
+
+    protected def install() {
+        if (install) {
+            gmtool.installToDevice(this, install)
+        }
+    }
+
+    protected def pushBefore() {
+        if (pushBefore) {
+            gmtool.pushToDevice(this, pushBefore)
+        }
+    }
+
+    protected def pullBefore() {
+        if (pullBefore) {
+            gmtool.pullFromDevice(this, pullBefore)
+        }
+    }
+
+    protected def pushAfter() {
+        if (pushAfter) {
+            gmtool.pushToDevice(this, pushAfter)
+        }
+    }
+
+    protected def pullAfter() {
+        if (pullAfter) {
+            gmtool.pullFromDevice(this, pullAfter)
+        }
+    }
+
+    protected def logcatClear() {
+        gmtool.logcatClear(this)
+    }
+
+    protected def logcatClearIfNeeded() {
+        if (logcat?.trim() && clearLogAfterBoot) {
+            gmtool.logcatClear(this)
+        }
+    }
+
+    protected def logcatDump() {
+        if (logcat?.trim()) {
+            gmtool.logcatDump(this, logcat)
+        }
     }
 }

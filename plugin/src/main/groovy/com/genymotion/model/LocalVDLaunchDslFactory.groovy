@@ -23,18 +23,18 @@ import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 import org.gradle.internal.reflect.Instantiator
 
-class VDLaunchDslFactory implements NamedDomainObjectFactory<VDLaunchDsl> {
+class LocalVDLaunchDslFactory implements NamedDomainObjectFactory<LocalVDLaunchDsl> {
 
     final Instantiator instantiator
     final Project project
 
-    public VDLaunchDslFactory(Instantiator instantiator, Project project) {
+    public LocalVDLaunchDslFactory(Instantiator instantiator, Project project) {
         this.instantiator = instantiator
         this.project = project
     }
 
     @Override
-    VDLaunchDsl create(String name) {
-        return instantiator.newInstance(VDLaunchDsl.class, name)
+    LocalVDLaunchDsl create(String name) {
+        return instantiator.newInstance(LocalVDLaunchDsl.class, name)
     }
 }

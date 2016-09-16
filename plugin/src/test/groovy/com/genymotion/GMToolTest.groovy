@@ -22,7 +22,6 @@ package com.genymotion
 import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.model.NetworkInfo
 import com.genymotion.tools.GMTool
@@ -379,22 +378,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "randomDevice"])
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "stoppedDevice1"])
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, "stoppedDevice2"])
-    }
-
-    @Test
-    public void canCreateDeviceFromVDLaunch() {
-        GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
-
-        GenymotionVDLaunch deviceToCreate = new GenymotionVDLaunch("device name")
-        deviceToCreate.template = "Genymotion Template"
-
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
-        assert deviceCreated.name == deviceToCreate.name
-
-        verifyGmtoolCmdWithClosure(gmtoolSpy,
-                [GMTOOL, ADMIN, CREATE, deviceToCreate.template, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH,
-                 OPT_HEIGHT, OPT_VIRTUAL_KEYBOARD, OPT_NAVBAR, OPT_NBCPU, OPT_RAM, OPT_NETWORK_MODE,
-                 OPT_BRIDGE_INTERFACE])
     }
 
     @Test

@@ -20,6 +20,7 @@
 package com.genymotion
 
 import com.genymotion.model.CloudVDLaunchDsl
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tasks.GenymotionFinishTask
@@ -86,6 +87,10 @@ class GenymotionPluginExtension {
             }
         }
         return devices
+    }
+
+    def getDevicesByLocationAndFlavor(DeviceLocation deviceLocation, String flavor) {
+        return deviceLocation == DeviceLocation.LOCAL ? getDevices(flavor) : getCloudDevices(flavor)
     }
 
     def checkParams() {

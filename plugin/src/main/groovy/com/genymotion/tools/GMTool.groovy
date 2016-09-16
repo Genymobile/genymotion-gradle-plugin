@@ -22,7 +22,6 @@ package com.genymotion.tools
 import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.model.NetworkInfo
 import org.codehaus.groovy.runtime.NullObject
@@ -506,10 +505,6 @@ class GMTool {
         } else {
             return false
         }
-    }
-
-    def createDevice(GenymotionVDLaunch device) {
-        return createDevice(device.template, device.name)
     }
 
     def createDevice(GenymotionTemplate template) {

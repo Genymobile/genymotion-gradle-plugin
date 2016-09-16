@@ -1,6 +1,6 @@
 package com.genymotion
 
-import com.genymotion.model.GenymotionVDLaunch
+import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
@@ -33,7 +33,7 @@ class VDLaunchDslTest extends CleanMetaTest {
 
         assert project.genymotion.devices != null
         assert project.genymotion.devices[0].stopWhenFinish == false
-        assert project.genymotion.devices[0].deleteWhenFinish == null
+        assert project.genymotion.devices[0].deleteWhenFinish == true
         assert vdTemplate == project.genymotion.devices[0].template
         assert project.genymotion.devices[0].templateExists
         assert project.genymotion.devices[0].deviceExists == false
@@ -57,7 +57,7 @@ class VDLaunchDslTest extends CleanMetaTest {
         project.genymotion.checkParams()
 
         assert project.genymotion.devices != null
-        assert project.genymotion.devices[0].stopWhenFinish == null
+        assert project.genymotion.devices[0].stopWhenFinish == true
         assert project.genymotion.devices[0].deleteWhenFinish == true
         assert vdTemplate == project.genymotion.devices[0].template
         assert project.genymotion.devices[0].templateExists
@@ -66,7 +66,7 @@ class VDLaunchDslTest extends CleanMetaTest {
 
     @Test
     public void canCheckPaths() {
-        def vd = new GenymotionVDLaunch("device_name")
+        def vd = new LocalVDLaunchDsl("device_name")
         vd.pushBefore = ["src/integTest/res/test/test.txt", "src/integTest/res/test/test2.txt", "src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
         vd.pushAfter = ["src/integTest/res/test/test.txt": "/sdcard/Downloads/", "src/integTest/res/test/test2.txt": "/sdcard/Downloads/",
                         "src/integTest/res/test/test.zip": "/sdcard/Downloads/", "src/integTest/res/test/test2.zip": "/sdcard/Downloads/"]
@@ -76,7 +76,7 @@ class VDLaunchDslTest extends CleanMetaTest {
         vd.checkPaths() //throws exception if problem
 
 
-        vd = new GenymotionVDLaunch("device_name")
+        vd = new LocalVDLaunchDsl("device_name")
         vd.pushBefore = ["src/integTest/res/test/test.txt", "NOPE", "src/integTest/res/test/test.zip", "src/integTest/res/test/test2.zip"]
         try {
             vd.checkPaths()
@@ -87,7 +87,7 @@ class VDLaunchDslTest extends CleanMetaTest {
         }
 
 
-        vd = new GenymotionVDLaunch("device_name")
+        vd = new LocalVDLaunchDsl("device_name")
         vd.pushAfter = ["src/integTest/res/test/test.txt": "/sdcard/Downloads/", "src/integTest/res/test/test2.txt": "/sdcard/Downloads/",
                         "src/integTest/res/test/test.zip": "/sdcard/Downloads/", "NOPE": "/sdcard/Downloads/"]
         try {
@@ -99,7 +99,7 @@ class VDLaunchDslTest extends CleanMetaTest {
         }
 
 
-        vd = new GenymotionVDLaunch("device_name")
+        vd = new LocalVDLaunchDsl("device_name")
         vd.install = "NOPE"
         try {
             vd.checkPaths()
@@ -110,7 +110,7 @@ class VDLaunchDslTest extends CleanMetaTest {
         }
 
 
-        vd = new GenymotionVDLaunch("device_name")
+        vd = new LocalVDLaunchDsl("device_name")
         vd.flash = "NOPE"
         try {
             vd.checkPaths()
@@ -123,7 +123,7 @@ class VDLaunchDslTest extends CleanMetaTest {
 
     @Test
     public void canSetProductFlavor() {
-        VDLaunchDsl vd = new VDLaunchDsl("device")
+        VDLaunchDsl vd = new LocalVDLaunchDsl("device")
 
         vd.productFlavors "NONO"
         assert vd.productFlavors == ["NONO"]

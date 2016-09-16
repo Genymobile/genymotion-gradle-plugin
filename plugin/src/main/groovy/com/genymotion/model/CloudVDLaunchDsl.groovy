@@ -24,11 +24,10 @@ import groovy.transform.CompileStatic
 /**
  * Represents an entry inside the `cloudDevices` container
  */
-
 @CompileStatic
 class CloudVDLaunchDsl extends VDLaunchDsl {
-
     CloudVDLaunchDsl(String name) {
         super(name)
+        deviceLocation = DeviceLocation.CLOUD
     }
 }
