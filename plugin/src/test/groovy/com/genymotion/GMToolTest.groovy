@@ -231,7 +231,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetRunningDevicesByName() {
         GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
-        def devices = gmtoolSpy.getRunningDevices(false, false, true)
+        def devices = gmtoolSpy.getRunningDevices(false, true)
 
         assert devices.contains("randomDevice")
         assert !devices.contains("stoppedDevice2")
@@ -244,7 +244,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetRunningDevices() {
         GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
-        def devices = gmtoolSpy.getRunningDevices(false, false, false)
+        def devices = gmtoolSpy.getRunningDevices(false, false)
 
         assert devices[0].name == "randomDevice"
         assert devices[0].ip == "192.168.56.101"
@@ -264,7 +264,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 [new StringBuffer().append(deviceDetailOutput), null, 0]
         ).when(gmtoolSpy).executeCommand(anyList())
 
-        def devices = gmtoolSpy.getRunningDevices(false, true, false)
+        def devices = gmtoolSpy.getRunningDevices(true, false)
 
         checkDetailedDeviceContent(devices[0])
 
@@ -276,7 +276,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetStoppedDevicesByName() {
         GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
-        def devices = gmtoolSpy.getStoppedDevices(false, false, true)
+        def devices = gmtoolSpy.getStoppedDevices(false, true)
 
         assert !devices.contains("randomDevice")
         assert devices.contains("stoppedDevice2")
@@ -289,7 +289,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetStoppedDevices() {
         GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
-        def devices = gmtoolSpy.getStoppedDevices(false, false, false)
+        def devices = gmtoolSpy.getStoppedDevices(false, false)
 
         assert devices[0].name == "stoppedDevice1"
         assert devices[0].ip == "0.0.0.0"
@@ -309,7 +309,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 [new StringBuffer().append(deviceDetailOutput), null, 0]
         ).when(gmtoolSpy).executeCommand(anyList())
 
-        def devices = gmtoolSpy.getStoppedDevices(false, true, false)
+        def devices = gmtoolSpy.getStoppedDevices(true, false)
 
         assert devices.size() == 2
         checkDetailedDeviceContent(devices[0])
@@ -324,7 +324,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetAllDevicesByName() {
         GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
-        def devices = gmtoolSpy.getAllDevices(false, false, true)
+        def devices = gmtoolSpy.getAllDevices(false, true)
 
         assert devices.size() == 3
         assert devices.containsAll(["randomDevice", "stoppedDevice1", "stoppedDevice2"])
@@ -336,7 +336,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetAllDevices() {
         GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
-        def devices = gmtoolSpy.getAllDevices(false, false, false)
+        def devices = gmtoolSpy.getAllDevices(false, false)
 
         //@formatter:off
         assert devices.size()       == 3
@@ -367,7 +367,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 [new StringBuffer().append(deviceDetailOutput), null, 0]
         ).when(gmtoolSpy).executeCommand(anyList())
 
-        def devices = gmtoolSpy.getAllDevices(false, true, false)
+        def devices = gmtoolSpy.getAllDevices(true, false)
 
         assert devices.size() == 3
         checkDetailedDeviceContent(devices[0])
@@ -482,7 +482,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetDetailedDevice() {
-        def device = testGMTool method: "getDevice",
+        def device = testGMTool method: "updateDevice",
                 output: deviceDetailOutput,
                 expectedCommand: [GMTOOL, ADMIN, DETAILS, deviceNamePlaceHolder]
 
@@ -588,7 +588,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         expectedException.expectMessage("GMTool command failed. Error code: $exitCode." + errorString)
 
         gmtoolSpy.genymotionConfig.abortOnError = true
-        gmtoolSpy.getDevice("sqfqqfd", true)
+        gmtoolSpy.getDevice("sqfqqfd")
     }
 
     @Test
@@ -1056,7 +1056,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = true
-        gmtool.cmd("sleep 1", true, false)
+        gmtool.cmd(["sleep", "1"])
     }
 
     @Test(expected = GMToolException)
@@ -1070,7 +1070,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = true
         //XXX: gmtool admin list is supposed to take more than 1 millisecond
-        gmtool.cmd([GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"])
     }
 
     @Test
@@ -1083,7 +1083,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = false
-        gmtool.cmd("sleep 1", true, false)
+        gmtool.cmd(["sleep", "1"])
     }
 
     @Test
@@ -1096,7 +1096,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = false
-        gmtool.cmd([GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"])
     }
 
     @Test
@@ -1118,11 +1118,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         def result = gmtool.formatAndLogCommand(command)
         assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, SOURCE_GRADLE, "nok"]
 
-        result = gmtool.formatAndLogCommand(command, true)
-        assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
-
         gmtool.genymotionConfig.verbose = true
-        result = gmtool.formatAndLogCommand(command, false)
+        result = gmtool.formatAndLogCommand(command)
         assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
     }
 
@@ -1152,14 +1149,15 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.verbose = false
         gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
-        def command = gmtool.formatAndLogCommand(["gmtool", "version"], false, false)
+        def command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
-        assert command == ["gmtool", "--source=gradle", "version"]
+        def gmtoolFilePath = gmtool.genymotionConfig.genymotionPath + GMTOOL
+        assert command == [gmtoolFilePath, "--source=gradle", "version"]
 
         gmtool.genymotionConfig.version = "2.4.5"
-        command = gmtool.formatAndLogCommand(["gmtool", "version"], false, false)
+        command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
-        assert command == ["gmtool", "version"]
+        assert command == [gmtoolFilePath, "version"]
     }
 
     @Test(expected = GMToolException)
@@ -1200,8 +1198,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     private static verifyGmtoolCmdWithClosure(GMTool gmtoolSpy, ArrayList<String> command) {
         verify(gmtoolSpy).cmd(
                 eq(command),
-                anyBoolean(),
-                anyBoolean(),
                 any(Closure)
         )
     }

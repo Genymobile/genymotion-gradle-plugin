@@ -44,7 +44,7 @@ class IntegrationTestTools {
 
         GMTool.DEFAULT_CONFIG = project.genymotion.config
         GMTool gmtool = GMTool.newInstance()
-        gmtool.getConfig(project.genymotion.config, true)
+        gmtool.getConfig(project.genymotion.config)
         project.genymotion.config.verbose = true
 
         return [project, gmtool]
@@ -114,10 +114,10 @@ class IntegrationTestTools {
     static void cleanAfterTests(GMTool gmtool) {
         println "Cleaning after tests"
 
-        gmtool.getConfig(true)
+        gmtool.getConfig()
 
         try {
-            def devices = gmtool.getAllDevices(false, false, false)
+            def devices = gmtool.getAllDevices(false, false)
             def pattern = ~/^.+?\-junit$/
             println devices
 
@@ -125,9 +125,9 @@ class IntegrationTestTools {
                 if (pattern.matcher(it.name).matches()) {
                     println "Removing $it.name"
                     if (it.isRunning()) {
-                        gmtool.stopDevice(it.name, true)
+                        gmtool.stopDevice(it.name)
                     }
-                    gmtool.deleteDevice(it.name, true)
+                    gmtool.deleteDevice(it.name)
                 }
             }
         } catch (Exception e) {
@@ -172,10 +172,10 @@ class IntegrationTestTools {
         }
 
         if (config.username && config.password) {
-            gmtool.setConfig(config, true)
+            gmtool.setConfig(config)
 
             if (config.license && registerLicense) {
-                gmtool.setLicense(config.license, true)
+                gmtool.setLicense(config.license)
             }
         }
     }

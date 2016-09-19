@@ -211,7 +211,7 @@ class GenymotionPluginExtension {
 
         if (!config.isEmpty()) {
 
-            gmtool.setConfig(config, config.verbose)
+            gmtool.setConfig(config)
 
             if (config.license) {
                 gmtool.setLicense(config.license)

@@ -57,7 +57,7 @@ class GMToolIntegTest {
     @Test
     public void isTemplatesAvailable() {
 
-        def templates = gmtool.getTemplates(true)
+        def templates = gmtool.getTemplates()
         assert templates.size() > 0
         assert templates[0].name?.trim()
     }
@@ -67,7 +67,7 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         gmtool.startDevice(name)
-        def devices = gmtool.getRunningDevices(true, false, true)
+        def devices = gmtool.getRunningDevices(false, true)
 
         assert devices.contains(name)
 
@@ -80,11 +80,11 @@ class GMToolIntegTest {
     public void canGetStoppedDevices() {
         String name = IntegrationTestTools.createADevice(gmtool)
 
-        def runningDevices = gmtool.getRunningDevices(true, false, true)
+        def runningDevices = gmtool.getRunningDevices(false, true)
         if (runningDevices.contains(name)) {
             gmtool.stopDevice(name)
         }
-        def devices = gmtool.getStoppedDevices(true, false, true)
+        def devices = gmtool.getStoppedDevices(false, true)
 
         assert devices.contains(name)
 
@@ -96,7 +96,7 @@ class GMToolIntegTest {
     public void canCreateDevice() {
         IntegrationTestTools.createAllDevices(gmtool)
 
-        def devices = gmtool.getAllDevices(true)
+        def devices = gmtool.getAllDevices()
 
         IntegrationTestTools.DEVICES.each() { key, value ->
             boolean exists = false
@@ -118,7 +118,7 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails(true)
+        device.update()
 
 
         assert device.androidVersion != null
@@ -144,13 +144,13 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        device.update()
 
         def newName = name + "-clone"
         gmtool.cloneDevice(device, newName)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(newName)
-        newDevice.fillFromDetails()
+        newDevice.update()
 
         assert device.androidVersion == newDevice.androidVersion
         assert device.dpi == newDevice.dpi
@@ -170,7 +170,7 @@ class GMToolIntegTest {
         String name = IntegrationTestTools.createADevice(gmtool)
 
         GenymotionVirtualDevice device = new GenymotionVirtualDevice(name)
-        device.fillFromDetails()
+        device.update()
 
         device.navbarVisible = false
         device.height = 600
@@ -185,7 +185,7 @@ class GMToolIntegTest {
         gmtool.editDevice(device)
 
         GenymotionVirtualDevice newDevice = new GenymotionVirtualDevice(name)
-        newDevice.fillFromDetails()
+        newDevice.update()
 
         assert device.androidVersion == newDevice.androidVersion
         assert device.density == newDevice.density
@@ -239,12 +239,12 @@ class GMToolIntegTest {
 
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"], true)
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
         String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
         File file = new File(path)
         file.delete()
 
-        gmtool.logcatDump(name, path, true)
+        gmtool.logcatDump(name, path)
 
         file = new File(path)
         assert file.exists()
@@ -256,7 +256,7 @@ class GMToolIntegTest {
         assert gotIt
         file.delete()
 
-        exitCode = gmtool.logcatClear(name, true)
+        exitCode = gmtool.logcatClear(name)
         assert exitCode == 0
 
         gotIt = false
@@ -283,11 +283,11 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"], true)
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
 
         String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
 
-        exitCode = gmtool.logcatDump(name, path, true)
+        exitCode = gmtool.logcatDump(name, path)
         assert exitCode == 0
 
         boolean gotIt = false
@@ -313,12 +313,12 @@ class GMToolIntegTest {
         def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
-        gmtool.installToDevice(name, "src/integTest/res/test/test.apk", true)
+        gmtool.installToDevice(name, "src/integTest/res/test/test.apk")
 
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean installed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "pm list packages"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "pm list packages"]) { line, count ->
             if (line.contains("com.genymotion.test")) {
                 installed = true
             }
@@ -331,15 +331,15 @@ class GMToolIntegTest {
 
         String name = IntegrationTestTools.createADevice(gmtool)
 
-        def exitCode = gmtool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
-        gmtool.pushToDevice(name, "src/integTest/res/test/test.txt", true)
+        gmtool.pushToDevice(name, "src/integTest/res/test/test.txt")
 
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /sdcard/Download/"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /sdcard/Download/"]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -352,16 +352,16 @@ class GMToolIntegTest {
 
         String name = IntegrationTestTools.createADevice(gmtool)
 
-        def exitCode = gmtool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
         def destination = "/sdcard/"
-        gmtool.pushToDevice(name, ["src/integTest/res/test/test.txt": destination], true)
+        gmtool.pushToDevice(name, ["src/integTest/res/test/test.txt": destination])
 
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -374,13 +374,13 @@ class GMToolIntegTest {
 
         String name = IntegrationTestTools.createADevice(gmtool)
 
-        def exitCode = gmtool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
         //removing the pulled files
         IntegrationTestTools.recreatePulledDirectory()
 
-        gmtool.pullFromDevice(name, "/system/build.prop", IntegrationTestTools.PULLED_PATH, true)
+        gmtool.pullFromDevice(name, "/system/build.prop", IntegrationTestTools.PULLED_PATH)
         File file = new File(IntegrationTestTools.PULLED_PATH + "build.prop")
         assert file.exists()
     }
@@ -390,15 +390,15 @@ class GMToolIntegTest {
 
         String name = IntegrationTestTools.createADevice(gmtool)
 
-        def exitCode = gmtool.startDevice(name, true)
+        def exitCode = gmtool.startDevice(name)
         assert exitCode == 0
 
-        gmtool.flashDevice(name, "src/integTest/res/test/test.zip", true)
+        gmtool.flashDevice(name, "src/integTest/res/test/test.zip")
 
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean flashed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /system"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /system"]) { line, count ->
             if (line.contains("touchdown")) {
                 flashed = true
             }
