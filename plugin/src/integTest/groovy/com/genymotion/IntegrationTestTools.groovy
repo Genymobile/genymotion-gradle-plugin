@@ -20,6 +20,7 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -213,5 +214,34 @@ class IntegrationTestTools {
         }
 
         return project
+    }
+
+    static List runAndCheckLogcat(Project project, GMTool gmtool, String deviceName, String path) {
+        project.evaluate()
+        project.tasks.genymotionLaunch.exec()
+
+        GenymotionVirtualDevice device = gmtool.getDevice(deviceName)
+
+        //we add a line into logcat
+        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
+        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
+
+        project.tasks.genymotionFinish.exec()
+
+        //we reach the file created
+        File file = new File(path)
+
+        boolean clearedAfterBoot = true
+        boolean logcatDumped = false
+
+        file.eachLine {
+            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<")) {
+                clearedAfterBoot = false
+            }
+            if (it.contains(uniqueString)) {
+                logcatDumped = true
+            }
+        }
+        [clearedAfterBoot, logcatDumped]
     }
 }
