@@ -25,7 +25,7 @@ import com.genymotion.tools.Tools
 import groovy.transform.CompileStatic
 
 @CompileStatic
-abstract class VDLaunchDsl extends GenymotionVirtualDevice {
+class VDLaunchDsl extends GenymotionVirtualDevice {
 
     public static final String INVALID_PARAMETER = "You need to specify an already created device name " +
             "or a valid template to declare a device"
