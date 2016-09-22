@@ -26,6 +26,7 @@ import org.gradle.api.Project
 import org.junit.Test
 
 import static org.junit.Assert.fail
+import static org.mockito.Mockito.when
 
 class CloudVDLaunchDslTest extends CleanMetaTest {
     Project project
@@ -38,6 +39,8 @@ class CloudVDLaunchDslTest extends CleanMetaTest {
 
         for (String property : CloudVDLaunchDsl.LOCAL_ONLY_PROPERTIES) {
             (project, gmtool) = TestTools.init()
+            GMTool.metaClass.static.newInstance = { gmtool }
+            when(gmtool.templateExists(templateName)).thenReturn(true)
             project.genymotion.cloudDevices {
                 "$deviceName" {
                     template templateName
