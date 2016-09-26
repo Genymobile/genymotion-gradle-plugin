@@ -138,7 +138,16 @@ class GenymotionVirtualDevice {
     }
 
     boolean equals(GenymotionVirtualDevice other) {
-        (this.name == other.name)
+        name == other.name &&
+                density == other.density &&
+                width == other.width &&
+                height == other.height &&
+                virtualKeyboard == other.virtualKeyboard &&
+                navbarVisible == other.navbarVisible &&
+                nbCpu == other.nbCpu &&
+                ram == other.ram &&
+                networkInfo.mode == other.networkInfo.mode &&
+                networkInfo.bridgeInterface == other.networkInfo.bridgeInterface
     }
 
     def update() {

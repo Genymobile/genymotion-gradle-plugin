@@ -17,24 +17,16 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.genymotion.model
+package com.genymotion.tools
 
-import org.gradle.api.NamedDomainObjectFactory
-import org.gradle.api.Project
-import org.gradle.internal.reflect.Instantiator
+import groovy.transform.CompileStatic
 
-class VDLaunchDslFactory implements NamedDomainObjectFactory<VDLaunchDsl> {
-
-    final Instantiator instantiator
-    final Project project
-
-    public VDLaunchDslFactory(Instantiator instantiator, Project project) {
-        this.instantiator = instantiator
-        this.project = project
+@CompileStatic
+class InvalidPropertyException extends Exception {
+    public InvalidPropertyException(String name) {
+        super("Invalid property: $name")
+        this.name = name
     }
 
-    @Override
-    VDLaunchDsl create(String name) {
-        return instantiator.newInstance(VDLaunchDsl.class, name)
-    }
+    public final name
 }

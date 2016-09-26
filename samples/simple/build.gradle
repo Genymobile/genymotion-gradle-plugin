@@ -9,8 +9,9 @@ buildscript {
 
 apply plugin: "genymotion"
 
-genymotion.config{
-    genymotionPath = "/Applications/Genymotion.app/Contents/MacOS/" //TODO change it if needed
+genymotion.config {
+    // Define the path to gmtool if Genymotion has not been installed in the default directory
+    // genymotionPath = "/path/to/genymotion/dir/"
     verbose = true
 //    fromFile                  //get the whole configuration from a file. The content get the priority to the .gradle file
 //
@@ -79,5 +80,11 @@ genymotion {
 //            ram 1024                                                         //set amount of RAM
 //            networkMode "bridge", "en0"                                  //set network configuration
 //        }
+    }
+
+    cloudDevices {
+        anotherNexus5 {
+            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+        }
     }
 }

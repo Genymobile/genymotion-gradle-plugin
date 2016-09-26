@@ -20,6 +20,7 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.Log
 import org.gradle.api.Project
@@ -85,11 +86,13 @@ class GenymotionGradlePluginIntegTest {
             }
         }
 
-        assert project.genymotion.devices[0] != null
-        assert project.genymotion.devices[0].name == vdName
+        LocalVDLaunchDsl launchDsl = project.genymotion.devices[0]
+        assert launchDsl != null
+        assert launchDsl.name == vdName
 
-        project.genymotion.devices[0].create()
-        project.genymotion.devices[0].checkAndEdit()
+        gmtool.createDevice(launchDsl.template, launchDsl.name, launchDsl.density, launchDsl.width, launchDsl.height,
+                launchDsl.virtualKeyboard, launchDsl.navbarVisible, launchDsl.nbCpu, launchDsl.ram)
+        launchDsl.checkAndEdit()
 
         GenymotionVirtualDevice device = gmtool.getDevice(vdName)
         assert densityValue == device.density

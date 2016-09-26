@@ -19,9 +19,9 @@
 
 package com.genymotion.tools
 
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.model.NetworkInfo
 import org.codehaus.groovy.runtime.NullObject
@@ -34,6 +34,8 @@ class GMTool {
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
 
+    DeviceLocation deviceLocation = DeviceLocation.LOCAL
+
     static final String GENYMOTION_PATH_ERROR_MESSAGE =
             "gmtool command not found. You have to specify the Genymotion path with the " +
                     "genymotion.config.genymotionPath parameter."
@@ -41,6 +43,8 @@ class GMTool {
             "Current gmtool version is not compatible with %s. Please update Genymotion " +
                     "following this link: $GENYMOTION_DOWNLOAD_URL"
     static final String GENYMOTION_DOWNLOAD_URL = "https://www.genymotion.com/#!/download"
+
+    private static final Set<String> CLOUD_ACTION_GROUPS = [ADMIN, DEVICE]
 
     static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG) {
         GMTool gmtool = new GMTool()
@@ -503,10 +507,6 @@ class GMTool {
         }
     }
 
-    def createDevice(GenymotionVDLaunch device) {
-        return createDevice(device.template, device.name)
-    }
-
     def createDevice(GenymotionTemplate template) {
         return createDevice(template.name, template.name)
     }
@@ -515,10 +515,16 @@ class GMTool {
                      def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
                      def networkMode = "", def bridgeInterface = "") {
         def exitValue = noNull() {
-            cmd([GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
-                 OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
-                 OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkMode,
-                 OPT_BRIDGE_INTERFACE + bridgeInterface])
+            def args = [GMTOOL, ADMIN, CREATE, template, deviceName]
+            // FIXME Instead of skipping all options for cloud devices, just do not add options which are set to default values
+            if (deviceLocation == DeviceLocation.LOCAL) {
+                args.addAll(
+                        OPT_DENSITY + density, OPT_WIDTH + width,
+                        OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
+                        OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkMode,
+                        OPT_BRIDGE_INTERFACE + bridgeInterface)
+            }
+            cmd(args)
         }
 
         if (exitValue == RETURN_NO_ERROR) {
@@ -925,6 +931,12 @@ class GMTool {
         }
 
         if (toExec[0]?.contains(GMTOOL)) {
+            if (deviceLocation == DeviceLocation.CLOUD) {
+                String actionGroup = toExec[1]
+                if (CLOUD_ACTION_GROUPS.contains(actionGroup)) {
+                    toExec.add(1, OPT_CLOUD)
+                }
+            }
 
             if (isCompatibleWith(FEATURE_SOURCE_PARAM)) {
                 toExec.addAll(1, [SOURCE_GRADLE])

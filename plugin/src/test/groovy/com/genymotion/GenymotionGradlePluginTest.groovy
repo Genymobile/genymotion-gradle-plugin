@@ -20,8 +20,9 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionConfig
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.LocalVDLaunchDsl
+import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tasks.GenymotionFinishTask
 import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
@@ -38,6 +39,7 @@ import org.junit.experimental.categories.Category
 import org.junit.rules.ExpectedException
 import org.slf4j.Logger
 
+import static com.genymotion.model.GenymotionVirtualDevice.*
 import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
 import static org.hamcrest.CoreMatchers.allOf
 import static org.hamcrest.CoreMatchers.equalTo
@@ -104,7 +106,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         expectedException.expect(GMToolException)
-        expectedException.expectMessage("On device \"test\", template: \"null\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        expectedException.expectMessage("On device \"test\", template: \"null\". " + VDLaunchDsl.INVALID_PARAMETER)
         project.genymotion.checkParams()
 
     }
@@ -123,7 +125,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         expectedException.expect(GMToolException)
-        expectedException.expectMessage("On device \"$vdName\", template: \"null\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        expectedException.expectMessage("On device \"$vdName\", template: \"null\". " + VDLaunchDsl.INVALID_PARAMETER)
         project.genymotion.checkParams()
 
     }
@@ -145,7 +147,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         expectedException.expect(GMToolException)
-        expectedException.expectMessage("On device \"$vdName\", template: \"$templateName\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        expectedException.expectMessage("On device \"$vdName\", template: \"$templateName\". " + VDLaunchDsl.INVALID_PARAMETER)
         project.genymotion.checkParams()
     }
 
@@ -167,7 +169,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         expectedException.expect(GMToolException)
-        expectedException.expectMessage("On device \"$vdName\", template: \"$templateName\". " + GenymotionVDLaunch.INVALID_PARAMETER)
+        expectedException.expectMessage("On device \"$vdName\", template: \"$templateName\". " + VDLaunchDsl.INVALID_PARAMETER)
         project.genymotion.checkParams()
     }
 
@@ -252,7 +254,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         assert project.genymotion.devices[0] != null
         assert project.genymotion.devices[0].name != null
         assert project.genymotion.devices[0].create
-        assert project.genymotion.devices[0].deleteWhenFinish == null
+        assert project.genymotion.devices[0].deleteWhenFinish == true
     }
 
     @Test
@@ -306,7 +308,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         assert project.genymotion.devices[0] != null
         assert project.genymotion.devices[0].name == vdName
 
-        GenymotionVirtualDevice device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
         assert densityValue == device.density
         assert intValue == device.width
         assert intValue == device.height
@@ -315,8 +317,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         assert 1 == device.nbCpu
         assert 2048 == device.ram
 
-        device.create()
-        verify(gmtool).createDevice(device)
+        gmtool.createDevice(templateName, vdName)
 
         device.checkAndEdit()
         verify(gmtool).editDevice(device)
@@ -339,7 +340,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         project.evaluate()
-        project.genymotion.devices[0].state = GenymotionVDLaunch.STATE_ON
+        project.genymotion.devices[0].state = GenymotionVirtualDevice.STATE_ON
 
         project.tasks.genymotionFinish.exec()
 
@@ -364,7 +365,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         project.evaluate()
-        project.genymotion.devices[0].state = GenymotionVDLaunch.STATE_ON
+        project.genymotion.devices[0].state = GenymotionVirtualDevice.STATE_ON
 
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
@@ -391,7 +392,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         }
 
         project.evaluate()
-        project.genymotion.devices[0].state = GenymotionVDLaunch.STATE_ON
+        project.genymotion.devices[0].state = GenymotionVirtualDevice.STATE_ON
 
         project.tasks.genymotionLaunch.exec()
         verify(gmtool).logcatClear(project.genymotion.devices[0])
@@ -414,15 +415,15 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 deleteWhenFinish true
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        LocalVDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        verify(gmtool).startDevice(device)
-        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool).startDevice(device.name)
+        device.state = GenymotionVirtualDevice.STATE_ON
 
         project.tasks.genymotionFinish.exec()
-        verify(gmtool).stopDevice(device)
-        verify(gmtool).deleteDevice(device)
+        verify(gmtool).stopDevice(device.name)
+        verify(gmtool).deleteDevice(device.name)
     }
 
     @Test
@@ -439,15 +440,15 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 deleteWhenFinish false
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        LocalVDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        verify(gmtool).startDevice(device)
-        device.state = GenymotionVDLaunch.STATE_ON
+        verify(gmtool).startDevice(device.name)
+        device.state = GenymotionVirtualDevice.STATE_ON
 
         project.tasks.genymotionFinish.exec()
-        verify(gmtool).stopDevice(device)
-        verify(gmtool, never()).deleteDevice(device)
+        verify(gmtool).stopDevice(device.name)
+        verify(gmtool, never()).deleteDevice(device.name)
     }
 
     @Test
@@ -524,10 +525,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 pushAfter path
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        device.state = GenymotionVDLaunch.STATE_ON
+        device.state = GenymotionVirtualDevice.STATE_ON
         verify(gmtool, never()).pushToDevice(device, path)
 
         project.tasks.genymotionFinish.exec()
@@ -569,10 +570,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 pushAfter listOfFiles
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        device.state = GenymotionVDLaunch.STATE_ON
+        device.state = GenymotionVirtualDevice.STATE_ON
         verify(gmtool, never()).pushToDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
@@ -616,10 +617,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 stopWhenFinish false
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        device.state = GenymotionVDLaunch.STATE_ON
+        device.state = GenymotionVirtualDevice.STATE_ON
         verify(gmtool, never()).pushToDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
@@ -663,10 +664,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 stopWhenFinish false
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        device.state = GenymotionVDLaunch.STATE_ON
+        device.state = GenymotionVirtualDevice.STATE_ON
         verify(gmtool, never()).pushToDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
@@ -709,10 +710,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 stopWhenFinish false
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        device.state = GenymotionVDLaunch.STATE_ON
+        device.state = GenymotionVirtualDevice.STATE_ON
         verify(gmtool, never()).pullFromDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
@@ -754,10 +755,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
                 stopWhenFinish false
             }
         }
-        GenymotionVDLaunch device = project.genymotion.devices[0]
+        VDLaunchDsl device = project.genymotion.devices[0]
 
         project.tasks.genymotionLaunch.exec()
-        device.state = GenymotionVDLaunch.STATE_ON
+        device.state = GenymotionVirtualDevice.STATE_ON
         verify(gmtool, never()).pullFromDevice(device, listOfFiles)
 
         project.tasks.genymotionFinish.exec()
