@@ -19,6 +19,7 @@
 
 package com.genymotion.model
 
+import com.genymotion.tools.GMTool
 import com.genymotion.tools.InvalidPropertyException
 import com.genymotion.tools.Log
 
@@ -38,8 +39,8 @@ class CloudVDLaunchDsl extends VDLaunchDsl {
     // Since VDLaunchDsl currently inherits from GenymotionVirtualDevice, it exposes all device properties. Some of them
     // are not supported on the cloud, so we need to prevent the user from using them.
     // When VDLaunchDsl no longer inherits from GenymotionVirtualDevice these checks won't be necessary anymore.
-    public void checkParams(boolean abortOnError = true) {
-        super.checkParams(abortOnError)
+    public void checkParams(GMTool gmtool, boolean abortOnError = true) {
+        super.checkParams(gmtool, abortOnError)
         for (String property : LOCAL_ONLY_PROPERTIES) {
             def value = this."$property"
             if (value) {

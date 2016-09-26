@@ -98,15 +98,17 @@ class GenymotionPluginExtension {
         //Check if the flavors entered exist
         checkProductFlavors()
 
+        GMTool gmtool = GMTool.newInstance()
         deviceLaunches.each {
-            it.checkParams(project.genymotion.config.abortOnError)
+            it.checkParams(gmtool, project.genymotion.config.abortOnError)
         }
+        gmtool.deviceLocation = DeviceLocation.CLOUD
         cloudDeviceLaunches.each {
-            it.checkParams(project.genymotion.config.abortOnError)
+            it.checkParams(gmtool, project.genymotion.config.abortOnError)
         }
 
         //check gmtool path is found
-        GMTool.newInstance().usage()
+        gmtool.usage()
     }
 
     public void checkProductFlavors() {

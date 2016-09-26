@@ -22,6 +22,7 @@ package com.genymotion
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.LocalDeviceController
 import com.genymotion.tools.Log
 import org.gradle.api.Project
 import org.junit.After
@@ -92,7 +93,7 @@ class GenymotionGradlePluginIntegTest {
 
         gmtool.createDevice(launchDsl.template, launchDsl.name, launchDsl.density, launchDsl.width, launchDsl.height,
                 launchDsl.virtualKeyboard, launchDsl.navbarVisible, launchDsl.nbCpu, launchDsl.ram)
-        launchDsl.checkAndEdit()
+        LocalDeviceController.checkAndEdit(gmtool, launchDsl)
 
         GenymotionVirtualDevice device = gmtool.getDevice(vdName)
         assert densityValue == device.density

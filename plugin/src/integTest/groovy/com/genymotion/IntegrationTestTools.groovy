@@ -125,6 +125,7 @@ class IntegrationTestTools {
             devices.each() {
                 if (pattern.matcher(it.name).matches()) {
                     println "Removing $it.name"
+                    gmtool.updateDevice(it)
                     if (it.isRunning()) {
                         gmtool.stopDevice(it.name)
                     }

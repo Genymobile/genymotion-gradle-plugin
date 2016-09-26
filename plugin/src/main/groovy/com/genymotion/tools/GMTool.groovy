@@ -288,7 +288,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.update()
+                updateDevice(it)
             }
         }
 
@@ -307,7 +307,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.update()
+                updateDevice(it)
             }
         }
 
@@ -326,7 +326,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.update()
+                updateDevice(it)
             }
         }
 

@@ -1,6 +1,7 @@
 package com.genymotion.tools
 
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.model.VDLaunchDsl
 
 /**
@@ -30,7 +31,8 @@ class LocalDeviceController extends DeviceController {
     }
 
     @Override
-    protected void startDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
+    protected void startDevice(GMTool gmtool, VDLaunchDsl launchDsl_) {
+        LocalVDLaunchDsl launchDsl = (LocalVDLaunchDsl)launchDsl_
         if (!launchDsl.start) {
             return
         }
@@ -41,17 +43,18 @@ class LocalDeviceController extends DeviceController {
 
         if (launchDsl.name && runningDevices != null && !runningDevices?.contains(launchDsl.name)) {
             if (!virtualDeviceNames?.contains(launchDsl.name)) {
-                launchDsl.checkParams()
+                launchDsl.checkParams(gmtool)
                 gmtool.createDevice(launchDsl.template, launchDsl.name, launchDsl.density, launchDsl.width, launchDsl.height,
                         launchDsl.virtualKeyboard, launchDsl.navbarVisible, launchDsl.nbCpu, launchDsl.ram)
             }
-            launchDsl.checkAndEdit()
+            checkAndEdit(gmtool, launchDsl)
             gmtool.startDevice(launchDsl.name)
         }
     }
 
     @Override
-    protected void stopDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
+    protected void stopDevice(GMTool gmtool, VDLaunchDsl launchDsl_) {
+        LocalVDLaunchDsl launchDsl = (LocalVDLaunchDsl)launchDsl_
         try {
             if (!launchDsl.stopWhenFinish) {
                 return
@@ -62,6 +65,19 @@ class LocalDeviceController extends DeviceController {
             }
             gmtool.deleteDevice(launchDsl.name)
         } catch (GMToolException e) {
+        }
+    }
+
+    static void checkAndEdit(GMTool gmtool, VDLaunchDsl launchDsl) {
+        if (!gmtool.isDeviceCreated(launchDsl.name)) {
+            return
+        }
+
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(launchDsl.name)
+        gmtool.updateDevice(device)
+
+        if (device != launchDsl) {
+            gmtool.editDevice(launchDsl)
         }
     }
 }

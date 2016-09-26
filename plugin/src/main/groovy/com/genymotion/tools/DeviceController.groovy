@@ -72,15 +72,13 @@ abstract class DeviceController {
     protected abstract void stopDevice(GMTool gmtool, VDLaunchDsl launchDsl)
 
     protected void launchDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
-        // FIXME: GenymotionVirtualDevice should not have a gmtool instance
-        launchDsl.gmtool = gmtool
         try {
             startDevice(gmtool, launchDsl)
-            launchDsl.logcatClearIfNeeded()
-            launchDsl.flash()
-            launchDsl.install()
-            launchDsl.pushBefore()
-            launchDsl.pullBefore()
+            launchDsl.logcatClearIfNeeded(gmtool)
+            launchDsl.doFlash(gmtool)
+            launchDsl.doInstall(gmtool)
+            launchDsl.doPushBefore(gmtool)
+            launchDsl.doPullBefore(gmtool)
         } catch (Exception e) {
             e.printStackTrace()
             Log.error("An error occured. Deleting $launchDsl.name if needed.")
@@ -94,13 +92,12 @@ abstract class DeviceController {
     }
 
     protected void finishDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
-        // FIXME: GenymotionVirtualDevice should not have a gmtool instance
-        launchDsl.gmtool = gmtool
         try {
+            gmtool.updateDevice(launchDsl)
             if (launchDsl.isRunning()) {
-                launchDsl.logcatDump()
-                launchDsl.pushAfter()
-                launchDsl.pullAfter()
+                launchDsl.logcatDump(gmtool)
+                launchDsl.doPushAfter(gmtool)
+                launchDsl.doPullAfter(gmtool)
             }
             stopDevice(gmtool, launchDsl)
 

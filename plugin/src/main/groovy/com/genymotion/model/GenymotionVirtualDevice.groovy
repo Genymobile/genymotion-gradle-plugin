@@ -46,16 +46,9 @@ class GenymotionVirtualDevice {
     String ip
     NetworkInfo networkInfo
 
-    protected GMTool gmtool
-
-    GenymotionVirtualDevice(String name, boolean fill = false) {
-        this.name = name;
-        this.gmtool = GMTool.newInstance()
+    GenymotionVirtualDevice(String name) {
+        this.name = name
         this.networkInfo = NetworkInfo.createNatNetworkInfo()
-
-        if (fill) {
-            update()
-        }
     }
 
     GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible,
@@ -109,30 +102,6 @@ class GenymotionVirtualDevice {
         this.networkInfo = networkInfo
     }
 
-    protected def start() {
-        gmtool.startDevice(this)
-    }
-
-    protected def restart() {
-        gmtool.restartDevice(this)
-    }
-
-    protected def stop() {
-        gmtool.stopDevice(this)
-    }
-
-    protected def reset() {
-        gmtool.resetDevice(this)
-    }
-
-    protected def adbdisconnect() {
-        gmtool.adbDisconnectDevice(this)
-    }
-
-    protected def adbconnect() {
-        gmtool.adbConnectDevice(this)
-    }
-
     String toString() {
         "Device: $name\n"
     }
@@ -150,15 +119,7 @@ class GenymotionVirtualDevice {
                 networkInfo.bridgeInterface == other.networkInfo.bridgeInterface
     }
 
-    def update() {
-        gmtool.updateDevice(this)
-    }
-
-    boolean isRunning(update = true) {
-        if (update) {
-            this.update()
-        }
-
+    boolean isRunning() {
         state == STATE_ON
     }
 }

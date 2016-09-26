@@ -17,9 +17,6 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.genymotion.model
-
-import com.genymotion.tools.GMToolException
-
 /**
  * Represents an entry inside the `devices` container
  */
@@ -64,20 +61,5 @@ class LocalVDLaunchDsl extends VDLaunchDsl {
 
     public void networkMode(String... networkingMode) {
         setNetworkMode(networkingMode)
-    }
-
-    // FIXME: Should be in LocalDeviceController
-    boolean checkAndEdit() {
-        if (!gmtool.isDeviceCreated(this.name)) {
-            return false
-        }
-
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
-
-        if (device != this) {
-            gmtool.editDevice(this)
-        }
-
-        return false
     }
 }
