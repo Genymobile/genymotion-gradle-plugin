@@ -225,7 +225,7 @@ class IntegrationTestTools {
 
         //we add a line into logcat
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "log $uniqueString"])
 
         project.tasks.genymotionFinish.exec()
 

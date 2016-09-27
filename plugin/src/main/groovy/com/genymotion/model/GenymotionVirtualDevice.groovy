@@ -43,7 +43,7 @@ class GenymotionVirtualDevice {
     String uuid
     String path
     String state
-    String ip
+    String adbSerial
     NetworkInfo networkInfo
 
     GenymotionVirtualDevice(String name) {

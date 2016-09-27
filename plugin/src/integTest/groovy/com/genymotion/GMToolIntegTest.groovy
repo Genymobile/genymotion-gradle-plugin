@@ -238,7 +238,7 @@ class GMToolIntegTest {
 
         boolean gotIt = false
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "log $uniqueString"])
         String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
         File file = new File(path)
         file.delete()
@@ -282,7 +282,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"])
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "log $uniqueString"])
 
         String path = IntegrationTestTools.TEMP_PATH + "logcat.dump"
 
@@ -317,7 +317,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean installed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "pm list packages"]) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "pm list packages"]) { line, count ->
             if (line.contains("com.genymotion.test")) {
                 installed = true
             }
@@ -338,7 +338,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /sdcard/Download/"]) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls /sdcard/Download/"]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -360,7 +360,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination]) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls", destination]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -397,7 +397,7 @@ class GMToolIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean flashed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /system"]) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls /system"]) { line, count ->
             if (line.contains("touchdown")) {
                 flashed = true
             }
