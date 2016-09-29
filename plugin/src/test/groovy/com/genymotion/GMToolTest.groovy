@@ -563,13 +563,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     @Test
-    public void canStartDeviceByName() {
-        testGMToolByName method: "stopDevice",
-                output: "",
-                expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
-    }
-
-    @Test
     public void canStartDevice() {
         testGMTool method: "startDevice",
                 output: "",
