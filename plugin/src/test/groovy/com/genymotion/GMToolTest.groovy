@@ -138,6 +138,9 @@ Template installed
 Creating virtual device...
 Virtual device created successfully"""
 
+    public static final String startDisposableDeviceOutput = """\
+Disposable virtual device started successfully"""
+
     public static final String installOutput = """\
 Installing /Users/anonymous/Downloads/devices-release-unaligned.apk on nexus7...
 File installed on nexus7"""
@@ -455,6 +458,23 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                  OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
     }
 
+
+    @Test
+    public void canStartDisposableDeviceFromParam() {
+        GMTool gmtoolSpy = initSpyAndOutput(startDisposableDeviceOutput)
+
+        String template = "A template"
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+        int         nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
+
+        GenymotionVirtualDevice deviceCreated = gmtoolSpy.startDisposableDevice(template, deviceName, density, width, height,
+                virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, STARTDISPOSABLE, template, deviceName])
+    }
+
     @Test
     public void canGetDetailedDeviceByName() {
         def device = testGMToolByName method: "getDevice",
@@ -588,6 +608,21 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
     }
+
+    @Test
+    public void canStopDisposableDevice() {
+        testGMTool method: "stopDisposableDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOPDISPOSABLE, deviceNamePlaceHolder]
+    }
+
+    @Test
+    public void canStopDisposableDeviceByName() {
+        testGMToolByName method: "stopDisposableDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOPDISPOSABLE, deviceNamePlaceHolder]
+    }
+
 
     @Test
     public void canStopAllDevices() {

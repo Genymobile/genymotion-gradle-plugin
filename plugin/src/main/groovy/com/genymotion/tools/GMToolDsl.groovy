@@ -46,6 +46,8 @@ class GMToolDsl {
     public static final String STOP          = "stop"
     public static final String STOPALL       = "stopall"
     public static final String FACTORY_RESET = "factoryreset"
+    public static final String STARTDISPOSABLE = "start-disposable"
+    public static final String STOPDISPOSABLE = "stop-disposable"
     //device actions
     public static final String DEVICE        = "device"
     public static final String PUSH          = "push"

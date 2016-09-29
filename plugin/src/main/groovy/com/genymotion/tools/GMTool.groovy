@@ -671,6 +671,33 @@ class GMTool {
         return cmd([GMTOOL, ADMIN, STOPALL])
     }
 
+
+    def startDisposableDevice(def template, def deviceName, def density = "", def width = "", def height = "",
+                              def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
+                              def networkMode = "", def bridgeInterface = "") {
+        def exitValue = noNull() {
+            def args = [GMTOOL, ADMIN, STARTDISPOSABLE, template, deviceName]
+            cmd(args)
+        }
+
+        if (exitValue == RETURN_NO_ERROR) {
+            NetworkInfo networkInfo = new NetworkInfo(networkMode, bridgeInterface);
+
+            return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible,
+                    nbcpu, ram, networkInfo)
+        } else {
+            return exitValue
+        }
+    }
+
+    def stopDisposableDevice(GenymotionVirtualDevice device) {
+        return stopDisposableDevice(device.name)
+    }
+
+    def stopDisposableDevice(def deviceName) {
+        return cmd([GMTOOL, ADMIN, STOPDISPOSABLE, deviceName])
+    }
+
     def resetDevice(GenymotionVirtualDevice device) {
         return resetDevice(device.name)
     }
