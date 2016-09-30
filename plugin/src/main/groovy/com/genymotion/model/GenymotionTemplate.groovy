@@ -19,6 +19,9 @@
 
 package com.genymotion.model
 
+/**
+ * A POD class representing a device template
+ */
 class GenymotionTemplate {
     String name
     String uuid

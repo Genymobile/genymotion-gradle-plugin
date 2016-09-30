@@ -17,8 +17,11 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.genymotion.model
+
 /**
- * Represents an entry inside the `devices` container
+ * Represents a device definition inside the `devices` container
+ *
+ * Adds properties which are specific to local devices
  */
 class LocalVDLaunchDsl extends VDLaunchDsl {
     boolean start = true

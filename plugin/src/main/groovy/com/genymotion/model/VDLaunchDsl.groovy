@@ -25,6 +25,11 @@ import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
 import groovy.transform.CompileStatic
 
+/**
+ * Base class for device definitions
+ *
+ * Contains properties available for both local and cloud devices
+ */
 @CompileStatic
 class VDLaunchDsl extends GenymotionVirtualDevice {
 

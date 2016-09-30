@@ -5,7 +5,7 @@ import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.model.VDLaunchDsl
 
 /**
- * A DeviceController for local devices
+ * A {@link DeviceController} for local devices
  */
 class LocalDeviceController extends DeviceController {
     private def runningDevices

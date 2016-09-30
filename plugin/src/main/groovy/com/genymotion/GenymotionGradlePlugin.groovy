@@ -33,6 +33,11 @@ import org.gradle.internal.reflect.Instantiator
 
 import javax.inject.Inject
 
+/**
+ * The plugin entry point
+ *
+ * Let Gradle know about the "genymotion" extension
+ */
 class GenymotionGradlePlugin implements Plugin<Project> {
 
     static final String PLUGIN_GROUP = "Genymotion"

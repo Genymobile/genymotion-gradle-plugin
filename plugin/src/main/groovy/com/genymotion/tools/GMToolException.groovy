@@ -21,6 +21,9 @@ package com.genymotion.tools
 
 import groovy.transform.CompileStatic
 
+/**
+ * Thrown when a gmtool command fails
+ */
 @CompileStatic
 class GMToolException extends Exception {
     GMToolException() {

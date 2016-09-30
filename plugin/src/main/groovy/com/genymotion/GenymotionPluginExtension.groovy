@@ -34,6 +34,9 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 
+/**
+ * Holds all the properties defined in a `genymotion` entry defined in a Gradle file
+ */
 class GenymotionPluginExtension {
 
     private static String LAUNCH_MANUALLY_MESSAGE = "genymotionLaunch/Finish tasks are not injected " +

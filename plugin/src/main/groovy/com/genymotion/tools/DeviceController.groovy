@@ -67,10 +67,28 @@ abstract class DeviceController {
      */
     protected abstract GMTool createGMTool()
 
+    /**
+     * Create (if necessary) and start the device defined in launchDsl
+     *
+     * @param gmtool The gmtool instance to use
+     * @param launchDsl The definition of the device
+     */
     protected abstract void startDevice(GMTool gmtool, VDLaunchDsl launchDsl)
 
+    /**
+     * Stop (and delete if necessary) the device defined in launchDsl
+     *
+     * @param gmtool The gmtool instance to use
+     * @param launchDsl The definition of the device
+     */
     protected abstract void stopDevice(GMTool gmtool, VDLaunchDsl launchDsl)
 
+    /**
+     * Call {@link #startDevice} then perform all actions defined in launchDsl up to the *Before actions
+     *
+     * @param gmtool The gmtool instance to use
+     * @param launchDsl The definition of the device
+     */
     protected void launchDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
         try {
             startDevice(gmtool, launchDsl)
@@ -91,6 +109,11 @@ abstract class DeviceController {
         }
     }
 
+    /**
+     * Perform all actions defined after the *Before actions, then call {@link #stopDevice}
+     * @param gmtool
+     * @param launchDsl
+     */
     protected void finishDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
         try {
             gmtool.updateDevice(launchDsl)

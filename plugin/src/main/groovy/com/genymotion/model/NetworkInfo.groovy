@@ -2,6 +2,12 @@ package com.genymotion.model
 
 import com.genymotion.tools.GMToolDsl
 
+/**
+ * Represents the details of the network configuration of a local device
+ *
+ * A local device can be connected either in NAT or Bridged mode. If it is connected in Bridged mode, then the bridge
+ * interface must be defined.
+ */
 class NetworkInfo {
     private static final String EMPTY_INTERFACE = ""
     private static final String NETWORK_DETAILS_SEPARATOR = " "

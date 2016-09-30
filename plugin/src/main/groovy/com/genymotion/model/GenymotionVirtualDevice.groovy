@@ -23,7 +23,11 @@ import com.genymotion.tools.GMTool
 import com.genymotion.tools.Log
 import sun.nio.ch.Net
 
-
+/**
+ * The state of a virtual device
+ *
+ * GMTool can fill this class with information about existing devices.
+ */
 class GenymotionVirtualDevice {
     static final String STATE_ON = "On"
     static final String STATE_OFF = "Off"

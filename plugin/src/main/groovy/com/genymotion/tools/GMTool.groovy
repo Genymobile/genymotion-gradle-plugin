@@ -30,6 +30,11 @@ import java.util.concurrent.TimeoutException
 
 import static com.genymotion.tools.GMToolDsl.*
 
+/**
+ * Wraps calls to the gmtool binary
+ *
+ * depending on the value of the deviceLocation property, it will generate calls for local or cloud devices
+ */
 class GMTool {
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
