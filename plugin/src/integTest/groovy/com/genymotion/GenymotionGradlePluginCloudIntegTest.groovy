@@ -25,7 +25,7 @@ import org.gradle.api.Project
 import org.junit.Before
 import org.junit.Test
 
-class CloudPluginIntegTest {
+class GenymotionGradlePluginCloudIntegTest {
 
     Project project
     GMTool gmtool
