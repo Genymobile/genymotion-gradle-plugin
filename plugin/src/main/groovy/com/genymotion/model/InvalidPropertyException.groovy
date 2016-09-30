@@ -17,10 +17,13 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.genymotion.tools
+package com.genymotion.model
 
 import groovy.transform.CompileStatic
 
+/**
+ * Thrown by {@link CloudVDLaunchDsl} when a local-device only parameter is used for a cloud device
+ */
 @CompileStatic
 class InvalidPropertyException extends Exception {
     public InvalidPropertyException(String name) {

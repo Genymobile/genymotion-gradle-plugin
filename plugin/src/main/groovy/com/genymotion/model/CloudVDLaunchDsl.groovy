@@ -20,7 +20,6 @@
 package com.genymotion.model
 
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.InvalidPropertyException
 import com.genymotion.tools.Log
 
 /**
