@@ -472,7 +472,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
-                [GMTOOL, ADMIN, STARTDISPOSABLE, template, deviceName])
+                [GMTOOL, ADMIN, START_DISPOSABLE, template, deviceName])
     }
 
     @Test
@@ -606,14 +606,14 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canStopDisposableDevice() {
         testGMTool method: "stopDisposableDevice",
                 output: "",
-                expectedCommand: [GMTOOL, ADMIN, STOPDISPOSABLE, deviceNamePlaceHolder]
+                expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
     }
 
     @Test
     public void canStopDisposableDeviceByName() {
         testGMToolByName method: "stopDisposableDevice",
                 output: "",
-                expectedCommand: [GMTOOL, ADMIN, STOPDISPOSABLE, deviceNamePlaceHolder]
+                expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
     }
 
 

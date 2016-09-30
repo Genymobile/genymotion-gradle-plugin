@@ -676,7 +676,7 @@ class GMTool {
                               def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
                               def networkMode = "", def bridgeInterface = "") {
         def exitValue = noNull() {
-            def args = [GMTOOL, ADMIN, STARTDISPOSABLE, template, deviceName]
+            def args = [GMTOOL, ADMIN, START_DISPOSABLE, template, deviceName]
             cmd(args)
         }
 
@@ -695,7 +695,7 @@ class GMTool {
     }
 
     def stopDisposableDevice(def deviceName) {
-        return cmd([GMTOOL, ADMIN, STOPDISPOSABLE, deviceName])
+        return cmd([GMTOOL, ADMIN, STOP_DISPOSABLE, deviceName])
     }
 
     def resetDevice(GenymotionVirtualDevice device) {
