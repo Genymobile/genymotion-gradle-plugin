@@ -465,7 +465,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         String template = "A template"
         def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
-        int         nbcpu, int ram) = getDeviceParams()
+             int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
         GenymotionVirtualDevice deviceCreated = gmtoolSpy.startDisposableDevice(template, deviceName, density, width, height,
@@ -615,7 +615,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
     }
-
 
     @Test
     public void canStopAllDevices() {

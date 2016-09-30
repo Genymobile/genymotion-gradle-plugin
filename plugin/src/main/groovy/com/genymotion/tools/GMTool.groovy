@@ -671,7 +671,6 @@ class GMTool {
         return cmd([GMTOOL, ADMIN, STOPALL])
     }
 
-
     def startDisposableDevice(def template, def deviceName, def density = "", def width = "", def height = "",
                               def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
                               def networkMode = "", def bridgeInterface = "") {
@@ -681,7 +680,7 @@ class GMTool {
         }
 
         if (exitValue == RETURN_NO_ERROR) {
-            NetworkInfo networkInfo = new NetworkInfo(networkMode, bridgeInterface);
+            NetworkInfo networkInfo = new NetworkInfo(networkMode, bridgeInterface)
 
             return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible,
                     nbcpu, ram, networkInfo)
