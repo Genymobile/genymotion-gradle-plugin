@@ -26,7 +26,7 @@ cloud devices.
 GenymotionConfig represents the configuration inside the `genymotion` block.
 
 LocalVDLaunchDsl and CloudVDLaunchDsl represent the definition of a device in
-the `devices` and `localDevices` block, respectively. They both inherit from
+the `devices` and `cloudDevices` blocks, respectively. They both inherit from
 VDLaunchDsl, which contains common properties.
 
 ### Actions
