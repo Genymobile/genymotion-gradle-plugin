@@ -34,11 +34,11 @@ class GenymotionLaunchTask extends DefaultTask {
             Log.info("Starting devices")
         }
 
-        execByType(DeviceLocation.LOCAL)
-        execByType(DeviceLocation.CLOUD)
+        execByLocation(DeviceLocation.LOCAL)
+        execByLocation(DeviceLocation.CLOUD)
     }
 
-    def execByType(DeviceLocation deviceLocation) {
+    def execByLocation(DeviceLocation deviceLocation) {
         def devices = project.genymotion.getDevicesByLocationAndFlavor(deviceLocation, flavor)
 
         if (!devices.empty) {

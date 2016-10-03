@@ -19,11 +19,17 @@
 
 package com.genymotion.model
 
+import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
 import groovy.transform.CompileStatic
 
+/**
+ * Base class for device definitions
+ *
+ * Contains properties available for both local and cloud devices
+ */
 @CompileStatic
 class VDLaunchDsl extends GenymotionVirtualDevice {
 
@@ -100,8 +106,8 @@ class VDLaunchDsl extends GenymotionVirtualDevice {
         setProductFlavors(flavors)
     }
 
-    public void checkParams(boolean abortOnError = true) {
-        checkNameAndTemplate(abortOnError)
+    public void checkParams(GMTool gmtool, boolean abortOnError = true) {
+        checkNameAndTemplate(gmtool, abortOnError)
         checkPaths(abortOnError)
     }
 
@@ -134,7 +140,7 @@ class VDLaunchDsl extends GenymotionVirtualDevice {
         }
     }
 
-    public void checkNameAndTemplate(boolean abortOnError = true) {
+    public void checkNameAndTemplate(GMTool gmtool, boolean abortOnError = true) {
         deviceExists = gmtool.isDeviceCreated(name)
         templateExists = gmtool.templateExists(template)
 
@@ -153,53 +159,49 @@ class VDLaunchDsl extends GenymotionVirtualDevice {
         }
     }
 
-    protected def flash() {
+    def doFlash(GMTool gmtool) {
         if (flash) {
             gmtool.flashDevice(this, flash)
         }
     }
 
-    protected def install() {
+    def doInstall(GMTool gmtool) {
         if (install) {
             gmtool.installToDevice(this, install)
         }
     }
 
-    protected def pushBefore() {
+    def doPushBefore(GMTool gmtool) {
         if (pushBefore) {
             gmtool.pushToDevice(this, pushBefore)
         }
     }
 
-    protected def pullBefore() {
+    def doPullBefore(GMTool gmtool) {
         if (pullBefore) {
             gmtool.pullFromDevice(this, pullBefore)
         }
     }
 
-    protected def pushAfter() {
+    def doPushAfter(GMTool gmtool) {
         if (pushAfter) {
             gmtool.pushToDevice(this, pushAfter)
         }
     }
 
-    protected def pullAfter() {
+    def doPullAfter(GMTool gmtool) {
         if (pullAfter) {
             gmtool.pullFromDevice(this, pullAfter)
         }
     }
 
-    protected def logcatClear() {
-        gmtool.logcatClear(this)
-    }
-
-    protected def logcatClearIfNeeded() {
+    def logcatClearIfNeeded(GMTool gmtool) {
         if (logcat?.trim() && clearLogAfterBoot) {
             gmtool.logcatClear(this)
         }
     }
 
-    protected def logcatDump() {
+    def logcatDump(GMTool gmtool) {
         if (logcat?.trim()) {
             gmtool.logcatDump(this, logcat)
         }

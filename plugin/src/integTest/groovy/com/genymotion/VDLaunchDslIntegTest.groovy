@@ -25,6 +25,7 @@ class VDLaunchDslIntegTest {
         def device = gmtool.getDevice(name)
         assert !device.isRunning()
         gmtool.startDevice(device)
+        gmtool.updateDevice(device)
         assert device.isRunning()
     }
 }

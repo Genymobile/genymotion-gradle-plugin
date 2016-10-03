@@ -106,6 +106,7 @@ The Gradle Plugin for Genymotion is an open source project under GPL v3 license.
 
 Pull requests are strongly encouraged.
 
+You can learn more about the plugin architecture in the [architecture document](docs/architecture.md).
 
 ### Unit testing the project
 Before pulling, you need to run the unit tests on the project. You can run it with the command:

@@ -27,6 +27,7 @@ import com.genymotion.tasks.GenymotionFinishTask
 import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
+import com.genymotion.tools.LocalDeviceController
 import com.genymotion.tools.Log
 import org.answerit.mock.slf4j.LoggingLevel
 import org.answerit.mock.slf4j.MockSlf4j
@@ -319,7 +320,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
         gmtool.createDevice(templateName, vdName)
 
-        device.checkAndEdit()
+        LocalDeviceController.checkAndEdit(gmtool, device)
         verify(gmtool).editDevice(device)
     }
 

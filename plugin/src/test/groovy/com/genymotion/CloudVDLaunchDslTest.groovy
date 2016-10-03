@@ -21,7 +21,7 @@ package com.genymotion
 
 import com.genymotion.model.CloudVDLaunchDsl
 import com.genymotion.tools.GMTool
-import com.genymotion.tools.InvalidPropertyException
+import com.genymotion.model.InvalidPropertyException
 import org.gradle.api.Project
 import org.junit.Test
 

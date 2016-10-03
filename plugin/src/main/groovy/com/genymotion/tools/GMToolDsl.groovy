@@ -19,6 +19,9 @@
 
 package com.genymotion.tools
 
+/**
+ * Defines all gmtool commands and options
+ */
 class GMToolDsl {
 
     //@formatter:off

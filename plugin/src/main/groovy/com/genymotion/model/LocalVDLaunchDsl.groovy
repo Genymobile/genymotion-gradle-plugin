@@ -18,10 +18,10 @@
  */
 package com.genymotion.model
 
-import com.genymotion.tools.GMToolException
-
 /**
- * Represents an entry inside the `devices` container
+ * Represents a device definition inside the `devices` container
+ *
+ * Adds properties which are specific to local devices
  */
 class LocalVDLaunchDsl extends VDLaunchDsl {
     boolean start = true
@@ -64,20 +64,5 @@ class LocalVDLaunchDsl extends VDLaunchDsl {
 
     public void networkMode(String... networkingMode) {
         setNetworkMode(networkingMode)
-    }
-
-    // FIXME: Should be in LocalDeviceController
-    boolean checkAndEdit() {
-        if (!gmtool.isDeviceCreated(this.name)) {
-            return false
-        }
-
-        GenymotionVirtualDevice device = new GenymotionVirtualDevice(this.name, true)
-
-        if (device != this) {
-            gmtool.editDevice(this)
-        }
-
-        return false
     }
 }

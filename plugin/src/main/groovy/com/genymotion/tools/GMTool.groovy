@@ -30,6 +30,11 @@ import java.util.concurrent.TimeoutException
 
 import static com.genymotion.tools.GMToolDsl.*
 
+/**
+ * Wraps calls to the gmtool binary
+ *
+ * depending on the value of the deviceLocation property, it will generate calls for local or cloud devices
+ */
 class GMTool {
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
@@ -66,7 +71,7 @@ class GMTool {
         String version = null
 
         cmd([GMTOOL, VERSION]) { line, count ->
-            String[] info = line.split(":")
+            String[] info = line.split(":", 2)
             if (info.length > 1 && info[1].trim()) {
 
                 switch (info[0].trim()) {
@@ -116,7 +121,7 @@ class GMTool {
 
         def exitCode = cmd([GMTOOL, CONFIG, PRINT]) { line, count ->
 
-            String[] info = line.split("=")
+            String[] info = line.split("=", 2)
 
             if (info.length > 1 && info[1].trim()) {
                 String value = info[1].trim()
@@ -288,7 +293,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.update()
+                updateDevice(it)
             }
         }
 
@@ -307,7 +312,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.update()
+                updateDevice(it)
             }
         }
 
@@ -326,7 +331,7 @@ class GMTool {
 
         if (fill && !nameOnly) {
             devices.each() {
-                it.update()
+                updateDevice(it)
             }
         }
 
@@ -357,7 +362,7 @@ class GMTool {
             device = name
         } else {
             device = new GenymotionVirtualDevice(name)
-            device.ip = infos[1].trim()
+            device.adbSerial = addAdbSerialPort(infos[1].trim())
             device.state = infos[0].trim()
         }
         device
@@ -394,7 +399,7 @@ class GMTool {
                     template = null
                 }
 
-                String[] info = line.split("\\:")
+                String[] info = line.split(":", 2)
                 switch (info[0].trim()) {
                     case "Name":
                         if (!template) {
@@ -430,7 +435,7 @@ class GMTool {
                     template = new GenymotionTemplate()
                 }
 
-                String[] info = line.split("\\:")
+                String[] info = line.split(":", 2)
                 switch (info[0].trim()) {
                     case "Name":
                         if (!template.name) {
@@ -586,7 +591,7 @@ class GMTool {
         }
 
         cmd([GMTOOL, ADMIN, DETAILS, device.name]) { line, count ->
-            String[] info = line.split("\\:")
+            String[] info = line.split(":", 2)
             switch (info[0].trim()) {
                 case "Name":
                     device.name = info[1].trim()
@@ -633,8 +638,8 @@ class GMTool {
                 case "State":
                     device.state = info[1].trim()
                     break
-                case "IP":
-                    device.ip = info[1].trim()
+                case "ADB Serial":
+                    device.adbSerial = addAdbSerialPort(info[1].trim())
                     break
                 case "Network mode":
                     device.networkInfo = NetworkInfo.fromGMtoolDeviceDetails(info[1].trim())
@@ -1055,5 +1060,18 @@ class GMTool {
         NullObject.metaClass.toString = { return nullLabel }
 
         return exit
+    }
+
+    /**
+     * adb 1.0.32, which we ship with Genymotion 2.8.0, chokes on adb serials if they do not include the port number.
+     * This methods adds it (but only for running devices)
+     * @param adbSerial the adb serial to fix
+     * @return the fixed adb serial
+     */
+    static String addAdbSerialPort(String adbSerial) {
+        if (adbSerial != "0.0.0.0" && !adbSerial.contains(":")) {
+            adbSerial += ":5555"
+        }
+        return adbSerial
     }
 }

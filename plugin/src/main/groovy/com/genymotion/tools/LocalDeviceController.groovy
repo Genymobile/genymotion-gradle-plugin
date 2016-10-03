@@ -1,10 +1,11 @@
 package com.genymotion.tools
 
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.model.VDLaunchDsl
 
 /**
- * A DeviceController for local devices
+ * A {@link DeviceController} for local devices
  */
 class LocalDeviceController extends DeviceController {
     private def runningDevices
@@ -31,37 +32,53 @@ class LocalDeviceController extends DeviceController {
 
     @Override
     protected void startDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
-        if (!launchDsl.start) {
+        LocalVDLaunchDsl localLaunchDsl = (LocalVDLaunchDsl)launchDsl
+        if (!localLaunchDsl.start) {
             return
         }
 
         if (config.verbose) {
-            Log.debug("Starting ${launchDsl.name}")
+            Log.debug("Starting ${localLaunchDsl.name}")
         }
 
-        if (launchDsl.name && runningDevices != null && !runningDevices?.contains(launchDsl.name)) {
-            if (!virtualDeviceNames?.contains(launchDsl.name)) {
-                launchDsl.checkParams()
-                gmtool.createDevice(launchDsl.template, launchDsl.name, launchDsl.density, launchDsl.width, launchDsl.height,
-                        launchDsl.virtualKeyboard, launchDsl.navbarVisible, launchDsl.nbCpu, launchDsl.ram)
+        if (localLaunchDsl.name && runningDevices != null && !runningDevices?.contains(localLaunchDsl.name)) {
+            if (!virtualDeviceNames?.contains(localLaunchDsl.name)) {
+                localLaunchDsl.checkParams(gmtool)
+                gmtool.createDevice(localLaunchDsl.template, localLaunchDsl.name, localLaunchDsl.density,
+                        localLaunchDsl.width, localLaunchDsl.height, localLaunchDsl.virtualKeyboard,
+                        localLaunchDsl.navbarVisible, localLaunchDsl.nbCpu, localLaunchDsl.ram)
             }
-            launchDsl.checkAndEdit()
-            gmtool.startDevice(launchDsl.name)
+            checkAndEdit(gmtool, localLaunchDsl)
+            gmtool.startDevice(localLaunchDsl.name)
         }
     }
 
     @Override
     protected void stopDevice(GMTool gmtool, VDLaunchDsl launchDsl) {
+        LocalVDLaunchDsl localLaunchDsl = (LocalVDLaunchDsl)launchDsl
         try {
-            if (!launchDsl.stopWhenFinish) {
+            if (!localLaunchDsl.stopWhenFinish) {
                 return
             }
-            gmtool.stopDevice(launchDsl.name)
-            if (!launchDsl.deleteWhenFinish) {
+            gmtool.stopDevice(localLaunchDsl.name)
+            if (!localLaunchDsl.deleteWhenFinish) {
                 return
             }
-            gmtool.deleteDevice(launchDsl.name)
+            gmtool.deleteDevice(localLaunchDsl.name)
         } catch (GMToolException e) {
+        }
+    }
+
+    static void checkAndEdit(GMTool gmtool, VDLaunchDsl launchDsl) {
+        if (!gmtool.isDeviceCreated(launchDsl.name)) {
+            return
+        }
+
+        GenymotionVirtualDevice device = new GenymotionVirtualDevice(launchDsl.name)
+        gmtool.updateDevice(device)
+
+        if (device != launchDsl) {
+            gmtool.editDevice(launchDsl)
         }
     }
 }
