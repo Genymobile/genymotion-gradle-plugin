@@ -514,7 +514,7 @@ class GMTool {
     def createDevice(def template, def deviceName, def density = "", def width = "", def height = "",
                      def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
                      def networkMode = "", def bridgeInterface = "") {
-        def exitValue = noNull() {
+        return noNull() {
             def args = [GMTOOL, ADMIN, CREATE, template, deviceName]
             // FIXME Instead of skipping all options for cloud devices, just do not add options which are set to default values
             if (deviceLocation == DeviceLocation.LOCAL) {
@@ -525,15 +525,6 @@ class GMTool {
                         OPT_BRIDGE_INTERFACE + bridgeInterface)
             }
             cmd(args)
-        }
-
-        if (exitValue == RETURN_NO_ERROR) {
-            NetworkInfo networkInfo = new NetworkInfo(networkMode, bridgeInterface);
-
-            return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible,
-                    nbcpu, ram, networkInfo)
-        } else {
-            return exitValue
         }
     }
 
@@ -674,18 +665,9 @@ class GMTool {
     def startDisposableDevice(def template, def deviceName, def density = "", def width = "", def height = "",
                               def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
                               def networkMode = "", def bridgeInterface = "") {
-        def exitValue = noNull() {
+        return noNull() {
             def args = [GMTOOL, ADMIN, START_DISPOSABLE, template, deviceName]
             cmd(args)
-        }
-
-        if (exitValue == RETURN_NO_ERROR) {
-            NetworkInfo networkInfo = new NetworkInfo(networkMode, bridgeInterface)
-
-            return new GenymotionVirtualDevice(deviceName, density, width, height, virtualKeyboard, navbarVisible,
-                    nbcpu, ram, networkInfo)
-        } else {
-            return exitValue
         }
     }
 
@@ -703,22 +685,6 @@ class GMTool {
 
     def resetDevice(def deviceName) {
         return cmd([GMTOOL, ADMIN, FACTORY_RESET, deviceName])
-    }
-
-    def startAutoDevice(def template, def deviceName) {
-        def device = createDevice(template, deviceName)
-
-        if (!device instanceof GenymotionVirtualDevice) {
-            return device
-        }
-
-        def startExit = startDevice(device)
-
-        if (startExit == RETURN_NO_ERROR) {
-            return device
-        } else {
-            return startExit
-        }
     }
 
     /*

@@ -389,9 +389,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         GenymotionTemplate deviceToCreate = new GenymotionTemplate(name: "Genymotion Template")
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
-
-        assert deviceCreated.name == deviceToCreate.name
+        gmtoolSpy.createDevice(deviceToCreate)
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, deviceToCreate.name, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH, OPT_HEIGHT,
@@ -407,19 +405,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+        gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
-
-        assert deviceCreated.name == deviceName
-        assert deviceCreated.density == density
-        assert deviceCreated.width == width
-        assert deviceCreated.height == height
-        assert deviceCreated.virtualKeyboard == virtualKeyboard
-        assert deviceCreated.navbarVisible == navbarVisible
-        assert deviceCreated.nbCpu == nbcpu
-        assert deviceCreated.ram == ram
-        assert deviceCreated.networkInfo.mode == networkInfo.mode
-        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
@@ -437,19 +424,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createBridgeNetworkInfo("eth0")
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+        gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
-
-        assert deviceCreated.name == deviceName
-        assert deviceCreated.density == density
-        assert deviceCreated.width == width
-        assert deviceCreated.height == height
-        assert deviceCreated.virtualKeyboard == virtualKeyboard
-        assert deviceCreated.navbarVisible == navbarVisible
-        assert deviceCreated.nbCpu == nbcpu
-        assert deviceCreated.ram == ram
-        assert deviceCreated.networkInfo.mode == networkInfo.mode
-        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
@@ -468,7 +444,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
              int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.startDisposableDevice(template, deviceName, density, width, height,
+        gmtoolSpy.startDisposableDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
