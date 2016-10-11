@@ -1,4 +1,4 @@
 [submodule "genymotion-binocle"]
 	path = samples/genymotion-binocle
 	url = https://github.com/Genymobile/genymotion-binocle.git
-	branch = gradle
+	branch = gradle-plugin
