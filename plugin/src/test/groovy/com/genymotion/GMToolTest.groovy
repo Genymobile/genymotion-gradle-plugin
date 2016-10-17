@@ -434,7 +434,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                  OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
     }
 
-
     @Test
     public void canStartDisposableDeviceFromParam() {
         GMTool gmtoolSpy = initSpyAndOutput(startDisposableDeviceOutput)
