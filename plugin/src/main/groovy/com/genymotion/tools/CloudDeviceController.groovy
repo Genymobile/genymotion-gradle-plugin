@@ -29,7 +29,7 @@ class CloudDeviceController extends DeviceController {
         try {
             gmtool.stopDisposableDevice(launchDsl.name)
         } catch (GMToolException e) {
-            Log.debug("Ignoring failure to stop the disposable device $launchDsl.name")
+            Log.debug("Ignoring failure to stop disposable device $launchDsl.name")
         }
     }
 }
