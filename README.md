@@ -41,7 +41,6 @@ genymotion {
 This simple example will create and launch a Nexus 5 running KitKat right before the connectedAndroidTest task.
 But this plugin can do a lot more, read [the full documentation](https://www.genymotion.com/#!/developers/gradle-plugin) for an exhaustive explanation.
 
-
 ##Downloading the plugin's source code
 
 To download the plugin, run:
@@ -83,11 +82,6 @@ buildscript {
     }
 }
 ```
-
-For more information on how to use the plugin, please refer to the official documentation
-
-Coming soon...
-
 
 ##Give it a try
 
