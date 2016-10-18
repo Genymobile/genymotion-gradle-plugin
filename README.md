@@ -39,6 +39,21 @@ genymotion {
 ```
 
 This simple example will create and launch a Nexus 5 running KitKat right before the connectedAndroidTest task.
+
+You can also use the plugin to run your tests in Genymotion Cloud. To add a cloud device, use the following syntax:
+
+```gradle
+genymotion {
+    cloudDevices {
+        nexus5 {
+            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+        }
+    }
+}
+```
+
+This will create a Nexus 5 device on Genymotion Cloud.
+
 But this plugin can do a lot more, read [the full documentation](https://www.genymotion.com/#!/developers/gradle-plugin) for an exhaustive explanation.
 
 ##Downloading the plugin's source code
