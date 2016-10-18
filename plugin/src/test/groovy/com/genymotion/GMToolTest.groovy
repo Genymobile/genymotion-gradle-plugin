@@ -164,6 +164,9 @@ Template installed
 Creating virtual device...
 Virtual device created successfully"""
 
+    public static final String startDisposableDeviceOutput = """\
+Disposable virtual device started successfully"""
+
     public static final String installOutput = """\
 Installing /Users/anonymous/Downloads/devices-release-unaligned.apk on nexus7...
 File installed on nexus7"""
@@ -446,9 +449,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         GenymotionTemplate deviceToCreate = new GenymotionTemplate(name: "Genymotion Template")
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
-
-        assert deviceCreated.name == deviceToCreate.name
+        gmtoolSpy.createDevice(deviceToCreate)
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, deviceToCreate.name, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH, OPT_HEIGHT,
@@ -464,19 +465,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+        gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
-
-        assert deviceCreated.name == deviceName
-        assert deviceCreated.density == density
-        assert deviceCreated.width == width
-        assert deviceCreated.height == height
-        assert deviceCreated.virtualKeyboard == virtualKeyboard
-        assert deviceCreated.navbarVisible == navbarVisible
-        assert deviceCreated.nbCpu == nbcpu
-        assert deviceCreated.ram == ram
-        assert deviceCreated.networkInfo.mode == networkInfo.mode
-        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
@@ -494,25 +484,30 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createBridgeNetworkInfo("eth0")
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+        gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
-
-        assert deviceCreated.name == deviceName
-        assert deviceCreated.density == density
-        assert deviceCreated.width == width
-        assert deviceCreated.height == height
-        assert deviceCreated.virtualKeyboard == virtualKeyboard
-        assert deviceCreated.navbarVisible == navbarVisible
-        assert deviceCreated.nbCpu == nbcpu
-        assert deviceCreated.ram == ram
-        assert deviceCreated.networkInfo.mode == networkInfo.mode
-        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
                  OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkInfo.mode,
                  OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
+    }
+
+    @Test
+    public void canStartDisposableDeviceFromParam() {
+        GMTool gmtoolSpy = initSpyAndOutput(startDisposableDeviceOutput)
+
+        String template = "A template"
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+             int nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
+
+        gmtoolSpy.startDisposableDevice(template, deviceName, density, width, height,
+                virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, START_DISPOSABLE, template, deviceName])
     }
 
     @Test
@@ -603,13 +598,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     @Test
-    public void canStartDeviceByName() {
-        testGMToolByName method: "stopDevice",
-                output: "",
-                expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
-    }
-
-    @Test
     public void canStartDevice() {
         testGMTool method: "startDevice",
                 output: "",
@@ -647,6 +635,20 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         testGMToolByName method: "stopDevice",
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
+    }
+
+    @Test
+    public void canStopDisposableDevice() {
+        testGMTool method: "stopDisposableDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
+    }
+
+    @Test
+    public void canStopDisposableDeviceByName() {
+        testGMToolByName method: "stopDisposableDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
     }
 
     @Test
