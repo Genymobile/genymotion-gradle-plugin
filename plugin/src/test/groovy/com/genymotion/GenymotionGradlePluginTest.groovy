@@ -904,6 +904,25 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
 
     }
 
+    @Test
+    public void startAndStopDisposable() {
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+        String vdName = "sampleDevice"
+        String templateName = "templateName"
+
+        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
+
+        project.genymotion.cloudDevices {
+            "$vdName" {
+                template templateName
+            }
+        }
+        project.tasks.genymotionLaunch.exec()
+        verify(gmtool).startDisposableDevice(templateName, vdName, null, null, null, null, null, null, null)
+        verify(gmtool).stopDisposableDevice(vdName)
+    }
+
     @After
     public void finishTest() {
         Log.clearLogger()

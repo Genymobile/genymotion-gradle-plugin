@@ -62,6 +62,16 @@ class IntegrationTestTools {
         }
     }
 
+    private static Tuple2 getRandomTemplateAndName() {
+        Random rand = new Random()
+        int index = rand.nextInt(DEVICES.size())
+
+        String[] keys = DEVICES.keySet() as String[]
+        String name = keys[index]
+
+        return new Tuple2(DEVICES[name], name)
+    }
+
     static void deleteAllDevices(GMTool gmtool) {
         DEVICES.each() { key, value ->
             gmtool.deleteDevice(key)
@@ -74,13 +84,21 @@ class IntegrationTestTools {
         }
     }
 
-    static String createADevice(GMTool gmtool) {
-        Random rand = new Random()
-        int index = rand.nextInt(DEVICES.size())
 
-        String[] keys = DEVICES.keySet() as String[]
-        String name = keys[index]
-        gmtool.createDevice(DEVICES[name], name)
+    static String createADevice(GMTool gmtool) {
+        def templateAndName = getRandomTemplateAndName();
+        def template = templateAndName.first
+        def name = templateAndName.second
+        gmtool.createDevice(template, name)
+
+        return name
+    }
+
+    static String startADisposableDevice(GMTool gmtool) {
+        def templateAndName = getRandomTemplateAndName();
+        def template = templateAndName.first
+        def name = templateAndName.second
+        gmtool.startDisposableDevice(template, name)
 
         return name
     }

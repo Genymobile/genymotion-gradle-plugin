@@ -405,6 +405,21 @@ class GMToolIntegTest {
         assert flashed
     }
 
+    @Test
+    public void canStartDisposableDevice() {
+        String name = IntegrationTestTools.startADisposableDevice(gmtool)
+        def runningDevices = gmtool.getRunningDevices(false, true)
+        def allDevices = gmtool.getAllDevices(false, true)
+
+        assert allDevices.contains(name)
+        assert runningDevices.contains(name)
+
+        gmtool.stopDisposableDevice(name)
+
+        assert !allDevices.contains(name)
+        assert !runningDevices.contains(name)
+    }
+
     @After
     public void finishTest() {
         IntegrationTestTools.cleanAfterTests(gmtool)
