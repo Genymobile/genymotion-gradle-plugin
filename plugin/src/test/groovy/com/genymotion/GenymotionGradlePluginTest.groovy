@@ -911,16 +911,15 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         String vdName = "sampleDevice"
         String templateName = "templateName"
 
-        when(gmtool.isDeviceCreated(vdName)).thenReturn(true)
-
         project.genymotion.cloudDevices {
             "$vdName" {
                 template templateName
             }
         }
         project.tasks.genymotionLaunch.exec()
+        project.tasks.genymotionFinish.exec()
         verify(gmtool).startDisposableDevice(templateName, vdName, null, null, null, null, null, null, null)
-        verify(gmtool).stopDisposableDevice(vdName)
+        verify(gmtool, times(2)).stopDisposableDevice(vdName) // stop is called in CloudDeviceController::startDevice
     }
 
     @After

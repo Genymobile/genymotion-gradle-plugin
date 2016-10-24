@@ -416,6 +416,9 @@ class GMToolIntegTest {
 
         gmtool.stopDisposableDevice(name)
 
+        runningDevices = gmtool.getRunningDevices(false, true)
+        allDevices = gmtool.getAllDevices(false, true)
+
         assert !allDevices.contains(name)
         assert !runningDevices.contains(name)
     }
