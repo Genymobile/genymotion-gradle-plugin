@@ -905,7 +905,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
     }
 
     @Test
-    public void startAndStopDisposable() {
+    public void canLaunchAndFinishCloudDevice() {
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
         String vdName = "sampleDevice"

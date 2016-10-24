@@ -406,7 +406,7 @@ class GMToolIntegTest {
     }
 
     @Test
-    public void canStartDisposableDevice() {
+    public void canStartAndStopDisposableDevice() {
         String name = IntegrationTestTools.startADisposableDevice(gmtool)
         def runningDevices = gmtool.getRunningDevices(false, true)
         def allDevices = gmtool.getAllDevices(false, true)
