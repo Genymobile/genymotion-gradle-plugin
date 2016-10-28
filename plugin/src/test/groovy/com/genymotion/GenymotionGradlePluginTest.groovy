@@ -917,9 +917,10 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
             }
         }
         project.tasks.genymotionLaunch.exec()
-        project.tasks.genymotionFinish.exec()
         verify(gmtool).startDisposableDevice(templateName, vdName, null, null, null, null, null, null, null)
-        verify(gmtool, times(2)).stopDisposableDevice(vdName) // stop is called in CloudDeviceController::startDevice
+        verify(gmtool).stopDisposableDevice(vdName)  // stop is called in CloudDeviceController::startDevice
+        project.tasks.genymotionFinish.exec()
+        verify(gmtool, times(2)).stopDisposableDevice(vdName)
     }
 
     @After
