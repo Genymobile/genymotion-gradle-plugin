@@ -19,6 +19,7 @@
 
 package com.genymotion
 
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
@@ -38,13 +39,14 @@ class IntegrationTestTools {
             "Nexus4-junit" : "Google Nexus 4 - 4.3 - API 18 - 768x1280"
     ]
 
-    static def init() {
+    static def init(DeviceLocation deviceLocation = DeviceLocation.LOCAL) {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
         setDefaultGenymotionPath(project)
 
         GMTool.DEFAULT_CONFIG = project.genymotion.config
         GMTool gmtool = GMTool.newInstance()
+        gmtool.deviceLocation = deviceLocation
         gmtool.getConfig(project.genymotion.config)
         project.genymotion.config.verbose = true
 
