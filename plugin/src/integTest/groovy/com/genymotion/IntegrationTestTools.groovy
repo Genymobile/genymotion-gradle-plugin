@@ -19,6 +19,7 @@
 
 package com.genymotion
 
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
@@ -38,13 +39,14 @@ class IntegrationTestTools {
             "Nexus4-junit" : "Google Nexus 4 - 4.3 - API 18 - 768x1280"
     ]
 
-    static def init() {
+    static def init(DeviceLocation deviceLocation = DeviceLocation.LOCAL) {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
         setDefaultGenymotionPath(project)
 
         GMTool.DEFAULT_CONFIG = project.genymotion.config
         GMTool gmtool = GMTool.newInstance()
+        gmtool.deviceLocation = deviceLocation
         gmtool.getConfig(project.genymotion.config)
         project.genymotion.config.verbose = true
 
@@ -62,6 +64,16 @@ class IntegrationTestTools {
         }
     }
 
+    private static def getRandomTemplateAndName() {
+        Random rand = new Random()
+        int index = rand.nextInt(DEVICES.size())
+
+        String[] keys = DEVICES.keySet() as String[]
+        String name = keys[index]
+
+        return [DEVICES[name], name]
+    }
+
     static void deleteAllDevices(GMTool gmtool) {
         DEVICES.each() { key, value ->
             gmtool.deleteDevice(key)
@@ -75,12 +87,15 @@ class IntegrationTestTools {
     }
 
     static String createADevice(GMTool gmtool) {
-        Random rand = new Random()
-        int index = rand.nextInt(DEVICES.size())
+        def (template, name) = getRandomTemplateAndName()
+        gmtool.createDevice(template, name)
 
-        String[] keys = DEVICES.keySet() as String[]
-        String name = keys[index]
-        gmtool.createDevice(DEVICES[name], name)
+        return name
+    }
+
+    static String startADisposableDevice(GMTool gmtool) {
+        def (template, name) = getRandomTemplateAndName()
+        gmtool.startDisposableDevice(template, name)
 
         return name
     }
