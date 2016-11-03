@@ -55,10 +55,7 @@ git clone --recursive https://github.com/Genymobile/genymotion-gradle-plugin.git
 The `plugin` folder contains the Gradle plugin.
 
 The `samples` folder contains the example project using the Gradle plugin.
-There are two samples:
-* 'simple' that showcases how to use the gradle plugin on its own.
-* 'binocle' that showcases how to use the gradle plugin in the context of an Android app.
-
+There is one sample called 'helloworld' that showcases how to use the gradle plugin in the context of an Android app.
 
 ##Compiling the plugin
 
@@ -91,11 +88,11 @@ Coming soon...
 
 ##Give a try
 
-Execute the sample "simple" using this command:
+Execute the sample "helloworld" using this command:
 
 ```sh
-cd samples
-../gradlew :simple:genymotionLaunch
+cd samples/helloworld
+./gradlew cAT
 ```
 This starts a virtual device on your computer.
 
