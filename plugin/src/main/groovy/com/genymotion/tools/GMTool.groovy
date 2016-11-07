@@ -38,6 +38,7 @@ import static com.genymotion.tools.GMToolDsl.*
 class GMTool {
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
+    GMToolFeature gmtoolFeature = null
 
     DeviceLocation deviceLocation = DeviceLocation.LOCAL
 
@@ -51,13 +52,18 @@ class GMTool {
 
     private static final Set<String> CLOUD_ACTION_GROUPS = [ADMIN, DEVICE]
 
-    static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG) {
+    static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG, GMToolFeature gmToolFeature = null) {
         GMTool gmtool = new GMTool()
 
         if (config == null) {
             config = new GenymotionConfig()
         }
         gmtool.genymotionConfig = config
+
+        if (gmToolFeature == null) {
+            gmToolFeature = GMToolFeature.newInstance(gmtool)
+        }
+        gmtool.gmtoolFeature = gmToolFeature
 
         return gmtool
     }
@@ -543,6 +549,9 @@ class GMTool {
                    def navbarVisible = "", def nbcpu = "", def ram = "", def networkMode = "",
                    def bridgeInterface = "") {
 
+        if (networkMode && !networkMode.isEmpty()) {
+            checkAvailability(GMToolFeature.Feature.EDIT_NETWORK);
+        }
         return noNull() {
             return cmd([GMTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                         OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
@@ -670,6 +679,7 @@ class GMTool {
     def startDisposableDevice(def template, def deviceName, def density = "", def width = "", def height = "",
                               def virtualKeyboard = "", def navbarVisible = "", def nbcpu = "", def ram = "",
                               def networkMode = "", def bridgeInterface = "") {
+        checkAvailability(GMToolFeature.Feature.DISPOSABLE)
         return noNull() {
             def args = [GMTOOL, ADMIN, START_DISPOSABLE, template, deviceName]
             cmd(args)
@@ -681,6 +691,7 @@ class GMTool {
     }
 
     def stopDisposableDevice(def deviceName) {
+        checkAvailability(GMToolFeature.Feature.DISPOSABLE)
         return cmd([GMTOOL, ADMIN, STOP_DISPOSABLE, deviceName])
     }
 
@@ -1065,5 +1076,15 @@ class GMTool {
             adbSerial += ":5555"
         }
         return adbSerial
+    }
+
+    /**
+     * Check if feature is available in the current gmtool version
+     * @param feature
+     * This method throw a GMToolException if the feature is not available
+     * Note: eclaring another method make mocking easier.
+     */
+    public def checkAvailability(GMToolFeature.Feature feature) throws GMToolException {
+        gmtoolFeature.checkAvailability(feature);
     }
 }

@@ -1314,6 +1314,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         GMTool gmtoolSpy = spy(gmtool)
 
         doReturn([new StringBuffer().append(output), null, 0]).when(gmtoolSpy).executeCommand(anyList())
+        doReturn(Void).when(gmtoolSpy).checkAvailability(any())
 
         return gmtoolSpy
     }
