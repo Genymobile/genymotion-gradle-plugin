@@ -38,7 +38,7 @@ import static com.genymotion.tools.GMToolDsl.*
 class GMTool {
     static GenymotionConfig DEFAULT_CONFIG = null
     GenymotionConfig genymotionConfig = null
-    GMToolFeature gmtoolFeature = null
+    Tuple versionTuple = null
 
     DeviceLocation deviceLocation = DeviceLocation.LOCAL
 
@@ -52,18 +52,13 @@ class GMTool {
 
     private static final Set<String> CLOUD_ACTION_GROUPS = [ADMIN, DEVICE]
 
-    static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG, GMToolFeature gmToolFeature = null) {
+    static GMTool newInstance(GenymotionConfig config = DEFAULT_CONFIG) {
         GMTool gmtool = new GMTool()
 
         if (config == null) {
             config = new GenymotionConfig()
         }
         gmtool.genymotionConfig = config
-
-        if (gmToolFeature == null) {
-            gmToolFeature = GMToolFeature.newInstance(gmtool)
-        }
-        gmtool.gmtoolFeature = gmToolFeature
 
         return gmtool
     }
@@ -1082,9 +1077,11 @@ class GMTool {
      * Check if feature is available in the current gmtool version
      * @param feature
      * This method throw a GMToolException if the feature is not available
-     * Note: eclaring another method make mocking easier.
      */
     public def checkAvailability(GMToolFeature.Feature feature) throws GMToolException {
-        gmtoolFeature.checkAvailability(feature)
+        if (!versionTuple) {
+            versionTuple = GMToolFeature.versionTuple(this.version)
+        }
+        gmtoolFeature.checkAvailability(feature, versionTuple)
     }
 }

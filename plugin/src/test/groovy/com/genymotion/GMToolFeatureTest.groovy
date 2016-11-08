@@ -19,39 +19,20 @@
 
 package com.genymotion
 
-import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import com.genymotion.tools.GMToolFeature
-import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-
-import static org.mockito.Mockito.when
-
 
 class GMToolFeatureTest extends CleanMetaTest {
-    GMTool gmtool
-    GMToolFeature gmToolFeature;
-
-    @Before
-    public void setUp() {
-        this.gmtool = Mockito.mock(GMTool)
-        this.gmToolFeature = GMToolFeature.newInstance(gmtool)
-
-    }
-
     @Test
     public void testOkVersion() {
-        when(gmtool.getVersion()).thenReturn("2.9.0")
-        gmToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("2.9.0"))
     }
 
     @Test
     public void testTooOldVersion() {
-        when(gmtool.getVersion()).thenReturn("2.1.0")
-
         try {
-            gmToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+            GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("2.1.0"))
             fail("Expected GMToolException")
         } catch (GMToolException e) {
             assert e.message == "You need GMTool version 2.9.0 (current version is 2.1.0)"
@@ -60,10 +41,8 @@ class GMToolFeatureTest extends CleanMetaTest {
 
     @Test
     public void testNotIntVersion() {
-        when(gmtool.getVersion()).thenReturn("a.b.c")
-
         try {
-            gmToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+            GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("a.b.c"))
             fail("Expected GMToolException")
         } catch (GMToolException e) {
             assert e.message == "Current GMTool version is unknown"
@@ -72,10 +51,9 @@ class GMToolFeatureTest extends CleanMetaTest {
 
     @Test
     public void testNotTripletVersion() {
-        // current implementation doesn't support this format. However, it should not happen
-        when(gmtool.getVersion()).thenReturn("3.0")
         try {
-            gmToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+            // current implementation doesn't support this format. However, it should not happen
+            GMToolFeature.versionTuple("3.0")
             fail("Expected GMToolException")
         } catch (GMToolException e) {
             assert e.message == "Current GMTool version is unknown"
@@ -84,7 +62,7 @@ class GMToolFeatureTest extends CleanMetaTest {
 
     @Test
     public void testDevVersion() {
-        when(gmtool.getVersion()).thenReturn("2.9.0-310-g595b273")
-        gmToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE,
+                GMToolFeature.versionTuple("2.9.0-310-g595b273"))
     }
 }

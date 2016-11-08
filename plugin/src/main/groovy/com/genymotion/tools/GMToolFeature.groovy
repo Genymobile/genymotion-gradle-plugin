@@ -23,57 +23,49 @@ package com.genymotion.tools
  * Check if a feature is available in the current gmtool
  */
 public class GMToolFeature {
-    private GMTool gmtool
-    private String version
-
     public enum Feature {
         DISPOSABLE,
         EDIT_NETWORK,
     }
 
     private static def FeatureVersion = [
-        (Feature.EDIT_NETWORK) : "2.7.0",
-        (Feature.DISPOSABLE): "2.9.0",
+        (Feature.EDIT_NETWORK) : new Tuple(2, 7, 0),
+        (Feature.DISPOSABLE) : new Tuple(2, 9, 0),
     ]
 
-    static GMToolFeature newInstance(GMTool gmtool) {
-        GMToolFeature gmtoolFeature = new GMToolFeature()
-        gmtoolFeature.gmtool = gmtool
-
-        return  gmtoolFeature
-    }
-
-    private void initVersion() {
-        this.version = gmtool.getVersion()
-    }
-
-    private static def versionTuple(String version) {
-        if (version.indexOf("-") > 0) {
-            // dev version contains a "-" 2.8.0-310-g595b273
-            version = version.split("-")[0]
-        }
-        String[] versionArray = version.split("\\.")
-
-        return [ Integer.parseInt(versionArray[0]), Integer.parseInt(versionArray[1]), Integer.parseInt(versionArray[2]) ]
-    }
-
-    void checkAvailability(Feature feature) throws GMToolException {
-        if (!version || version.isEmpty()) {
-            initVersion()
-        }
-
+    /**
+     * Convert a version string (see GMTool.getVersion()) to a tuple usage in checkAvailability
+     * If conversion is not possible, a GMToolException is raised
+     * @param version as a string
+     * @return version as a tuple
+     */
+    public static Tuple versionTuple(String version) throws  GMToolException {
         try {
-            def currentVersion = versionTuple(this.version)
-            def neededVersion = versionTuple(FeatureVersion[feature])
-
-            if (currentVersion[0] < neededVersion[0] ||
-                    currentVersion[1] < neededVersion[1] ||
-                    currentVersion[2] < neededVersion[2]) {
-                throw new GMToolException("You need GMTool version " + FeatureVersion[feature] + " (current version is " +
-                        version + ")")
+            if (version.indexOf("-") > 0) {
+                // dev version contains a "-" 2.8.0-310-g595b273
+                version = version.split("-")[0]
             }
+            String[] versionArray = version.split("\\.")
+
+            return new Tuple(Integer.parseInt(versionArray[0]), Integer.parseInt(versionArray[1]),
+                    Integer.parseInt(versionArray[2]))
         } catch (RuntimeException e) {
             throw new GMToolException("Current GMTool version is unknown")
         }
+    }
+
+    public static void checkAvailability(Feature feature, Tuple currentVersion) throws GMToolException {
+        def neededVersion = FeatureVersion[feature]
+
+        if (currentVersion[0] < neededVersion[0] ||
+            currentVersion[1] < neededVersion[1] ||
+            currentVersion[2] < neededVersion[2]) {
+            throw new GMToolException("You need GMTool version " + tupleToString(FeatureVersion[feature]) +
+                    " (current version is " + tupleToString(currentVersion) + ")")
+            }
+    }
+
+    private static String tupleToString(Tuple version) {
+        return version[0] + "." + version[1] + "." + version[2]
     }
 }
