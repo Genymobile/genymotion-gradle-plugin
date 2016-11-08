@@ -550,7 +550,7 @@ class GMTool {
                    def bridgeInterface = "") {
 
         if (networkMode && !networkMode.isEmpty()) {
-            checkAvailability(GMToolFeature.Feature.EDIT_NETWORK);
+            checkAvailability(GMToolFeature.Feature.EDIT_NETWORK)
         }
         return noNull() {
             return cmd([GMTOOL, ADMIN, EDIT, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
@@ -1085,6 +1085,6 @@ class GMTool {
      * Note: eclaring another method make mocking easier.
      */
     public def checkAvailability(GMToolFeature.Feature feature) throws GMToolException {
-        gmtoolFeature.checkAvailability(feature);
+        gmtoolFeature.checkAvailability(feature)
     }
 }

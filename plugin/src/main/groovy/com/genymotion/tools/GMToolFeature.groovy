@@ -17,28 +17,28 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.genymotion.tools;
+package com.genymotion.tools
 
 /**
  * Check if a feature is available in the current gmtool
  */
 public class GMToolFeature {
-    private GMTool gmtool;
-    private String version;
+    private GMTool gmtool
+    private String version
 
     public enum Feature {
         DISPOSABLE,
         EDIT_NETWORK,
     }
 
-    private def FeatureVersion = [
+    private static def FeatureVersion = [
         (Feature.EDIT_NETWORK) : "2.7.0",
         (Feature.DISPOSABLE): "2.9.0",
     ]
 
     static GMToolFeature newInstance(GMTool gmtool) {
         GMToolFeature gmtoolFeature = new GMToolFeature()
-        gmtoolFeature.gmtool = gmtool;
+        gmtoolFeature.gmtool = gmtool
 
         return  gmtoolFeature
     }
@@ -47,7 +47,7 @@ public class GMToolFeature {
         this.version = gmtool.getVersion()
     }
 
-    private def versionTuple(String version) {
+    private static def versionTuple(String version) {
         if (version.indexOf("-") > 0) {
             // dev version contains a "-" 2.8.0-310-g595b273
             version = version.split("-")[0]
@@ -59,7 +59,7 @@ public class GMToolFeature {
 
     void checkAvailability(Feature feature) throws GMToolException {
         if (!version || version.isEmpty()) {
-            initVersion();
+            initVersion()
         }
 
         try {
