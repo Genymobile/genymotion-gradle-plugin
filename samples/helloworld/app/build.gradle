@@ -31,8 +31,8 @@ dependencies {
 
 genymotion {
     genymotion.config{
-//      genymotionPath = "/Applications/Genymotion.app/Contents/MacOS/" //TODO change it if needed
-        genymotionPath = "/home/ccabessa/genymotion.work/build-soft-Desktop-Debug/dist/" //TODO change it if needed
+        // On linux you have to add gmtool in your PATH or set this variable
+//      genymotionPath = "/Applications/Genymotion.app/Contents/MacOS/"
         verbose = true
 //      fromFile                  //get the whole configuration from a file. The content get the priority to the .gradle file
 //
@@ -43,15 +43,15 @@ genymotion {
 //      licenseServerAddress      //set the license server address
 //      license                   //set license
 //      proxy                     //enable proxy
-//      proxyAddress              //set l'adresse du proxy a ADRESS
+//      proxyAddress              //set the proxy address
 //      proxyPort                 //set the proxy port
-//      proxyAuth                 //set the proxy protocole
+//      proxyAuth                 //set to "on" if the proxy need authentification
 //      proxyUsername             //set the proxy username
 //      proxyPassword             //set the proxy password
 //      virtualDevicePath         //set the folder where the downloaded devices are stored
 //      useCustomSdk              //enable the use of the alternative android sdk defined by androidSdkPath
 //      androidSdkPath            //set the alternative android sdk path
-//      screenCapturePath         //set folder where the (scree/video) captures are stored
+//      screenCapturePath         //set folder where the (screen/video) captures are stored
 //
 //      //task configs
 //      taskLaunch =              //set the task that depends on the genymotion launch task
