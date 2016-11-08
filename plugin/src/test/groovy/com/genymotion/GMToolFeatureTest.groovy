@@ -30,6 +30,11 @@ class GMToolFeatureTest extends CleanMetaTest {
     }
 
     @Test
+    public void testBetterVersion() {
+        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("3.0.0"))
+    }
+
+    @Test
     public void testTooOldVersion() {
         try {
             GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("2.1.0"))
@@ -51,13 +56,13 @@ class GMToolFeatureTest extends CleanMetaTest {
 
     @Test
     public void testNotTripletVersion() {
-        try {
-            // current implementation doesn't support this format. However, it should not happen
-            GMToolFeature.versionTuple("3.0")
-            fail("Expected GMToolException")
-        } catch (GMToolException e) {
-            assert e.message == "Current GMTool version is unknown"
-        }
+        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("3.0"))
+    }
+
+    @Test
+    public void testNotLongerVersion() {
+        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE,
+                GMToolFeature.versionTuple("3.1.415.9.2.6.5.358979.3"))
     }
 
     @Test

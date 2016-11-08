@@ -46,9 +46,11 @@ public class GMToolFeature {
                 version = version.split("-")[0]
             }
             String[] versionArray = version.split("\\.")
-
-            return new Tuple(Integer.parseInt(versionArray[0]), Integer.parseInt(versionArray[1]),
-                    Integer.parseInt(versionArray[2]))
+            def versionList = new ArrayList<Integer>()
+            for (String number : versionArray) {
+                versionList.add(Integer.parseInt(number))
+            }
+            return new Tuple(versionList.toArray())
         } catch (RuntimeException e) {
             throw new GMToolException("Current GMTool version is unknown")
         }
@@ -56,13 +58,17 @@ public class GMToolFeature {
 
     public static void checkAvailability(Feature feature, Tuple currentVersion) throws GMToolException {
         def neededVersion = FeatureVersion[feature]
+        String exceptionString = "You need GMTool version " + tupleToString(FeatureVersion[feature]) +
+                " (current version is " + tupleToString(currentVersion) + ")"
 
-        if (currentVersion[0] < neededVersion[0] ||
-            currentVersion[1] < neededVersion[1] ||
-            currentVersion[2] < neededVersion[2]) {
-            throw new GMToolException("You need GMTool version " + tupleToString(FeatureVersion[feature]) +
-                    " (current version is " + tupleToString(currentVersion) + ")")
+        for (int idx = 0; idx < neededVersion.size(); ++idx) {
+            if (currentVersion[idx] > neededVersion[idx]) {
+                return
             }
+            if (currentVersion[idx] < neededVersion[idx]) {
+                throw new GMToolException(exceptionString)
+            }
+        }
     }
 
     private static String tupleToString(Tuple version) {
