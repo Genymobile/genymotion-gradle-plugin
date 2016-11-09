@@ -39,7 +39,7 @@ public class GMToolFeature {
      * @param version as a string
      * @return version as a tuple
      */
-    public static Tuple versionTuple(String version) throws  GMToolException {
+    public static Tuple versionTuple(String version) throws GMToolException {
         try {
             if (version.indexOf("-") > 0) {
                 // dev version contains a "-" 2.8.0-310-g595b273
