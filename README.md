@@ -92,7 +92,7 @@ Execute the sample "helloworld" using this command:
 
 ```sh
 cd samples/helloworld
-./gradlew cAT
+./gradlew connectedAndroidTest
 ```
 This starts a virtual device on your computer.
 
