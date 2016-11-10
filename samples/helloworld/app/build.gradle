@@ -5,7 +5,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "23.0.3"
     defaultConfig {
-        applicationId "genymobile.com.helloworld"
+        applicationId "com.genymobile.gradle.helloworld"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1

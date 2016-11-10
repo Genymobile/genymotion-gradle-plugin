@@ -17,7 +17,7 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package genymobile.com.helloworld;
+package com.genymobile.gradle.helloworld;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -50,7 +50,7 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("genymobile.com.helloworld", appContext.getPackageName());
+        assertEquals("com.genymobile.gradle.helloworld", appContext.getPackageName());
     }
 
     @Test

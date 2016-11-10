@@ -17,7 +17,7 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package genymobile.com.helloworld;
+package com.genymobile.gradle.helloworld;
 
 import org.junit.Test;
 
