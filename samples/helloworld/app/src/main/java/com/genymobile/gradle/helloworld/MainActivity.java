@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Genymobile
+ * Copyright (C) 2016 Genymobile
  *
  * This file is part of GenymotionGradlePlugin.
  *
