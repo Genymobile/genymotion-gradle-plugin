@@ -1082,6 +1082,6 @@ class GMTool {
         if (!versionTuple) {
             versionTuple = GMToolFeature.versionTuple(this.version)
         }
-        gmtoolFeature.checkAvailability(feature, versionTuple)
+        GMToolFeature.checkAvailability(feature, versionTuple)
     }
 }
