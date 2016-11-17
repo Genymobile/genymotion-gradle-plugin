@@ -1258,12 +1258,12 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         GMTool gmtoolSpy = spy(gmtool)
         GMTool.metaClass.static.newInstance = { gmtoolSpy }
 
-        doReturn("2.9.0").when(gmtoolSpy).getVersion();
+        doReturn("2.9.0").when(gmtoolSpy).getVersion()
 
-        gmtoolSpy.checkAvailability(GMToolFeature.Feature.DISPOSABLE);
-        gmtoolSpy.checkAvailability(GMToolFeature.Feature.EDIT_NETWORK);
+        gmtoolSpy.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+        gmtoolSpy.checkAvailability(GMToolFeature.Feature.EDIT_NETWORK)
 
-        verify(gmtoolSpy, times(1)).getVersion();
+        verify(gmtoolSpy, times(1)).getVersion()
     }
 
     @After
