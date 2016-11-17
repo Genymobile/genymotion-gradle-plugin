@@ -1,46 +1,67 @@
-buildscript {
-    repositories {
-        jcenter()
+apply plugin: 'com.android.application'
+apply plugin: 'genymotion'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "23.0.3"
+    defaultConfig {
+        applicationId "com.genymobile.gradle.helloworld"
+        minSdkVersion 16
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    dependencies {
-        classpath 'com.genymotion:plugin:+'
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 }
 
-apply plugin: "genymotion"
-
-genymotion.config {
-    // Define the path to gmtool if Genymotion has not been installed in the default directory
-    // genymotionPath = "/path/to/genymotion/dir/"
-    verbose = true
-//    fromFile                  //get the whole configuration from a file. The content get the priority to the .gradle file
-//
-//    statistics                //enable stats
-//    username                  //set the login
-//    password                  //set the password
-//    licenseServer             //enable license server
-//    licenseServerAddress      //set the license server address
-//    license                   //set license
-//    proxy                     //enable proxy
-//    proxyAddress              //set l'adresse du proxy a ADRESS
-//    proxyPort                 //set the proxy port
-//    proxyAuth                 //set the proxy protocole
-//    proxyUsername             //set the proxy username
-//    proxyPassword             //set the proxy password
-//    virtualDevicePath         //set the folder where the downloaded devices are stored
-//    useCustomSdk              //enable the use of the alternative android sdk defined by androidSdkPath
-//    androidSdkPath            //set the alternative android sdk path
-//    screenCapturePath         //set folder where the (scree/video) captures are stored
-//
-//    //task configs
-//    taskLaunch =              //set the task that depends on the genymotion launch task
-//    automaticLaunch = true    //enable or not the genymotion tasks injection
-//    processTimeout = 300000   //timeout for all the processes launched in command line
-//    verbose = true            //verbose mode
-//    abortOnError = false      //abort the task execution if a GMTool error occurs
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
 }
+
 
 genymotion {
+    genymotion.config{
+        // On linux you have to add gmtool in your PATH or set this variable
+//      genymotionPath = "/Applications/Genymotion.app/Contents/MacOS/"
+        verbose = true
+//      fromFile                  //get the whole configuration from a file. The content get the priority to the .gradle file
+//
+//      statistics                //enable stats
+//      username                  //set the login
+//      password                  //set the password
+//      licenseServer             //enable license server
+//      licenseServerAddress      //set the license server address
+//      license                   //set license
+//      proxy                     //enable proxy
+//      proxyAddress              //set the proxy address
+//      proxyPort                 //set the proxy port
+//      proxyAuth                 //set to "on" if the proxy need authentification
+//      proxyUsername             //set the proxy username
+//      proxyPassword             //set the proxy password
+//      virtualDevicePath         //set the folder where the downloaded devices are stored
+//      useCustomSdk              //enable the use of the alternative android sdk defined by androidSdkPath
+//      androidSdkPath            //set the alternative android sdk path
+//      screenCapturePath         //set folder where the (screen/video) captures are stored
+//
+//      //task configs
+//      taskLaunch =              //set the task that depends on the genymotion launch task
+//      automaticLaunch = true    //enable or not the genymotion tasks injection
+//      processTimeout = 300000   //timeout for all the processes launched in command line
+//      verbose = true            //verbose mode
+//      abortOnError = false      //abort the task execution if a GMTool error occurs
+    }
+
     devices {
         nexus5 {
             template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
@@ -78,7 +99,7 @@ genymotion {
 //            navbarVisible true                                               //display navbar or not
 //            nbCpu 4                                                          //set number of CPUs
 //            ram 1024                                                         //set amount of RAM
-//            networkMode "bridge", "en0"                                  //set network configuration
+//            networkMode "bridge", "en0"                                      //set network configuration
 //        }
     }
 
