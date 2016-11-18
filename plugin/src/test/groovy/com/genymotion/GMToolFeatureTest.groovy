@@ -26,7 +26,7 @@ import org.junit.Test
 class GMToolFeatureTest extends CleanMetaTest {
     @Test
     public void testOkVersion() {
-        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("2.9.0"))
+        GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("2.8.1"))
     }
 
     @Test
@@ -40,7 +40,7 @@ class GMToolFeatureTest extends CleanMetaTest {
             GMToolFeature.checkAvailability(GMToolFeature.Feature.DISPOSABLE, GMToolFeature.versionTuple("2.1.0"))
             fail("Expected GMToolException")
         } catch (GMToolException e) {
-            assert e.message == "You need GMTool version 2.9.0 (current version is 2.1.0)"
+            assert e.message == "You need GMTool version 2.8.1 (current version is 2.1.0)"
         }
     }
 

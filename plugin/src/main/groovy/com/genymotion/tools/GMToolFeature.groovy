@@ -30,7 +30,7 @@ public class GMToolFeature {
 
     private static def FeatureVersion = [
         (Feature.EDIT_NETWORK) : new Tuple(2, 7, 0),
-        (Feature.DISPOSABLE) : new Tuple(2, 9, 0),
+        (Feature.DISPOSABLE) : new Tuple(2, 8, 1),
     ]
 
     /**
