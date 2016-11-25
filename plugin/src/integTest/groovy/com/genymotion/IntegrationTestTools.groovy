@@ -19,7 +19,9 @@
 
 package com.genymotion
 
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
+import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.tools.GMTool
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -37,14 +39,15 @@ class IntegrationTestTools {
             "Nexus4-junit" : "Google Nexus 4 - 4.3 - API 18 - 768x1280"
     ]
 
-    static def init() {
+    static def init(DeviceLocation deviceLocation = DeviceLocation.LOCAL) {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'genymotion'
         setDefaultGenymotionPath(project)
 
         GMTool.DEFAULT_CONFIG = project.genymotion.config
         GMTool gmtool = GMTool.newInstance()
-        gmtool.getConfig(project.genymotion.config, true)
+        gmtool.deviceLocation = deviceLocation
+        gmtool.getConfig(project.genymotion.config)
         project.genymotion.config.verbose = true
 
         return [project, gmtool]
@@ -61,6 +64,16 @@ class IntegrationTestTools {
         }
     }
 
+    private static def getRandomTemplateAndName() {
+        Random rand = new Random()
+        int index = rand.nextInt(DEVICES.size())
+
+        String[] keys = DEVICES.keySet() as String[]
+        String name = keys[index]
+
+        return [DEVICES[name], name]
+    }
+
     static void deleteAllDevices(GMTool gmtool) {
         DEVICES.each() { key, value ->
             gmtool.deleteDevice(key)
@@ -74,12 +87,15 @@ class IntegrationTestTools {
     }
 
     static String createADevice(GMTool gmtool) {
-        Random rand = new Random()
-        int index = rand.nextInt(DEVICES.size())
+        def (template, name) = getRandomTemplateAndName()
+        gmtool.createDevice(template, name)
 
-        String[] keys = DEVICES.keySet() as String[]
-        String name = keys[index]
-        gmtool.createDevice(DEVICES[name], name)
+        return name
+    }
+
+    static String startADisposableDevice(GMTool gmtool) {
+        def (template, name) = getRandomTemplateAndName()
+        gmtool.startDisposableDevice(template, name)
 
         return name
     }
@@ -114,20 +130,21 @@ class IntegrationTestTools {
     static void cleanAfterTests(GMTool gmtool) {
         println "Cleaning after tests"
 
-        gmtool.getConfig(true)
+        gmtool.getConfig()
 
         try {
-            def devices = gmtool.getAllDevices(false, false, false)
+            def devices = gmtool.getAllDevices(false, false)
             def pattern = ~/^.+?\-junit$/
             println devices
 
             devices.each() {
                 if (pattern.matcher(it.name).matches()) {
                     println "Removing $it.name"
+                    gmtool.updateDevice(it)
                     if (it.isRunning()) {
-                        gmtool.stopDevice(it.name, true)
+                        gmtool.stopDevice(it.name)
                     }
-                    gmtool.deleteDevice(it.name, true)
+                    gmtool.deleteDevice(it.name)
                 }
             }
         } catch (Exception e) {
@@ -172,10 +189,10 @@ class IntegrationTestTools {
         }
 
         if (config.username && config.password) {
-            gmtool.setConfig(config, true)
+            gmtool.setConfig(config)
 
             if (config.license && registerLicense) {
-                gmtool.setLicense(config.license, true)
+                gmtool.setLicense(config.license)
             }
         }
     }
@@ -213,5 +230,34 @@ class IntegrationTestTools {
         }
 
         return project
+    }
+
+    static List runAndCheckLogcat(Project project, GMTool gmtool, String deviceName, String path) {
+        project.evaluate()
+        project.tasks.genymotionLaunch.exec()
+
+        GenymotionVirtualDevice device = gmtool.getDevice(deviceName)
+
+        //we add a line into logcat
+        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "log $uniqueString"])
+
+        project.tasks.genymotionFinish.exec()
+
+        //we reach the file created
+        File file = new File(path)
+
+        boolean clearedAfterBoot = true
+        boolean logcatDumped = false
+
+        file.eachLine {
+            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<")) {
+                clearedAfterBoot = false
+            }
+            if (it.contains(uniqueString)) {
+                logcatDumped = true
+            }
+        }
+        [clearedAfterBoot, logcatDumped]
     }
 }

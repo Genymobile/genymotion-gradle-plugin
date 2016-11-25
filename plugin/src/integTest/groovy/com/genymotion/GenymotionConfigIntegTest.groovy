@@ -48,9 +48,9 @@ class GenymotionConfigIntegTest {
 
     @Test
     public void canGetConfigFromGMTool() {
-        gmtool.setConfig(config, true)
+        gmtool.setConfig(config)
 
-        gmtool.getConfig(project.genymotion.config, true)
+        gmtool.getConfig(project.genymotion.config)
 
         assertConfiguration(project.genymotion.config)
     }

@@ -29,6 +29,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+
 genymotion {
     genymotion.config{
         // On linux you have to add gmtool in your PATH or set this variable
@@ -100,5 +101,11 @@ genymotion {
 //            ram 1024                                                         //set amount of RAM
 //            networkMode "bridge", "en0"                                      //set network configuration
 //        }
+    }
+
+    cloudDevices {
+        anotherNexus5 {
+            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+        }
     }
 }

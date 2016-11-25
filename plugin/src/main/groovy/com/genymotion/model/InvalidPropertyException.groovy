@@ -19,22 +19,17 @@
 
 package com.genymotion.model
 
-import org.gradle.api.NamedDomainObjectFactory
-import org.gradle.api.Project
-import org.gradle.internal.reflect.Instantiator
+import groovy.transform.CompileStatic
 
-class VDLaunchDslFactory implements NamedDomainObjectFactory<VDLaunchDsl> {
-
-    final Instantiator instantiator
-    final Project project
-
-    public VDLaunchDslFactory(Instantiator instantiator, Project project) {
-        this.instantiator = instantiator
-        this.project = project
+/**
+ * Thrown by {@link CloudVDLaunchDsl} when a local-device only parameter is used for a cloud device
+ */
+@CompileStatic
+class InvalidPropertyException extends Exception {
+    public InvalidPropertyException(String name) {
+        super("Invalid property: $name")
+        this.name = name
     }
 
-    @Override
-    VDLaunchDsl create(String name) {
-        return instantiator.newInstance(VDLaunchDsl.class, name)
-    }
+    public final name
 }

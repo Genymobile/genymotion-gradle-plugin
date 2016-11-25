@@ -39,8 +39,22 @@ genymotion {
 ```
 
 This simple example will create and launch a Nexus 5 running KitKat right before the connectedAndroidTest task.
-But this plugin can do a lot more, read [the full documentation](https://www.genymotion.com/#!/developers/gradle-plugin) for an exhaustive explanation.
 
+You can also use the plugin to run your tests in Genymotion Cloud. To add a cloud device, use the following syntax:
+
+```gradle
+genymotion {
+    cloudDevices {
+        nexus5 {
+            template "Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"
+        }
+    }
+}
+```
+
+This will create a Nexus 5 device on Genymotion Cloud.
+
+But this plugin can do a lot more, read [the full documentation](https://www.genymotion.com/#!/developers/gradle-plugin) for an exhaustive explanation.
 
 ##Downloading the plugin's source code
 
@@ -81,12 +95,7 @@ buildscript {
 }
 ```
 
-For more information on how to use the plugin, please refer to the official documentation
-
-Coming soon...
-
-
-##Give a try
+##Give it a try
 
 Execute the sample "helloworld" using this command:
 
@@ -103,6 +112,7 @@ The Gradle Plugin for Genymotion is an open source project under GPL v3 license.
 
 Pull requests are strongly encouraged.
 
+You can learn more about the plugin architecture in the [architecture document](docs/architecture.md).
 
 ### Unit testing the project
 Before pulling, you need to run the unit tests on the project. You can run it with the command:
@@ -116,19 +126,22 @@ As some tests are using the Android Gradle plugin, you need to have the Android 
 
 ### Optional integration tests
 
-This project contains also integration tests.
-Before running these tests you need gmtool, the command line tool for Genymotion. Embedded into the Genymotion app bundle.
+This project also contains integration tests.
 
-The integration test relies on a default.properties file where all needed properties can be read.
-This can be addressed in two ways. Or you create such file (ideal when working locally) or you inject all the needed properties
+Before running these tests you need gmtool, the command line tool for Genymotion. It is embedded in the Genymotion app bundle.
+
+The integration tests rely on a `default.properties` file where all needed properties can be read.
+This can be addressed in two ways. Either you create such file (ideal when working locally) or you inject all the needed properties
 via command line argument (ideal for CI):
 
 Method 1:
+
 1. Copy the `plugin/res/test/default.properties.TEMPLATE` file and name it `default.properties`
 2. Fill the new file with your information (genymotion username, password, license) and the path to your local Genymotion installation (genymotionPath).
 3. Also, in the file `plugin/res/test/android-app/local.properties` precise the `sdk.dir` field with your Android SDK path 
 
 Method 2:
+
 Add the following command line arguments when running the tests:
 ```sh
 ./gradlew <taskName> -Pusername=<username> -Ppassword=<password> -Plicense=<license> -PgenymotionPath=<path-to-genymotion>

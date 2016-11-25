@@ -19,10 +19,14 @@
 
 package com.genymotion.tools
 
+/**
+ * Defines all gmtool commands and options
+ */
 class GMToolDsl {
 
     //@formatter:off
     public static final String GMTOOL        = "gmtool"
+    public static final String OPT_CLOUD     = "--cloud"
     public static final String VERBOSE       = "--verbose"
     public static final String SOURCE        = "--source"
     public static final String SOURCE_GRADLE = SOURCE + "=gradle"
@@ -32,19 +36,21 @@ class GMToolDsl {
     public static final String HELP          = "help"
     public static final String VERSION       = "version"
     //admin actions
-    public static final String ADMIN         = "admin"
-    public static final String LIST          = "list"
-    public static final String TEMPLATES     = "templates"
-    public static final String CREATE        = "create"
-    public static final String EDIT          = "edit"
-    public static final String DELETE        = "delete"
-    public static final String CLONE         = "clone"
-    public static final String DETAILS       = "details"
-    public static final String START         = "start"
-    public static final String RESTART       = "restart"
-    public static final String STOP          = "stop"
-    public static final String STOPALL       = "stopall"
-    public static final String FACTORY_RESET = "factoryreset"
+    public static final String ADMIN                       = "admin"
+    public static final String LIST                        = "list"
+    public static final String TEMPLATES                   = "templates"
+    public static final String CREATE                      = "create"
+    public static final String EDIT                        = "edit"
+    public static final String DELETE                      = "delete"
+    public static final String CLONE                       = "clone"
+    public static final String DETAILS                     = "details"
+    public static final String START                       = "start"
+    public static final String RESTART                     = "restart"
+    public static final String STOP                        = "stop"
+    public static final String STOPALL                     = "stopall"
+    public static final String FACTORY_RESET               = "factoryreset"
+    public static final String START_DISPOSABLE            = "startdisposable"
+    public static final String STOP_DISPOSABLE             = "stopdisposable"
     //device actions
     public static final String DEVICE        = "device"
     public static final String PUSH          = "push"

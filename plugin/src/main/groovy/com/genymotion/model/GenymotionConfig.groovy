@@ -25,6 +25,9 @@ import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
 import org.gradle.api.Project
 
+/**
+ * The configuration defined in `genymotion.config`
+ */
 class GenymotionConfig {
 
     static final String DEFAULT_GENYMOTION_PATH_MAC = "/Applications/Genymotion.app/Contents/MacOS/"

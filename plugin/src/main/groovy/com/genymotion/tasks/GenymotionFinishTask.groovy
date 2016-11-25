@@ -19,7 +19,8 @@
 
 package com.genymotion.tasks
 
-import com.genymotion.tools.GMToolException
+import com.genymotion.model.DeviceLocation
+import com.genymotion.tools.DeviceController
 import com.genymotion.tools.Log
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -32,37 +33,18 @@ class GenymotionFinishTask extends DefaultTask {
     def exec() {
 
         Log.info("Finishing devices")
-        project.genymotion.getDevices(flavor).each() {
-            processDeviceEnd(it)
-        }
+
+        execByLocation(DeviceLocation.LOCAL)
+        execByLocation(DeviceLocation.CLOUD)
     }
 
-    def processDeviceEnd(device) {
-        Log.info("Finishing ${device.name}")
-        if (device.start) {
+    def execByLocation(DeviceLocation deviceLocation) {
+        def devices = project.genymotion.getDevicesByLocationAndFlavor(deviceLocation, flavor)
 
-            try {
-                if (device.isRunning()) {
-                    device.logcatDump()
-                    device.pushAfter()
-                    device.pullAfter()
-                    device.stopWhenFinish()
-                }
-                device.deleteWhenFinish()
-
-            } catch (Exception e) {
-                e.printStackTrace()
-                Log.info("Stopping all launched devices and deleting when needed")
-
-                project.genymotion.getDevices(flavor).each() {
-                    device.stopWhenFinish()
-                    device.deleteWhenFinish()
-                }
-                //then, we thow a new exception to end task, if needed
-                if (project.genymotion.config.abortOnError) {
-                    throw new GMToolException("GMTool command failed. " + e.getMessage())
-                }
-            }
+        if (!devices.empty) {
+            DeviceController controller = DeviceController.createInstance(deviceLocation)
+            controller.config = project.genymotion.config
+            controller.finish(devices)
         }
     }
 }

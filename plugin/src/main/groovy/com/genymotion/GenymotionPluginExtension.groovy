@@ -19,6 +19,8 @@
 
 package com.genymotion
 
+import com.genymotion.model.CloudVDLaunchDsl
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.VDLaunchDsl
 import com.genymotion.tasks.GenymotionFinishTask
@@ -32,6 +34,9 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 
+/**
+ * Holds all the properties defined in a `genymotion` entry defined in a Gradle file
+ */
 class GenymotionPluginExtension {
 
     private static String LAUNCH_MANUALLY_MESSAGE = "genymotionLaunch/Finish tasks are not injected " +
@@ -39,14 +44,16 @@ class GenymotionPluginExtension {
 
     final Project project
     private final NamedDomainObjectContainer<VDLaunchDsl> deviceLaunches
+    private final NamedDomainObjectContainer<CloudVDLaunchDsl> cloudDeviceLaunches
 
     def genymotionConfig = new GenymotionConfig()
     public GenymotionConfig currentConfiguration = null
 
-    GenymotionPluginExtension(Project project, deviceLaunches) {
+    GenymotionPluginExtension(Project project, deviceLaunches, cloudDeviceLaunches) {
 
         this.project = project
         this.deviceLaunches = deviceLaunches
+        this.cloudDeviceLaunches = cloudDeviceLaunches
     }
 
     def devices(Closure closure) {
@@ -67,17 +74,44 @@ class GenymotionPluginExtension {
         return devices
     }
 
+    def cloudDevices(Closure closure) {
+        cloudDeviceLaunches.configure(closure)
+    }
+
+    def getCloudDevices(String flavor = null) {
+        if (flavor == null) {
+            return cloudDeviceLaunches.toList()
+        }
+
+        def devices = []
+        cloudDeviceLaunches.each {
+            if (it.hasFlavor(flavor)) {
+                devices.add(it)
+            }
+        }
+        return devices
+    }
+
+    def getDevicesByLocationAndFlavor(DeviceLocation deviceLocation, String flavor) {
+        return deviceLocation == DeviceLocation.LOCAL ? getDevices(flavor) : getCloudDevices(flavor)
+    }
+
     def checkParams() {
 
         //Check if the flavors entered exist
         checkProductFlavors()
 
+        GMTool gmtool = GMTool.newInstance()
         deviceLaunches.each {
-            it.checkParams(project.genymotion.config.abortOnError)
+            it.checkParams(gmtool, project.genymotion.config.abortOnError)
+        }
+        gmtool.deviceLocation = DeviceLocation.CLOUD
+        cloudDeviceLaunches.each {
+            it.checkParams(gmtool, project.genymotion.config.abortOnError)
         }
 
         //check gmtool path is found
-        GMTool.newInstance().usage()
+        gmtool.usage()
     }
 
     public void checkProductFlavors() {
@@ -87,7 +121,12 @@ class GenymotionPluginExtension {
 
         def androidFlavors = project.android.productFlavors*.name
 
-        deviceLaunches.each {
+        checkDeviceLaunchFlavors(deviceLaunches, androidFlavors)
+        checkDeviceLaunchFlavors(cloudDeviceLaunches, androidFlavors)
+    }
+
+    private void checkDeviceLaunchFlavors(def launches, def androidFlavors) {
+        launches.each {
             for (String flavor in it.productFlavors) {
 
                 if (flavor == null) {
@@ -211,7 +250,7 @@ class GenymotionPluginExtension {
 
         if (!config.isEmpty()) {
 
-            gmtool.setConfig(config, config.verbose)
+            gmtool.setConfig(config)
 
             if (config.license) {
                 gmtool.setLicense(config.license)

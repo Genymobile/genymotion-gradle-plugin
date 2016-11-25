@@ -19,13 +19,14 @@
 
 package com.genymotion
 
+import com.genymotion.model.DeviceLocation
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.GenymotionTemplate
-import com.genymotion.model.GenymotionVDLaunch
 import com.genymotion.model.GenymotionVirtualDevice
 import com.genymotion.model.NetworkInfo
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
+import com.genymotion.tools.GMToolFeature
 import com.genymotion.tools.Tools
 import org.junit.After
 import org.junit.Before
@@ -93,22 +94,27 @@ Nav Bar Visible       : true
 Virtual Keyboard      : true"""
 
     public static final String listOneRunningDeviceOutput = """\
- State  |   IP Address    |                UUID                |      Name
+ State  |   ADB Serial    |                UUID                |      Name
 --------+-----------------+------------------------------------+---------------
      On |  192.168.56.101 |01283849-3c02-4a38-831e-23e2b2d7adb2| randomDevice"""
 
     public static final String listTwoStoppedDevicesOutput = """\
- State  |   IP Address    |                UUID                |      Name
+ State  |   ADB Serial    |                UUID                |      Name
 --------+-----------------+------------------------------------+---------------
     Off |         0.0.0.0 |d600d7e5-fce0-489e-8e18-3b14895eb25b| stoppedDevice1
     Off |         0.0.0.0 |290ed5b4-8f6b-4a1e-9742-92d0420cdfc7| stoppedDevice2"""
 
     public static final String listThreeDevicesOutput = """\
- State  |   IP Address    |                UUID                |      Name
+ State  |   ADB Serial    |                UUID                |      Name
 --------+-----------------+------------------------------------+---------------
     Off |         0.0.0.0 |d600d7e5-fce0-489e-8e18-3b14895eb25b| stoppedDevice1
      On |  192.168.56.101 |01283849-3c02-4a38-831e-23e2b2d7adb2| randomDevice
     Off |         0.0.0.0 |290ed5b4-8f6b-4a1e-9742-92d0420cdfc7| stoppedDevice2"""
+
+    public static final String listOneRunningCloudDeviceOutput = """\
+ State  |   ADB Serial    |                UUID                |      Name
+--------+-----------------+------------------------------------+---------------
+     On | localhost:56789 |01283849-3c02-4a38-831e-23e2b2d7adb2| randomDevice"""
 
     public static final String deviceDetailOutput = """\
 Name                  : randomDevice
@@ -127,7 +133,28 @@ Nav Bar Visible       : true
 Virtual Keyboard      : true
 Path                  : /Users/anonymous/.Genymobile/Genymotion/deployed/randomDevice
 State                 : On
-IP                    : 192.168.56.101"""
+IP                    : 192.168.56.101
+ADB Serial            : 192.168.56.101"""
+
+    public static final String cloudDeviceDetailOutput = """\
+Name                  : randomDevice
+UUID                  : 01283849-3c02-4a38-831e-23e2b2d7adb2
+Android Version       : 4.4.4
+API Level             : 19
+Genymotion Version    : 2.6.0
+Screen Width          : 1080
+Screen Height         : 1920
+Screen Density        : xxhdpi
+Screen DPI            : 480
+Nb CPU                : 4
+RAM                   : 2048
+Telephony             : true
+Nav Bar Visible       : true
+Virtual Keyboard      : true
+Path                  : /Users/anonymous/.Genymobile/Genymotion/deployed/randomDevice
+State                 : On
+IP                    : 0.0.0.0
+ADB Serial            : localhost:56789"""
 
     public static final String createDeviceOutput = """\
 Creating nexus4 from template Google Nexus 4 - 4.1.1 - API 16 - 768x1280...
@@ -137,6 +164,9 @@ Download finished
 Template installed
 Creating virtual device...
 Virtual device created successfully"""
+
+    public static final String startDisposableDeviceOutput = """\
+Disposable virtual device started successfully"""
 
     public static final String installOutput = """\
 Installing /Users/anonymous/Downloads/devices-release-unaligned.apk on nexus7...
@@ -231,7 +261,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetRunningDevicesByName() {
         GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
-        def devices = gmtoolSpy.getRunningDevices(false, false, true)
+        def devices = gmtoolSpy.getRunningDevices(false, true)
 
         assert devices.contains("randomDevice")
         assert !devices.contains("stoppedDevice2")
@@ -244,10 +274,10 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetRunningDevices() {
         GMTool gmtoolSpy = initSpyAndOutput(listOneRunningDeviceOutput)
 
-        def devices = gmtoolSpy.getRunningDevices(false, false, false)
+        def devices = gmtoolSpy.getRunningDevices(false, false)
 
         assert devices[0].name == "randomDevice"
-        assert devices[0].ip == "192.168.56.101"
+        assert devices[0].adbSerial == "192.168.56.101:5555"
         assert devices[0].state == "On"
 
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
@@ -264,9 +294,43 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 [new StringBuffer().append(deviceDetailOutput), null, 0]
         ).when(gmtoolSpy).executeCommand(anyList())
 
-        def devices = gmtoolSpy.getRunningDevices(false, true, false)
+        def devices = gmtoolSpy.getRunningDevices(true, false)
 
         checkDetailedDeviceContent(devices[0])
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, devices[0].name])
+    }
+
+    @Test
+    public void canGetRunningCloudDevices() {
+        GMTool gmtoolSpy = initSpyAndOutput(listOneRunningCloudDeviceOutput, DeviceLocation.CLOUD)
+
+        def devices = gmtoolSpy.getRunningDevices(false, false)
+
+        assert devices[0].name == "randomDevice"
+        assert devices[0].adbSerial == "localhost:56789"
+        assert devices[0].state == "On"
+
+        // Note: no OPT_CLOUD here because cmd() is called without OPT_CLOUD, it adds the option itself
+        verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
+    }
+
+    @Test
+    public void canGetFilledRunningCloudDevices() {
+        GMTool gmtool = GMTool.newInstance()
+        gmtool.deviceLocation = DeviceLocation.CLOUD
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn(
+                [new StringBuffer().append(listOneRunningCloudDeviceOutput), null, 0],
+                [new StringBuffer().append(cloudDeviceDetailOutput), null, 0]
+        ).when(gmtoolSpy).executeCommand(anyList())
+
+        def devices = gmtoolSpy.getRunningDevices(true, false)
+
+        checkDetailedCloudDeviceContent(devices[0])
 
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_RUNNING])
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, DETAILS, devices[0].name])
@@ -276,7 +340,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetStoppedDevicesByName() {
         GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
-        def devices = gmtoolSpy.getStoppedDevices(false, false, true)
+        def devices = gmtoolSpy.getStoppedDevices(false, true)
 
         assert !devices.contains("randomDevice")
         assert devices.contains("stoppedDevice2")
@@ -289,10 +353,10 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetStoppedDevices() {
         GMTool gmtoolSpy = initSpyAndOutput(listTwoStoppedDevicesOutput)
 
-        def devices = gmtoolSpy.getStoppedDevices(false, false, false)
+        def devices = gmtoolSpy.getStoppedDevices(false, false)
 
         assert devices[0].name == "stoppedDevice1"
-        assert devices[0].ip == "0.0.0.0"
+        assert devices[0].adbSerial == "0.0.0.0"
         assert devices[0].state == "Off"
 
         verifyGmtoolCmdWithClosure(gmtoolSpy, [GMTOOL, ADMIN, LIST, OPT_OFF])
@@ -309,7 +373,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 [new StringBuffer().append(deviceDetailOutput), null, 0]
         ).when(gmtoolSpy).executeCommand(anyList())
 
-        def devices = gmtoolSpy.getStoppedDevices(false, true, false)
+        def devices = gmtoolSpy.getStoppedDevices(true, false)
 
         assert devices.size() == 2
         checkDetailedDeviceContent(devices[0])
@@ -324,7 +388,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetAllDevicesByName() {
         GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
-        def devices = gmtoolSpy.getAllDevices(false, false, true)
+        def devices = gmtoolSpy.getAllDevices(false, true)
 
         assert devices.size() == 3
         assert devices.containsAll(["randomDevice", "stoppedDevice1", "stoppedDevice2"])
@@ -336,18 +400,18 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     public void canGetAllDevices() {
         GMTool gmtoolSpy = initSpyAndOutput(listThreeDevicesOutput)
 
-        def devices = gmtoolSpy.getAllDevices(false, false, false)
+        def devices = gmtoolSpy.getAllDevices(false, false)
 
         //@formatter:off
         assert devices.size()       == 3
         assert devices[0].name      == "stoppedDevice1"
-        assert devices[0].ip        == "0.0.0.0"
+        assert devices[0].adbSerial == "0.0.0.0"
         assert devices[0].state     == "Off"
         assert devices[1].name      == "randomDevice"
-        assert devices[1].ip        == "192.168.56.101"
+        assert devices[1].adbSerial == "192.168.56.101:5555"
         assert devices[1].state     == "On"
         assert devices[2].name      == "stoppedDevice2"
-        assert devices[2].ip        == "0.0.0.0"
+        assert devices[2].adbSerial == "0.0.0.0"
         assert devices[2].state     == "Off"
         //@formatter:on
 
@@ -367,7 +431,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
                 [new StringBuffer().append(deviceDetailOutput), null, 0]
         ).when(gmtoolSpy).executeCommand(anyList())
 
-        def devices = gmtoolSpy.getAllDevices(false, true, false)
+        def devices = gmtoolSpy.getAllDevices(true, false)
 
         assert devices.size() == 3
         checkDetailedDeviceContent(devices[0])
@@ -381,30 +445,12 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     @Test
-    public void canCreateDeviceFromVDLaunch() {
-        GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
-
-        GenymotionVDLaunch deviceToCreate = new GenymotionVDLaunch("device name")
-        deviceToCreate.template = "Genymotion Template"
-
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
-        assert deviceCreated.name == deviceToCreate.name
-
-        verifyGmtoolCmdWithClosure(gmtoolSpy,
-                [GMTOOL, ADMIN, CREATE, deviceToCreate.template, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH,
-                 OPT_HEIGHT, OPT_VIRTUAL_KEYBOARD, OPT_NAVBAR, OPT_NBCPU, OPT_RAM, OPT_NETWORK_MODE,
-                 OPT_BRIDGE_INTERFACE])
-    }
-
-    @Test
     public void canCreateDeviceFromTemplate() {
         GMTool gmtoolSpy = initSpyAndOutput(createDeviceOutput)
 
         GenymotionTemplate deviceToCreate = new GenymotionTemplate(name: "Genymotion Template")
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(deviceToCreate)
-
-        assert deviceCreated.name == deviceToCreate.name
+        gmtoolSpy.createDevice(deviceToCreate)
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, deviceToCreate.name, deviceToCreate.name, OPT_DENSITY, OPT_WIDTH, OPT_HEIGHT,
@@ -420,19 +466,8 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+        gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
-
-        assert deviceCreated.name == deviceName
-        assert deviceCreated.density == density
-        assert deviceCreated.width == width
-        assert deviceCreated.height == height
-        assert deviceCreated.virtualKeyboard == virtualKeyboard
-        assert deviceCreated.navbarVisible == navbarVisible
-        assert deviceCreated.nbCpu == nbcpu
-        assert deviceCreated.ram == ram
-        assert deviceCreated.networkInfo.mode == networkInfo.mode
-        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
@@ -450,25 +485,30 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         int nbcpu, int ram) = getDeviceParams()
         NetworkInfo networkInfo = NetworkInfo.createBridgeNetworkInfo("eth0")
 
-        GenymotionVirtualDevice deviceCreated = gmtoolSpy.createDevice(template, deviceName, density, width, height,
+        gmtoolSpy.createDevice(template, deviceName, density, width, height,
                 virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
-
-        assert deviceCreated.name == deviceName
-        assert deviceCreated.density == density
-        assert deviceCreated.width == width
-        assert deviceCreated.height == height
-        assert deviceCreated.virtualKeyboard == virtualKeyboard
-        assert deviceCreated.navbarVisible == navbarVisible
-        assert deviceCreated.nbCpu == nbcpu
-        assert deviceCreated.ram == ram
-        assert deviceCreated.networkInfo.mode == networkInfo.mode
-        assert deviceCreated.networkInfo.bridgeInterface == networkInfo.bridgeInterface
 
         verifyGmtoolCmdWithClosure(gmtoolSpy,
                 [GMTOOL, ADMIN, CREATE, template, deviceName, OPT_DENSITY + density, OPT_WIDTH + width,
                  OPT_HEIGHT + height, OPT_VIRTUAL_KEYBOARD + virtualKeyboard, OPT_NAVBAR + navbarVisible,
                  OPT_NBCPU + nbcpu, OPT_RAM + ram, OPT_NETWORK_MODE + networkInfo.mode,
                  OPT_BRIDGE_INTERFACE + networkInfo.bridgeInterface])
+    }
+
+    @Test
+    public void canStartDisposableDeviceFromParam() {
+        GMTool gmtoolSpy = initSpyAndOutput(startDisposableDeviceOutput)
+
+        String template = "A template"
+        def (String deviceName, String density, int width, int height, boolean virtualKeyboard, boolean navbarVisible,
+             int nbcpu, int ram) = getDeviceParams()
+        NetworkInfo networkInfo = NetworkInfo.createNatNetworkInfo()
+
+        gmtoolSpy.startDisposableDevice(template, deviceName, density, width, height,
+                virtualKeyboard, navbarVisible, nbcpu, ram, networkInfo.mode, networkInfo.bridgeInterface)
+
+        verifyGmtoolCmdWithClosure(gmtoolSpy,
+                [GMTOOL, ADMIN, START_DISPOSABLE, template, deviceName])
     }
 
     @Test
@@ -482,7 +522,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test
     public void canGetDetailedDevice() {
-        def device = testGMTool method: "getDevice",
+        def device = testGMTool method: "updateDevice",
                 output: deviceDetailOutput,
                 expectedCommand: [GMTOOL, ADMIN, DETAILS, deviceNamePlaceHolder]
 
@@ -559,13 +599,6 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     @Test
-    public void canStartDeviceByName() {
-        testGMToolByName method: "stopDevice",
-                output: "",
-                expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
-    }
-
-    @Test
     public void canStartDevice() {
         testGMTool method: "startDevice",
                 output: "",
@@ -588,7 +621,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         expectedException.expectMessage("GMTool command failed. Error code: $exitCode." + errorString)
 
         gmtoolSpy.genymotionConfig.abortOnError = true
-        gmtoolSpy.getDevice("sqfqqfd", true)
+        gmtoolSpy.getDevice("sqfqqfd")
     }
 
     @Test
@@ -603,6 +636,20 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         testGMToolByName method: "stopDevice",
                 output: "",
                 expectedCommand: [GMTOOL, ADMIN, STOP, deviceNamePlaceHolder]
+    }
+
+    @Test
+    public void canStopDisposableDevice() {
+        testGMTool method: "stopDisposableDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
+    }
+
+    @Test
+    public void canStopDisposableDeviceByName() {
+        testGMToolByName method: "stopDisposableDevice",
+                output: "",
+                expectedCommand: [GMTOOL, ADMIN, STOP_DISPOSABLE, deviceNamePlaceHolder]
     }
 
     @Test
@@ -1056,7 +1103,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = true
-        gmtool.cmd("sleep 1", true, false)
+        gmtool.cmd(["sleep", "1"])
     }
 
     @Test(expected = GMToolException)
@@ -1070,7 +1117,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = true
         //XXX: gmtool admin list is supposed to take more than 1 millisecond
-        gmtool.cmd([GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"])
     }
 
     @Test
@@ -1083,7 +1130,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = false
-        gmtool.cmd("sleep 1", true, false)
+        gmtool.cmd(["sleep", "1"])
     }
 
     @Test
@@ -1096,7 +1143,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.processTimeout = 100
         gmtool.genymotionConfig.abortOnError = false
-        gmtool.cmd([GMTOOL, "admin", "list"], true)
+        gmtool.cmd([GMTOOL, "admin", "list"])
     }
 
     @Test
@@ -1118,12 +1165,26 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         def result = gmtool.formatAndLogCommand(command)
         assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, SOURCE_GRADLE, "nok"]
 
-        result = gmtool.formatAndLogCommand(command, true)
-        assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
-
         gmtool.genymotionConfig.verbose = true
-        result = gmtool.formatAndLogCommand(command, false)
+        result = gmtool.formatAndLogCommand(command)
         assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, VERBOSE, SOURCE_GRADLE, "nok"]
+    }
+
+    @Test
+    public void canFormatCloudCommands() {
+        GMTool gmtool = GMTool.newInstance()
+        def gmtoolFilePath = gmtool.genymotionConfig.genymotionPath + GMTOOL
+        gmtool.deviceLocation = DeviceLocation.CLOUD
+
+        def result = gmtool.formatAndLogCommand([GMTOOL, ADMIN, CREATE, "tmpl", "name"])
+        assert result == [gmtoolFilePath, OPT_CLOUD, ADMIN, CREATE, "tmpl", "name"]
+
+        result = gmtool.formatAndLogCommand([GMTOOL, DEVICE, "foo"])
+        assert result == [gmtoolFilePath, OPT_CLOUD, DEVICE, "foo"]
+
+        // actions from other groups, like config, should not be affected
+        result = gmtool.formatAndLogCommand([GMTOOL, CONFIG, VERSION])
+        assert result == [gmtoolFilePath, CONFIG, VERSION]
     }
 
     @Test
@@ -1152,14 +1213,15 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         gmtool.genymotionConfig.verbose = false
         gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
-        def command = gmtool.formatAndLogCommand(["gmtool", "version"], false, false)
+        def command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
-        assert command == ["gmtool", "--source=gradle", "version"]
+        def gmtoolFilePath = gmtool.genymotionConfig.genymotionPath + GMTOOL
+        assert command == [gmtoolFilePath, "--source=gradle", "version"]
 
         gmtool.genymotionConfig.version = "2.4.5"
-        command = gmtool.formatAndLogCommand(["gmtool", "version"], false, false)
+        command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
-        assert command == ["gmtool", "version"]
+        assert command == [gmtoolFilePath, "version"]
     }
 
     @Test(expected = GMToolException)
@@ -1190,6 +1252,19 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         gmtoolSpy.setConfig(config) //should throw exception
     }
 
+    @Test
+    public void canCheckFeatureAvailability() {
+        GMTool gmtool = GMTool.newInstance()
+        GMTool gmtoolSpy = spy(gmtool)
+        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+
+        doReturn("2.9.0").when(gmtoolSpy).getVersion()
+
+        gmtoolSpy.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+        gmtoolSpy.checkAvailability(GMToolFeature.Feature.EDIT_NETWORK)
+
+        verify(gmtoolSpy, times(1)).getVersion()
+    }
 
     @After
     public void finishTest() {
@@ -1200,15 +1275,23 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     private static verifyGmtoolCmdWithClosure(GMTool gmtoolSpy, ArrayList<String> command) {
         verify(gmtoolSpy).cmd(
                 eq(command),
-                anyBoolean(),
-                anyBoolean(),
                 any(Closure)
         )
     }
 
     private static checkDetailedDeviceContent(GenymotionVirtualDevice device) {
         assert device.name == "randomDevice"
-        assert device.ip == "192.168.56.101"
+        assert device.adbSerial == "192.168.56.101:5555"
+        assert device.state == "On"
+        assert device.uuid == "01283849-3c02-4a38-831e-23e2b2d7adb2"
+        assert device.virtualKeyboard == true
+        assert device.dpi == 480
+        assert device.androidVersion == "4.4.4"
+    }
+
+    private static checkDetailedCloudDeviceContent(GenymotionVirtualDevice device) {
+        assert device.name == "randomDevice"
+        assert device.adbSerial == "localhost:56789"
         assert device.state == "On"
         assert device.uuid == "01283849-3c02-4a38-831e-23e2b2d7adb2"
         assert device.virtualKeyboard == true
@@ -1239,11 +1322,13 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
         return result
     }
 
-    private initSpyAndOutput(String output="") {
+    private initSpyAndOutput(String output="", DeviceLocation deviceLocation=DeviceLocation.LOCAL) {
         GMTool gmtool = GMTool.newInstance()
+        gmtool.deviceLocation = deviceLocation
         GMTool gmtoolSpy = spy(gmtool)
 
         doReturn([new StringBuffer().append(output), null, 0]).when(gmtoolSpy).executeCommand(anyList())
+        doReturn(Void).when(gmtoolSpy).checkAvailability(any())
 
         return gmtoolSpy
     }

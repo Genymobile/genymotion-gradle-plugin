@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Genymobile
+ * Copyright (C) 2016 Genymobile
  *
  * This file is part of GenymotionGradlePlugin.
  *
@@ -17,20 +17,24 @@
  * along with GenymotionGradlePlugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.genymotion.tools
+package com.genymotion.model
 
-import groovy.transform.CompileStatic
+import org.gradle.api.NamedDomainObjectFactory
+import org.gradle.api.Project
+import org.gradle.internal.reflect.Instantiator
 
-/**
- * Thrown when a gmtool command fails
- */
-@CompileStatic
-class GMToolException extends Exception {
-    GMToolException() {
-        super()
+class CloudVDLaunchDslFactory implements NamedDomainObjectFactory<CloudVDLaunchDsl> {
+
+    final Instantiator instantiator
+    final Project project
+
+    public CloudVDLaunchDslFactory(Instantiator instantiator, Project project) {
+        this.instantiator = instantiator
+        this.project = project
     }
 
-    GMToolException(String message) {
-        super(message)
+    @Override
+    CloudVDLaunchDsl create(String name) {
+        return instantiator.newInstance(CloudVDLaunchDsl.class, name)
     }
 }

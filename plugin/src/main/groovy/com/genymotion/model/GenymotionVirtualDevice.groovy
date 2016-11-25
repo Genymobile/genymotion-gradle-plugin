@@ -23,7 +23,11 @@ import com.genymotion.tools.GMTool
 import com.genymotion.tools.Log
 import sun.nio.ch.Net
 
-
+/**
+ * The state of a virtual device
+ *
+ * GMTool can fill this class with information about existing devices.
+ */
 class GenymotionVirtualDevice {
     static final String STATE_ON = "On"
     static final String STATE_OFF = "Off"
@@ -43,19 +47,12 @@ class GenymotionVirtualDevice {
     String uuid
     String path
     String state
-    String ip
+    String adbSerial
     NetworkInfo networkInfo
 
-    protected GMTool gmtool
-
-    GenymotionVirtualDevice(String name, boolean fill = false) {
-        this.name = name;
-        this.gmtool = GMTool.newInstance()
+    GenymotionVirtualDevice(String name) {
+        this.name = name
         this.networkInfo = NetworkInfo.createNatNetworkInfo()
-
-        if (fill) {
-            fillFromDetails()
-        }
     }
 
     GenymotionVirtualDevice(def name, def density, def width, def height, def virtualKeyboard, def navbarVisible,
@@ -109,51 +106,24 @@ class GenymotionVirtualDevice {
         this.networkInfo = networkInfo
     }
 
-    protected def start() {
-        gmtool.startDevice(this)
-    }
-
-    protected def restart() {
-        gmtool.restartDevice(this)
-    }
-
-    protected def stop() {
-        gmtool.stopDevice(this)
-    }
-
-    protected def reset() {
-        gmtool.resetDevice(this)
-    }
-
-    protected def adbdisconnect() {
-        gmtool.adbDisconnectDevice(this)
-    }
-
-    protected def adbconnect() {
-        gmtool.adbConnectDevice(this)
-    }
-
     String toString() {
         "Device: $name\n"
     }
 
     boolean equals(GenymotionVirtualDevice other) {
-        (this.name == other.name)
+        name == other.name &&
+                density == other.density &&
+                width == other.width &&
+                height == other.height &&
+                virtualKeyboard == other.virtualKeyboard &&
+                navbarVisible == other.navbarVisible &&
+                nbCpu == other.nbCpu &&
+                ram == other.ram &&
+                networkInfo.mode == other.networkInfo.mode &&
+                networkInfo.bridgeInterface == other.networkInfo.bridgeInterface
     }
 
-    def fillFromDetails(boolean verbose = false) {
-        gmtool.getDevice(this, verbose)
-    }
-
-    def update() {
-        gmtool.getDevice(this)
-    }
-
-    boolean isRunning(update = true) {
-        if (update) {
-            this.update()
-        }
-
+    boolean isRunning() {
         state == STATE_ON
     }
 }

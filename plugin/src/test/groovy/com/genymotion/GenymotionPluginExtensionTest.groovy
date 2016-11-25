@@ -234,6 +234,31 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         assert project.genymotion.getDevices("toto")*.name == ["default"]
     }
 
+    @Test
+    public void canGetGenymotionCloudDevices() {
+
+        (project, gmtool) = TestTools.init()
+        GMTool.metaClass.static.newInstance = { gmtool }
+
+        project.genymotion.cloudDevices {
+            "default" {}
+            "both" {
+                productFlavors "flavor1", "flavor2"
+            }
+            "product1" {
+                productFlavors "flavor1"
+            }
+            "product2" {
+                productFlavors "flavor2"
+            }
+        }
+
+        //IMPORTANT: Tab needs to be in alphabetical order
+        assert project.genymotion.getCloudDevices()*.name == ["both", "default", "product1", "product2"]
+        assert project.genymotion.getCloudDevices("flavor1")*.name == ["both", "default", "product1"]
+        assert project.genymotion.getCloudDevices("flavor2")*.name == ["both", "default", "product2"]
+        assert project.genymotion.getCloudDevices("toto")*.name == ["default"]
+    }
 
     @After
     public void finishTest() {

@@ -20,7 +20,9 @@
 package com.genymotion
 
 import com.genymotion.model.GenymotionVirtualDevice
+import com.genymotion.model.LocalVDLaunchDsl
 import com.genymotion.tools.GMTool
+import com.genymotion.tools.LocalDeviceController
 import com.genymotion.tools.Log
 import org.gradle.api.Project
 import org.junit.After
@@ -64,7 +66,7 @@ class GenymotionGradlePluginIntegTest {
     @Test
     public void canEditDeviceBeforeLaunch() {
         String vdName = "OKOK-junit"
-        def devices = gmtool.getAllDevices(true, false, true)
+        def devices = gmtool.getAllDevices(false, true)
         if (devices.contains(vdName)) {
             gmtool.deleteDevice(vdName)
         }
@@ -85,13 +87,15 @@ class GenymotionGradlePluginIntegTest {
             }
         }
 
-        assert project.genymotion.devices[0] != null
-        assert project.genymotion.devices[0].name == vdName
+        LocalVDLaunchDsl launchDsl = project.genymotion.devices[0]
+        assert launchDsl != null
+        assert launchDsl.name == vdName
 
-        project.genymotion.devices[0].create()
-        project.genymotion.devices[0].checkAndEdit()
+        gmtool.createDevice(launchDsl.template, launchDsl.name, launchDsl.density, launchDsl.width, launchDsl.height,
+                launchDsl.virtualKeyboard, launchDsl.navbarVisible, launchDsl.nbCpu, launchDsl.ram)
+        LocalDeviceController.checkAndEdit(gmtool, launchDsl)
 
-        GenymotionVirtualDevice device = gmtool.getDevice(vdName, true)
+        GenymotionVirtualDevice device = gmtool.getDevice(vdName)
         assert densityValue == device.density
         assert intValue == device.width
         assert intValue == device.height
@@ -114,7 +118,8 @@ class GenymotionGradlePluginIntegTest {
             }
         }
 
-        def (boolean clearedAfterBoot, boolean logcatDumped) = runAndCheckLogcat(vdName, path)
+        def (boolean clearedAfterBoot, boolean logcatDumped) = IntegrationTestTools.runAndCheckLogcat(project, gmtool,
+                vdName, path)
 
         assert clearedAfterBoot
         assert logcatDumped
@@ -134,40 +139,12 @@ class GenymotionGradlePluginIntegTest {
             }
         }
 
-        def (boolean clearedAfterBoot, boolean logcatDumped) = runAndCheckLogcat(vdName, path)
+        def (boolean clearedAfterBoot, boolean logcatDumped) = IntegrationTestTools.runAndCheckLogcat(project, gmtool,
+                vdName, path)
 
         assert !clearedAfterBoot
         assert logcatDumped
 
-    }
-
-    public List runAndCheckLogcat(String deviceName, String path) {
-        project.evaluate()
-        project.tasks.genymotionLaunch.exec()
-
-        GenymotionVirtualDevice device = gmtool.getDevice(deviceName)
-
-        //we add a line into logcat
-        String uniqueString = "GENYMOTION ROCKS DU PONEY " + System.currentTimeMillis()
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "log $uniqueString"], true)
-
-        project.tasks.genymotionFinish.exec()
-
-        //we reach the file created
-        File file = new File(path)
-
-        boolean clearedAfterBoot = true
-        boolean logcatDumped = false
-
-        file.eachLine {
-            if (it.contains(">>>>>> AndroidRuntime START com.android.internal.os.ZygoteInit <<<<<<")) {
-                clearedAfterBoot = false
-            }
-            if (it.contains(uniqueString)) {
-                logcatDumped = true
-            }
-        }
-        [clearedAfterBoot, logcatDumped]
     }
 
     @Test
@@ -182,7 +159,7 @@ class GenymotionGradlePluginIntegTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assert !gmtool.isDeviceCreated(vdName, true)
+        assert !gmtool.isDeviceCreated(vdName)
     }
 
     @Test
@@ -197,7 +174,7 @@ class GenymotionGradlePluginIntegTest {
         project.tasks.genymotionLaunch.exec()
         project.tasks.genymotionFinish.exec()
 
-        assert gmtool.isDeviceCreated(vdName, true)
+        assert gmtool.isDeviceCreated(vdName)
     }
 
 
@@ -215,7 +192,7 @@ class GenymotionGradlePluginIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(vdName)
 
         boolean installed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "pm list packages"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "pm list packages"]) { line, count ->
             if (line.contains("com.genymotion.test")) {
                 installed = true
             }
@@ -237,7 +214,7 @@ class GenymotionGradlePluginIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /sdcard/Download/"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls /sdcard/Download/"]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -260,7 +237,7 @@ class GenymotionGradlePluginIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /sdcard/Download/"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls /sdcard/Download/"]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -270,7 +247,7 @@ class GenymotionGradlePluginIntegTest {
         project.tasks.genymotionFinish.exec()
 
         pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /sdcard/Download/"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls /sdcard/Download/"]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -294,7 +271,7 @@ class GenymotionGradlePluginIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls", destination]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -319,7 +296,7 @@ class GenymotionGradlePluginIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls", destination]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -329,7 +306,7 @@ class GenymotionGradlePluginIntegTest {
         project.tasks.genymotionFinish.exec()
 
         pushed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls", destination], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls", destination]) { line, count ->
             if (line.contains("test.txt")) {
                 pushed = true
             }
@@ -393,7 +370,7 @@ class GenymotionGradlePluginIntegTest {
         GenymotionVirtualDevice device = gmtool.getDevice(name)
 
         boolean flashed = false
-        gmtool.cmd(["tools/adb", "-s", "$device.ip:5555", "shell", "ls /system"], true) { line, count ->
+        gmtool.cmd(["tools/adb", "-s", device.adbSerial, "shell", "ls /system"]) { line, count ->
             if (line.contains("touchdown")) {
                 flashed = true
             }

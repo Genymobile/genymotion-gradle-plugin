@@ -19,9 +19,11 @@
 
 package com.genymotion
 
+import com.genymotion.model.CloudVDLaunchDsl
+import com.genymotion.model.CloudVDLaunchDslFactory
 import com.genymotion.model.GenymotionConfig
 import com.genymotion.model.VDLaunchDsl
-import com.genymotion.model.VDLaunchDslFactory
+import com.genymotion.model.LocalVDLaunchDslFactory
 import com.genymotion.tasks.GenymotionFinishTask
 import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
@@ -31,6 +33,11 @@ import org.gradle.internal.reflect.Instantiator
 
 import javax.inject.Inject
 
+/**
+ * The plugin entry point
+ *
+ * Let Gradle know about the "genymotion" extension
+ */
 class GenymotionGradlePlugin implements Plugin<Project> {
 
     static final String PLUGIN_GROUP = "Genymotion"
@@ -47,9 +54,10 @@ class GenymotionGradlePlugin implements Plugin<Project> {
 
     void apply(Project project) {
 
-        def devicesLaunch = project.container(VDLaunchDsl, new VDLaunchDslFactory(instantiator, project))
+        def devicesLaunch = project.container(VDLaunchDsl, new LocalVDLaunchDslFactory(instantiator, project))
+        def cloudDevicesLaunch = project.container(CloudVDLaunchDsl, new CloudVDLaunchDslFactory(instantiator, project))
 
-        project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch)
+        project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch, cloudDevicesLaunch)
         project.genymotion.extensions.create('config', GenymotionConfig)
 
         //we set the default config for GMTool instances
