@@ -850,10 +850,7 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         (project, gmtool) = TestTools.getAndroidProject()
         GMTool.metaClass.static.newInstance = { gmtool }
 
-        project.android.productFlavors {
-            flavor1
-            flavor2
-        }
+        TestTools.declareFlavors(project)
 
         project.genymotion.config.abortOnError = false
 
