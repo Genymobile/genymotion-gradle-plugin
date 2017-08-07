@@ -34,7 +34,7 @@ class GenymotionConfig {
     static final String DEFAULT_GENYMOTION_PATH_WINDOWS = "C:\\Program Files\\Genymobile\\Genymotion\\"
     static final String DEFAULT_GENYMOTION_PATH_LINUX = ""
     static final String DEFAULT_GENYMOTION_PATH = ""
-    static final String VERSION_NOT_SET = "1.0"
+    static final String VERSION_NOT_SET = "0.0.0"
 
     static final String DEPRECATED_ERROR = "is deprecated and has no effect on Genymotion configuration. " +
             "You should not use it anymore."

@@ -81,7 +81,6 @@ class GMTool {
                 }
             }
         }
-
         return version
     }
 
@@ -184,8 +183,8 @@ class GMTool {
         return exitCode
     }
 
-    def throwIfNotCompatible(String feature, String featureLabel, Closure c) {
-        if (isCompatibleWith(feature)) {
+    def throwIfNotCompatible(GMToolFeature.Feature feature, String featureLabel, Closure c) {
+        if (isFeatureAvailable(feature)) {
             c()
         } else if (genymotionConfig.abortOnError) {
             throw new GMToolException(String.format(GENYMOTION_VERSION_ERROR_MESSAGE, featureLabel))
@@ -224,12 +223,12 @@ class GMTool {
             command.push(OPT_STATISTICS + statistics)
         }
         if (licenseServer != null) {
-            throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER") {
+            throwIfNotCompatible(GMToolFeature.Feature.ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER") {
                 command.push(OPT_LICENSE_SERVER + licenseServer)
             }
         }
         if (licenseServerAddress != null) {
-            throwIfNotCompatible(FEATURE_ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER_ADDRESS") {
+            throwIfNotCompatible(GMToolFeature.Feature.ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER_ADDRESS") {
                 command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
             }
         }
@@ -941,7 +940,7 @@ class GMTool {
                 }
             }
 
-            if (isCompatibleWith(FEATURE_SOURCE_PARAM)) {
+            if (isFeatureAvailable(GMToolFeature.Feature.SOURCE_PARAM)) {
                 toExec.addAll(1, [SOURCE_GRADLE])
             }
 
@@ -967,16 +966,6 @@ class GMTool {
         } else {
             return binary
         }
-    }
-
-    /**
-     * Get the compatibility between the current gmtool binary and a gradle plugin feature
-     * @param feature
-     *
-     * @return true if the plugin is compatible with it and false otherwise
-     */
-    boolean isCompatibleWith(String feature) {
-        return genymotionConfig.version >= feature
     }
 
     /**
@@ -1076,11 +1065,27 @@ class GMTool {
     /**
      * Check if feature is available in the current gmtool version
      * @param feature
+     * @return true if the feature is available, and false otherwise
+     */
+    public def isFeatureAvailable(GMToolFeature.Feature feature) throws GMToolException {
+        if (genymotionConfig == null || genymotionConfig.version == null ||
+                genymotionConfig.version == GenymotionConfig.VERSION_NOT_SET) {
+            return false
+        }
+        if (versionTuple == null) {
+            versionTuple = GMToolFeature.versionTuple(genymotionConfig.version)
+        }
+        GMToolFeature.isAvailable(feature, versionTuple)
+    }
+
+    /**
+     * Check if feature is available in the current gmtool version
+     * @param feature
      * This method throw a GMToolException if the feature is not available
      */
     public def checkAvailability(GMToolFeature.Feature feature) throws GMToolException {
         if (!versionTuple) {
-            versionTuple = GMToolFeature.versionTuple(this.version)
+            versionTuple = GMToolFeature.versionTuple(genymotionConfig.version)
         }
         GMToolFeature.checkAvailability(feature, versionTuple)
     }
