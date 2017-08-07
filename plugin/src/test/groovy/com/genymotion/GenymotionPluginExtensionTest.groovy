@@ -43,7 +43,6 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         project.evaluate()
-        project.genymotion.processConfiguration()
 
         //@formatter:off
         assert project.genymotion.config.username       == "user"
@@ -51,6 +50,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         assert project.genymotion.config.statistics     == true
         assert project.genymotion.config.proxyPort      == 100
         assert project.genymotion.config.licenseServer  == true
+        assert project.genymotion.config.genymotionPath == "/path/to/genymotion/"
         //@formatter:on
 
     }
