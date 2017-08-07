@@ -56,6 +56,24 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
     }
 
     @Test
+    @Category(Android)
+    public void checkLocalPropertiesIsAppliedBeforeCallingGMTool() {
+
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.getVersion = {
+            cmd([""], {})
+            return "2.6.0"
+        }
+
+        GMTool.metaClass.cmd = { def command, Closure c ->
+            // We check the genymotion path has been set before calling the gmtool binary
+            assert project.genymotion.config.genymotionPath == "/path/to/genymotion/"
+        }
+
+        project.evaluate()
+    }
+
+    @Test
     public void canInjectToCustomTask() {
 
         (project, gmtool) = TestTools.init()
