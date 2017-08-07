@@ -127,7 +127,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
 
         project.evaluate()
 
-        String version = AndroidPluginTestTools.getPluginVersion();
+        String version = AndroidPluginTestTools.getPluginVersion()
         String taskName = AndroidPluginTestTools.getDefaultTestTask(version)
 
         def task = project.tasks.getByName(taskName)
