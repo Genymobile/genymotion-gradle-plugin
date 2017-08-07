@@ -20,6 +20,7 @@
 package com.genymotion
 
 import com.genymotion.tools.GMTool
+import com.genymotion.AndroidPluginTestTools
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
@@ -59,5 +60,22 @@ class TestTools {
         }
 
         [project, gmtool]
+    }
+
+    static def declareFlavors(Project project) {
+        String version = AndroidPluginTestTools.getPluginVersion();
+
+        if (version > "1.3.1") {
+            project.android.flavorDimensions "flavors"
+            project.android.productFlavors {
+                flavor1 { dimension "flavors" }
+                flavor2 { dimension "flavors" }
+            }
+        } else {
+            project.android.productFlavors {
+                flavor1
+                flavor2
+            }
+        }
     }
 }

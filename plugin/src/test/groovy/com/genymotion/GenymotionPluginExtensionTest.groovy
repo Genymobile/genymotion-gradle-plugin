@@ -128,10 +128,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
 
         project.genymotion.config.verbose = true
 
-        project.android.productFlavors {
-            flavor1
-            flavor2
-        }
+        TestTools.declareFlavors(project)
         project.evaluate()
 
         project.android.testVariants.all { variant ->
@@ -152,10 +149,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         (project, gmtool) = TestTools.getAndroidProject()
         GMTool.metaClass.static.newInstance = { gmtool }
 
-        project.android.productFlavors {
-            flavor1
-            flavor2
-        }
+        TestTools.declareFlavors(project)
 
         def wrongFlavor = "NONONO"
         String device2 = "device2"
@@ -184,10 +178,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         (project, gmtool) = TestTools.getAndroidProject()
         GMTool.metaClass.static.newInstance = { gmtool }
 
-        project.android.productFlavors {
-            flavor1
-            flavor2
-        }
+        TestTools.declareFlavors(project)
 
         String device2 = "device2"
 
