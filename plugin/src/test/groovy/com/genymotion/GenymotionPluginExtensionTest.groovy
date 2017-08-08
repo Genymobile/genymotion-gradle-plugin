@@ -43,7 +43,6 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         project.evaluate()
-        project.genymotion.processConfiguration()
 
         //@formatter:off
         assert project.genymotion.config.username       == "user"
@@ -51,8 +50,27 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         assert project.genymotion.config.statistics     == true
         assert project.genymotion.config.proxyPort      == 100
         assert project.genymotion.config.licenseServer  == true
+        assert project.genymotion.config.genymotionPath == "/path/to/genymotion/"
         //@formatter:on
 
+    }
+
+    @Test
+    @Category(Android)
+    public void checkLocalPropertiesIsAppliedBeforeCallingGMTool() {
+
+        (project, gmtool) = TestTools.getAndroidProject()
+        GMTool.metaClass.getVersion = {
+            cmd([""], {})
+            return "2.6.0"
+        }
+
+        GMTool.metaClass.cmd = { def command, Closure c ->
+            // We check the genymotion path has been set before calling the gmtool binary
+            assert project.genymotion.config.genymotionPath == "/path/to/genymotion/"
+        }
+
+        project.evaluate()
     }
 
     @Test
@@ -109,7 +127,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
 
         project.evaluate()
 
-        String version = AndroidPluginTestTools.getPluginVersion();
+        String version = AndroidPluginTestTools.getPluginVersion()
         String taskName = AndroidPluginTestTools.getDefaultTestTask(version)
 
         def task = project.tasks.getByName(taskName)
