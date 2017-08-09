@@ -24,11 +24,15 @@ package com.genymotion.tools
  */
 public class GMToolFeature {
     public enum Feature {
-        DISPOSABLE,
+        SOURCE_PARAM,
+        ONSITE_LICENSE_CONFIG,
         EDIT_NETWORK,
+        DISPOSABLE,
     }
 
     private static def FeatureVersion = [
+        (Feature.SOURCE_PARAM) : new Tuple(2, 5, 1),
+        (Feature.ONSITE_LICENSE_CONFIG) : new Tuple(2, 6, 0),
         (Feature.EDIT_NETWORK) : new Tuple(2, 7, 0),
         (Feature.DISPOSABLE) : new Tuple(2, 8, 1),
     ]
@@ -56,18 +60,22 @@ public class GMToolFeature {
         }
     }
 
-    public static void checkAvailability(Feature feature, Tuple currentVersion) throws GMToolException {
+    public static boolean isAvailable(Feature feature, Tuple currentVersion) {
         def neededVersion = FeatureVersion[feature]
-        String exceptionString = "You need GMTool version " + tupleToString(FeatureVersion[feature]) +
-                " (current version is " + tupleToString(currentVersion) + ")"
-
         for (int idx = 0; idx < neededVersion.size(); ++idx) {
             if (currentVersion[idx] > neededVersion[idx]) {
-                return
+                return true
+            } else if (currentVersion[idx] < neededVersion[idx]) {
+                return false
             }
-            if (currentVersion[idx] < neededVersion[idx]) {
-                throw new GMToolException(exceptionString)
-            }
+        }
+        return true
+    }
+
+    public static void checkAvailability(Feature feature, Tuple currentVersion) throws GMToolException {
+        if (!isAvailable(feature, currentVersion)) {
+            throw new GMToolException("You need GMTool version " + tupleToString(FeatureVersion[feature]) +
+                    " (current version is " + tupleToString(currentVersion) + ")")
         }
     }
 

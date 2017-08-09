@@ -209,6 +209,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     @Test
     public void canGetConfigFromGMTool() {
         GMTool gmtoolSpy = initSpyAndOutput(configPrintOutput)
+        doReturn("2.9.0").when(gmtoolSpy).getVersion()
 
         GenymotionConfig config = gmtoolSpy.getConfig()
 
@@ -1160,7 +1161,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
         def command = [GMTOOL, "nok"]
         gmtool.genymotionConfig.verbose = false
-        gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
+        gmtool.genymotionConfig.version = "2.5.1"
 
         def result = gmtool.formatAndLogCommand(command)
         assert result == [gmtool.genymotionConfig.genymotionPath + GMTOOL, SOURCE_GRADLE, "nok"]
@@ -1197,28 +1198,20 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     }
 
     @Test
-    public void canCheckCompatibility() {
-        GMTool gmtool = GMTool.newInstance()
-
-        gmtool.genymotionConfig.version = "2.4.5"
-        assert !gmtool.isCompatibleWith(FEATURE_SOURCE_PARAM)
-
-        gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
-        assert gmtool.isCompatibleWith(FEATURE_SOURCE_PARAM)
-    }
-
-    @Test
     public void canCheckSourceCompatibility() {
         GMTool gmtool = GMTool.newInstance()
-
         gmtool.genymotionConfig.verbose = false
-        gmtool.genymotionConfig.version = FEATURE_SOURCE_PARAM
+        gmtool.genymotionConfig.version = "2.5.1"
+
         def command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
         def gmtoolFilePath = gmtool.genymotionConfig.genymotionPath + GMTOOL
         assert command == [gmtoolFilePath, "--source=gradle", "version"]
 
+        gmtool = GMTool.newInstance()
         gmtool.genymotionConfig.version = "2.4.5"
+        gmtool.genymotionConfig.verbose = false
+
         command = gmtool.formatAndLogCommand(["gmtool", "version"])
 
         assert command == [gmtoolFilePath, "version"]
@@ -1226,44 +1219,42 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerCompatibility() {
-        GMTool gmtoolSpy = initSpyAndOutput()
+        GMTool gmtool = initSpyAndOutput()
 
         GenymotionConfig config = new GenymotionConfig()
         config.licenseServer = true
 
-        gmtoolSpy.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
-        gmtoolSpy.setConfig(config) //should pass
+        gmtool.genymotionConfig.version = "2.6.0"
+        gmtool.setConfig(config) //should pass
 
-        gmtoolSpy.genymotionConfig.version = "2.4.5"
-        gmtoolSpy.setConfig(config) //should throw exception
+        gmtool = initSpyAndOutput()
+        gmtool.genymotionConfig.version = "2.4.5"
+        gmtool.setConfig(config) //should throw exception
     }
 
     @Test(expected = GMToolException)
     public void canCheckLicenseServerAddressCompatibility() {
-        GMTool gmtoolSpy = initSpyAndOutput()
+        GMTool gmtool = initSpyAndOutput()
 
         GenymotionConfig config = new GenymotionConfig()
         config.licenseServerAddress = "test"
+        config.abortOnError = true
 
-        gmtoolSpy.genymotionConfig.version = FEATURE_ONSITE_LICENSE_CONFIG
-        gmtoolSpy.setConfig(config) //should pass
+        gmtool.genymotionConfig.version = "2.6.0"
+        gmtool.setConfig(config) //should pass
 
-        gmtoolSpy.genymotionConfig.version = "2.4.5"
-        gmtoolSpy.setConfig(config) //should throw exception
+        gmtool = initSpyAndOutput()
+        gmtool.genymotionConfig.version = "2.4.5"
+        gmtool.setConfig(config) //should throw exception
     }
 
     @Test
     public void canCheckFeatureAvailability() {
         GMTool gmtool = GMTool.newInstance()
-        GMTool gmtoolSpy = spy(gmtool)
-        GMTool.metaClass.static.newInstance = { gmtoolSpy }
+        gmtool.genymotionConfig.version = "2.9.0"
 
-        doReturn("2.9.0").when(gmtoolSpy).getVersion()
-
-        gmtoolSpy.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
-        gmtoolSpy.checkAvailability(GMToolFeature.Feature.EDIT_NETWORK)
-
-        verify(gmtoolSpy, times(1)).getVersion()
+        gmtool.checkAvailability(GMToolFeature.Feature.DISPOSABLE)
+        gmtool.checkAvailability(GMToolFeature.Feature.EDIT_NETWORK)
     }
 
     @After
@@ -1325,10 +1316,12 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     private initSpyAndOutput(String output="", DeviceLocation deviceLocation=DeviceLocation.LOCAL) {
         GMTool gmtool = GMTool.newInstance()
         gmtool.deviceLocation = deviceLocation
+        // We do not version check on these tests
+        gmtool.genymotionConfig.version = "99.99.99"
+
         GMTool gmtoolSpy = spy(gmtool)
 
         doReturn([new StringBuffer().append(output), null, 0]).when(gmtoolSpy).executeCommand(anyList())
-        doReturn(Void).when(gmtoolSpy).checkAvailability(any())
 
         return gmtoolSpy
     }
