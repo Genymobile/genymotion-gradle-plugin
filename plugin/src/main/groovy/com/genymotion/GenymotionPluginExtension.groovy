@@ -241,17 +241,12 @@ class GenymotionPluginExtension {
     /**
      * Configuration management
      */
-
     def processConfiguration(GMTool gmtool = GMTool.newInstance()) {
-        project.genymotion.config.version = gmtool.getVersion()
-
         GenymotionConfig config = project.genymotion.config
         config.applyConfigFromFile(project)
-
+        project.genymotion.config.version = gmtool.getVersion()
         if (!config.isEmpty()) {
-
             gmtool.setConfig(config)
-
             if (config.license) {
                 gmtool.setLicense(config.license)
             }

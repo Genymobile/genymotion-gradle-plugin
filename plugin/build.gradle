@@ -87,7 +87,7 @@ dependencies {
 }
 
 group = 'com.genymotion'
-version = '1.3'
+version = '1.4'
 
 uploadArchives {
     repositories {

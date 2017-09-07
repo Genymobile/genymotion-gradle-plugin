@@ -14,7 +14,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.genymotion:plugin:1.3'
+        classpath 'com.genymotion:plugin:1.4'
     }
 }
 ```
