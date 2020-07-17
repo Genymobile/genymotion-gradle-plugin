@@ -52,7 +52,6 @@ class TestTools {
 
         project.android {
             compileSdkVersion 23
-            buildToolsVersion "25"
         }
 
         if (gmtool == null) {
