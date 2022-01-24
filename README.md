@@ -136,9 +136,9 @@ via command line argument (ideal for CI):
 
 Method 1:
 
-1. Copy the `plugin/res/test/default.properties.TEMPLATE` file and name it `default.properties`
+1. Copy the `plugin/src/integTest/res/test/default.properties.TEMPLATE` file and name it `default.properties` (in the same folder)
 2. Fill the new file with your information (genymotion username, password, license) and the path to your local Genymotion installation (genymotionPath).
-3. Also, in the file `plugin/res/test/android-app/local.properties` precise the `sdk.dir` field with your Android SDK path 
+3. Also, in the file `plugin/src/integTest/res/test/android-app/local.properties`, set the `sdk.dir` field with your Android SDK path 
 
 Method 2:
 

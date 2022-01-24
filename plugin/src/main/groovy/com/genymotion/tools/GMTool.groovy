@@ -100,11 +100,11 @@ class GMTool {
         def command = [GMTOOL, LOGZIP]
 
         if (vdName?.trim()) {
-            command.push(OPT_NAME + vdName)
+            command << OPT_NAME + vdName
         }
 
         if (path?.trim()) {
-            command.push(path)
+            command << path
         }
 
         return cmd([GMTOOL, LOGZIP])
@@ -213,54 +213,54 @@ class GMTool {
         def command = [GMTOOL, CONFIG]
 
         if (username != null && password != null) {
-            command.push(OPT_USERNAME_CONFIG + username)
-            command.push(OPT_PASSWORD_CONFIG + password)
+            command << OPT_USERNAME_CONFIG + username
+            command << OPT_PASSWORD_CONFIG + password
         } else if ((username != null || password != null) && verbose) {
             Log.error("username and password need to be both transmitted. Ignoring both arguments")
         }
 
         if (statistics != null) {
-            command.push(OPT_STATISTICS + statistics)
+            command << OPT_STATISTICS + statistics
         }
         if (licenseServer != null) {
             throwIfNotCompatible(GMToolFeature.Feature.ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER") {
-                command.push(OPT_LICENSE_SERVER + licenseServer)
+                command << OPT_LICENSE_SERVER + licenseServer
             }
         }
         if (licenseServerAddress != null) {
             throwIfNotCompatible(GMToolFeature.Feature.ONSITE_LICENSE_CONFIG, "config $OPT_LICENSE_SERVER_ADDRESS") {
-                command.push(OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress)
+                command << OPT_LICENSE_SERVER_ADDRESS + licenseServerAddress
             }
         }
         if (proxy != null) {
-            command.push(OPT_PROXY + proxy)
+            command << OPT_PROXY + proxy
         }
         if (proxyAddress != null) {
-            command.push(OPT_PROXY_ADDRESS + proxyAddress)
+            command << OPT_PROXY_ADDRESS + proxyAddress
         }
         if (proxyPort != null) {
-            command.push(OPT_PROXY_PORT + proxyPort)
+            command << OPT_PROXY_PORT + proxyPort
         }
         if (proxyAuth != null) {
-            command.push(OPT_PROXY_AUTH + proxyAuth)
+            command << OPT_PROXY_AUTH + proxyAuth
         }
         if (proxyUsername != null) {
-            command.push(OPT_PROXY_USERNAME + proxyUsername)
+            command << OPT_PROXY_USERNAME + proxyUsername
         }
         if (proxyPassword != null) {
-            command.push(OPT_PROXY_PASSWORD + proxyPassword)
+            command << OPT_PROXY_PASSWORD + proxyPassword
         }
         if (virtualDevicePath != null) {
-            command.push(OPT_VIRTUAL_DEVICE_PATH + virtualDevicePath)
+            command << OPT_VIRTUAL_DEVICE_PATH + virtualDevicePath
         }
         if (androidSdkPath != null) {
-            command.push(OPT_SDK_PATH + androidSdkPath)
+            command << OPT_SDK_PATH + androidSdkPath
         }
         if (useCustomSdk != null) {
-            command.push(OPT_USE_CUSTOM_SDK + useCustomSdk)
+            command << OPT_USE_CUSTOM_SDK + useCustomSdk
         }
         if (screenCapturePath != null) {
-            command.push(OPT_SCREEN_CAPTURE_PATH + screenCapturePath)
+            command << OPT_SCREEN_CAPTURE_PATH + screenCapturePath
         }
 
         return cmd(command) { line, count ->
@@ -720,10 +720,10 @@ class GMTool {
 
             def command = [GMTOOL, DEVICE, OPT_NAME + deviceName, PUSH]
             if (files instanceof Map) {
-                command.push(it.key)
-                command.push(it.value)
+                command << it.key
+                command << it.value
             } else {
-                command.push(it)
+                command << it
             }
 
             int exitValue = cmd(command)
