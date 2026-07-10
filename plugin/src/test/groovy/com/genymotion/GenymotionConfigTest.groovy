@@ -23,15 +23,10 @@ import com.genymotion.model.GenymotionConfig
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.Log
 import com.genymotion.tools.Tools
-import org.answerit.mock.slf4j.LoggingLevel
-import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Test
-import org.slf4j.Logger
 
-import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
-import static org.hamcrest.CoreMatchers.allOf
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
 
@@ -125,15 +120,14 @@ class GenymotionConfigTest extends CleanMetaTest {
     @Test
     public void warnWhenUsingStoreCredentials() {
 
-        Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
+        def warnMessages = []
+        Log.metaClass.static.warn = { String msg -> warnMessages << msg }
 
         GenymotionConfig config = new GenymotionConfig()
         config.storeCredentials = true
 
-        assertThat(logger, hasEntriesCount(1, that(allOf(
-                haveMessage(equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR)),
-                haveLevel(LoggingLevel.WARN)
-        ))))
+        assert warnMessages.size() == 1
+        assertThat(warnMessages[0], equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR))
     }
 
     @Test

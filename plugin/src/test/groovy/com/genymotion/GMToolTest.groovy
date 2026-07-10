@@ -38,6 +38,7 @@ import java.util.concurrent.TimeoutException
 
 import static com.genymotion.tools.GMToolDsl.*
 import static org.mockito.Mockito.*
+import static org.mockito.ArgumentMatchers.nullable
 
 class GMToolTest extends CleanMetaTest {
 
@@ -1266,7 +1267,7 @@ File installed on Google Nexus 5 - 4.4.4 - API 19 - 1080x1920"""
     private static verifyGmtoolCmdWithClosure(GMTool gmtoolSpy, ArrayList<String> command) {
         verify(gmtoolSpy).cmd(
                 eq(command),
-                any(Closure)
+                nullable(Closure)
         )
     }
 

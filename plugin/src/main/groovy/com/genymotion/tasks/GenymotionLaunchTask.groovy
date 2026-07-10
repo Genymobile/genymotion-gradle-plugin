@@ -23,9 +23,11 @@ import com.genymotion.model.DeviceLocation
 import com.genymotion.tools.DeviceController
 import com.genymotion.tools.Log
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 
 class GenymotionLaunchTask extends DefaultTask {
+    @Internal
     String flavor
 
     @TaskAction

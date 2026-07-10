@@ -197,7 +197,7 @@ class GenymotionPluginExtension {
 
         project.android.testVariants.all { variant ->
             String flavorName = variant.productFlavors[0]?.name
-            Task connectedTask = variant.variantData.connectedTestTask
+            Task connectedTask = variant.connectedInstrumentTest
             injectTasksInto(connectedTask, flavorName)
         }
 

@@ -29,8 +29,6 @@ import com.genymotion.tools.GMTool
 import com.genymotion.tools.GMToolException
 import com.genymotion.tools.LocalDeviceController
 import com.genymotion.tools.Log
-import org.answerit.mock.slf4j.LoggingLevel
-import org.answerit.mock.slf4j.MockSlf4j
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
@@ -38,11 +36,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.experimental.categories.Category
 import org.junit.rules.ExpectedException
-import org.slf4j.Logger
 
 import static com.genymotion.model.GenymotionVirtualDevice.*
-import static org.answerit.mock.slf4j.MockSlf4jMatchers.*
-import static org.hamcrest.CoreMatchers.allOf
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
 import static org.mockito.Mockito.*
@@ -870,17 +865,14 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
-        Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
+        def warnMessages = []
+        Log.metaClass.static.warn = { String msg -> warnMessages << msg }
 
         project.genymotion.config.storeCredentials = true
         project.genymotion.config.verbose = false
         project.evaluate()
 
-        assertThat(logger, hasEntriesCount(1, that(allOf(
-                haveMessage(equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR)),
-                haveLevel(LoggingLevel.WARN)
-        ))))
-
+        assert warnMessages.count { it == GenymotionConfig.STORE_CREDENTIALS_ERROR } == 1
     }
 
     @Test
@@ -888,17 +880,14 @@ class GenymotionGradlePluginTest extends CleanMetaTest {
         (project, gmtool) = TestTools.init()
         GMTool.metaClass.static.newInstance = { gmtool }
 
-        Logger logger = MockSlf4j.mockStatic(Log.class, "logger")
+        def warnMessages = []
+        Log.metaClass.static.warn = { String msg -> warnMessages << msg }
 
         project.genymotion.config.storeCredentials = true
         project.genymotion.config.verbose = true
         project.evaluate()
 
-        assertThat(logger, hasEntriesCount(1, that(allOf(
-                haveMessage(equalTo(GenymotionConfig.STORE_CREDENTIALS_ERROR)),
-                haveLevel(LoggingLevel.WARN)
-        ))))
-
+        assert warnMessages.count { it == GenymotionConfig.STORE_CREDENTIALS_ERROR } == 1
     }
 
     @Test

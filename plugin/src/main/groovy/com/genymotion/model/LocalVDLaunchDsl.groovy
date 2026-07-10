@@ -18,6 +18,8 @@
  */
 package com.genymotion.model
 
+import javax.inject.Inject
+
 /**
  * Represents a device definition inside the `devices` container
  *
@@ -28,6 +30,7 @@ class LocalVDLaunchDsl extends VDLaunchDsl {
     boolean deleteWhenFinish = true
     boolean stopWhenFinish = true
 
+    @Inject
     LocalVDLaunchDsl(String name) {
         super(name)
         deviceLocation = DeviceLocation.LOCAL

@@ -21,6 +21,7 @@ package com.genymotion.model
 
 import com.genymotion.tools.GMTool
 import com.genymotion.tools.Log
+import javax.inject.Inject
 
 /**
  * Represents a device definition inside the `cloudDevices` container
@@ -33,6 +34,7 @@ class CloudVDLaunchDsl extends VDLaunchDsl {
             "density", "width", "height", "virtualKeyboard", "navbarVisible", "nbCpu", "ram",
             ]
 
+    @Inject
     CloudVDLaunchDsl(String name) {
         super(name)
         deviceLocation = DeviceLocation.CLOUD

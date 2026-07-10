@@ -80,7 +80,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         GMTool.metaClass.static.newInstance = { gmtool }
 
         String taskName = "dummy"
-        project.task(taskName) << {}
+        project.task(taskName) { doLast {} }
 
         project.genymotion.config.taskLaunch = taskName
         project.evaluate()
@@ -101,7 +101,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
         def tasks = []
         3.times {
             String taskName = "dummy$it"
-            project.task(taskName) << {}
+            project.task(taskName) { doLast {} }
             tasks.add(taskName)
         }
 
@@ -151,7 +151,7 @@ class GenymotionPluginExtensionTest extends CleanMetaTest {
 
         project.android.testVariants.all { variant ->
 
-            Task connectedTask = variant.variantData.connectedTestTask
+            Task connectedTask = variant.connectedInstrumentTest
             Task launchTask = project.tasks.findByName(AndroidPluginTools.getFlavorLaunchTask(connectedTask.name))
             Task finishTask = project.tasks.findByName(AndroidPluginTools.getFlavorFinishTask(connectedTask.name))
 

@@ -1,40 +1,23 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'nu.studer:gradle-plugindev-plugin:1.0.4'
-    }
-}
-
 repositories {
     google()
-    jcenter()
     mavenCentral()
 }
 
 apply plugin: 'groovy'
-apply plugin: 'nu.studer.plugindev'
-apply plugin: 'maven'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven-publish'
 apply plugin: 'idea'
 
-/**
- * The following declaration allows to define the Android Gradle plugin version used during the integration tests
- * from outside the build.gradle, using the gradle property: 'androidPluginVersion'
- * It can be set from command line using:
- * gradle test -PandroidPluginVersion=1.3.1
- */
-def androidVersion = "3.2.0"
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+def androidVersion = "7.4.2"
 if (hasProperty("androidPluginVersion")) {
     androidVersion = androidPluginVersion
 }
 
-/**
- * The following declaration  allows to define the maximum number of retries to do on flaky tests
- * This can be overridden by the command line using the gradle property: "maxRetries"
- * Setting it to 0 or 1 disables the auto Retries
- * You can for example set it to 4 with the command: gradle test -PmaxRetries=4
- */
 def maxRetriesCount = 3
 if (hasProperty("maxRetries")) {
     maxRetriesCount = maxRetries
@@ -66,36 +49,40 @@ def loadPropertiesFromCommandLine() {
     }
 }
 
-/**
- * In order to run the integration tests require a valid username, password, license and path.
- * Those values are read from a default.properties files under src/integTest/res/test
- *
- * They can be provided via the command line (useful for the CI).
- * If they are found, a default.properties files is created with them inside.
- * If there is already an existing default.properties file, its content will be overridden.
- */
 loadPropertiesFromCommandLine()
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.answer-it:mock-slf4j:1.0.0'
-    testCompile "com.android.tools.build:gradle:$androidVersion"
-    testCompile 'org.mockito:mockito-core:2.0.42-beta'
+    implementation gradleApi()
+    implementation localGroovy()
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.answer-it:mock-slf4j:1.0.0'
+    testImplementation "com.android.tools.build:gradle:${androidVersion}"
+    testImplementation 'org.mockito:mockito-core:5.11.0'
 }
 
 group = 'com.genymotion'
 version = '1.4'
 
-uploadArchives {
+publishing {
+    publications {
+        pluginMaven(MavenPublication) {
+            artifactId = 'plugin'
+            groupId = project.group
+            version = project.version
+        }
+    }
     repositories {
-        mavenDeployer {
-            repository(url: uri('../repo'))
+        maven {
+            url = uri('../repo')
+        }
+    }
+}
 
-            pom.artifactId = 'plugin'
-            pom.groupId = project.group
-            pom.version = project.version
+gradlePlugin {
+    plugins {
+        genymotion {
+            id = 'com.genymotion.plugin'
+            implementationClass = 'com.genymotion.GenymotionGradlePlugin'
         }
     }
 }
@@ -105,27 +92,21 @@ sourceSets {
         groovy.srcDir file('src/test/groovy')
         groovy.srcDir file('src/integTest/groovy')
         resources.srcDir file('src/integTest/res')
-        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
         runtimeClasspath += output + compileClasspath
     }
 }
 
-/**
- * JUnit does not allow to select the category to launch from the command line.
- * The following declaration enables this feature by using 2 gradle properties: 'includeCat' and 'excludeCat'
- * They can be set from command line using:
- * gradle test -PincludeCat=com.genymotion.MyCategory -PexcludeCat=com.genymotion.MyCategory
- */
 test {
     exclude '**/*IntegTest.class'
+    // Allow mock-slf4j to access java.lang.reflect internals on Java 9+
+    jvmArgs '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
     useJUnit {
         if (project.hasProperty("includeCat")) {
             includeCategories includeCat
-            println "includeCat $includeCat"
         }
         if (project.hasProperty("excludeCat")) {
             excludeCategories excludeCat
-            println "excludeCat $excludeCat"
         }
     }
     testLogging {
@@ -136,13 +117,12 @@ test {
 
 task integrationTest(type: Test) {
     include '**/*IntegTest.class'
-    reports.html.destination = file("$reports.html.destination/integration")
-    reports.junitXml.destination = file("$reports.junitXml.destination/integration")
+    reports.html.outputLocation.set(layout.buildDirectory.dir("reports/tests/integration"))
+    reports.junitXml.outputLocation.set(layout.buildDirectory.dir("reports/tests/integrationXml"))
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-// We inject the maxRetries system property on the Test tasks
 tasks.withType(Test) { systemProperty 'maxRetries', maxRetriesCount }
 
 check.dependsOn integrationTest
@@ -153,30 +133,6 @@ idea.module {
         testSourceDirs += it
     }
 
-    scopes.TEST.plus += [configurations.integrationTestCompile]
-    scopes.TEST.plus += [configurations.integrationTestRuntime]
-}
-
-plugindev {
-    pluginId 'com.genymotion.plugin'
-    pluginName 'genymotion-gradle-plugin'
-    pluginImplementationClass 'com.genymotion.GenymotionGradlePlugin'
-    pluginDescription 'The Genymotion Gradle Plugin allows you to control your Genymotion instances just with your build.gradle file'
-    pluginLicenses 'GPL-3.0'
-    pluginTags 'plugin', 'gradle', 'android', 'genymotion', 'automation', 'test', 'unit test', 'functional test', 'CI', 'continuous integration', 'jenkins'
-    authorId 'Genymobile'
-    authorName 'Genymobile'
-    authorEmail 'support@genymotion.com'
-    projectUrl 'https://github.com/Genymobile/genymotion-gradle-plugin'
-    projectInceptionYear '2015'
-    done() // do not omit this
-}
-
-if (project.hasProperty("BINTRAY_USER_GENY") && project.hasProperty("BINTRAY_API_KEY_GENY")) {
-    bintray {
-        //Add these values to your ~/.gradle/gradle.properties file
-        user = "$BINTRAY_USER_GENY"
-        key = "$BINTRAY_API_KEY_GENY"
-        pkg.repo = 'Genymotion'
-    }
+    scopes.TEST.plus += [configurations.integrationTestCompileClasspath]
+    scopes.TEST.plus += [configurations.integrationTestRuntimeClasspath]
 }

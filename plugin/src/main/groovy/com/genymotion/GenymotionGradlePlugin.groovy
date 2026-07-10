@@ -29,7 +29,7 @@ import com.genymotion.tasks.GenymotionLaunchTask
 import com.genymotion.tools.GMTool
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.reflect.Instantiator
+import org.gradle.api.model.ObjectFactory
 
 import javax.inject.Inject
 
@@ -44,18 +44,17 @@ class GenymotionGradlePlugin implements Plugin<Project> {
     static final String TASK_LAUNCH = "genymotionLaunch"
     static final String TASK_FINISH = "genymotionFinish"
 
-    protected Instantiator instantiator
+    protected ObjectFactory objectFactory
 
     @Inject
-    GenymotionGradlePlugin(Instantiator instantiator) {
-        this.instantiator = instantiator
-        //TODO check if gradle.services.get(Instantiator) is a better way to reach it
+    GenymotionGradlePlugin(ObjectFactory objectFactory) {
+        this.objectFactory = objectFactory
     }
 
     void apply(Project project) {
 
-        def devicesLaunch = project.container(VDLaunchDsl, new LocalVDLaunchDslFactory(instantiator, project))
-        def cloudDevicesLaunch = project.container(CloudVDLaunchDsl, new CloudVDLaunchDslFactory(instantiator, project))
+        def devicesLaunch = project.container(VDLaunchDsl, new LocalVDLaunchDslFactory(objectFactory, project))
+        def cloudDevicesLaunch = project.container(CloudVDLaunchDsl, new CloudVDLaunchDslFactory(objectFactory, project))
 
         project.extensions.create('genymotion', GenymotionPluginExtension, project, devicesLaunch, cloudDevicesLaunch)
         project.genymotion.extensions.create('config', GenymotionConfig)

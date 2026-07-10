@@ -21,20 +21,20 @@ package com.genymotion.model
 
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
-import org.gradle.internal.reflect.Instantiator
+import org.gradle.api.model.ObjectFactory
 
 class CloudVDLaunchDslFactory implements NamedDomainObjectFactory<CloudVDLaunchDsl> {
 
-    final Instantiator instantiator
+    final ObjectFactory objectFactory
     final Project project
 
-    public CloudVDLaunchDslFactory(Instantiator instantiator, Project project) {
-        this.instantiator = instantiator
+    public CloudVDLaunchDslFactory(ObjectFactory objectFactory, Project project) {
+        this.objectFactory = objectFactory
         this.project = project
     }
 
     @Override
     CloudVDLaunchDsl create(String name) {
-        return instantiator.newInstance(CloudVDLaunchDsl.class, name)
+        return objectFactory.newInstance(CloudVDLaunchDsl.class, name)
     }
 }
